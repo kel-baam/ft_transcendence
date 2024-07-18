@@ -4,9 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
+    <link rel="stylesheet" href="home.css">
+    <script src="https://kit.fontawesome.com/78e3a12604.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <p>hello</p>
+    <div class="header">
+        <div class="side-nav">
+            <img src="images/logo.png" class="logo">
+            <div class="side-bar">
+                <a href=""><i class="fa-regular fa-circle-user icon"></i></a>
+                <a href=""><i class="fa-regular fa-message icon"></i></a>
+                <a href=""><i class="fa-sharp fa-solid fa-house-chimney icon"></i></a>
+                <a href=""><i class="fa-solid fa-ranking-star icon"></i></a>
+                <a href=""><i class="fa-solid fa-network-wired fa-rotate-90 icon"></i></a>
+                <a href=""><i class="fa-solid fa-trophy icon"></i></a>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <div class="top-nav">
+                <div class="search">
+                    <a href="#">
+                        <i class="fa-solid fa-magnifying-glass icon"></i>
+                    </a>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="left-nav-bar">
+                    <i class="fa-regular fa-bell icon"></i>
+                    <i class="fa-solid fa-sliders icon"></i>
+                    <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
+                </div>
+            </div>
+            <div class="right-nav"></i>
+                <i class="fa-duotone fa-solid fa-spinner"></i>
+            </div>
+        </div>
+    </div>
     
+
+
+    <script>
+        const icons = document.querySelectorAll('.icon');
+
+        icons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                this.classList.toggle('clicked');
+            });
+        });
+    </script>
 </body>
 </html>
