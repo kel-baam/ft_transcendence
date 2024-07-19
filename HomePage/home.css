@@ -5,6 +5,11 @@
     font-family: 'Poppins', sans-serif;
 }
 
+@font-face {
+    font-family: myFont;
+    src: url(Season\ Prime.otf);
+}
+
 body{
     background: #161C40;
     width: 100vw;
@@ -121,14 +126,6 @@ i{
     /* border: 1px solid rgb(0, 255, 238); */
 }
 
-.home-content{
-    background: #D9D9D9;
-    border-radius: 56px;
-    /* filter: blur(10px); */
-    background: rgba(255, 255, 255, 0.2); 
-    /* border: 1px solid rgb(255, 124, 1); */
-}
-
 .friends{
     display: flex;
     align-items: center;
@@ -157,3 +154,380 @@ i:hover{
     font-size: 30px;
     filter: blur(0.75px);
 }
+
+/* --------------------home-Content------------------ */
+
+.home-content{
+    padding: 8px;
+    background-color: rgba(217, 217, 217, 0.05);
+    border-radius: 56px;
+    display: grid;
+    grid-template-rows: 50% 50%;
+    /* row-gap: 0.2em; */
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.home-top{
+    padding: 15px;
+    display: grid;
+    grid-template-columns: 32.2% 65.8%;
+    column-gap: 1.5em;
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.leader-board{
+    border-radius: 50px;
+    background: #FFEEBF;
+
+}
+
+.welcoming-section{
+    border-radius: 50px;
+    background: #FFEEBF;
+    /* display: grid;
+    grid-template-columns: 60% 40%; */
+    position: relative;
+    /* border: 1px solid rgb(255, 251, 1); */
+}
+
+.girl{
+    width: 430px;
+    height: 430px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    right: 0;
+    left: 55%;
+    top: 19.9px;
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.welcome{
+    /* border: 1px solid rgb(1, 255, 1); */
+}
+
+.home-down{
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 6px;
+    padding-bottom: 8px;
+    display: grid;
+    grid-template-columns: 32.2% 32.2% 32.2%;
+    column-gap: 1.5em;
+    /* border: 1px solid rgb(255, 251, 1); */
+
+}
+
+.training-boot{
+    border-radius: 50px;
+    background: #FFEEBF;
+    position: relative;
+}
+
+.paddles{
+    width: 300px;
+    height: 300px;
+    transform: scaleX(-1);
+    position: absolute;
+    left: 5%;
+    top: 15%;
+    /* border: 1px solid rgb(1, 255, 192); */
+}
+
+h1{
+    height: 100px;
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 35px;
+    color: #33518F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: blur(0.5px);
+    text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
+
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.btn{
+    display: inline-block;
+    width: 160px;
+    font-family: myFont;
+    color: #D9DBBC;
+    font-size: 24px;
+    position: relative;
+    left: 50%;
+    top: 25%;
+    background: #D44444;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 100px;
+    letter-spacing: 3px;
+    text-shadow: 0px 4px 4px rgba(232, 235, 68, 0.3);
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+    /* border: 1px solid rgb(1, 225, 255); */
+}
+
+.btn:hover, .btn:focus, .btn:active{
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.795);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+/* ------------Tournament------------- */
+
+.tournament{
+    border-radius: 50px;
+    background: #FFEEBF;
+}
+
+.button{
+    display: inline-block;
+    width: 160px;
+    font-family: myFont;
+    color: #D9DBBC;
+    font-size: 24px;
+    position: relative;
+    left: 35%;
+    top: 1%;
+    background: #D44444;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 100px;
+    letter-spacing: 3px;
+    text-shadow: 0px 4px 4px rgba(232, 235, 68, 0.3);
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+}
+
+.button:hover, .button:focus, .button:active{
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.795);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.hierarchy{
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 15% 15% 25% 15% 15%;
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+
+/* -------------------col1---------------- */
+
+.col1{
+    display: grid;
+    grid-template-rows: 40% 20% 40%;
+    /* border: 1px solid rgb(26, 1, 255); */
+}
+
+.col1 .girl-div{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 10px;
+    /* border: 1px solid #63fcf4; */
+}
+
+.col1 .vs1-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 10px;
+    /* border: 1px solid #6372fc; */
+}
+
+.boy-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid #63fcf4; */
+}
+
+.player1{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #fc6363;
+}
+
+.player3{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #fc6363;
+}
+
+/* ------------------trophy-div---------------- */
+
+.trophy-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid #6372fc; */
+}
+
+.trophy{
+    width: 200px;
+    height: 200px;
+}
+
+.girl-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid #6372fc; */
+
+}
+
+.boy-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid #6372fc; */
+}
+
+.player2{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #fc6363;
+}
+
+.player4{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #2888ED;
+}
+
+.vs{
+    width: 30px;
+    height: 30px;
+}
+
+/* -------------------col3--------------- */
+
+.col3{
+    display: grid;
+    grid-template-rows: 40% 20% 40%;
+    /* border: 1px solid rgb(26, 1, 255); */
+}
+
+.col3 .boy-div{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    /* border: 1px solid #63fcf4; */
+}
+
+.col3 .vs2-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 10px;
+    /* border: 1px solid #6372fc; */
+}
+
+.player6{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #2888ED;
+}
+
+.player5{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #2888ED;
+}
+
+/* ----------------playerVSplayer---------- */
+
+.player-vs-player{
+    border-radius: 50px;
+    background: #FFEEBF;
+}
+
+.players{
+    height: 50%;
+    display: grid;
+    grid-template-columns: 45% 10% 45%;
+    /* border: 1px solid #fc6363; */
+}
+
+.play-girl{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid #00e91f; */
+
+}
+
+.girlplay{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 1px solid #fc6363;
+}
+
+.boy{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 1px solid #2888ED;
+}
+
+.vs2{
+    width: 90px;
+    height: 90px;
+}
+
+.play{
+    display: inline-block;
+    width: 160px;
+    font-family: myFont;
+    color: #D9DBBC;
+    font-size: 24px;
+    position: relative;
+    left: 35%;
+    top: 0%;
+    background: #D44444;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 100px;
+    letter-spacing: 3px;
+    text-shadow: 0px 4px 4px rgba(232, 235, 68, 0.3);
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+}
+
+.play:hover, .play:focus, .play:active{
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.795);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
