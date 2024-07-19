@@ -181,7 +181,7 @@ i:hover{
     /* ----------- chat list header ----------- */
 .chat-list-header{
     background-color: transparent;
-    border: 1px solid rgb(255, 124, 1); 
+    /* border: 1px solid rgb(255, 124, 1);  */
     border-radius: 56px;
     color: #0A466E;
     display: flex;
@@ -196,27 +196,74 @@ i:hover{
 }
 
     /* ----------- chat list items ----------- */
+
 .chat-list-items{
     padding: 5px;
-    border: 1px solid rgb(255, 124, 1);
+    /* border: 1px solid rgb(9, 201, 3); */
     border-radius: 56px;
-    grid-template-rows: repeat(10, 10%);
+    grid-template-rows: repeat(9, 10%);
     display: grid;
-    overflow: scroll;
     gap: 0.2em;
 }
-.chat-first-item{
-    background-color: rgba(208, 210, 217, 0.61);
-    border: 1px solid rgb(255, 124, 1);
-    border-radius: 56px;
-} 
 
 .chat-item{
-    /* background-color: rgba(208, 210, 217, 0.61); */
-    border: 1px solid rgb(255, 124, 1);
+    padding: 5px;
+    /* border: 1px solid rgb(1, 43, 158); */
     border-radius: 56px;
+    grid-template-columns: 20% 75%;
+    display: grid;
+    gap: 1em;
 } 
 
+    /* ----------- avatar ----------- */
+
+.contact-avatar{
+    /* border: 1px solid rgb(255, 255, 255); */
+    border-radius: 40px;
+    width: 75px;
+    height: 60px;
+}
+
+.contact-box{
+    grid-template-rows: 50% 50%;
+    display:  grid;
+}
+
+
+.contact-box-header{
+    grid-template-columns: 60% 40%;
+    display:  grid;
+}
+
+/* ----------- name  ----------- */
+.contact-name{
+    padding: 5px;
+    font-size: large;
+    font-weight: bold;
+    border-radius: 70px;
+    color: rgba(10, 70, 110, 1);
+}
+
+.time-last-message{
+    padding: 8px;
+    /* border: 1px solid rgb(255, 251, 2); */
+    font-size:medium;
+    font-family: 'Courier New', Courier, monospace;
+    color: rgba(158, 158, 158, 1);
+    justify-content: end;
+    display: flex;
+    
+}
+
+/* ----------- last msg  ----------- */
+
+.last-message{
+    color: rgba(155, 155, 155, 1);
+    border-radius: 70px;
+    /* border: 1px solid rgb(255, 251, 2); */
+}
+
+/* ----------- time of the last msg  ----------- */
 
 
 .message-list{
