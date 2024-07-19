@@ -15,7 +15,7 @@ body{
 }
 
 header{
-    padding: 6px 4%;
+    padding: 6px 25px;
     /* border: 1px solid yellow; */
 }
 
@@ -55,7 +55,7 @@ nav{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 72px;
+    margin-left: 120px;
     cursor: pointer;
     border-radius: 27px;
     background: #135B8B;
@@ -107,7 +107,8 @@ i{
 .container{
     height: auto;
     display: grid;
-    grid-template-columns: 12% 74% 14% ;
+    grid-template-columns: 7% 84% 7% ;
+    column-gap: 1em;
     /* border: 1px solid green; */
 }
 
@@ -117,12 +118,16 @@ i{
     align-items: center;
     justify-content: center;
     gap: 2em;
-    /* border: 1px solid rgb(26, 41, 40); */
+    /* border: 1px solid rgb(0, 255, 238); */
 }
 
-/* .home-content{ */
+.home-content{
+    background: #D9D9D9;
+    border-radius: 56px;
+    /* filter: blur(10px); */
+    background: rgba(255, 255, 255, 0.2); 
     /* border: 1px solid rgb(255, 124, 1); */
-/* } */
+}
 
 .friends{
     display: flex;
