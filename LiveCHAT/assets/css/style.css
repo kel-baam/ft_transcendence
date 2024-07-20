@@ -2,7 +2,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: myFont;
+}
+
+@font-face {
+    font-family: myFont;
+    src: url(Season\ Prime.otf);
 }
 
 body{
@@ -121,15 +126,6 @@ i{
     /* border: 1px solid rgb(0, 255, 238); */
 }
 
-/* 
-.home-content{
-    background: #D9D9D9;
-    border-radius: 56px; */
-    /* filter: blur(10px); */
-    /* background: rgba(255, 255, 255, 0.2);  */
-    /* border: 1px solid rgb(255, 124, 1); */
-/* } */
-
 .friends{
     display: flex;
     align-items: center;
@@ -174,13 +170,23 @@ i:hover{
     background-color: #FFEEBF;
     border-radius: 56px;
     padding: 3px;
-    grid-template-rows: 10% 90%;
+    grid-template-rows: 10% 0.5% 89.5%;
     display: grid;
+}
+
+.clicked-chat {
+    background-color: rgba(208, 210, 217, 0.61);
+}
+
+.chat-list-container .separator{
+    background-color: rgba(208, 210, 217, 0.61);
+    border-radius: 56px;
 }
 
     /* ----------- chat list header ----------- */
 .chat-list-header{
     background-color: transparent;
+    font-family: myFont;
     /* border: 1px solid rgb(255, 124, 1);  */
     border-radius: 56px;
     color: #0A466E;
@@ -225,6 +231,7 @@ i:hover{
 }
 
 .contact-box{
+
     grid-template-rows: 50% 50%;
     display:  grid;
 }
@@ -265,56 +272,196 @@ i:hover{
 
 /* ----------- time of the last msg  ----------- */
 
-
 .message-list{
-    background-color: #FFEEBF;
+    background-color: #D2D4DA;
     border-radius: 56px;
-    padding: 3px;
-    grid-template-rows: 10% 90%;
+    grid-template-rows: 10% 0.5% 74% 15.5%;
     display: grid;
 } 
 
-.test3{
-    background-color: #FFEEBF;
-    border: 1px solid rgb(255, 124, 1); 
-    border-radius: 56px;
-} 
-.test4{
-    background-color: #FFEEBF;
-    border: 1px solid rgb(255, 124, 1);
-    border-radius: 56px;
+.message-list .header{
+    background-color: transparent;
+    padding: 5px;
+    padding-left: 20px;
+    border-radius: 40px;
+    grid-template-columns: 6.8% 40% 50% 4%;
+    display: grid;
 } 
 
-/* 
-.chat-title{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 24pt;
-    background-color: inherit;
-    color: rgba(10, 70, 110, 1);
-    text-align: center;
-    margin-top: 2rem;
-    width: min-content;
-    padding-left: 7rem;
+.message-list .header .contact-avatar{
+    margin-top: 5px; 
+    height: 60px;
+    width: 60px;
+    /* border: 1px solid rgb(255, 124, 1); */
+}
+
+.message-list .header .contact-name{
+    border-radius: inherit;
+    padding-top: 26px;
+    font-size: larger;
+}
+
+.message-list .header .play-button{
+    padding: 11px;
+    border-radius: inherit;
     display: flex;
+    justify-content: end;
 }
 
-.fa-rocketchat{
+.message-list .header .play-button button{
+    border: none;
+    background-color: #FFEEBF;
+    border-radius: inherit;
+    width: 80px;
+    height: 45px;
+    color: #D45154;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.4);
+}
+
+.message-list .header .more-info{
+    border-radius: inherit;
+    padding-top: 21px;
+}
+
+.message-list .header .more-info .fa-ellipsis{
+    transform: rotate(90deg);
+    color: #2C3453;
+}
+
+.message-list .separator{
+    border-radius: 56px;
+    background-color: #e2dede;
+}
+
+/*----------------------content-------------------------*/
+ 
+.message-list .content{
+    background-color: transparent;
+    grid-template-rows: 50% 50%;
+    
+    height: 27%; /*should be a variable depend of lenth of the message*/
+    display: grid;
+} 
+
+/*----------------------sender-------------------------*/
+
+.message-list .content .sender{
+    padding: 15px;
+    width: 50%;
+    grid-template-columns: 12% 88%;
+    /* border: 1px solid rgb(1, 43, 158); */
+
+    display: grid;
+}
+
+.message-list .content .sender .sender-avatar{
+    width: 55px;
+    height: 55px;
+    border-radius: 50px;
+    background-color: #E8E9EC;
+}
+
+.message-list .content .sender .msg{
+    border-radius: 70px 50px 50px 0px;
+    background: rgba(255, 255, 255, 0.5);
+    width: 90%;
+    height: 50px; /*should be a variable depend of lenth of the message*/
+    backdrop-filter: blur(10px);
+    grid-template-columns: 85% 13%;
+    display: grid;
+}
+
+.message-list .content .sender .msg .msg-content{
+    color: #0A466E;
+    padding: 16px;
+    font-family: 'Josefin Sans Semibold';
+    
+}
+
+.message-list .content .sender .msg .msg-time{
+    color: #9E9E9E;
+    display: flex;
+    justify-content: center;
+    padding-top: 27px;
+    font-size: 14px;
+}
+
+/*----------------------receiver-------------------------*/
+
+.message-list .content .receiver{
+    padding: 15px;
+    padding-left: 20px;
+    height: 80px;
+    width: 50%;
+    display: flex;
+    justify-self: end;
+    /* border: 1px solid rgb(1, 43, 158); */
+}
+
+.message-list .content .receiver .msg{
+    border-radius: 50px 70px 0px 50px;
+    background: rgba(255, 255, 255, 0.5);
+    width: 90%;
+    height: 50px; /*should be a variable depend of lenth of the message*/
+    backdrop-filter: blur(10px);
+    grid-template-columns: 85% 13%;
+    display: grid;
+}
+
+
+.message-list .content .receiver .receiver-avatar{
+    margin-left: 10px;
+    width: 55px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: #E8E9EC;
+}
+.message-list .content .receiver .msg .msg-content{
+    /* border: 1px solid rgb(255, 251, 2); */
+    color: #0A466E;
+    padding: 16px;
+    font-family: 'Josefin Sans Semibold';
+    
+}
+
+.message-list .content .receiver .msg .msg-time{
+    /* border: 1px solid rgb(255, 251, 2); */
+    color: #9E9E9E;
+    display: flex;
+    justify-content: center;
+    padding-top: 27px;
+    font-size: 14px;
+}
+
+/*---------------------typing msg--------------------------*/
+
+.message-list .typing{
+    border-radius: 0px 0px 56px 56px ;
+    background-color: #E8E9EC;
+    grid-template-columns: 90% 10%;
+    display: grid;
+}
+
+.message-list .typing .input-msg{
     background-color: inherit;
-    margin-left: 1rem;
+    border-radius: 0px 0px 0px 56px;
+    color: #686664;
+    font-size: 16px;
+    font-family: myFont;
+    padding: 15px;
+    padding-left: 40px;
+    border: none;
 }
 
-.disc{
-    margin-top: 1rem;
-    width: 21.3rem;
-    height: 3.9rem;
-    border-radius: 3.13rem;
-    background-color: rgba(208, 210, 217, 0.61);
+.message-list .typing .input-msg:focus{
+    outline:solid 1px #F45250;
+}
+.message-list .typing .send-icon{
+    
+    border: 1px solid rgb(255, 251, 2);
+    border-radius: 0px 0px 56px 0px ;
+
 }
 
-
-.messages{
-    width: 81.90rem;
-    margin-left:1.0rem;
-    background-color: #FFFFFF;
-    border-radius: 3.63rem;
-}  */
