@@ -219,6 +219,7 @@ i:hover{
     grid-template-columns: 20% 75%;
     display: grid;
     gap: 1em;
+    cursor: pointer;
 } 
 
     /* ----------- avatar ----------- */
@@ -318,15 +319,23 @@ i:hover{
     font-size: 20px;
     font-weight: bold;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.4);
+    cursor: grabbing;
+
 }
+
+.message-list .header .play-button button{
+    transition-duration: 0.5s;
+
+}
+
 
 .message-list .header .more-info{
     border-radius: inherit;
     padding-top: 21px;
 }
 
-.message-list .header .more-info .fa-ellipsis{
-    transform: rotate(90deg);
+.message-list .header .more-info .bi-three-dots-vertical{
+    /* transform: rotate(90deg); */
     color: #2C3453;
 }
 
@@ -447,21 +456,22 @@ i:hover{
 .message-list .typing .input-msg{
     background-color: inherit;
     border-radius: 0px 0px 0px 56px;
-    color: #686664;
     font-size: 16px;
     font-family: myFont;
     padding: 15px;
-    padding-left: 40px;
+    padding-left: 60px;
     border: none;
 }
 
-.message-list .typing .input-msg:focus{
-    outline:solid 1px #F45250;
-}
-.message-list .typing .send-icon{
-    
-    border: 1px solid rgb(255, 251, 2);
-    border-radius: 0px 0px 56px 0px ;
+/* .message-list .typing .input-msg:focus{
+    border: 0px solid;
+} */
 
+.message-list .typing .send-icon{    
+    /* border: 1px solid rgb(255, 251, 2); */
+    border-radius: 0px 0px 56px 0px ;
+    display: flex;
+    justify-self: center;
+    padding-top: 50px;
 }
 
