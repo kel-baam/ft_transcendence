@@ -1,0 +1,16 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+@font-face {
+    font-family: myFont;
+    src: url(Season\ Prime.otf);
+}
+
+@font-face {
+    font-family: hFont;
+    src: url(Playground.ttf);
+}
