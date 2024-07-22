@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="https://kit.fontawesome.com/78e3a12604.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="assets/images/logo.png" class="logo">
+            <div class="search">
+                <a href="#">
+                    <i class="fa-solid fa-magnifying-glass icon"></i>
+                </a>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="left-side">
+                <i class="fa-regular fa-bell icon"></i>
+                <i class="fa-solid fa-sliders icon"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
+            </div>
+            
+        </nav>
+    </header>
+    <div class="container">
+        <div class="side-bar">
+            <a href="#"><i class="fa-regular fa-circle-user icon"></i></a>
+            <a href="#"><i class="fa-regular fa-message icon"></i></a>
+            <a href="#"><i class="fa-sharp fa-solid fa-house-chimney icon"></i></a>
+            <a href="#"><i class="fa-solid fa-ranking-star icon"></i></a>
+            <a href="#"><i class="fa-solid fa-network-wired fa-rotate-90 icon"></i></a>
+            <a href="#"><i class="fa-solid fa-trophy icon"></i></a>
+        </div>
+        <div class="home-content">
+            <div class="leaderboard-title">
+                <h1>Leaderboard</h1>
+            </div>
+            <div class="pics-rank">
+                <div class="first-place">
+                    <img class="crown-pic" src="assets/images/crown-removebg-preview.png">
+                    <img  class="first-pic" src="assets/images/kel-baam.jpeg">
+                    <h4>kel-baam</h4>
+                </div>
+                <div class="second-third-place"> 
+                    <div class="second-place">
+                        <img class="second-symbol" src="assets/images/second_1021187.png">
+                        <img class="second-pic" src="assets/images/niboukha.jpeg">
+                        <h4>niboukha</h4>
+                    </div>
+                    <div class="third-place">
+                        <img class="third-symbol" src="assets/images/third.png">
+                        <img class="third-pic" src="assets/images/niboukha.jpeg">
+                        <h4>niboukha</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="rank-info">
+                <div class="players-info">
+                    <div  class="space first-row">
+                        <div><p>Rank</p></div>
+                        <div><p>Name</p></div>
+                        <div><p>Score</p></div>
+                        <div><p>Level</p></div>
+                        <div><p>badge</p></div>
+                    </div>
+                    <div class="info">
+                        <div  class="space">
+                            <div><p>#1</p></div>
+                            <div><p>kel-baam</p></div>
+                            <div><p>3000</p></div>
+                            <div><p>5</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                        <div  class="space">
+                            <div><p>#2</p></div>
+                            <div><p>niboukha</p></div>
+                            <div><p>2500</p></div>
+                            <div><p>3.5</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                        <div  class="space">
+                            <div><p>#3</p></div>
+                            <div><p>niboukha</p></div>
+                            <div><p>2000</p></div>
+                            <div><p>3</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                        <div  class="space">
+                            <div><p>#4</p></div>
+                            <div><p>kjarmoum</p></div>
+                            <div><p>1500</p></div>
+                            <div><p>2</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                        <div  class="space">
+                            <div><p>#5</p></div>
+                            <div><p>shicham</p></div>
+                            <div><p>500</p></div>
+                            <div><p>1</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                        <div  class="space">
+                            <div><p>#5</p></div>
+                            <div><p>shicham</p></div>
+                            <div><p>500</p></div>
+                            <div><p>1</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                        <div  class="space">
+                            <div><p>#5</p></div>
+                            <div><p>shicham</p></div>
+                            <div><p>500</p></div>
+                            <div><p>1</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                        <div  class="space">
+                            <div><p>#5</p></div>
+                            <div><p>shicham</p></div>
+                            <div><p>500</p></div>
+                            <div><p>1</p></div>
+                            <div><p>badge</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="friends">
+            <i class="fa-duotone fa-solid fa-spinner icon"></i>
+        </div>
+    </div>
+    <script>
+        const icons = document.querySelectorAll('.icon');
+        icons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                this.classList.toggle('clicked');
+            });
+        });
+    </script>
+</body>
+</html>

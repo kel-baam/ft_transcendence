@@ -116,6 +116,7 @@ nav{
     float: right;
     border: none;
     border-radius: 150px;
+    filter: drop-shadow(7px 7px 7px rgba(0,0,0));
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
     margin: 120px 170px 10px 10px;
 }
@@ -221,6 +222,7 @@ nav{
 
 .glass-cart img{
     position: absolute;
+    filter: drop-shadow(7px 7px 7px rgb(0, 0, 0));
     right: -150px;
     bottom: -52px;
     width: 400px;
@@ -443,18 +445,7 @@ nav{
     text-align: center;
     margin-top: 15px;
 }
-.footer-line{
-    padding-top: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
-}
-.footer-line hr{
-    opacity: 1px;
-    width: 30%;
-
-}
 .footer-copy-right p{
     font-size: 15px;
 }
