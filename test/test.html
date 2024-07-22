@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging App</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li><a href="#" class="contact-link" data-contact="user1">User 1</a></li>
+                <li><a href="#" class="contact-link" data-contact="user2">User 2</a></li>
+                <li><a href="#" class="contact-link" data-contact="user3">User 3</a></li>
+            </ul>
+        </div>
+        <div class="main">
+            <div class="messages">
+                <div class="message-header">
+                    <span class="profile-name">User 1</span>
+                    <button class="profile-btn">View Profile</button>
+                </div>
+                <div class="message-content">
+                    <p>Message 1</p>
+                    <p>Message 2</p>
+                    <p>Message 3</p>
+                </div>
+            </div>
+            <div class="profile">
+                <h2>User 1's Profile</h2>
+                <p>Details about User 1.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const contactLinks = document.querySelectorAll('.contact-link');
+    const profileBtn = document.querySelector('.profile-btn');
+    const profileDiv = document.querySelector('.profile');
+    const messagesDiv = document.querySelector('.messages');
+    const profileName = document.querySelector('.profile-name');
+
+    contactLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            const contactName = this.getAttribute('data-contact');
+            loadContact(contactName);
+        });
+    });
+
+    profileBtn.addEventListener('click', function() {
+        profileDiv.classList.toggle('active');
+        adjustMessagesWidth();
+    });
+
+    function loadContact(contactName) {
+        profileName.textContent = contactName;
+        profileDiv.innerHTML = `<h2>${contactName}'s Profile</h2>
+                                <p>Details about ${contactName}.</p>`;
+        messagesDiv.innerHTML = `<div class="message-header">
+                                    <span class="profile-name">${contactName}</span>
+                                    <button class="profile-btn">View Profile</button>
+                                 </div>
+                                 <div class="message-content">
+                                    <p>Message 1</p>
+                                    <p>Message 2</p>
+                                    <p>Message 3</p>`;
+        const newProfileBtn = messagesDiv.querySelector('.profile-btn');
+        newProfileBtn.addEventListener('click', function() {
+            profileDiv.classList.toggle('active');
+            adjustMessagesWidth();
+        });
+    }
+
+    function adjustMessagesWidth() {
+        if (profileDiv.classList.contains('active')) {
+            messagesDiv.style.width = '60%';
+        } else {
+            messagesDiv.style.width = '100%';
+        }
+    }
+});
+
+    </script>
+</body>
+</html>

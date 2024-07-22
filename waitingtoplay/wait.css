@@ -168,54 +168,62 @@ i:hover{
     border-radius: 56px;
     display: grid;
     grid-template-rows: 35% 65%;
+    cursor: alias;
     /* row-gap: 0.2em; */
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
 h1{
     font-family: myFont;
-    font-size: 50px;
+    font-size: 30px;
     color: #FFEEBF;
     display: flex;
     align-items: center;
     justify-content: center;
     letter-spacing: 5px;
     padding-top: 100px;
-    margin-right: 80px;
+    /* margin-right: 80px; */
     margin-bottom: 10px;
 
     /* border: 1px solid rgb(255, 1, 1); */
-
 }
 
-.game-content{
+.players{
     display: grid;
     grid-template-columns: 37.7% 25% 37.7%;
     padding-bottom: 100px;
-    margin-right: 200px;
+    /* margin-right: 10px; */
     margin-bottom: 100px;
-    /* border: 1px solid rgb(234, 1, 255); */
+    /* border: 1px solid rgb(1, 238, 255); */
 
 }
 
-.user-profile{
+.user{
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
-    gap: 0.5em;
-    /* border: 1px solid rgb(1, 238, 255); */
+    /* border: 1px solid rgb(255, 1, 1); */
+
 }
 
-.user-profile img{
+.opponent
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.user img, .opponent img{
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    box-shadow: 2px 4px 4px rgba(54, 19, 19, 0.29);
-
 }
 
-.user-profile h3{
+.user h2{
     font-family: myFont;
     font-size: 20px;
     color: #989797;
@@ -223,63 +231,24 @@ h1{
     padding-right: 40px;
 }
 
+
+.opponent h2{
+    font-family: myFont;
+    font-size: 20px;
+    color: #989797;
+    letter-spacing: 5px;
+    padding-left: 40px;
+}
+
+
 .vs{
     display: flex;
-    align-items: center;
     justify-content: center;
-
-    /* border: 1px solid rgb(1, 238, 255); */
+    align-items: center;
 
 }
 
 .vs img{
-    width: 150px;
-    height: 150px;
-}
-
-.choice{
-    display: grid;
-    grid-template-rows: 50% 50%;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    
-    /* border: 1px solid rgb(1, 238, 255); */
-}
-
-.surprise-countder, .select-friend{
-    width: 400px;
-    height: 100px;
-    background: #FFEEBF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 30px;
-    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
-    cursor: pointer;
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
-    -webkit-transition-property: box-shadow, transform;
-    transition-property: box-shadow, transform;
-    /* border: 1px solid rgb(1, 238, 255); */
-}
-
-h2{
-    font-family: myFont;
-    font-size: 24px;
-    color: #3C6697;
-    letter-spacing: 3px;
-}
-
-.surprise-countder:hover, .surprise-countder:focus, .surprise-countder:active{
-    box-shadow: 0px 4px 4px rgba(99, 90, 90, 0.795);
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-}
-
-.select-friend:hover, .select-friend:focus, .select-friend:active{
-    box-shadow: 0px 4px 4px rgba(99, 90, 90, 0.795);
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
+    height: 113px;
+    width: 113px;
 }
