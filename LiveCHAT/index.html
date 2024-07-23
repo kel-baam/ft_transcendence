@@ -206,8 +206,17 @@
                         <div class="name">Kel-baam</div>
                     </div>
                     <div class="level"></div>
-                    <div class="options"></div>
-                    <div class="play"></div>
+                    <div class="options">
+                        <i class="fa-sharp fa-regular fa-address-card">
+                            <div class="view-profile">View profile</div>
+                        </i>
+                        <i class="fa-solid fa-user-lock">
+                            <div class="block-profile">Block</div>
+                        </i>
+                    </div>
+                    <div class="play">
+                        <button type="button">PLay</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -233,7 +242,7 @@
                     var check = chatContent[0].getElementsByClassName('message-list');
                     if (check)
                     {
-                        chatContent[0].style.gridTemplateColumns = '25% 50% 25%';
+                        chatContent[0].style.gridTemplateColumns = '25% 50% 23%';
                         console.log("DOM fully loaded and parsed"); 
                     }
                     

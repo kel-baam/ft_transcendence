@@ -487,7 +487,7 @@ i:hover{
 
 .chat-content .about-friend .header{
     background-color: transparent;
-    grid-template-columns: 85% 15%;
+    grid-template-columns: 85% 10%;
     display: grid;
     /* border: 1px solid rgb(0, 255, 238); */
     font-weight: bold;
@@ -499,9 +499,8 @@ i:hover{
 .chat-content .about-friend .header .title{
     color: #B8B5B4;
     display: flex;
-    justify-self: center;
-    justify-content: center;
     align-items: center;
+    padding-left: 120px;
     /* border: 1px solid rgb(34, 71, 69); */
     /* border-radius: 65px; */
 }
@@ -512,6 +511,7 @@ i:hover{
     align-items: center;
     display: flex;
     color:  #B8B5B4;
+    justify-self: center;
 }
 
 .chat-content .about-friend .separator{
@@ -522,44 +522,107 @@ i:hover{
 .chat-content .about-friend .content{
     grid-template-rows: 25% 8% 20% 36%;
     display: grid;
-    border: 1px solid rgb(34, 71, 69);
-    background-color: transparent;
+    /* border: 1px solid rgb(34, 71, 69); */
 }
 
 .chat-content .about-friend .content .friend-info{
-    border: 1px solid rgb(34, 71, 69);
-    grid-template-rows: 80% 20%;
+    /* border: 1px solid rgb(34, 71, 69); */
+    grid-template-rows: 80% 10%;
     display: grid;
 }
 
 .chat-content .about-friend .content .friend-info .avatar{
-    border: 1px solid rgba(255, 255, 255, 0.562);
+    /* border: 1px solid rgba(255, 255, 255, 0.562); */
     width: 100px;
     height: 100px;
     border-radius: 50px;
     margin:auto;
+    background-color: #2C3453;
 }
 
 .chat-content .about-friend .content .friend-info .name{
     display: flex;
-    border: 1px solid rgb(34, 71, 69);
-
+    /* border: 1px solid rgb(34, 71, 69); */
+    justify-content: center;
+    color: #0A466E;
+    font-weight: bold;
+    font-size: 20px;
+    align-items: center;
 }
 
 .chat-content .about-friend .content .level{
     border: 1px solid rgb(34, 71, 69);
+    width: 80%;
+    margin:auto;
+    height: 12px;
+    border-radius: 10px;
+    background: linear-gradient(to right, rgba(17, 194, 64, 1), rgba(55, 164, 84, 1), rgba(255, 255, 255, 1));
 
 }
 
 .chat-content .about-friend .content .options{
-    border: 1px solid rgb(34, 71, 69);
+    /* border: 1px solid rgb(34, 71, 69); */
+    grid-template-rows: 50% 50%;
+    display: grid;
+    padding: 15px;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.chat-content .about-friend .content .options .fa-address-card{
+    color: #0A466E;
+    justify-self: center;
+    display: flex;
+}
+
+.view-profile{
+    margin-left: 25px;
+}
+
+.chat-content .about-friend .content .options .fa-user-lock{
+    color: #0A466E;
+    display: flex;
+    color: #D44444;
+}
+
+.block-profile{
+    margin-left: 25%;
+    color:  #0A466E;
+    font-weight: 100;
 
 }
 
 .chat-content .about-friend .content .play{
-    border: 1px solid rgb(34, 71, 69);
-
+    /* border: 1px solid rgb(34, 71, 69); */
+    background-color: transparent;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
+
+.chat-content .about-friend .content .play button{
+    background-color: #D44444;
+    color: #D9DBBC;
+    border-radius: 100px;
+    width: 132px;
+    border: none;
+    height: 48px;
+    font-size: 20px;
+    font-weight:bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: drop-shadow(0px 4px 4px rgba(212, 68, 68, 0.29));
+}
+
+.chat-content .about-friend .content .play button:hover{
+    rotate: 360deg;
+    transition: 0.5s;
+    /* height: 60px; */
+}
+
+
 
 
 
