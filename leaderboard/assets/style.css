@@ -23,12 +23,10 @@ body{
     height: 100vh;
     display: grid;
     grid-template-rows: 8% 90%;
-    /* border: 1px solid red; */
 }
 
 header{
     padding: 6px 25px;
-    /* border: 1px solid yellow; */
 }
 
 nav{
@@ -44,7 +42,6 @@ nav{
     cursor: pointer;
     transition: filter 0.3s ease;
     padding-left: 2px;
-    /* border: 1px solid green; */
 }
 
 .logo:hover{
@@ -106,7 +103,6 @@ nav{
     justify-content: flex-end;
     align-items: center;
     gap: 1em;
-    /* border: 1px solid yellow; */
 }
 
 i{
@@ -121,7 +117,6 @@ i{
     display: grid;
     grid-template-columns: 7% 84% 7% ;
     column-gap: 1em;
-    /* border: 1px solid green; */
 }
 
 .side-bar{
@@ -130,14 +125,12 @@ i{
     align-items: center;
     justify-content: center;
     gap: 2em;
-    /* border: 1px solid rgb(0, 255, 238); */
 }
 
 .friends{
     display: flex;
     align-items: center;
     justify-content: center;
-    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 /* -----------Icons------------------ */
@@ -165,19 +158,11 @@ i:hover{
 /* --------------------home-Content------------------ */
 
 .home-content{
-
-  
-
-    /* position: relative; */
-    /* justify-content: center; */
-
-
     padding: 8px;
     background-color: rgba(217, 217, 217, 0.05);
     border-radius: 56px;
     display: grid;
     grid-template-rows: 50% 50%;
-
 }
 
 /* ---------------------leader-board------------------------------ */
@@ -194,12 +179,9 @@ i:hover{
 .leaderboard-title h1
 {
     font-size: 40px;
-    color: #ffffff;
+    color: #FFEEBF;
     font-weight: 300px ;
     font-family: 'Lemon',serif;
-    /* border: 1px solid #000; */
-
-    /* border: 1px solid #000; */
 }
 .pics-rank{
     position: relative;
@@ -212,7 +194,6 @@ i:hover{
 {
     width: 170px;
     height: auto;
-    /* border: 1px solid #000; */
 }
 
 /* -----size for second and third place----- */
@@ -221,7 +202,6 @@ i:hover{
 .pics-rank .third-place .third-symbol{
     width: 50px;
     height: auto;
-    /* border: 1px solid #000; */
 }
 
 .second-third-place{
@@ -245,7 +225,6 @@ i:hover{
 
 .pics-rank .first-place{
     top: -250px;
-    /* border: 1px solid #000; */
 }
 
 /* -----size for players images------ */
@@ -261,19 +240,15 @@ i:hover{
 
 
 .pics-rank .second-place{
-    /* border: 1px solid #000; */
     position: relative;
     left: -140px;
     top: -280px;
-    /* right: -500px; */
 }
 
 .pics-rank .third-place
 {
-    /* border: 1px solid #000; */
     text-align: center;
     position: relative;
-    /* right: -200px; */
     left: 140px;
     top: -280px;  
 }
@@ -283,6 +258,7 @@ i:hover{
     font-family: myFont;
     font-size: 16px;
     padding-top: 7px;
+
 }
 
 /* ----------rank space------- */
@@ -293,10 +269,10 @@ i:hover{
     justify-content: center;
     position: relative;
     height: 200px;
-    /* border: 1px solid #7b8489; */
     position: relative;
     top: -300px;
 }
+
 
 .space{
     width: 900px;
@@ -305,12 +281,10 @@ i:hover{
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     justify-content: center;
     background-color: #FFEEBF;
-    /* border: 1px solid #135B8B; */
-    /* border-radius: 10px; */
 }
 .first-row{
+    width: 900px;
     background-color: #D0D2D9;
-    width: 912px;
 }
 .space p{
     font-family: myFont;
@@ -326,7 +300,17 @@ i:hover{
 .rank-info .info
 {
     overflow-y: scroll;
+    overflow-x: hidden;
+    width: 900px;
     height: 225px;
+    background-color: #D0D2D9;
+}
+
+/* ------badge level------- */
+
+.space img{
+    width: 40px;
+    height: auto;
 }
 /* ---custom scrool bar-- */
 
@@ -335,7 +319,6 @@ i:hover{
 }
 ::-webkit-scrollbar-track{
     background:#D0D2D9;
-    /* border-radius: 10px; */
 }
 ::-webkit-scrollbar-thumb{
     background: #F45250;
