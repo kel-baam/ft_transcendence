@@ -36,7 +36,8 @@
         </div>
 
         <!-------------------------------------------------------------->
-         <div class="chat-content"> 
+        <div class="chat-content"> 
+            
             <div class="chat-list-container">
                 <div class="chat-list-header">
                     <h1>Chat</h1>
@@ -126,14 +127,16 @@
                     </div>                  
                 </div>
             </div>
-            <div class="message-list">
+            <div class="message-list" >
                 <div class="header">
                     <img src="./assets/images/niboukha-intra.png" alt="not Found" class="contact-avatar" >
                     <div class="contact-name">Niboukha</div>
                     <div class="play-button">
                         <button type="button" id="hoverButton">Play</button>
                     </div>
-                    <div class="more-info"><i class="fa-solid fa-ellipsis-vertical icon"></i></div>
+                    <div class="more-info">
+                        <i  class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
                 </div>
                 <div class="separator"></div>
                 <div class="content">
@@ -190,14 +193,55 @@
                     <input type="text" name="input-msg" class="input-msg" placeholder="Type a message">
                     <div class="send-icon"><i class="fa-duotone fa-solid fa-paper-plane"></i></div>
                 </div>
-            </div>            
+            </div>
+            <div class="about-friend">
+                <div class="header">
+                    <div class="title">Informations </div>
+                    <i class="fa-solid fa-xmark"></i>             
+                </div>
+                <div class="separator"></div>
+                <div class="content">
+                    <div class="friend-info">
+                        <img class="avatar" src="./assets/images/kel-baam-pic.png" alt="not-Found">
+                        <div class="name">Kel-baam</div>
+                    </div>
+                    <div class="level"></div>
+                    <div class="options"></div>
+                    <div class="play"></div>
+                </div>
+            </div>
         </div>
+        
+      
         <!-------------------------------------------------------------->
 
         <div class="friends">
             <i class="fa-duotone fa-solid fa-spinner icon"></i>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            var icon = document.querySelector('.fa-ellipsis-vertical');
+            var chatContent = document.getElementsByClassName('chat-content');
+
+            if (icon) {
+                icon.addEventListener('click', function() {
+
+                    icon.classList.replace('fa-ellipsis-vertical', 'fa-arrow-right'); 
+                    var check = chatContent[0].getElementsByClassName('message-list');
+                    if (check)
+                    {
+                        chatContent[0].style.gridTemplateColumns = '25% 50% 25%';
+                        console.log("DOM fully loaded and parsed"); 
+                    }
+                    
+                });
+            }
+        });
+       
+    </script>
     <script>
         const icons = document.querySelectorAll('.icon');
 
@@ -237,5 +281,6 @@
         });
         });
     </script>
+    
 </body>
 </html>

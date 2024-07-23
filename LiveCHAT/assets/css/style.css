@@ -463,10 +463,6 @@ i:hover{
     border: none;
 }
 
-/* .message-list .typing .input-msg:focus{
-    border: 0px solid;
-} */
-
 .message-list .typing .send-icon{    
     /* border: 1px solid rgb(255, 251, 2); */
     border-radius: 0px 0px 56px 0px ;
@@ -474,4 +470,98 @@ i:hover{
     justify-self: center;
     padding-top: 50px;
 }
+
+
+/*----------------------more Settings--------------------------*/
+
+
+.chat-content .about-friend{
+    background-color: #FFEEBF;
+    border-radius: 56px;
+    opacity: 1;
+    grid-template-rows: 10% 0.5% 89.5%;
+    display: grid;
+    padding: 0;
+    /* display: none; */
+}
+
+.chat-content .about-friend .header{
+    background-color: transparent;
+    grid-template-columns: 85% 15%;
+    display: grid;
+    /* border: 1px solid rgb(0, 255, 238); */
+    font-weight: bold;
+    font-size: 25px;
+    font-family: myFont;
+
+}
+
+.chat-content .about-friend .header .title{
+    color: #B8B5B4;
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid rgb(34, 71, 69); */
+    /* border-radius: 65px; */
+}
+
+
+.chat-content .about-friend .header .fa-xmark{
+    /* border: 1px solid rgb(34, 71, 69); */
+    align-items: center;
+    display: flex;
+    color:  #B8B5B4;
+}
+
+.chat-content .about-friend .separator{
+    background-color: rgba(208, 210, 217, 0.61);
+    border-radius: 56px;
+}
+
+.chat-content .about-friend .content{
+    grid-template-rows: 25% 8% 20% 36%;
+    display: grid;
+    border: 1px solid rgb(34, 71, 69);
+    background-color: transparent;
+}
+
+.chat-content .about-friend .content .friend-info{
+    border: 1px solid rgb(34, 71, 69);
+    grid-template-rows: 80% 20%;
+    display: grid;
+}
+
+.chat-content .about-friend .content .friend-info .avatar{
+    border: 1px solid rgba(255, 255, 255, 0.562);
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    margin:auto;
+}
+
+.chat-content .about-friend .content .friend-info .name{
+    display: flex;
+    border: 1px solid rgb(34, 71, 69);
+
+}
+
+.chat-content .about-friend .content .level{
+    border: 1px solid rgb(34, 71, 69);
+
+}
+
+.chat-content .about-friend .content .options{
+    border: 1px solid rgb(34, 71, 69);
+
+}
+
+.chat-content .about-friend .content .play{
+    border: 1px solid rgb(34, 71, 69);
+
+}
+
+
+
+
 
