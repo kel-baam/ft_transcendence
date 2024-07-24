@@ -480,9 +480,9 @@ i:hover{
     border-radius: 56px;
     opacity: 1;
     grid-template-rows: 10% 0.5% 89.5%;
-    display: grid;
+    /* display: grid; */
     padding: 0;
-    /* display: none; */
+    display: none;
 }
 
 .chat-content .about-friend .header{
@@ -520,7 +520,8 @@ i:hover{
 }
 
 .chat-content .about-friend .content{
-    grid-template-rows: 25% 8% 20% 36%;
+    grid-template-rows: 25% 8% 25% 10%;
+    gap: 1em;
     display: grid;
     /* border: 1px solid rgb(34, 71, 69); */
 }
@@ -551,7 +552,7 @@ i:hover{
 }
 
 .chat-content .about-friend .content .level{
-    border: 1px solid rgb(34, 71, 69);
+    /* border: 1px solid rgb(34, 71, 69); */
     width: 80%;
     margin:auto;
     height: 12px;
@@ -562,7 +563,7 @@ i:hover{
 
 .chat-content .about-friend .content .options{
     /* border: 1px solid rgb(34, 71, 69); */
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 50% 25%;
     display: grid;
     padding: 15px;
     justify-content: center;
@@ -621,10 +622,6 @@ i:hover{
     transition: 0.5s;
     /* height: 60px; */
 }
-
-
-
-
 
 
 
