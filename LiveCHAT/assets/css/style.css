@@ -139,7 +139,7 @@ i{
     color: #5293CB;
     cursor: pointer;
     font-size: 24px;
-    transition: color 0.4s ease, filter 0.4s ease;
+    transition: color 0.4s ease-in-out, filter 0.4s ease-in-out;
 }
 
 i:hover{
@@ -163,7 +163,7 @@ i:hover{
     padding: 15px;
     grid-template-columns: 25% 74%;
     display: grid;
-    gap:1em;
+    gap:1em; 
 }
     /* ----------- chat list ----------- */
 .chat-list-container{
@@ -174,8 +174,8 @@ i:hover{
     display: grid;
 }
 
-.clicked-chat {
-    background-color: rgba(208, 210, 217, 0.61);
+.chat-list-container .clicked-chat {
+    background-color: rgba(208, 210, 217, 0.514);
 }
 
 .chat-list-container .separator{
@@ -214,25 +214,30 @@ i:hover{
 
 .chat-item{
     padding: 5px;
-    /* border: 1px solid rgb(1, 43, 158); */
-    border-radius: 56px;
-    grid-template-columns: 20% 75%;
+    /* border: 1px solid rgba(1, 43, 158, 0.068); */
+    border-radius: 20px;
+    grid-template-columns: 18% 80%;
     display: grid;
-    gap: 1em;
     cursor: pointer;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.185);
+
 } 
+ .chat-item:hover{
+    background-color: rgba(208, 210, 217, 0.514);
+ }
 
     /* ----------- avatar ----------- */
 
 .contact-avatar{
     /* border: 1px solid rgb(255, 255, 255); */
-    border-radius: 40px;
-    width: 75px;
+    border-radius: 50px;
+    width: 60px;
     height: 60px;
+    background-color: #2C3453;
+    
 }
 
 .contact-box{
-
     grid-template-rows: 50% 50%;
     display:  grid;
 }
@@ -268,6 +273,7 @@ i:hover{
 .last-message{
     color: rgba(155, 155, 155, 1);
     border-radius: 70px;
+    padding-left: 5px;
     /* border: 1px solid rgb(255, 251, 2); */
 }
 
@@ -285,8 +291,9 @@ i:hover{
     padding: 5px;
     padding-left: 20px;
     border-radius: 40px;
-    grid-template-columns: 6.8% 40% 50% 4%;
+    grid-template-columns: 6.8% 40% 50% 5%;
     display: grid;
+    
 } 
 
 .message-list .header .contact-avatar{
@@ -361,7 +368,7 @@ i:hover{
     width: 50%;
     grid-template-columns: 12% 88%;
     /* border: 1px solid rgb(1, 43, 158); */
-
+    /* gap : 1em; */
     display: grid;
 }
 
@@ -423,7 +430,7 @@ i:hover{
 .message-list .content .receiver .receiver-avatar{
     margin-left: 10px;
     width: 55px;
-    height: 50px;
+    height: 55px;
     border-radius: 50px;
     background-color: #E8E9EC;
 }
@@ -451,6 +458,7 @@ i:hover{
     background-color: #E8E9EC;
     grid-template-columns: 90% 10%;
     display: grid;
+
 }
 
 .message-list .typing .input-msg{
@@ -465,7 +473,7 @@ i:hover{
 
 .message-list .typing .send-icon{    
     /* border: 1px solid rgb(255, 251, 2); */
-    border-radius: 0px 0px 56px 0px ;
+    /* border-radius: 0px 0px 56px 0px ; */
     display: flex;
     justify-self: center;
     padding-top: 50px;
@@ -498,11 +506,9 @@ i:hover{
 
 .chat-content .about-friend .header .title{
     color: #B8B5B4;
-    display: flex;
-    align-items: center;
-    padding-left: 120px;
+    margin: auto;
+    padding-left: 30px;
     /* border: 1px solid rgb(34, 71, 69); */
-    /* border-radius: 65px; */
 }
 
 
@@ -569,6 +575,7 @@ i:hover{
     justify-content: center;
     align-items: center;
 
+
 }
 
 .chat-content .about-friend .content .options .fa-address-card{
@@ -619,9 +626,11 @@ i:hover{
 
 .chat-content .about-friend .content .play button:hover{
     rotate: 360deg;
-    transition: 0.5s;
+    transition: 0.6s;
     /* height: 60px; */
 }
 
 
-
+.hidden{
+    display: none;
+}
