@@ -62,5 +62,43 @@ if(requestButton)
 }
 
 
+
+/*------------------------view-all-match-histor------------------------*/
+ 
+var viewAll = document.getElementsByClassName('view-all-match');
+var match_history = document.getElementsByClassName('view-all-match-history');
+
+var allMatchs = function matchs(){
+
+    
+    if (match_history)
+    {
+        match_history[0].style.display = 'grid';
+        console.log(match_history[0]);
+    }
+}
+
+if (viewAll)
+    viewAll[0].addEventListener('click', allMatchs);
+
+/*---------------rollback----------*/
+
+var close_match_history = document.getElementById("close-match");
+
+var closeMatchs = function close_matchs(){
+    
+    if (match_history)
+    {
+        match_history[0].style.display = 'none';
+        console.log("karima11111");
+    }
+}
+
+if (close_match_history)
+{
+    close_match_history.addEventListener('click', closeMatchs);
+    console.log("123");
+}
+
 });
 

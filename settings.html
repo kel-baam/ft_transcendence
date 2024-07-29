@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>settings</title>
+    <link rel="stylesheet" href="settings.css">
+    <script src="https://kit.fontawesome.com/78e3a12604.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="images/logo.png" class="logo">
+            <div class="search">
+                <a href="#">
+                    <i class="fa-solid fa-magnifying-glass icon"></i>
+                </a>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="left-side">
+                <i class="fa-regular fa-bell icon"></i>
+                <i class="fa-solid fa-sliders icon"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
+            </div>      
+        </nav>
+    </header>
+    <div class="container">
+        <div class="side-bar">
+            <a href="#"><i class="fa-regular fa-circle-user icon"></i></a>
+            <a href="#"><i class="fa-regular fa-message icon"></i></a>
+            <a href="#"><i class="fa-sharp fa-solid fa-house-chimney icon"></i></a>
+            <a href="#"><i class="fa-solid fa-ranking-star icon"></i></a>
+            <a href="#"><i class="fa-solid fa-network-wired fa-rotate-90 icon"></i></a>
+            <a href="#"><i class="fa-solid fa-trophy icon"></i></a>
+        </div>
+        <div class="settings-content">
+            <div class="settings-container">
+                 <div class="section-headings">
+                        <button>
+                            <i class="fa-solid fa-circle-info" style="color: #14397C;"></i>
+                            <h1>Informations</h1>
+                        </button>
+                        <button>
+                            <i class="fa-solid fa-user-slash" style="color: #14397C;"></i>
+                            <h2>Blocked friends</h2>
+                        </button>
+                </div>
+                <!-- <div>
+                   <form  action="#">
+                    <div >
+                        <img src="images/kel-baam.png" alt="profile picture"class="profile-pic">
+                    </div>
+                    <div>
+                         <div>
+                            <label for="fname">First name:</label>
+                            <input type="text" id="fname" name="fname" value="souad"><br>
+                            <label for="Username">Username:</label>
+                            <input type="text" id="user-name" name="user-name" value="shicham"><br>
+                            <label for="pnumber">Phone number:</label>
+                            <input type="text" id="pnumber" name="pnumber" value="0614578894489"><br>
+                            <label for="gender">Gender:</label>
+                            <input type="text" id="gender" name="gender" value="Female"><br>
+                        </div>
+                        <div>
+                            <label for="lname">Last name:</label>
+                            <input type="text" id="lname" name="lname" value="hicham"><br>
+                            <label for="age">Age:</label>
+                            <input type="text" id="age" name="age" value="36"><br>
+                            <label for="nationality">Nationality:</label>
+                            <input type="text" id="nationality" name="nationality" value="morocco"><br>
+                            <label for="email">E-mail:</label>
+                            <input type="text" id="email" name="email" value="shicham@gmail.com"><br>
+                        </div>
+                    </div>
+                    <div >
+                        <input type="submit" value="Submit">
+                    </div>
+                   </form>
+                </div>
+            </div> -->
+                <div class="blocked-friends-container">
+                    <div class="search-friend">
+                        <a href="#">
+                            <i class="fa-solid fa-magnifying-glass icon" style="color: #33518F;"></i>
+                        </a>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="profile-item">
+                        <div>
+                            <img src="images/kel-baam.png" alt="profile picture" class="user-profile-pic">
+                        </div>
+                        <div>
+                                <h1>
+                                    souad hicham
+                                </h1>
+                                <h2>
+                                    @shicham
+                                </h2> 
+                        </div>         
+                       <div>
+                            <i class="fa-solid fa-unlock" style="color: #14397C;"></i>
+                       </div>
+                    </div>
+                    <div class="profile-item">
+                        <div>
+                            <img src="images/kel-baam.png" alt="profile picture" class="user-profile-pic">
+                        </div>
+                        <div>
+                                <h1>
+                                    souad hicham
+                                </h1>
+                                <h2>
+                                    @shicham
+                                </h2> 
+                        </div>         
+                       <div>
+                            <i class="fa-solid fa-unlock" style="color: #14397C;"></i>
+                       </div>
+                    </div>
+                    <div class="profile-item">
+                        <div>
+                            <img src="images/kel-baam.png" alt="profile picture" class="user-profile-pic">
+                        </div>
+                        <div>
+                                <h1>
+                                    souad hicham
+                                </h1>
+                                <h2>
+                                    @shicham
+                                </h2> 
+                        </div>         
+                       <div>
+                            <i class="fa-solid fa-unlock" style="color: #14397C;"></i>
+                       </div>
+                    </div>
+                </div>
+            </div>
+               
+        </div>
+        <div class="friends">
+            <i class="fa-duotone fa-solid fa-spinner icon"></i>
+        </div>
+    </div>
+    
+
+    <script>
+        const icons = document.querySelectorAll('.icon');
+
+        icons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                this.classList.toggle('clicked');
+            });
+        });
+    </script>
+</body>
+</html>
