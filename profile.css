@@ -346,9 +346,9 @@ h1{
 .title-item , .view-all-link
 {
     color: #14397C;
-    /* border: 2px solid black; */
     grid-column: span 2;
     text-align: center;
+    /* border: 2px solid black; */
 }
 
 .title-item
@@ -362,7 +362,6 @@ h1{
 }
 
 .center-div{
-    /* grid-row: span 4; */
     grid-column: span 2;
     display: flex;
     flex-direction: column;
@@ -419,36 +418,46 @@ h1{
 {
     display: grid;
     grid-template-rows: 20% 70% 10%;
-    /* grid-template-columns: repeat(2, 50%); */
-    /* align-items: center; */
-    /* row-gap: 1%; */
-    /* padding: 3%; */
     border: 2px solid red;
 }
 
 .friends-and-req-buttons
 {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 33.33% 33.33% 33.33%;
     /* border: 2px solid green; */
     
 }
 
-.friends-and-req-buttons > div:nth-child(1), .friends-and-req-buttons > div:nth-child(2){
+.friends-and-req-buttons > div:nth-child(1){
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* display: none; */
+    /* border: 2px solid rgb(255, 230, 3); */
+}
+
+.friends-and-req-buttons > div:nth-child(2){
     display: flex;
     align-items: center;
     justify-content: center;
-    /* border: 2px solid rgb(255, 230, 3); */
+}
+
+.friends-and-req-buttons > div:nth-child(3){
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .friends-button
 {
     color: #14397C;
     border: none;
-    border-radius: 50px 0 0 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
+    border-radius: 50px;
+    width: 80%;
+    height: 60%;
+    /* border: 2px solid rgb(255, 230, 3); */
+
     background-color:#FFEEBF ;
 
 }
@@ -456,10 +465,24 @@ h1{
 .request-button{
     color: #14397C;
     border: none;
-    border-radius: 0 50px 0 0;
-    width: 100%;
-    height: 100%;
+    border-radius: 50px;
+    width: 80%;
+    height: 60%;
     cursor: pointer;
+    /* border: 2px solid rgb(255, 230, 3); */
+
+    background-color:#FFEEBF ;
+}
+
+.pending-button{
+    color: #14397C;
+    border: none;
+    border-radius: 50px;
+    width: 80%;
+    height: 60%;
+    cursor: pointer;
+    /* border: 2px solid rgb(255, 230, 3); */
+
     background-color:#FFEEBF ;
 }
 
@@ -513,11 +536,6 @@ h1{
 .view-all-match,.view-all-link-fr
 {
     display: flex;
-    /* grid-column: span 2; */
-    /* align-items: center;
-    justify-content: center; */
-    /* flex-direction: column; */
-    /* margin-top: 10px; */
     justify-content: center;
     align-items: center;
     /* border: 2px solid rgb(255, 208, 0); */
@@ -525,6 +543,20 @@ h1{
 
 .view-all-link-fr a{
     text-decoration: none;
+    color: #14397C;
+
+}
+
+.view-all-link-fr a:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+.view-all-link-fr a:active{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
 }
 
 .requestes-items

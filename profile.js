@@ -39,6 +39,27 @@ if(friendsButton)
     {
         document.querySelector(".friends-button").style.backgroundColor="rgba(95, 114, 125, 0.08)";
         document.querySelector(".request-button").style.backgroundColor="#FFEEBF";
+        document.querySelector(".pending-button").style.backgroundColor="#FFEEBF";
+
+        // document.querySelector(".list-freinds-item").style.display="initial";
+        // document.querySelector(".list-freinds-item").style.backgroundColor="#000";
+    });
+}
+
+// --------------------pending-----------------
+
+const pendingButton=document.querySelector(".pending-button");
+console.log(pendingButton)
+
+if(pendingButton)
+{
+    pendingButton.addEventListener("click",()=>
+    {
+        document.querySelector(".pending-button").style.backgroundColor="rgba(95, 114, 125, 0.08)";
+        document.querySelector(".request-button").style.backgroundColor="#FFEEBF";
+        document.querySelector(".friends-button").style.backgroundColor="#FFEEBF";
+
+
         // document.querySelector(".list-freinds-item").style.display="initial";
         // document.querySelector(".list-freinds-item").style.backgroundColor="#000";
     });
@@ -55,6 +76,8 @@ if(requestButton)
     {
         document.querySelector(".request-button").style.backgroundColor="rgba(95, 114, 125, 0.08)";
         document.querySelector(".friends-button").style.backgroundColor="#FFEEBF";
+        document.querySelector(".pending-button").style.backgroundColor="#FFEEBF";
+
         // document.querySelectorAll(".list-freinds-item").style.backgroundColor="#000";
         // document.querySelectorAll(".list-freinds-item").style.display="none";
     })
