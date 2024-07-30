@@ -24,19 +24,19 @@ body{
     /* border: 1px solid red; */
 }
 
-header{
+#container{
     padding: 6px 25px;
     /* border: 1px solid yellow; */
 }
 
-nav{
+#container nav{
     display: flex;
     align-items: center;
 }
 
 /* --------logo-------------- */
 
-.logo{
+#container nav .logo{
     width: 80px;
     height: 50px;
     cursor: pointer;
@@ -45,21 +45,21 @@ nav{
     /* border: 1px solid green; */
 }
 
-.logo:hover{
-    width: 87px;
-    height: 57px;
-    filter: blur(0.5px);
+#container nav .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     transition: 0.5s;
 }
 
-.logo:active{
-    width: 80px;
-    height: 57px;
+#container nav .logo.clicked{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
 }
 
 /* ------------search------------ */
 
-.search{
+#container nav .search{
     width: 340px;
     height: 35px;
     display: flex;
@@ -75,13 +75,13 @@ nav{
     filter: blur(0.5px);
 }
 
-.search:focus-within{
+#container nav .search:focus-within{
     box-shadow: 0 0 2px #5293CB;
 }
 
-.search input{
+#container nav .search input{
     font-size: 16px;
-    font-family: 'Josefin Sans';
+    font-family: myFont;
     color: #ffffff;
     margin-left: 14px;
     outline: none;
@@ -90,14 +90,14 @@ nav{
     width: 300px;
 }
 
-.search input::placeholder{
+#container nav .search input::placeholder{
     color: #5293CB;
     font-size: 14px;
 }
 
 /* --------notif-setting-logout------------ */
 
-.left-side{
+#container nav .left-side{
     width: 100%;
     height: 49px;
     display: flex;
@@ -107,14 +107,7 @@ nav{
     /* border: 1px solid yellow; */
 }
 
-i{
-    color: #5293CB;
-    cursor: pointer;
-    font-size: 24px;
-    transition: color 0.4s ease, filter 0.4s ease;
-}
-
-.container{
+.content{
     height: auto;
     display: grid;
     grid-template-columns: 7% 84% 7% ;
@@ -122,7 +115,7 @@ i{
     /* border: 1px solid green; */
 }
 
-.side-bar{
+.content .side-bar{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -131,7 +124,7 @@ i{
     /* border: 1px solid rgb(0, 255, 238); */
 }
 
-.friends{
+.content .friends{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,23 +133,26 @@ i{
 
 /* -----------Icons------------------ */
 
-i{
+.icon{
     color: #5293CB;
     cursor: pointer;
     font-size: 24px;
     transition: color 0.4s ease, filter 0.4s ease;
 }
 
-i:hover{
+.icon:hover{
     color: #F45250;
-    font-size: 30px;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     filter: blur(0.5px);
     transition: 0.5s;
 } 
 
 .icon.clicked{
     color: #F45250;
-    font-size: 30px;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
     filter: blur(0.75px);
 }
 
@@ -172,7 +168,7 @@ i:hover{
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
-h1{
+.home-content h1{
     font-family: myFont;
     font-size: 50px;
     color: #FFEEBF;
@@ -188,7 +184,7 @@ h1{
 
 }
 
-.game-content{
+.home-content .game-content{
     display: grid;
     grid-template-columns: 37.7% 25% 37.7%;
     padding-bottom: 100px;
@@ -198,7 +194,7 @@ h1{
 
 }
 
-.user-profile{
+.home-content .game-content .user-profile{
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -207,7 +203,7 @@ h1{
     /* border: 1px solid rgb(1, 238, 255); */
 }
 
-.user-profile img{
+.home-content .game-content .user-profile img{
     width: 200px;
     height: 200px;
     border-radius: 50%;
@@ -215,7 +211,7 @@ h1{
 
 }
 
-.user-profile h3{
+.home-content .game-content .user-profile h3{
     font-family: myFont;
     font-size: 20px;
     color: #989797;
@@ -223,7 +219,7 @@ h1{
     padding-right: 40px;
 }
 
-.vs{
+.home-content .game-content .vs{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -232,12 +228,12 @@ h1{
 
 }
 
-.vs img{
+.home-content .game-content .vs img{
     width: 150px;
     height: 150px;
 }
 
-.choice{
+.home-content .game-content .choice{
     display: grid;
     grid-template-rows: 50% 50%;
     align-items: center;
@@ -248,7 +244,8 @@ h1{
     /* border: 1px solid rgb(1, 238, 255); */
 }
 
-.surprise-countder, .select-friend{
+.home-content .game-content .choice .surprise-countder,
+.home-content .game-content .choice .select-friend{
     width: 400px;
     height: 100px;
     background: #FFEEBF;
@@ -265,7 +262,8 @@ h1{
     /* border: 1px solid rgb(1, 238, 255); */
 }
 
-h2{
+.home-content .game-content .choice .surprise-countder h2,
+.home-content .game-content .choice .select-friend h2{
     font-family: myFont;
     font-size: 24px;
     color: #3C6697;

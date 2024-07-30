@@ -24,19 +24,19 @@ body{
     /* border: 1px solid red; */
 }
 
-header{
+#container{
     padding: 6px 25px;
     /* border: 1px solid yellow; */
 }
 
-nav{
+#container nav{
     display: flex;
     align-items: center;
 }
 
 /* --------logo-------------- */
 
-.logo{
+#container nav .logo{
     width: 80px;
     height: 50px;
     cursor: pointer;
@@ -45,21 +45,21 @@ nav{
     /* border: 1px solid green; */
 }
 
-.logo:hover{
-    width: 87px;
-    height: 57px;
-    filter: blur(0.5px);
+#container nav .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     transition: 0.5s;
 }
 
-.logo:active{
-    width: 80px;
-    height: 57px;
+#container nav .logo.clicked{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
 }
 
 /* ------------search------------ */
 
-.search{
+#container nav .search{
     width: 340px;
     height: 35px;
     display: flex;
@@ -75,11 +75,11 @@ nav{
     filter: blur(0.5px);
 }
 
-.search:focus-within{
+#container nav .search:focus-within{
     box-shadow: 0 0 2px #5293CB;
 }
 
-.search input{
+#container nav .search input{
     font-size: 16px;
     font-family: myFont;
     color: #ffffff;
@@ -90,14 +90,14 @@ nav{
     width: 300px;
 }
 
-.search input::placeholder{
+#container nav .search input::placeholder{
     color: #5293CB;
     font-size: 14px;
 }
 
 /* --------notif-setting-logout------------ */
 
-.left-side{
+#container nav .left-side{
     width: 100%;
     height: 49px;
     display: flex;
@@ -107,14 +107,7 @@ nav{
     /* border: 1px solid yellow; */
 }
 
-i{
-    color: #5293CB;
-    cursor: pointer;
-    font-size: 24px;
-    transition: color 0.4s ease, filter 0.4s ease;
-}
-
-.container{
+.content{
     height: auto;
     display: grid;
     grid-template-columns: 7% 84% 7% ;
@@ -122,7 +115,7 @@ i{
     /* border: 1px solid green; */
 }
 
-.side-bar{
+.content .side-bar{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -131,7 +124,7 @@ i{
     /* border: 1px solid rgb(0, 255, 238); */
 }
 
-.friends{
+.content .friends{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,23 +133,26 @@ i{
 
 /* -----------Icons------------------ */
 
-i{
+.icon{
     color: #5293CB;
     cursor: pointer;
     font-size: 24px;
     transition: color 0.4s ease, filter 0.4s ease;
 }
 
-i:hover{
+.icon:hover{
     color: #F45250;
-    font-size: 30px;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     filter: blur(0.5px);
     transition: 0.5s;
 } 
 
 .icon.clicked{
     color: #F45250;
-    font-size: 30px;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
     filter: blur(0.75px);
 }
 
@@ -172,7 +168,7 @@ i:hover{
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
-.home-top{
+.home-content .home-top{
     padding: 15px;
     /* padding-right: 15px; */
     /* padding-top: 6px; */
@@ -182,13 +178,13 @@ i:hover{
     /* border: 1px solid rgb(255, 1, 1); */
 }
 
-.leader-board{
+.home-content .home-top .leader-board{
     border-radius: 50px;
     background: #FFEEBF;
 
 }
 
-.welcoming-section{
+.home-content .home-top .welcoming-section{
     border-radius: 50px;
     background: #FFEEBF;
     /* display: grid;
@@ -197,7 +193,7 @@ i:hover{
     /* border: 1px solid rgb(255, 251, 1); */
 }
 
-.welcoming-section .left-side{
+.home-content .home-top .welcoming-section .left-side{
     height: 60%;
     width: 60%;
     display: flex;
@@ -209,11 +205,11 @@ i:hover{
 }
 
 
-.info{
+.home-content .home-top .welcoming-section .info{
     display: grid;
     grid-template-columns: 33% 33% 33%;
     width: 40%;
-    height: 7%;
+    height: 8%;
     background: #EAE0C2;
     border-radius: 20px;
     position: absolute;
@@ -224,12 +220,15 @@ i:hover{
 
 }
 
-.info .score img, .info .acheivement img{
+.home-content .home-top .welcoming-section .info .score img,
+.home-content .home-top .welcoming-section .info .acheivement img{
     width: 18px;
     height: 18px;
+    margin-bottom: 4px;
 }
 
-.info .score h1, .rank h1{
+.home-content .home-top .welcoming-section .info .score h1,
+.home-content .home-top .welcoming-section .info  .rank h1{
     font-size: 16px;
     color: #5293CB;
     font-family: myFont;
@@ -237,7 +236,7 @@ i:hover{
     text-shadow: none;
 }
 
-.info .acheivement h1{
+.home-content .home-top .welcoming-section .info .acheivement h1{
     font-size: 16px;
     font-family: myFont;
     color: #FBCA35;
@@ -245,7 +244,8 @@ i:hover{
     text-shadow: none;
 }
 
-.info .score span, .rank span{
+.home-content .home-top .welcoming-section .info .score span,
+.home-content .home-top .welcoming-section .info .rank span{
     padding-left: 5px;
     font-size: 16px;
     font-family: David Libre;
@@ -254,31 +254,24 @@ i:hover{
     text-shadow: none;
 }
 
-.info .acheivement span{
-    font-size: 16px;
-    color: #FBCA35;
-    filter: none;
-    text-shadow: none;
-}
-
-.info .rank, .info .score, .info .acheivement{
+.home-content .home-top .welcoming-section .info .rank,
+.home-content .home-top .welcoming-section .info .score,
+.home-content .home-top .welcoming-section .info .acheivement{
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 27%;
+    margin-top: 2px;
     /* border: 1px solid rgb(0, 0, 0); */
 
 }
 
-.info .acheivement span{
+.home-content .home-top .welcoming-section .info .acheivement span{
     padding-top: 5px;
     padding-left: 2px;
     font-family: myFont;
-
 }
 
-.girl{
+.home-content .home-top .welcoming-section .girl{
     width: 430px;
     height: 430px;
     display: flex;
@@ -293,7 +286,7 @@ i:hover{
     /* border: 1px solid rgb(255, 1, 1); */
 }
 
-.home-down{
+.home-content .home-down{
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 6px;
@@ -305,13 +298,13 @@ i:hover{
 
 }
 
-.training-boot{
+.home-content .home-down .training-boot{
     border-radius: 50px;
     background: #FFEEBF;
     position: relative;
 }
 
-.paddles{
+.home-content .home-down .training-boot img{
     width: 300px;
     height: 300px;
     transform: scaleX(-1);
@@ -322,7 +315,8 @@ i:hover{
     /* border: 1px solid rgb(1, 255, 192); */
 }
 
-h1{
+.home-content .home-down .training-boot h1, .home-content .home-down .tournament h1,
+.home-content .home-down .player-vs-player h1{
     height: 100px;
     font-family: myFont;
     letter-spacing: 2px;
@@ -337,7 +331,7 @@ h1{
     /* border: 1px solid rgb(255, 1, 1); */
 }
 
-.btn{
+.home-content .home-down .training-boot .btn{
     display: inline-block;
     width: 160px;
     font-family: myFont;
@@ -362,7 +356,9 @@ h1{
     /* border: 1px solid rgb(1, 225, 255); */
 }
 
-.btn:hover, .btn:focus, .btn:active{
+.home-content .home-down .training-boot .btn:hover,
+.home-content .home-down .training-boot .btn:focus,
+.home-content .home-down .training-boot .btn:active{
     box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.795);
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
@@ -370,12 +366,12 @@ h1{
 
 /* ------------Tournament------------- */
 
-.tournament{
+.home-content .home-down .tournament{
     border-radius: 50px;
     background: #FFEEBF;
 }
 
-.button{
+.home-content .home-down .tournament .button{
     display: inline-block;
     width: 160px;
     font-family: myFont;
@@ -399,13 +395,16 @@ h1{
     transition-property: box-shadow, transform;
 }
 
-.button:hover, .button:focus, .button:active{
+.home-content .home-down .tournament .button:hover,
+.home-content .home-down .tournament .button:focus,
+.home-content .home-down .tournament .button:active{
     box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.795);
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
 
-.hierarchy{
+
+.home-content .home-down .tournament .hierarchy{
     display: grid;
     justify-content: center;
     grid-template-columns: 15% 15% 25% 15% 15%;
@@ -415,13 +414,13 @@ h1{
 
 /* -------------------col1---------------- */
 
-.col1{
+.home-content .home-down .tournament .hierarchy .col1{
     display: grid;
     grid-template-rows: 40% 20% 40%;
     /* border: 1px solid rgb(26, 1, 255); */
 }
 
-.col1 .girl-div{
+.home-content .home-down .tournament .hierarchy .col1 .girl-div{
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -429,7 +428,7 @@ h1{
     /* border: 1px solid #63fcf4; */
 }
 
-.col1 .vs1-div{
+.home-content .home-down .tournament .hierarchy .col1 .vs1-div{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -437,24 +436,22 @@ h1{
     /* border: 1px solid #6372fc; */
 }
 
-.boy-div{
+.home-content .home-down .tournament .hierarchy .boy-div{
     display: flex;
     align-items: center;
     justify-content: center;
     /* border: 1px solid #63fcf4; */
 }
 
-.player1{
+.home-content .home-down .tournament .hierarchy .player1{
     width: 60px;
     height: 60px;
     border-radius: 50%;
     border: 1px solid #E0DA5A;
     box-shadow: 0px 4px 4px rgba(49, 44, 44, 0.5);
-
-
 }
 
-.player3{
+.home-content .home-down .tournament .hierarchy .player3{
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -465,21 +462,21 @@ h1{
 
 /* ------------------trophy-div---------------- */
 
-.trophy-div{
+.home-content .home-down .tournament .hierarchy .trophy-div{
     display: flex;
     align-items: center;
     justify-content: center;
     /* border: 1px solid #6372fc; */
 }
 
-.trophy{
+.home-content .home-down .tournament .hierarchy .trophy{
     width: 200px;
     height: 200px;
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
 
 }
 
-.girl-div{
+.home-content .home-down .tournament .hierarchy .girl-div{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -488,7 +485,7 @@ h1{
 
 }
 
-.boy-div{
+.home-content .home-down .tournament .hierarchy .boy-div{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -496,7 +493,7 @@ h1{
     /* border: 1px solid #6372fc; */
 }
 
-.player2{
+.home-content .home-down .tournament .hierarchy .player2{
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -505,7 +502,7 @@ h1{
 
 }
 
-.player4{
+.home-content .home-down .tournament .hierarchy .player4{
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -517,7 +514,7 @@ h1{
 
 }
 
-.vs{
+.home-content .home-down .tournament .hierarchy .vs{
     width: 30px;
     height: 30px;
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
@@ -526,13 +523,13 @@ h1{
 
 /* -------------------col3--------------- */
 
-.col3{
+.home-content .home-down .tournament .hierarchy .col3{
     display: grid;
     grid-template-rows: 40% 20% 40%;
     /* border: 1px solid rgb(26, 1, 255); */
 }
 
-.col3 .boy-div{
+.home-content .home-down .tournament .hierarchy .col3 .boy-div{
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -540,7 +537,7 @@ h1{
     /* border: 1px solid #63fcf4; */
 }
 
-.col3 .vs2-div{
+.home-content .home-down .tournament .hierarchy .col3 .vs2-div{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -550,7 +547,7 @@ h1{
     /* border: 1px solid #6372fc; */
 }
 
-.player6{
+.home-content .home-down .tournament .hierarchy .player6{
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -559,7 +556,7 @@ h1{
 
 }
 
-.player5{
+.home-content .home-down .tournament .hierarchy .player5{
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -570,19 +567,19 @@ h1{
 
 /* ----------------playerVSplayer---------- */
 
-.player-vs-player{
+.home-content .home-down .player-vs-player{
     border-radius: 50px;
     background: #FFEEBF;
 }
 
-.players{
+.home-content .home-down .players{
     height: 50%;
     display: grid;
     grid-template-columns: 45% 10% 45%;
     /* border: 1px solid #E0DA5A; */
 }
 
-.play-girl{
+.home-content .home-down .players .play-girl{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -590,7 +587,7 @@ h1{
 
 }
 
-.girlplay{
+.home-content .home-down .players .girlplay{
     width: 150px;
     height: 150px;
     border-radius: 50%;
@@ -599,7 +596,7 @@ h1{
 
 }
 
-.boy{
+.home-content .home-down .players .boy{
     width: 150px;
     height: 150px;
     border-radius: 50%;
@@ -608,14 +605,14 @@ h1{
 
 }
 
-.vs2{
+.home-content .home-down .players .vs2{
     width: 90px;
     height: 90px;
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
 
 }
 
-.play{
+.home-content .home-down .play{
     display: inline-block;
     width: 160px;
     font-family: myFont;
@@ -639,7 +636,7 @@ h1{
     transition-property: box-shadow, transform;
 }
 
-.play:hover, .play:focus, .play:active{
+.home-content .home-down .play:hover, .home-content .home-down .play:focus, .home-content .home-down .play:active{
     box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.795);
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
@@ -647,25 +644,21 @@ h1{
 
 /* -----------------tournament-------------------- */
 
-.leader-board{
+.home-content .home-top .leader-board{
     display: grid;
     grid-template-rows: 10% 10% 10% 10% 60%;
 
     /* border: 1px solid #E0DA5A; */
 }
 
-/* .winners{
-
-} */
-
-.coll1{
+.home-content .home-top .leader-board .winners .coll1{
     display: flex;
     align-items: center;
     justify-content: center;
     /* border: 1px solid #E0DA5A; */
 }
 
-.crown{
+.home-content .home-top .leader-board .winners .coll1 img{
     width: 100px;
     height: 60px;
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
@@ -673,14 +666,14 @@ h1{
 
 }
 
-.coll2{
+.home-content .home-top .leader-board .winners .coll2{
     display: grid;
     grid-template-columns: 33% 33% 33%;
 
     /* border: 1px solid #00e759; */
 }
 
-.sec{
+.home-content .home-top .leader-board .winners .coll2 .sec{
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
@@ -688,7 +681,7 @@ h1{
     /* border: 2px solid #000000; */
 }
 
-.happy{
+.home-content .home-top .leader-board .winners .coll2 .happy{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -697,7 +690,7 @@ h1{
     /* border: 2px solid #000000; */
 }
 
-.three{
+.home-content .home-top .leader-board .winners .coll2 .three{
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
@@ -705,26 +698,27 @@ h1{
     /* border: 2px solid #000000; */
 }
 
-.second, .third{
+.home-content .home-top .leader-board .winners .coll2 .second,
+.home-content .home-top .leader-board .winners .coll2 .third{
     width: 40px;
     height: 40px;
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
 
 }
 
-.happy-woman{
+.home-content .home-top .leader-board .winners .coll2 .happy-woman{
     width: 60px;
     height: 60px;
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
 }
 
-.coll3{
+.home-content .home-top .leader-board .winners .coll3{
     display: grid;
     grid-template-columns: 50% 50%;
     /* border: 2px solid #000000; */
 }
 
-.woman{
+.home-content .home-top .leader-board .winners .coll3 .woman{
     padding-left: 40px;
     height: 44px;
     display: flex;
@@ -735,7 +729,7 @@ h1{
 
 }
 
-.man-div{
+.home-content .home-top .leader-board .winners .coll3 .man-div{
     padding-right: 48px;
     height: 44px;
     display: flex;
@@ -745,12 +739,12 @@ h1{
     /* border: 2px solid #ff0000; */
 }
 
-.woman-two, .man{
+.home-content .home-top .leader-board .winners .coll3 img{
     width: 40px;
     height: 40px;
 }
 
-.coll4{
+.home-content .home-top .leader-board .winners .coll4{
     padding-left: 60px;
     padding-right: 60px;
     display: grid;
@@ -759,21 +753,22 @@ h1{
     /* border: 2px solid #ff0000; */
 }
 
-.rank-div{
+.home-content .home-top .leader-board .winners .rank-div{
     display: flex;
     align-items: center;
     justify-content: center;
 
 }
 
-.user, .score-div{
+.home-content .home-top .leader-board .winners .user,
+.home-content .home-top .leader-board .winners .score-div{
     padding-top: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-h2{
+.home-content .home-top .leader-board .winners h2{
     font-family: myFont;
     letter-spacing: 2px;
     font-size: 17px;
@@ -785,18 +780,18 @@ h2{
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
 }
 
-.board{
+.home-content .home-top .leader-board .winners .board{
     padding: 5px 60px 10px 70px;
 }
 
-.lead{
+.home-content .home-top .leader-board .winners .board .lead{
     height: 165px;
     display: grid;
     grid-auto-rows: 15%;
     row-gap: 0.4em;
 }
 
-.first-one{
+.home-content .home-top .leader-board .winners .board .lead .first-one{
     height: 25px;
     display: grid;
     grid-template-columns: 20% 60% 20%;
@@ -807,7 +802,7 @@ h2{
     /* border: 2px solid #ff0000; */
 }
 
-p{
+.home-content .home-top .leader-board .winners .board .lead p{
     height: 25px;
     font-family: myFont;
     letter-spacing: 2px;
@@ -824,7 +819,7 @@ p{
 
 }
 
-h3{
+.home-content .home-top .leader-board .winners .board .lead h3{
     height: 25px;
     font-family: Josefin Sans;
     letter-spacing: 2px;
@@ -838,19 +833,19 @@ h3{
 
 }
 
-.scor-coin{
+.home-content .home-top .leader-board .winners .board .lead .scor-coin{
     display: flex;
     align-items: center;
     justify-content: center;
     padding-right: 15px;
 }
 
-.coin{
+.home-content .home-top .leader-board .winners .board .lead img{
     width: 15px;
     height: 15px;
 }
 
-.second-one{
+.home-content .home-top .leader-board .winners .board .lead .second-one{
     height: 25px;
     display: grid;
     grid-template-columns: 20% 60% 20%;

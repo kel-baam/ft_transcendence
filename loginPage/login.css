@@ -19,7 +19,7 @@ body{
     /* border: 1px solid red; */
 }
 
-nav{
+#container nav{
     display: flex;
     align-items: center;
     position: relative;
@@ -30,7 +30,7 @@ nav{
 
 /* --------logo-------------- */
 
-.logo{
+#container nav .logo{
     width: 80px;
     height: 50px;
     cursor: pointer;
@@ -39,21 +39,21 @@ nav{
     /* border: 1px solid green; */
 }
 
-.logo:hover{
-    width: 87px;
-    height: 57px;
-    filter: blur(0.5px);
+#container nav .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     transition: 0.5s;
 }
 
-.logo:active{
-    width: 80px;
-    height: 57px;
+#container nav .logo:active{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
 }
 
 /* ---------------------Icon---------------- */
 
-i{
+.icon{
     color: #5293CB;
     cursor: pointer;
     font-size: 24px;
@@ -64,29 +64,32 @@ i{
 
 }
 
-i:hover{
+.icon:hover{
     color: #F45250;
-    font-size: 30px;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     filter: blur(0.5px);
     transition: 0.5s;
 } 
 
 .icon.clicked{
     color: #F45250;
-    font-size: 30px;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
     filter: blur(0.75px);
 }
 
 /* -------------------CONTENT--------------- */
 
-.content{
+#home-content .content{
     height: 100%;
     display: grid;
     grid-template-columns: 49% 51%;
 
 }
 
-.player{
+#home-content .content .player{
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -95,20 +98,20 @@ i:hover{
 
 }
 
-.player img{
+#home-content .content .player img{
     width: 550px;
     height: 550px;
     filter: drop-shadow(0px 4px 4px rgba(57, 71, 153, 0.96));
 }
 
-.info{
+#home-content .content .info{
     display: grid;
     grid-template-rows: 35% 65%;
     /* border: 1px solid red; */
 
 }
 
-.title{
+#home-content .content .title{
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
@@ -117,7 +120,7 @@ i:hover{
 
 }
 
-h1{
+#home-content .content .title h1{
     font-family: myFont;
     letter-spacing: 2px;
     font-size: 60px;
@@ -125,7 +128,7 @@ h1{
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
 }
 
-.login{
+#home-content .content .login{
     width: 400px;
     height: 300px;
     border-radius: 50px;
@@ -141,12 +144,12 @@ h1{
     box-shadow: 1px 1px 1px rgba(57, 71, 153, 0.96);
 }
 
-img{
+#home-content .content .login .bord img{
     width: 24px;
     height: 24px;
 }
 
-.bord{
+#home-content .content .login .bord{
     background: rgba(217, 217, 217, 0.30);
     width: 300px;
     height: 40px;
@@ -162,7 +165,7 @@ img{
     border: 1px solid rgba(255, 255, 255, 0.30);
 }
 
-.login span{
+#home-content .content .login span{
     font-family: Josefin Sans;
     font-size: 20px;
     color: rgba(255, 255, 255, 0.65);
@@ -170,7 +173,7 @@ img{
     padding-bottom: 30px;
 }
 
-a{
+#home-content .content .login a{
     text-decoration: none;
     font-family: myFont;
     letter-spacing: 2px;
@@ -179,16 +182,16 @@ a{
     position: relative;
 }
 
-.intr{
+#home-content .content .login .intr{
     padding-right: 6px;
 }
 
-a img{
+#home-content .content .login a img{
     position: absolute;
     right: 110%;
 }
 
-.bord:hover{
+#home-content .content .login .bord:hover{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
