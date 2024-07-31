@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="profile.css">
     <script src="https://kit.fontawesome.com/78e3a12604.js" crossorigin="anonymous"></script>
     <script src="profile.js" ></script>
-    
-    <!-- <script src="https://kit.fontawesome.com/c13ae25ff0.js" crossorigin="anonymous"></script> -->
-    <!-- <script src="https://kit.fontawesome.com/639a5f0ffa.js" crossorigin="anonymous"></script> -->
 </head>
 <body>
     <header>
@@ -63,7 +60,7 @@
                                         <span>
                                             level
                                         </span>
-                                        <progress max="100" value="80" style="width: 565px;" id="progress-level">
+                                        <progress max="100" value="80" style="width: 593px;" id="progress-level">
                                         </progress>
                                     </div>
                                 </div>
@@ -99,46 +96,53 @@
                         <div class="title">
                             <span > <h1>Wining rate</h1> </span>
                         </div>
-                        <div class="circle">
-                            <svg width="250" height="190" viewBox="0 0 250 250" class="circular-progress" style="--progress: 60.4">
-                                <circle class="bg"></circle>
-                                <circle class="fg"></circle>
-                                <text x="42%" y="42%" dominant-baseline="middle" text-anchor="middle" font-size="40" fill="#0AA989" >
-                                    60.4%
-                                </text>
-                            </svg>
-                        </div>
-                        <div class="buttons">
-                            <button class="win-button">
-                                Win<br>51/150
-                            </button>
-                            <button class="lose-button">
-                                Lose<br>0/150
-                            </button>
-                            <button class="draw-button">
-                                Draw<br>0/150
-                            </button>
+                        <div class="circle-and-buttons">
+                            <div class="circle">
+                                <svg width="300" height="190" viewBox="0 0 250 250" class="circular-progress" style="--progress: 60.4">
+                                    <circle class="bg"></circle>
+                                    <circle class="fg"></circle>
+                                    <text x="42%" y="42%" dominant-baseline="middle" text-anchor="middle" font-size="40" fill="#0AA989" >
+                                        60.4%
+                                    </text>
+                                </svg>
+                            </div>
+                            <div class="buttons">
+                                <button class="win-button">
+                                    Win<br>51/150
+                                </button>
+                                <button class="lose-button">
+                                    Lose<br>0/150
+                                </button>
+                                <button class="draw-button">
+                                    Draw<br>0/150
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="other-cards">
                 <div class="achievements-container">
                     <div class="achievements-title-elt">
                         <h1>Achievements</h1>
                     </div>
                     <div class="badges-container">
                         <div class="badge-item">
-                            <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i>
+                            <!-- <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i> -->
+                            <img src="images/lock.png" alt="lock icon">
                         </div>
                         <div class="badge-item">
-                            <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i>
+                            <!-- <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i> -->
+                            <img src="images/lock.png" alt="lock icon">
                         </div>
                     </div>
                     <div class="badges-container">
                         <div class="badge-item">
-                            <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i>
+                            <!-- <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i> -->
+                            <img src="images/lock.png" alt="lock icon">
                         </div>
                         <div class="badge-item">
-                            <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i>
+                            <!-- <i class="fa fa-lock" style="color:  rgba(95, 114, 125, 0.08); font-size: 40px;"></i> -->
+                            <img src="images/lock.png" alt="lock icon">
                         </div>
                     </div>
                 </div>
@@ -210,63 +214,117 @@
                             </div>
                         </div>
                     </div>
+                    <!-- <div class="view-all-link-fr">
+                        <a  href="#">View all</a>
+                    </div> -->
+                    <!------------------ requests items ---------------------------------->
+                    <div class="requestes-items">
+                        <div class="request-item">
+                            <div class="picture-item">
+                                <img src="images/kjarmoum.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                <span>karima jarmoum</span>
+                                <span style="color: #A7A4A4;">@kjarmoum</span>
+                            </div>
+                            <div class="accept-and-refuse-icons">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                            <a href="#"><i class="fa-solid fa-check"></i></a>
+                            </div>
+                        </div>
+                        <div class="request-item">
+                            <div class="picture-item">
+                                <img src="images/kjarmoum.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                <span>karima jarmoum</span>
+                                <span style="color: #A7A4A4;">@kjarmoum</span>
+                            </div>
+                            <div class="accept-and-refuse-icons">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                            <a href="#"><i class="fa-solid fa-check"></i></a>
+                            </div>
+                        </div>
+                        <div class="request-item">
+                            <div class="picture-item">
+                                <img src="images/kjarmoum.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                <span>karima jarmoum</span>
+                                <span style="color: #A7A4A4;">@kjarmoum</span>
+                            </div>
+                            <div class="accept-and-refuse-icons">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                <a href="#"><i class="fa-solid fa-check"></i></a>
+                            </div>
+                        </div>
+                        <div class="request-item">
+                            <div class="picture-item">
+                                <img src="images/kjarmoum.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                <span>karima jarmoum</span>
+                                <span style="color: #A7A4A4;">@kjarmoum</span>
+                            </div>
+                            <div class="accept-and-refuse-icons">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                <a href="#"><i class="fa-solid fa-check"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pending-friends-items">
+                        <div class="pending-friend-item">
+                            <div class="picture-item">
+                                <img src="images/kel-baam.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                    <span>kawtar el-baamrani</span>
+                                    <span style="color: #A7A4A4;">@kel-baam</span>
+                            </div>
+                            <div class="cancel-icon">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                            </div>
+                        </div>
+                        <div class="pending-friend-item">
+                            <div class="picture-item">
+                                <img src="images/kel-baam.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                    <span>kawtar el-baamrani</span>
+                                    <span style="color: #A7A4A4;">@kel-baam</span>
+                            </div>
+                            <div class="cancel-icon">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                            </div>
+                        </div>
+                        <div class="pending-friend-item">
+                            <div class="picture-item">
+                                <img src="images/kel-baam.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                    <span>kawtar el-baamrani</span>
+                                    <span style="color: #A7A4A4;">@kel-baam</span>
+                            </div>
+                            <div class="cancel-icon">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                            </div>
+                        </div>
+                        <div class="pending-friend-item">
+                            <div class="picture-item">
+                                <img src="images/kel-baam.png" alt="profile picture" class="picture-item">
+                            </div>
+                            <div class="data-user">
+                                    <span>kawtar el-baamrani</span>
+                                    <span style="color: #A7A4A4;">@kel-baam</span>
+                            </div>
+                            <div class="cancel-icon">
+                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="view-all-link-fr">
                         <a  href="#">View all</a>
                     </div>
-                    <!------------------ requests items ---------------------------------->
-                    <!-- <div class="requestes-items">
-                        <div class="request-item">
-                            <div class="data-user">
-                                <div class="picture-item">
-                                    <img src="images/kel-baam.png" alt="profile picture" class="picture-item">
-                                </div>
-                                <span>
-                                    <span>kawtar el-baamrani</span>
-                                    <span style="color: #A7A4A4;">@kel-baam</span>
-                                </span>
-                            </div>
-                            <a href="#" ><i class='fas fa-comment-alt'></i></a>
-                        </div>
-                        <div class="request-item">
-                            <div class="data-user">
-                                <div class="picture-item">
-                                    <img src="images/niboukha.png" alt="profile picture" class="picture-item">
-                                </div>
-                                <span>
-                                    <span>Nisrin boukhari</span>
-                                    <span style="color: #A7A4A4;">@niboukha</span>
-                                </span>
-                            </div>
-                            <a href="#"><i class="fa-regular fa-message icon"></i></a>
-                        </div>
-                        <div class="request-item">
-                            <div class="data-user">
-                                <div class="picture-item">
-                                    <img src="images/kjarmoum.png" alt="profile picture" class="picture-item">
-                                </div>
-                                <span>
-                                    <span>karima jarmoum</span>
-                                    <span style="color: #A7A4A4;">@kjarmoum</span>
-                                </span>
-                            </div>
-                            <a href="#"><i class='far fa-comment-dots' style='font-size:24px'></i></a>
-                        </div>
-                        <div class="request-item">
-                            <div class="data-user">
-                                <div class="picture-item">
-                                    <img src="images/kjarmoum.png" alt="profile picture" class="picture-item">
-                                </div>
-                                <span>
-                                    <span>karima jarmoum</span>
-                                    <span style="color: #A7A4A4;">@kjarmoum</span>
-                                </span>
-                            </div>
-                            <a href="#" ><i class="fa-regular fa-message icon"></i></a>
-                        </div>
-                        <div>
-                            <a  href="#" class="view-all-link-fr">View all</a>
-                        </div>
-                    </div>  -->
                 </div>
                 <div class="match-history-container">
                     <div class="title-item">
@@ -277,7 +335,7 @@
                             <div class="picture-item">
                                 <img src="images/shicham.jpeg" alt="profile picture">
                             </div>
-                            <span class="match-result">
+                            <div class="match-result">
                                 <span class="user_score" style="color: #D44444;">
                                     1
                                 </span>
@@ -287,7 +345,7 @@
                                 <span class="opponent_score" style="color: #0AA989;">
                                     3
                                 </span>
-                            </span>
+                            </div>
                             <div class="picture-item">
                                 <img src="images/niboukha.png" alt="profile picture" >
                             </div>
@@ -296,7 +354,7 @@
                             <div class="picture-item">
                                 <img src="images/shicham.jpeg" alt="profile picture">
                             </div>
-                            <span class="match-result" > 
+                            <div class="match-result" > 
                                 <span class="user-score" style="color: #0B42AF;">
                                     4
                                 </span>
@@ -306,7 +364,7 @@
                                 <span class="opponent-score" style="color: #0B42AF;">
                                     4
                                 </span>
-                            </span>
+                            </div>
                             <div class="picture-item">
                                 <img src="images/kjarmoum.png" alt="profile picture">
                             </div>
@@ -315,7 +373,7 @@
                             <div class="picture-item">
                                 <img src="images/shicham.jpeg" alt="profile picture">
                             </div>
-                            <span class="match-result"> 
+                            <div class="match-result"> 
                                 <span class="user-score" style="color: #D44444;">
                                     1
                                 </span>
@@ -325,7 +383,7 @@
                                 <span class="opponent-score" style="color: #0AA989;">
                                     3
                                 </span>
-                            </span>
+                            </div>
                             <div class="picture-item">
                                 <img src="images/kel-baam.png" alt="profile picture">
                             </div>
@@ -334,26 +392,29 @@
                             <div class="picture-item">
                                 <img src="images/shicham.jpeg" alt="profile picture">
                             </div>
-                            <span class="match-result"> 
-                                <span class="user-score" style="color: #D44444;">
-                                    1
-                                </span>
-                                <span style="color: #0B42AF;">
-                                    -
-                                </span>
-                                <span class="opponent-score" style="color: #0AA989;">
-                                    3
-                                </span>
-                            </span>
-                            <div class="picture-item">
-                                <img src="images/kel-baam.png" alt="profile picture">
+                            <div class="match-result"> 
+                                    <span class="user-score" style="color: #D44444;">
+                                        1
+                                    </span>
+                                    <span style="color: #0B42AF;">
+                                        -
+                                    </span>
+                                    <span class="opponent-score" style="color: #0AA989;">
+                                        3
+                                    </span>
+                                </div>
+                                <div class="picture-item">
+                                    <img src="images/kel-baam.png" alt="profile picture">
+                                </div>
                             </div>
                         </div>
+                        <div class="view-all-match">
+                            <a  href="#">View all</a>
+                        </div>
                     </div>
-                    <a  href="#" class="view-all-match">View all</a>
                 </div>
             </div>
-        </div>
+            </div>
             <!-- ----------------FRIENDS SCOP----------------------------------------------- -->
             <div class="friends-scop">
                 <div class="header">
