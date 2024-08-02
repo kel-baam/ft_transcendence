@@ -1,0 +1,197 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+@font-face {
+    font-family: myFont;
+    src: url(assets/fonts/Season\ Prime.otf);
+}
+
+body{
+    background: #161C40;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 8% 90%;
+    /* border: 1px solid red; */
+}
+
+#container nav{
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 6px 30px;
+    /* border: 1px solid red; */
+}
+
+
+/* --------logo-------------- */
+
+#container nav .logo{
+    width: 80px;
+    height: 50px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+    padding-left: 2px;
+    /* border: 1px solid green; */
+}
+
+#container nav .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+#container nav .logo:active{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+/* ---------------------Icon---------------- */
+
+.icon{
+    color: #5293CB;
+    cursor: pointer;
+    font-size: 24px;
+    transition: color 0.4s ease, filter 0.4s ease;
+    position: absolute;
+    right: 40px;
+    /* border: 1px solid red; */
+
+}
+
+.icon:hover{
+    color: #F45250;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    filter: blur(0.5px);
+    transition: 0.5s;
+} 
+
+.icon.clicked{
+    color: #F45250;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+    filter: blur(0.75px);
+}
+
+/* -------------------CONTENT--------------- */
+
+#home-content .content{
+    height: 100%;
+    display: grid;
+    grid-template-columns: 49% 51%;
+
+}
+
+#home-content .content .player{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 100px;
+    /* border: 1px solid red; */
+
+}
+
+#home-content .content .player img{
+    width: 550px;
+    height: 550px;
+    filter: drop-shadow(0px 4px 4px rgba(57, 71, 153, 0.96));
+}
+
+#home-content .content .info{
+    display: grid;
+    grid-template-rows: 35% 65%;
+    /* border: 1px solid red; */
+
+}
+
+#home-content .content .title{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding-bottom: 40px;
+    /* border: 1px solid red; */
+
+}
+
+#home-content .content .title h1{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 60px;
+    color: #FFEEBF;
+    text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
+}
+
+#home-content .content .login{
+    width: 400px;
+    height: 300px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2% 9%;
+    background: linear-gradient(132deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid linear-gradient(10deg, rgb(35, 107, 121), rgb(255, 255, 255));
+    box-shadow: 1px 1px 1px rgba(57, 71, 153, 0.96);
+}
+
+#home-content .content .login .bord img{
+    width: 24px;
+    height: 24px;
+}
+
+#home-content .content .login .bord{
+    background: rgba(217, 217, 217, 0.30);
+    width: 300px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    padding-left: 40px;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    border: 1px solid rgba(255, 255, 255, 0.30);
+}
+
+#home-content .content .login span{
+    font-family: Josefin Sans;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.65);
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+#home-content .content .login a{
+    text-decoration: none;
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 20px;
+    color: #FFEEBF;
+    position: relative;
+}
+
+#home-content .content .login .intr{
+    padding-right: 6px;
+}
+
+#home-content .content .login a img{
+    position: absolute;
+    right: 110%;
+}
+
+#home-content .content .login .bord:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}

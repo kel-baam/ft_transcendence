@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLayer VS Player</title>
+    <link rel="stylesheet" href="loginPage.css">
+    <script src="https://kit.fontawesome.com/78e3a12604.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header id="container">
+        <nav>
+            <img src="images/logo.png" class="logo">
+            <i class="fa-solid fa-house icon"></i>
+        </nav>
+    </header>
+    <div id="home-content">
+        <div class="content">
+            <div class="player">
+                <img src="images/avatarback-removebg-preview.png">
+            </div>
+            <div class="info">
+                <div class="title">
+                    <h1>Step Into Your World</h1>
+                </div>
+                <div class="login">
+                    <div class="bord">
+                        <a href="#"><img src="images/google.png"> Sign in with google</a>
+                    </div>
+                    <span>Or</span>
+                    <div class="bord">
+                        <a href="#" class="intr"><img src="images/42_Logo.png" class="intra"> Sign in with Intra</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const icons = document.querySelectorAll('.icon');
+
+        icons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                this.classList.toggle('clicked');
+            });
+        });
+    </script>
+</body>
+</html>
