@@ -7,17 +7,17 @@
 
 @font-face {
     font-family: myFont;
-    src: url(assets/fonts/Season\ Prime.otf);
+    src: url(../../assets/fonts/Season\ Prime.otf);
 }
 
 @font-face {
     font-family: hFont;
-    src: url(assets/fonts/Playground.ttf);
+    src: url(../../assets/fonts/Playground.ttf);
 }
 
 #all{
     background: #161C40;
-    width: 100vw;
+    /* width: 100vw; */
     height: 100vh;
     display: grid;
     grid-template-rows: 8% 90%;

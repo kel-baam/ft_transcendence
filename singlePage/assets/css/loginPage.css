@@ -1,95 +1,18 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-@font-face {
-    font-family: myFont;
-    src: url(assets/fonts/Season\ Prime.otf);
-}
-
-body{
-    background: #161C40;
-    width: 100vw;
-    height: 100vh;
-    display: grid;
-    grid-template-rows: 8% 90%;
-    /* border: 1px solid red; */
-}
-
-#container nav{
-    display: flex;
-    align-items: center;
-    position: relative;
-    padding: 6px 30px;
-    /* border: 1px solid red; */
-}
-
-
-/* --------logo-------------- */
-
-#container nav .logo{
-    width: 80px;
-    height: 50px;
-    cursor: pointer;
-    transition: filter 0.3s ease;
-    padding-left: 2px;
-    /* border: 1px solid green; */
-}
-
-#container nav .logo:hover{
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-    transition: 0.5s;
-}
-
-#container nav .logo:active{
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-    transition: 0.5s;
-}
-
-/* ---------------------Icon---------------- */
-
-.icon{
-    color: #5293CB;
-    cursor: pointer;
-    font-size: 24px;
-    transition: color 0.4s ease, filter 0.4s ease;
-    position: absolute;
-    right: 40px;
-    /* border: 1px solid red; */
-
-}
-
-.icon:hover{
-    color: #F45250;
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-    filter: blur(0.5px);
-    transition: 0.5s;
-} 
-
-.icon.clicked{
-    color: #F45250;
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-    transition: 0.5s;
-    filter: blur(0.75px);
-}
 
 /* -------------------CONTENT--------------- */
 
-#home-content .content{
+#loginPage-content{
+    height: 100%;
+}
+
+#loginPage-content .content{
     height: 100%;
     display: grid;
     grid-template-columns: 49% 51%;
 
 }
 
-#home-content .content .player{
+#loginPage-content .content .player{
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -98,20 +21,20 @@ body{
 
 }
 
-#home-content .content .player img{
+#loginPage-content .content .player img{
     width: 550px;
     height: 550px;
     filter: drop-shadow(0px 4px 4px rgba(57, 71, 153, 0.96));
 }
 
-#home-content .content .info{
+#loginPage-content .content .info{
     display: grid;
     grid-template-rows: 35% 65%;
     /* border: 1px solid red; */
 
 }
 
-#home-content .content .title{
+#loginPage-content .content .title{
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
@@ -120,7 +43,7 @@ body{
 
 }
 
-#home-content .content .title h1{
+#loginPage-content .content .title h1{
     font-family: myFont;
     letter-spacing: 2px;
     font-size: 60px;
@@ -128,7 +51,7 @@ body{
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
 }
 
-#home-content .content .login{
+#loginPage-content .content .login{
     width: 400px;
     height: 300px;
     border-radius: 50px;
@@ -144,12 +67,12 @@ body{
     box-shadow: 1px 1px 1px rgba(57, 71, 153, 0.96);
 }
 
-#home-content .content .login .bord img{
+#loginPage-content .content .login .bord img{
     width: 24px;
     height: 24px;
 }
 
-#home-content .content .login .bord{
+#loginPage-content .content .login .bord{
     background: rgba(217, 217, 217, 0.30);
     width: 300px;
     height: 40px;
@@ -165,7 +88,7 @@ body{
     border: 1px solid rgba(255, 255, 255, 0.30);
 }
 
-#home-content .content .login span{
+#loginPage-content .content .login span{
     font-family: Josefin Sans;
     font-size: 20px;
     color: rgba(255, 255, 255, 0.65);
@@ -173,7 +96,7 @@ body{
     padding-bottom: 30px;
 }
 
-#home-content .content .login a{
+#loginPage-content .content .login a{
     text-decoration: none;
     font-family: myFont;
     letter-spacing: 2px;
@@ -182,16 +105,16 @@ body{
     position: relative;
 }
 
-#home-content .content .login .intr{
+#loginPage-content .content .login .intr{
     padding-right: 6px;
 }
 
-#home-content .content .login a img{
+#loginPage-content .content .login a img{
     position: absolute;
     right: 110%;
 }
 
-#home-content .content .login .bord:hover{
+#loginPage-content .content .login .bord:hover{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
