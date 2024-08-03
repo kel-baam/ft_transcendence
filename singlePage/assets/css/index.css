@@ -16,6 +16,7 @@
 }
 
 #all{
+
     background: #161C40;
     /* width: 100vw; */
     height: 100vh;
@@ -25,6 +26,7 @@
 }
 
 #container{
+    display: none;
     padding: 6px 25px;
     /* border: 1px solid yellow; */
 }
@@ -108,8 +110,9 @@
 }
 
 #all .content{
+    display: none;
     height: auto;
-    display: grid;
+    /* display: grid; */
     grid-template-columns: 7% 86% 7%;
     /* column-gap: 1%; */
     /* border: 1px solid green; */

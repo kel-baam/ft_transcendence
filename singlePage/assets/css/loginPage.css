@@ -1,18 +1,68 @@
+#login-page-content{
+    background: #161C40;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 8% 90%;
+    /* border: 1px solid red; */
+}
+
+#login-page-content .top{
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 6px 30px;
+    /* border: 1px solid red; */
+}
+
+
+/* --------logo-------------- */
+
+#login-page-content .top .logo{
+    width: 80px;
+    height: 50px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+    padding-left: 2px;
+    /* border: 1px solid green; */
+}
+
+#login-page-content .top .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+#login-page-content .top .logo:active{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+/* ---------------------Icon---------------- */
+
+#login-page-content .top a
+{
+    color: #5293CB;
+    cursor: pointer;
+    font-size: 24px;
+    transition: color 0.4s ease, filter 0.4s ease;
+    position: absolute;
+    right: 40px;
+    /* border: 1px solid red; */
+
+}
 
 /* -------------------CONTENT--------------- */
 
-#loginPage-content{
-    height: 100%;
-}
-
-#loginPage-content .content{
+#login-page-content .down{
     height: 100%;
     display: grid;
     grid-template-columns: 49% 51%;
 
 }
 
-#loginPage-content .content .player{
+#login-page-content .down .player{
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -21,20 +71,20 @@
 
 }
 
-#loginPage-content .content .player img{
+#login-page-content .down .player img{
     width: 550px;
     height: 550px;
     filter: drop-shadow(0px 4px 4px rgba(57, 71, 153, 0.96));
 }
 
-#loginPage-content .content .info{
+#login-page-content .down .info{
     display: grid;
     grid-template-rows: 35% 65%;
     /* border: 1px solid red; */
 
 }
 
-#loginPage-content .content .title{
+#login-page-content .down .title{
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
@@ -43,7 +93,7 @@
 
 }
 
-#loginPage-content .content .title h1{
+#login-page-content .down .title h1{
     font-family: myFont;
     letter-spacing: 2px;
     font-size: 60px;
@@ -51,7 +101,7 @@
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
 }
 
-#loginPage-content .content .login{
+#login-page-content .down .login{
     width: 400px;
     height: 300px;
     border-radius: 50px;
@@ -67,12 +117,12 @@
     box-shadow: 1px 1px 1px rgba(57, 71, 153, 0.96);
 }
 
-#loginPage-content .content .login .bord img{
+#login-page-content .down .login .bord img{
     width: 24px;
     height: 24px;
 }
 
-#loginPage-content .content .login .bord{
+#login-page-content .down .login .bord{
     background: rgba(217, 217, 217, 0.30);
     width: 300px;
     height: 40px;
@@ -88,7 +138,7 @@
     border: 1px solid rgba(255, 255, 255, 0.30);
 }
 
-#loginPage-content .content .login span{
+#login-page-content .down .login span{
     font-family: Josefin Sans;
     font-size: 20px;
     color: rgba(255, 255, 255, 0.65);
@@ -96,7 +146,7 @@
     padding-bottom: 30px;
 }
 
-#loginPage-content .content .login a{
+#login-page-content .down .login a{
     text-decoration: none;
     font-family: myFont;
     letter-spacing: 2px;
@@ -105,16 +155,16 @@
     position: relative;
 }
 
-#loginPage-content .content .login .intr{
+#login-page-content .down .login .intr{
     padding-right: 6px;
 }
 
-#loginPage-content .content .login a img{
+#login-page-content .down .login a img{
     position: absolute;
     right: 110%;
 }
 
-#loginPage-content .content .login .bord:hover{
+#login-page-content .down .login .bord:hover{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
