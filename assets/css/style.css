@@ -9,23 +9,26 @@
 }
 
 body{
+    /* overflow: none; */
     background-color:#161C40 ;
     color: #fff;
 }
-@font-face {
+/* @font-face {
     font-family: myFont;
     src: url(Season\ Prime.otf);
-}
+} */
 /* -------------------------------NAV-SECTION------------------------------------------- */
 
 html{
     scroll-behavior: smooth;
 }
 
-#header{
-    width: 100%;
+#landing-header{
+    /* width: 100%; */
     height: 100vh;
 }
+
+
 
 .logo{
     width: 80px;
@@ -36,23 +39,23 @@ html{
 }
 
 .logo:hover{
-    width: 87px;
-    height: 57px;
-    filter: blur(0.5px);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     transition: 0.5s;
 }
 
-.logo:active{
-    width: 80px;
-    height: 57px;
+.logo.clicked{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
 }
 
-nav{
-    position: fixed; /* to have a fixed navBar in scrolling time*/
+.landing-nav{
+    position: fixed; 
     background: #161C40;
     width: 100%;
     top: 0;
-    z-index: 1;  /* to make this div top of another*/
+    z-index: 1;  
 }
 
 .nav-links {
@@ -77,11 +80,15 @@ nav{
     transform: 0.5s;
 }
 
-.nav-links li a:hover{
+/* .nav-links li a:hover{
+    font-size: 19px;
+    color:#5cd444;
+} */
+
+.nav-links li a:active{
     font-size: 19px;
     color:#D44444;
 }
-
 .nav-links button a{
     font-size: 14px;
     color: #FFEEBF;
@@ -106,13 +113,13 @@ nav{
 
 /* ---------------------------HEADER-INTRODUCTION-------------------------------------------------- */
 
-.header-intro{
-    width: 100%;
-    height: 100vh;
+#header-intro{
+    /* width: 100%; */
+    height: 100vw;
    padding-top: 5%;
 }
 
-.header-intro img{
+#header-intro img{
     float: right;
     border: none;
     border-radius: 150px;
@@ -121,7 +128,7 @@ nav{
     margin: 120px 170px 10px 10px;
 }
 
-.header-intro .intro{
+#header-intro .intro{
     float: left;
     padding: 10px 40px;
     margin-left: 150px;
@@ -154,7 +161,7 @@ nav{
     text-align: center;
 }
 
-.header-intro button{
+#header-intro button{
     border: 0px solid #D44444;
     border-radius: 30px;
     border-top-right-radius: 0;
@@ -170,22 +177,23 @@ nav{
     text-align: center;
 }
 
-.header-intro button a{
+#header-intro button a{
     font-size: 17px;
     color: #FFEEBF;
 }
 
-.header-intro button:hover{
+#header-intro button:hover{
     color: #fff;
     background: #D44444;
     border-top-right-radius: 30px;
 } 
 
-/* ----------------------------------ABOUT-SECTION----- */
+
+----------------------------------ABOUT-SECTION-----
 
 #about-section{
-    width: 100%;
-    height: 100vh;
+    /* width: 80%; */
+    height: 100vh; 
     text-align: center;
 }
 
@@ -196,7 +204,8 @@ nav{
     letter-spacing: 0.5rem;
     font-family: 'Lemon',serif;
     text-shadow: 10px 10px 20px rgba(0, 0, 0,0.3);
-    padding-top:150px;
+    padding-top:200px;
+    margin-bottom: 30px;
 }
 
 .about{
@@ -206,6 +215,7 @@ nav{
     text-align: center;
     width: 100%;
     height: 70%;
+
 }
 
 
@@ -232,7 +242,7 @@ nav{
 .about-text{
     display: flex;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
 }
 
 .about-text p{
@@ -250,11 +260,11 @@ nav{
 #team-section{ 
     width: 100%;
     height: 100vh;
-    text-align: center; 
+    text-align: center;
+    margin-top: 300px;
 }
 
 #team-section h2{
-    border: 1 solid #D44444;
     font-family: 'Lemon',serif;
     font-size: 100px;
     padding-top: 200px;
@@ -265,7 +275,6 @@ nav{
     font-family: 'Lemon',serif;
     color: #FFEEBF;
     font-size: 27px;
-    border: 1 solid #D44444;
 }
 
 #team-section p{
@@ -301,7 +310,7 @@ nav{
     width: 100%;
     height: 100%;
 }
-.card .content{
+.card .content-card{
 
     position: absolute;
     bottom: -160px;
@@ -318,7 +327,7 @@ nav{
     transition-delay: 0.65s;
 
 }
-.card:hover .content
+.card:hover .content-card
 {
     bottom: 0;
     transition-delay: 0s;
@@ -335,7 +344,7 @@ nav{
     transform: translateY(-20px);
     margin: 20px 0 a5px;
     padding: 15px;
-    opacity: 0;
+    opacity: 1;
 }
 
 .card:hover .contentBx ,.contentBx h3{
@@ -348,27 +357,27 @@ nav{
     font-weight: 300px;
     text-transform: initial;
 }
-.icon{
+.box-icon {
     display: flex;
     position: relative;
     bottom: 10px;
 }
 
-.icon li{
+.box-icon li{
     list-style: none;
     margin: 0px 10px;
     transform: translateY(40px);
     transition: 0.5s;
-    opacity: 0;
+    opacity: 1;
     transition-delay: calc(0.2s * var(--i));
 }
 
-.card:hover .content .icon li{
+.card:hover .content-card .box-icon li{
     transform: translateY(0);
     opacity: 1;
 }
 
-.icon li a{
+.box-icon li a{
     font-size: 27px;
     color: #FFF;
 }
