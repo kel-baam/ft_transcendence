@@ -1,0 +1,283 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+@font-face {
+    font-family: myFont;
+    src: url(Season\ Prime.otf);
+}
+
+@font-face {
+    font-family: hFont;
+    src: url(Playground.ttf);
+}
+
+body{
+    background: #161C40;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 8% 90%;
+    /* border: 1px solid red; */
+}
+
+#container{
+    padding: 6px 25px;
+    /* border: 1px solid yellow; */
+}
+
+#container nav{
+    display: flex;
+    align-items: center;
+}
+
+/* --------logo-------------- */
+
+#container nav .logo{
+    width: 80px;
+    height: 50px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+    padding-left: 2px;
+    /* border: 1px solid green; */
+}
+
+#container nav .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+#container nav .logo.clicked{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+/* ------------search------------ */
+
+#container nav .search{
+    width: 340px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 120px;
+    cursor: pointer;
+    border-radius: 27px;
+    background: #135B8B;
+    padding: 16px;
+    box-shadow: 0 2px 2px rgba(52, 81, 143, 33);
+    transition: box-shadow 0.5s;
+    filter: blur(0.5px);
+}
+
+#container nav .search:focus-within{
+    box-shadow: 0 0 2px #5293CB;
+}
+
+#container nav .search input{
+    font-size: 16px;
+    font-family: myFont;
+    color: #ffffff;
+    margin-left: 14px;
+    outline: none;
+    border: none;
+    background: transparent;
+    width: 300px;
+}
+
+#container nav .search input::placeholder{
+    color: #5293CB;
+    font-size: 14px;
+}
+
+/* --------notif-setting-logout------------ */
+
+#container nav .left-side{
+    width: 100%;
+    height: 49px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1em;
+    /* border: 1px solid yellow; */
+}
+
+.content{
+    height: auto;
+    display: grid;
+    grid-template-columns: 7% 84% 7% ;
+    column-gap: 1em;
+    /* border: 1px solid green; */
+}
+
+.content .side-bar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+    /* border: 1px solid rgb(0, 255, 238); */
+}
+
+.content .friends{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+/* -----------Icons------------------ */
+
+.icon{
+    color: #5293CB;
+    cursor: pointer;
+    font-size: 24px;
+    transition: color 0.4s ease, filter 0.4s ease;
+}
+
+.icon:hover{
+    color: #F45250;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    filter: blur(0.5px);
+    transition: 0.5s;
+} 
+
+.icon.clicked{
+    color: #F45250;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+    filter: blur(0.75px);
+}
+
+/* --------------------home-Content------------------ */
+
+.home-content{
+    padding: 8px;
+    background-color: rgba(217, 217, 217, 0.05);
+    border-radius: 56px;
+    display: grid;
+    grid-template-rows: 35% 65%;
+    /* row-gap: 0.2em; */
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.home-content h1{
+    font-family: myFont;
+    font-size: 50px;
+    color: #FFEEBF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 5px;
+    padding-top: 100px;
+    margin-right: 80px;
+    margin-bottom: 10px;
+
+    /* border: 1px solid rgb(255, 1, 1); */
+
+}
+
+.home-content .game-content{
+    display: grid;
+    grid-template-columns: 37.7% 25% 37.7%;
+    padding-bottom: 100px;
+    margin-right: 200px;
+    margin-bottom: 100px;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.home-content .game-content .user-profile{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.5em;
+    /* border: 1px solid rgb(1, 238, 255); */
+}
+
+.home-content .game-content .user-profile img{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    box-shadow: 2px 4px 4px rgba(54, 19, 19, 0.29);
+
+}
+
+.home-content .game-content .user-profile h3{
+    font-family: myFont;
+    font-size: 20px;
+    color: #989797;
+    letter-spacing: 5px;
+    padding-right: 40px;
+}
+
+.home-content .game-content .vs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* border: 1px solid rgb(1, 238, 255); */
+
+}
+
+.home-content .game-content .vs img{
+    width: 150px;
+    height: 150px;
+}
+
+.home-content .game-content .choice{
+    display: grid;
+    grid-template-rows: 50% 50%;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    
+    /* border: 1px solid rgb(1, 238, 255); */
+}
+
+.home-content .game-content .choice .surprise-countder,
+.home-content .game-content .choice .select-friend{
+    width: 400px;
+    height: 100px;
+    background: #FFEEBF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
+    cursor: pointer;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+    /* border: 1px solid rgb(1, 238, 255); */
+}
+
+.home-content .game-content .choice .surprise-countder h2,
+.home-content .game-content .choice .select-friend h2{
+    font-family: myFont;
+    font-size: 24px;
+    color: #3C6697;
+    letter-spacing: 3px;
+}
+
+.surprise-countder:hover, .surprise-countder:focus, .surprise-countder:active{
+    box-shadow: 0px 4px 4px rgba(99, 90, 90, 0.795);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.select-friend:hover, .select-friend:focus, .select-friend:active{
+    box-shadow: 0px 4px 4px rgba(99, 90, 90, 0.795);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
