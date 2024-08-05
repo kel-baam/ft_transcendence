@@ -10,7 +10,7 @@
     justify-content: center;
     align-items: center;
     height: 20%;
-    margin-top: 60px;
+    margin-top: 20px;
 }
 
 .leaderboard-title h1
@@ -22,10 +22,9 @@
 }
 .pics-rank{
     position: relative;
-    top: -10px;
-
-
+    top: -70px;
 }
+
 /* -----size for crown-- */
 .pics-rank .first-place .crown-pic
 {
@@ -42,6 +41,7 @@
 }
 
 .second-third-place{
+    margin-top: -45px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -105,9 +105,9 @@
     display: flex;
     justify-content: center;
     position: relative;
-    height: 200px;
+    /* height: 300px; */
     position: relative;
-    top: -300px;
+    top: -430px;
 }
 
 
@@ -120,6 +120,7 @@
     background-color: #FFEEBF;
 }
 .first-row{
+    border-radius: 10px 10px 0 0;
     width: 900px;
     background-color: #D0D2D9;
 }
@@ -139,8 +140,11 @@
     overflow-y: scroll;
     overflow-x: hidden;
     width: 900px;
-    height: 225px;
+    height: 370px;
     background-color: #D0D2D9;
+    background-color: #FFEEBF;
+
+    border-radius:0 0 10px 10px ;
 }
 
 /* ------badge level------- */
@@ -154,8 +158,8 @@
 ::-webkit-scrollbar{
     width: 12px ;
 }
-::-webkit-scrollbar-track{
-    background:#D0D2D9;
+.rank-info .info::-webkit-scrollbar-track{
+    background-color: #FFEEBF;
 }
 ::-webkit-scrollbar-thumb{
     background: #F45250;

@@ -1,27 +1,48 @@
-#loginPage-content{
-    /* height: 100%; */
+#login-page-content{
     background: #161C40;
+    width: 100vw;
+    height: 100vh;
     display: grid;
-    grid-template-rows: 10% 90%;
-    gap: 23%;
+    grid-template-rows: 8% 90%;
     /* border: 1px solid red; */
 }
 
-#loginPage-content .top{
-    /* border: 1px solid rgb(255, 251, 0); */
-
-}
-
-#loginPage-content .top nav{
+#login-page-content .top{
     display: flex;
     align-items: center;
     position: relative;
     padding: 6px 30px;
-    /* border: 1px solid rgb(255, 251, 0); */
+    /* border: 1px solid red; */
 }
 
 
-#loginPage-content .top nav .icon{
+/* --------logo-------------- */
+
+#login-page-content .top .logo{
+    width: 80px;
+    height: 50px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+    padding-left: 2px;
+    /* border: 1px solid green; */
+}
+
+#login-page-content .top .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+#login-page-content .top .logo:active{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+/* ---------------------Icon---------------- */
+
+#login-page-content .top a
+{
     color: #5293CB;
     cursor: pointer;
     font-size: 24px;
@@ -32,45 +53,16 @@
 
 }
 
-/* --------logo-------------- */
-
-#loginPage-content .top nav .logo{
-    width: 80px;
-    height: 50px;
-    cursor: pointer;
-    transition: filter 0.3s ease;
-    padding-left: 2px;
-    /* border: 1px solid green; */
-}
-
-#loginPage-content .top nav .logo:hover{
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-    transition: 0.5s;
-}
-
-#loginPage-content .top nav .logo:active{
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-    transition: 0.5s;
-}
-
 /* -------------------CONTENT--------------- */
-#loginPage-content .down{
-    /* height: 100%; */
-    /* border: 1px solid rgb(153, 0, 255); */
 
-}
-
-#loginPage-content .down .content-login{
-
+#login-page-content .down{
+    height: 100%;
     display: grid;
     grid-template-columns: 49% 51%;
-    /* border: 1px solid rgb(153, 0, 255); */
 
 }
 
-#loginPage-content .down .content-login .player{
+#login-page-content .down .player{
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -79,20 +71,20 @@
 
 }
 
-#loginPage-content .down .content-login .player img{
+#login-page-content .down .player img{
     width: 550px;
     height: 550px;
     filter: drop-shadow(0px 4px 4px rgba(57, 71, 153, 0.96));
 }
 
-#loginPage-content .down .content-login .info{
+#login-page-content .down .info{
     display: grid;
     grid-template-rows: 35% 65%;
     /* border: 1px solid red; */
 
 }
 
-#loginPage-content .down .content-login .title{
+#login-page-content .down .title{
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
@@ -101,7 +93,7 @@
 
 }
 
-#loginPage-content .down .content-login .title h1{
+#login-page-content .down .title h1{
     font-family: myFont;
     letter-spacing: 2px;
     font-size: 60px;
@@ -109,7 +101,7 @@
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
 }
 
-#loginPage-content .down .content-login .login{
+#login-page-content .down .login{
     width: 400px;
     height: 300px;
     border-radius: 50px;
@@ -125,12 +117,12 @@
     box-shadow: 1px 1px 1px rgba(57, 71, 153, 0.96);
 }
 
-#loginPage-content .down .content-login .login .bord img{
+#login-page-content .down .login .bord img{
     width: 24px;
     height: 24px;
 }
 
-#loginPage-content .down .content-login .login .bord{
+#login-page-content .down .login .bord{
     background: rgba(217, 217, 217, 0.30);
     width: 300px;
     height: 40px;
@@ -146,7 +138,7 @@
     border: 1px solid rgba(255, 255, 255, 0.30);
 }
 
-#loginPage-content .down .content-login .login span{
+#login-page-content .down .login span{
     font-family: Josefin Sans;
     font-size: 20px;
     color: rgba(255, 255, 255, 0.65);
@@ -154,7 +146,7 @@
     padding-bottom: 30px;
 }
 
-#loginPage-content .down .content-login .login a{
+#login-page-content .down .login a{
     text-decoration: none;
     font-family: myFont;
     letter-spacing: 2px;
@@ -163,16 +155,16 @@
     position: relative;
 }
 
-#loginPage-content .down .content-login .login .intr{
+#login-page-content .down .login .intr{
     padding-right: 6px;
 }
 
-#loginPage-content .down .content-login .login a img{
+#login-page-content .down .login a img{
     position: absolute;
     right: 110%;
 }
 
-#loginPage-content .down .content-login .login .bord:hover{
+#login-page-content .down .login .bord:hover{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }

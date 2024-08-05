@@ -1,11 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
 
-*{
-    padding: 0;
-    margin: 0;
-    font-family:  myFont;
-    box-sizing: border-box;
-    text-decoration: none;  
+
+@font-face {
+    font-family: myFont;
+    src: url(../../assets/fonts/Season\ Prime.otf);
+}
+
+@font-face {
+    font-family: hFont;
+    src: url(../../assets/fonts/Playground.ttf);
 }
 
 body{
@@ -13,10 +16,7 @@ body{
     background-color:#161C40 ;
     color: #fff;
 }
-/* @font-face {
-    font-family: myFont;
-    src: url(Season\ Prime.otf);
-} */
+
 /* -------------------------------NAV-SECTION------------------------------------------- */
 
 html{
@@ -24,7 +24,6 @@ html{
 }
 
 #landing-header{
-    /* width: 100%; */
     height: 100vh;
 }
 
@@ -44,12 +43,16 @@ html{
     transition: 0.5s;
 }
 
-.logo.clicked{
+.logo .clicked{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
     transition: 0.5s;
 }
 
+.landing-nav .logo{
+    margin-left: 27px;
+    margin-top: 12px;
+}
 .landing-nav{
     position: fixed; 
     background: #161C40;
@@ -75,6 +78,7 @@ html{
 .nav-links li a{
     color: #fff;
     font-size: 16px;
+    font-family: myFont;
     text-decoration: none;
     margin-left: 80px;
     transform: 0.5s;
@@ -89,12 +93,13 @@ html{
     font-size: 19px;
     color:#D44444;
 }
-.nav-links button a{
+/* //this  */
+.nav-links a button,
+#header-intro button
+{
     font-size: 14px;
+    font-family: myFont;
     color: #FFEEBF;
-}
-
-.nav-links button{
     margin-right: 15px;
     border: none;
     background: linear-gradient(rgba(212, 68, 68, 0.5), rgba(208, 34, 34, 0.7));
@@ -102,6 +107,7 @@ html{
     border-radius: 30px;
     border-top-right-radius: 0;
     width: 150px;
+    height: 30px;
     margin-left: 80px;
     transition: 0.5s;
 }
@@ -111,10 +117,13 @@ html{
     background: #D44444;
 }
 
+.active{
+    border-radius: 30px;
+    background: #D44444;
+}
 /* ---------------------------HEADER-INTRODUCTION-------------------------------------------------- */
 
 #header-intro{
-    /* width: 100%; */
     height: 100vw;
    padding-top: 5%;
 }
@@ -150,7 +159,7 @@ html{
 
 .intro  p{
     text-align: center;
-    font-family:  myFont;
+    font-family: 'Lemon',serif;
     font-size: 17px;
     margin-top: 5px;
     padding:35px 20px;
@@ -162,12 +171,7 @@ html{
 }
 
 #header-intro button{
-    border: 0px solid #D44444;
     border-radius: 30px;
-    border-top-right-radius: 0;
-    background: #D44444;
-    background: linear-gradient(rgba(212, 68, 68, 0.5), rgba(208, 34, 34, 0.7));
-    box-shadow: 2px 2px 5px rgba(212, 68, 68,0.7);
     padding: 10px 70px;
     margin-top: 20px;
     width: 350px;
@@ -175,6 +179,7 @@ html{
     transition: 0.5s;
     margin-bottom: 20px;
     text-align: center;
+    border: none;
 }
 
 #header-intro button a{
@@ -189,12 +194,10 @@ html{
 } 
 
 
-----------------------------------ABOUT-SECTION-----
+/* ----------------------------------ABOUT-SECTION----- */
 
 #about-section{
-    /* width: 80%; */
     height: 100vh; 
-    text-align: center;
 }
 
 #about-section h2{
@@ -204,8 +207,7 @@ html{
     letter-spacing: 0.5rem;
     font-family: 'Lemon',serif;
     text-shadow: 10px 10px 20px rgba(0, 0, 0,0.3);
-    padding-top:200px;
-    margin-bottom: 30px;
+    padding-top:150px;
 }
 
 .about{
@@ -215,7 +217,7 @@ html{
     text-align: center;
     width: 100%;
     height: 70%;
-
+    margin-top: -30x;
 }
 
 
@@ -242,14 +244,13 @@ html{
 .about-text{
     display: flex;
     width: 100%;
-    /* height: 100%; */
 }
 
 .about-text p{
     width: 100%;
-    font-size: 20px;
-    font-family:  myFont;
-    margin-right: 15%;
+    font-family: 'Lemon',serif;
+    font-size: 15px;
+    margin-right: 20%;
     line-height: 2rem;
     color: #FFF;
     padding: 20px;
@@ -279,6 +280,7 @@ html{
 
 #team-section p{
     font-size: 17px;
+    font-family: 'Lemon',serif;
     padding: 20px;
 }
 
@@ -457,4 +459,11 @@ html{
 
 .footer-copy-right p{
     font-size: 15px;
+}
+
+
+::-webkit-scrollbar-track{
+    /* background-color: #FFEEBF; */
+    /* background-color: #7F7D7D; */
+
 }
