@@ -71,8 +71,7 @@
     border-radius: 50px;
     width: 60px;
     height: 60px;
-    background-color: #2C3453;
-    
+    background-color: #2C3453; 
 }
 
 .chat-content .chat-list-container .chat-list-items .chat-item .contact-box{
@@ -296,7 +295,7 @@
 .message-list .typing{
     border-radius: 0px 0px 56px 56px ;
     background-color: #E8E9EC;
-    grid-template-columns: 95.1% 4%;
+    grid-template-columns: 94% 4%;
     display: grid;
 }
 
@@ -337,9 +336,9 @@
 /*----------------------more Settings--------------------------*/
 
 .chat-content .about-friend{
+    /* border: 1px solid rgb(234, 1, 255); */
     background-color: #FFEEBF;
     border-radius: 56px;
-    opacity: 1;
     grid-template-rows: 10% 0.5% 89.5%;
     padding: 0;
     display: none;
@@ -352,6 +351,8 @@
     font-weight: bold;
     font-size: 25px;
     font-family: myFont;
+    /* border: 1px solid rgb(234, 1, 255); */
+
 }
 
 .chat-content .about-friend .header .title{
@@ -376,11 +377,14 @@
     grid-template-rows: 25% 8% 25% 10%;
     gap: 1em;
     display: grid;
+    /* border: 1px solid rgb(234, 1, 255); */
+
 }
 
 .chat-content .about-friend .content-friend .friend-info{
     grid-template-rows: 80% 10%;
     display: grid;
+    /* border: 1px solid rgb(42, 150, 15); */
 }
 
 .chat-content .about-friend .content-friend .friend-info .avatar{
@@ -389,6 +393,7 @@
     border-radius: 50px;
     margin:auto;
     background-color: #2C3453;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .chat-content .about-friend .content-friend .friend-info .name{
@@ -398,6 +403,7 @@
     font-weight: bold;
     font-size: 20px;
     align-items: center;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .chat-content .about-friend .content-friend .level{
@@ -406,6 +412,7 @@
     height: 12px;
     border-radius: 10px;
     background: linear-gradient(to right, rgba(17, 194, 64, 1), rgba(55, 164, 84, 1), rgba(255, 255, 255, 1));
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .chat-content .about-friend .content-friend .options{
@@ -414,6 +421,10 @@
     padding: 15px;
     justify-content: center;
     align-items: center;
+    font-size: 20px;
+
+    /* border: 1px solid rgb(234, 1, 255); */
+
 }
 
 .chat-content .about-friend .content-friend .options .fa-address-card{

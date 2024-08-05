@@ -37,7 +37,7 @@ function toggleChatSettings(){
         var msg_list = chatContent.querySelector('.message-list');
         var msg_list_content = msg_list.querySelector('.content-msg-list');
         var msg_list_header = msg_list.querySelector('.header');
-        var sender = msg_list_content.querySelector('.sender');
+        var sender = msg_list_content.getElementsByClassName('sender');
         var typing_box = msg_list.querySelector('.typing'); 
         var settings_friend = chatContent.querySelector('.about-friend');
         
@@ -51,12 +51,13 @@ function toggleChatSettings(){
             settings_friend.style.borderRadius = '0px 56px 56px 0px'; 
             chatContent.style.gap = '0em';
             chatContent.style.gridTemplateColumns = '25% 1% 53% 21%';
+            
             settings_friend.style.display = "grid";
     
             typing_box.style.borderRadius = '0px 0px 0px 56px';
     
             var i = 0;
-            while (sender[i])
+            while (sender && sender[i])
             {
                 sender[i].style.gap = '1em';
                 i++;
@@ -76,9 +77,9 @@ function toggleChatSettings(){
                 msg_list_header.style.gap = '';
 
                 icon.classList.replace('fa-arrow-right', 'fa-ellipsis-vertical');   
-                icon.style.display = "initial";
+                icon.style.display = '';
                 
-                settings_friend.style.display = "none";
+                settings_friend.style.display = '';
                 settings_friend.style.borderRadius = '';
                 typing_box.style.borderRadius = '';
         
@@ -100,12 +101,16 @@ function toggleChatSettings(){
 
 const urlRoute = {
 
-    "/":{template: "/pages/landingPage/landingPage.html"},
+    // "/":{template: "/pages/chat/chat.html"},
+
+    // "/":{template: "/pages/landingPage/landingPage.html"},
+
     // "/":{template: "/pages/homePage/home.html"},
     "login":{template: "/pages/loginPage/loginPage.html"},
 
     "home":{template: "/pages/homePage/home.html"},
 
+    "/":{template: "/pages/profile/profile.html"},
     "profile":{template: "/pages/profile/profile.html"},
 
     "chat":{template: "/pages/chat/chat.html"},

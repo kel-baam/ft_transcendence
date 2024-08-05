@@ -12,7 +12,7 @@
     /* border: 1px solid yellow; */
 }
 
-.profile-info
+.profile-info 
 {
     width: 95%;
     height: 93%;
@@ -708,7 +708,7 @@ progress::-webkit-progress-bar {
     grid-template-columns: 90% 10%;
 }
 .friends-scop .close-icon
-{
+{ 
     margin: auto;
 }
 .friends-list,
@@ -725,7 +725,7 @@ progress::-webkit-progress-bar {
     overflow-x: none;
 }
 
-.friend-info,.pending-scop .pending-info{
+.friends-list .friend-info,.pending-scop .pending-info{
     display: grid;
     grid-template-columns: 1fr 1fr 3fr;
     justify-content: center;
@@ -737,7 +737,7 @@ progress::-webkit-progress-bar {
     margin: 5px 5px 0 5px;
 }
 
-.friend-info p{
+.friends-list .friend-info p{
     font-size: 17px;
     font-family: myFont;
     margin-left: -60px;
@@ -752,7 +752,7 @@ progress::-webkit-progress-bar {
     background-color: #BDBDBE;
 }
 
-.friend-info img ,
+.friends-list .friend-info img ,
 .request-info img,
 .pending-info img
 
@@ -763,11 +763,11 @@ progress::-webkit-progress-bar {
     border-radius:50px;
 }
 
-.friend-info a,.request-scop a{
+.friends-list .friend-info a,.request-scop a{
     text-decoration: none;
 }
 
-.friend-info i
+.friends-list .friend-info i
 {
     font-size: 30px;
     margin-left:  400px;
