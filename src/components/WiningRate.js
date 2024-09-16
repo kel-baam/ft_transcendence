@@ -1,5 +1,5 @@
-import render from "../framework/Renderer.js";
-import VirtualDOM from "../framework/VirtualDOM.js";
+import render from "../framework/render.js";
+import createElement from "../framework/createElement.js";
 import createDOMElement from "../framework/createDOMElement.js";
 
 class WinningRate extends HTMLElement{
@@ -61,31 +61,31 @@ class WinningRate extends HTMLElement{
     
     render()
     {
-        render(VirtualDOM.createElement('div', { className: 'wining-rate-container' },
-            VirtualDOM.createElement('div', { className: 'title' },
-                VirtualDOM.createElement('span', {},
-                    VirtualDOM.createElement('h1', {}, 'Wining rate')
+        render(createElement('div', { className: 'wining-rate-container' },
+            createElement('div', { className: 'title' },
+                createElement('span', {},
+                    createElement('h1', {}, 'Wining rate')
                 )
             ),
-            VirtualDOM.createElement('div', { className: 'circle-and-buttons' },
-                VirtualDOM.createElement('div', { className: 'circle-progress' },
-                    VirtualDOM.createElement('canvas', {id:'canvas',height: '190'}
+            createElement('div', { className: 'circle-and-buttons' },
+                createElement('div', { className: 'circle-progress' },
+                    createElement('canvas', {id:'canvas',height: '190'}
                     )
                 ),
-                VirtualDOM.createElement('div', { className: 'buttons' },
-                    VirtualDOM.createElement('button', { className: 'win-button' },
+                createElement('div', { className: 'buttons' },
+                    createElement('button', { className: 'win-button' },
                         'Win',
-                        VirtualDOM.createElement('br'),
+                        createElement('br'),
                         '51/150'
                     ),
-                    VirtualDOM.createElement('button', { className: 'lose-button' },
+                    createElement('button', { className: 'lose-button' },
                         'Lose',
-                        VirtualDOM.createElement('br'),
+                        createElement('br'),
                         '0/150'
                     ),
-                    VirtualDOM.createElement('button', { className: 'draw-button' },
+                    createElement('button', { className: 'draw-button' },
                         'Draw',
-                        VirtualDOM.createElement('br'),
+                        createElement('br'),
                         '0/150'
                     )
                 )

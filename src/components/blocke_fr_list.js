@@ -1,5 +1,5 @@
-import render from "../framework/Renderer.js";
-import VirtualDOM from "../framework/VirtualDOM.js";
+import render from "../framework/render.js";
+import createElement from "../framework/createElement.js";
 
 class BlockedFriendsList extends HTMLElement
 {

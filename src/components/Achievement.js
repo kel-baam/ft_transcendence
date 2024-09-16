@@ -1,6 +1,6 @@
 import createDOMElement from "../framework/createDOMElement.js";
-import render from "../framework/Renderer.js";
-import VirtualDOM from "../framework/VirtualDOM.js";
+import render from "../framework/render.js";
+import createElement from "../framework/createElement.js";
 
 class Achievement extends HTMLElement
 {
@@ -22,8 +22,8 @@ class Achievement extends HTMLElement
     }
 
     createBadgeItem() {
-        return VirtualDOM.createElement('div', { className: 'badge-item' },
-            VirtualDOM.createElement('img', { 
+        return createElement('div', { className: 'badge-item' },
+            createElement('img', { 
                 src: '../../assets/images/lock.png', 
                 alt: 'lock icon' 
             })
@@ -32,15 +32,15 @@ class Achievement extends HTMLElement
     
     render()
     {
-        render(VirtualDOM.createElement('div', { className: 'achievements-container' },
-            VirtualDOM.createElement('div', { className: 'achievements-title-elt' },
-                VirtualDOM.createElement('h1', {}, 'Achievements')
+        render(createElement('div', { className: 'achievements-container' },
+            createElement('div', { className: 'achievements-title-elt' },
+                createElement('h1', {}, 'Achievements')
             ),
-            VirtualDOM.createElement('div', { className: 'badges-container' },
+            createElement('div', { className: 'badges-container' },
                 this.createBadgeItem(),
                 this.createBadgeItem()
             ),
-            VirtualDOM.createElement('div', { className: 'badges-container' },
+            createElement('div', { className: 'badges-container' },
                 this.createBadgeItem(),
                 this.createBadgeItem()
             )

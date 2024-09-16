@@ -1,6 +1,6 @@
 // import createDOMElement from "../framework/createDOMElement.js";
-import render from "../framework/Renderer.js";
-import VirtualDOM from "../framework/VirtualDOM.js";
+import render from "../framework/render.js";
+import createElement from "../framework/createElement.js";
 
 class Informations extends HTMLElement
 {
@@ -20,85 +20,85 @@ class Informations extends HTMLElement
 
     render()
     {
-        render(VirtualDOM.createElement(
+        render(createElement(
             'div',
             { className: 'settings-content' },
-            VirtualDOM.createElement(
+            createElement(
                 'div',
                 { className: 'settings-container' },
-                VirtualDOM.createElement(
+                createElement(
                     'div',
                     { className: 'section-headings' },
-                    VirtualDOM.createElement(
+                    createElement(
                         'button',
                         {},
-                        VirtualDOM.createElement(
+                        createElement(
                             'img',
                             { src: '../../assets/images/informations_icon.png', alt:'informations icon'}
                         ),
-                        VirtualDOM.createElement('h1', {}, 'Informations')
+                        createElement('h1', {}, 'Informations')
                     ),
-                    VirtualDOM.createElement(
+                    createElement(
                         'button',
                         {},
-                        VirtualDOM.createElement(
+                        createElement(
                             'img',
                             { src: '../../assets/images/blocked_fr_icon.png', alt: 'blocked friends icon' }
                         ),
-                        VirtualDOM.createElement('h2', {}, 'Blocked friends')
+                        createElement('h2', {}, 'Blocked friends')
                     )
                 ),
-                VirtualDOM.createElement(
+                createElement(
                     'div',
                     {},
-                    VirtualDOM.createElement(
+                    createElement(
                         'form',
                         { action: '#' },
-                        VirtualDOM.createElement(
+                        createElement(
                             'div',
                             {},
-                            VirtualDOM.createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture', className: 'profile-pic' })
+                            createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture', className: 'profile-pic' })
                         ),
-                        VirtualDOM.createElement(
+                        createElement(
                             'div',
                             {},
-                            VirtualDOM.createElement(
+                            createElement(
                                 'div',
                                 {},
-                                VirtualDOM.createElement('label', { for: 'fname' }, 'First name:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'fname', name: 'fname', value: 'souad' }),
-                                VirtualDOM.createElement('br'),
-                                VirtualDOM.createElement('label', { for: 'Username' }, 'Username:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'user-name', name: 'user-name', value: 'shicham' }),
-                                VirtualDOM.createElement('br'),
-                                VirtualDOM.createElement('label', { for: 'pnumber' }, 'Phone number:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'pnumber', name: 'pnumber', value: '0614578894489' }),
-                                VirtualDOM.createElement('br'),
-                                VirtualDOM.createElement('label', { for: 'gender' }, 'Gender:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'gender', name: 'gender', value: 'Female' }),
-                                VirtualDOM.createElement('br')
+                                createElement('label', { for: 'fname' }, 'First name:'),
+                                createElement('input', { type: 'text', id: 'fname', name: 'fname', value: 'souad' }),
+                                createElement('br'),
+                                createElement('label', { for: 'Username' }, 'Username:'),
+                                createElement('input', { type: 'text', id: 'user-name', name: 'user-name', value: 'shicham' }),
+                                createElement('br'),
+                                createElement('label', { for: 'pnumber' }, 'Phone number:'),
+                                createElement('input', { type: 'text', id: 'pnumber', name: 'pnumber', value: '0614578894489' }),
+                                createElement('br'),
+                                createElement('label', { for: 'gender' }, 'Gender:'),
+                                createElement('input', { type: 'text', id: 'gender', name: 'gender', value: 'Female' }),
+                                createElement('br')
                             ),
-                            VirtualDOM.createElement(
+                            createElement(
                                 'div',
                                 {},
-                                VirtualDOM.createElement('label', { for: 'lname' }, 'Last name:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'lname', name: 'lname', value: 'hicham' }),
-                                VirtualDOM.createElement('br'),
-                                VirtualDOM.createElement('label', { for: 'age' }, 'Age:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'age', name: 'age', value: '36' }),
-                                VirtualDOM.createElement('br'),
-                                VirtualDOM.createElement('label', { for: 'nationality' }, 'Nationality:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'nationality', name: 'nationality', value: 'morocco' }),
-                                VirtualDOM.createElement('br'),
-                                VirtualDOM.createElement('label', { for: 'email' }, 'E-mail:'),
-                                VirtualDOM.createElement('input', { type: 'text', id: 'email', name: 'email', value: 'shicham@gmail.com' }),
-                                VirtualDOM.createElement('br')
+                                createElement('label', { for: 'lname' }, 'Last name:'),
+                                createElement('input', { type: 'text', id: 'lname', name: 'lname', value: 'hicham' }),
+                                createElement('br'),
+                                createElement('label', { for: 'age' }, 'Age:'),
+                                createElement('input', { type: 'text', id: 'age', name: 'age', value: '36' }),
+                                createElement('br'),
+                                createElement('label', { for: 'nationality' }, 'Nationality:'),
+                                createElement('input', { type: 'text', id: 'nationality', name: 'nationality', value: 'morocco' }),
+                                createElement('br'),
+                                createElement('label', { for: 'email' }, 'E-mail:'),
+                                createElement('input', { type: 'text', id: 'email', name: 'email', value: 'shicham@gmail.com' }),
+                                createElement('br')
                             )
                         ),
-                        VirtualDOM.createElement(
+                        createElement(
                             'div',
                             {},
-                            VirtualDOM.createElement('input', { type: 'submit', value: 'Submit' })
+                            createElement('input', { type: 'submit', value: 'Submit' })
                         )
                     )
                 )

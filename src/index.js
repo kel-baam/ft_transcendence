@@ -1,25 +1,24 @@
-import  "./pages/Profile.js";
-import "./pages/settings.js"
+import "./pages/HomePage.js"; // Assuming this imports the custom components
+import "./pages/ProfilePage.js"
 
-document.addEventListener('DOMContentLoaded', () =>
+function loadComponent(component) {
+    const element = document.createElement(component);
+}
+
+function handleRouting(path)
 {
-    const profile = document.createElement('profile-element');
-    const icons = document.querySelectorAll('informations');
-    icons.forEach((item) =>
+    if (path === '/profile')
     {
-        item.addEventListener('click',  (event) =>
-        {
-            // console.log("======> heeeere ");
+        loadComponent('profile-element');
+    }
+    else
+    {
+        loadComponent('profile-element');
+    }
+}
 
-            // event.preventDefault();
-            // window.history.pushState({}, '', item.closest('a').getAttribute("href").slice(1));
-            // // console.log("======> location = ", window.location);
-            // const path =  window.location.pathname;
-            // loadPage(path);
-            const contentElement = document.getElementById('content-id');
-            const profile = document.createElement('profile-element')
-            console.log("=====> profile : ", profile)
-            contentElement.appendChild(profile)
-        });
-    })
-    });
+// Load the correct component on initial load
+window.addEventListener('load', () =>
+{
+    handleRouting(window.location.pathname);
+});

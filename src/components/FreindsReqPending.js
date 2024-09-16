@@ -1,6 +1,6 @@
 import createDOMElement from "../framework/createDOMElement.js";
-import render from "../framework/Renderer.js";
-import VirtualDOM from "../framework/VirtualDOM.js";
+import render from "../framework/render.js";
+import createElement from "../framework/createElement.js";
 
 class Friends extends HTMLElement
 {
@@ -22,21 +22,21 @@ class Friends extends HTMLElement
     }
 
     // createFriendItem(name, username, imageSrc) {
-    //     return VirtualDOM.createElement('div', { className: 'friend-item' },
-    //         VirtualDOM.createElement('div', { className: 'picture-item' },
-    //             VirtualDOM.createElement('img', { 
+    //     return createElement('div', { className: 'friend-item' },
+    //         createElement('div', { className: 'picture-item' },
+    //             createElement('img', { 
     //                 src: imageSrc, 
     //                 alt: 'profile picture', 
     //                 className: 'picture-item' 
     //             })
     //         ),
-    //         VirtualDOM.createElement('div', { className: 'data-user' },
-    //             VirtualDOM.createElement('span', {}, name),
-    //             VirtualDOM.createElement('span', { style: { color: '#A7A4A4' } }, username)
+    //         createElement('div', { className: 'data-user' },
+    //             createElement('span', {}, name),
+    //             createElement('span', { style: { color: '#A7A4A4' } }, username)
     //         ),
-    //         VirtualDOM.createElement('div', { className: 'chat-icon' },
-    //             VirtualDOM.createElement('a', { href: '#' },
-    //                 VirtualDOM.createElement('img', { 
+    //         createElement('div', { className: 'chat-icon' },
+    //             createElement('a', { href: '#' },
+    //                 createElement('img', { 
     //                     src: '../../assets/images/tabler_message (1).png', 
     //                     alt: 'chat icon' 
     //                 })
@@ -46,90 +46,90 @@ class Friends extends HTMLElement
     // }
     render()
     {
-        render(  VirtualDOM.createElement('div', { className: 'friends-and-requetes-container' },
-    VirtualDOM.createElement('div', { className: 'friends-and-req-buttons' },
-        VirtualDOM.createElement('div',{},
-            VirtualDOM.createElement('button', { className: 'friends-button', style: 'background-color:rgba(95, 114, 125, 0.08);' },
-                VirtualDOM.createElement('h1', null, 'Friends')
+        render(  createElement('div', { className: 'friends-and-requetes-container' },
+    createElement('div', { className: 'friends-and-req-buttons' },
+        createElement('div',{},
+            createElement('button', { className: 'friends-button', style: 'background-color:rgba(95, 114, 125, 0.08);' },
+                createElement('h1', null, 'Friends')
             )
         ),
-        VirtualDOM.createElement('div',{},
-            VirtualDOM.createElement('button', { className: 'request-button' },
-                VirtualDOM.createElement('h1', {}, 'Requests')
+        createElement('div',{},
+            createElement('button', { className: 'request-button' },
+                createElement('h1', {}, 'Requests')
             )
         ),
-        VirtualDOM.createElement('div',{},
-            VirtualDOM.createElement('button', { className: 'pending-button' },
-                VirtualDOM.createElement('h1', {}, 'Pending')
+        createElement('div',{},
+            createElement('button', { className: 'pending-button' },
+                createElement('h1', {}, 'Pending')
             )
         )
     ),
-    VirtualDOM.createElement('div', { className: 'friends-scope-item' },
-        VirtualDOM.createElement('div', { className: 'friend-item' },
-            VirtualDOM.createElement('div', { className: 'picture-item' },
-                VirtualDOM.createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture', className: 'picture-item' })
+    createElement('div', { className: 'friends-scope-item' },
+        createElement('div', { className: 'friend-item' },
+            createElement('div', { className: 'picture-item' },
+                createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture', className: 'picture-item' })
             ),
-            VirtualDOM.createElement('div', { className: 'data-user' },
-                VirtualDOM.createElement('span', {}, 'kawtar el-baamrani'),
-                VirtualDOM.createElement('span', { style: 'color: #A7A4A4;' }, '@kel-baam')
+            createElement('div', { className: 'data-user' },
+                createElement('span', {}, 'kawtar el-baamrani'),
+                createElement('span', { style: 'color: #A7A4A4;' }, '@kel-baam')
             ),
-            VirtualDOM.createElement('div', { className: 'chat-icon' },
-                VirtualDOM.createElement('a', { href: '#' },
-                    VirtualDOM.createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+            createElement('div', { className: 'chat-icon' },
+                createElement('a', { href: '#' },
+                    createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
                 )
             )
         ),
-        VirtualDOM.createElement('div', { className: 'friend-item' },
-            VirtualDOM.createElement('div', { className: 'picture-item' },
-                VirtualDOM.createElement('img', { src: '../../assets/images/niboukha.png', alt: 'profile picture', className: 'picture-item' })
+        createElement('div', { className: 'friend-item' },
+            createElement('div', { className: 'picture-item' },
+                createElement('img', { src: '../../assets/images/niboukha.png', alt: 'profile picture', className: 'picture-item' })
             ),
-            VirtualDOM.createElement('div', { className: 'data-user' },
-                VirtualDOM.createElement('span', {}, 'Nisrin boukhari'),
-                VirtualDOM.createElement('span', { style: 'color: #A7A4A4;' }, '@niboukha')
+            createElement('div', { className: 'data-user' },
+                createElement('span', {}, 'Nisrin boukhari'),
+                createElement('span', { style: 'color: #A7A4A4;' }, '@niboukha')
             ),
-            VirtualDOM.createElement('div', { className: 'chat-icon' },
-                VirtualDOM.createElement('a', { href: '#' },
-                    VirtualDOM.createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+            createElement('div', { className: 'chat-icon' },
+                createElement('a', { href: '#' },
+                    createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
                 )
             )
         ),
-        VirtualDOM.createElement('div', { className: 'friend-item' },
-            VirtualDOM.createElement('div', { className: 'picture-item' },
-                VirtualDOM.createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
+        createElement('div', { className: 'friend-item' },
+            createElement('div', { className: 'picture-item' },
+                createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
             ),
-            VirtualDOM.createElement('div', { className: 'data-user' },
-                VirtualDOM.createElement('span', {}, 'karima jarmoum'),
-                VirtualDOM.createElement('span', { style: 'color: #A7A4A4;' }, '@kjarmoum')
+            createElement('div', { className: 'data-user' },
+                createElement('span', {}, 'karima jarmoum'),
+                createElement('span', { style: 'color: #A7A4A4;' }, '@kjarmoum')
             ),
-            VirtualDOM.createElement('div', { className: 'chat-icon' },
-                VirtualDOM.createElement('a', { href: '#' },
-                    VirtualDOM.createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+            createElement('div', { className: 'chat-icon' },
+                createElement('a', { href: '#' },
+                    createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
                 )
             )
         ),
-        VirtualDOM.createElement('div', { className: 'friend-item' },
-            VirtualDOM.createElement('div', { className: 'picture-item' },
-                VirtualDOM.createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
+        createElement('div', { className: 'friend-item' },
+            createElement('div', { className: 'picture-item' },
+                createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
             ),
-            VirtualDOM.createElement('div', { className: 'data-user' },
-                VirtualDOM.createElement('span', {}, 'karima jarmoum'),
-                VirtualDOM.createElement('span', { style: 'color: #A7A4A4;' }, '@kjarmoum')
+            createElement('div', { className: 'data-user' },
+                createElement('span', {}, 'karima jarmoum'),
+                createElement('span', { style: 'color: #A7A4A4;' }, '@kjarmoum')
             ),
-            VirtualDOM.createElement('div', { className: 'chat-icon' },
-                VirtualDOM.createElement('a', { href: '#' },
-                    VirtualDOM.createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+            createElement('div', { className: 'chat-icon' },
+                createElement('a', { href: '#' },
+                    createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
                 )
             )
         )
     )
     ,
-    VirtualDOM.createElement('div', { className: 'view-all-link-fr' },
-        VirtualDOM.createElement('a', { href: '#' }, 'View all')
+    createElement('div', { className: 'view-all-link-fr' },
+        createElement('a', { href: '#' }, 'View all')
     )
 ), this.root)
 
-        // const  viewElement = createDOMElement(VirtualDOM.createElement('div', { className: 'view-all-link-fr' },
-        //         VirtualDOM.createElement('a', { href: '#' }, 'View all')))
+        // const  viewElement = createDOMElement(createElement('div', { className: 'view-all-link-fr' },
+        //         createElement('a', { href: '#' }, 'View all')))
         // const cont = document.getElementsByClassName('friends-and-requetes-container')[0]
         // cont.appendChild(viewElement)
 
