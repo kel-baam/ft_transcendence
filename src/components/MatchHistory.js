@@ -1,16 +1,11 @@
-import createDOMElement from "../framework/createDOMElement.js";
-import render from "../framework/render.js";
 import createElement from "../framework/createElement.js";
 
-class MatchHistory extends HTMLElement
+class MatchHistory 
 {
-    constructor()
+    constructor(props)
     {
-        super()
-        this.attachShadow({ mode: 'open' });
-        this.items = [];
-        this.root = document.getElementsByClassName('other-cards')[0]
-        this.connectedCallBack()
+        this.props = props
+        this.render()
     }
 
     connectedCallBack()
@@ -21,7 +16,7 @@ class MatchHistory extends HTMLElement
 
     render()
     {
-        render(createElement('div', { className: 'match-history-container' },
+        return(createElement('div', { className: 'match-history-container' },
           createElement('div', { className: 'title-item' },
               createElement('span', {},
                   createElement('h1', {}, 'Match history')
@@ -84,9 +79,7 @@ class MatchHistory extends HTMLElement
            createElement('div', { className: 'view-all-match' },
                   createElement('a', { href: '#' }, 'View all')
               )
-      ), this.root)
-      // render()
-
+      ))
     }
 
     addEventListeners()
@@ -94,5 +87,4 @@ class MatchHistory extends HTMLElement
 
     }
 }
-window.customElements.define('match-history', MatchHistory)
 export default MatchHistory

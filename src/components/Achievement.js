@@ -1,25 +1,13 @@
-import createDOMElement from "../framework/createDOMElement.js";
-import render from "../framework/render.js";
 import createElement from "../framework/createElement.js";
 
-class Achievement extends HTMLElement
+class Achievement  
 {
-    constructor()
+    constructor(props)
     {
-        super()
-        this.attachShadow({ mode: 'open' });
-        this.items = [];
-        this.root = document.getElementsByClassName('other-cards')[0]
-        this.connectedCallBack()
+        this.props = props;
+        this.render()
     }
 
-    connectedCallBack()
-    {
-        this.render()
-        // const container = document.getElementsByClassName('other-cards')[0]
-        // container.appendChild(this.root)
-        // this.addEventListeners()
-    }
 
     createBadgeItem() {
         return createElement('div', { className: 'badge-item' },
@@ -32,7 +20,7 @@ class Achievement extends HTMLElement
     
     render()
     {
-        render(createElement('div', { className: 'achievements-container' },
+        return(createElement('div', { className: 'achievements-container' },
             createElement('div', { className: 'achievements-title-elt' },
                 createElement('h1', {}, 'Achievements')
             ),
@@ -44,7 +32,7 @@ class Achievement extends HTMLElement
                 this.createBadgeItem(),
                 this.createBadgeItem()
             )
-        ),this.root)
+        ))
     }
 
     addEventListeners()
@@ -53,5 +41,4 @@ class Achievement extends HTMLElement
     }
     
 }
-window.customElements.define('achievements-element', Achievement)
 export default Achievement

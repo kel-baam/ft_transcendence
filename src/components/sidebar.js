@@ -1,13 +1,11 @@
 import createElement from "../framework/createElement.js";
 import render from "../framework/render.js";
 
-class sidebar extends HTMLElement
+class sidebar 
 {
-    constructor()
+    constructor(props)
     {
-        super();
-        this.attachShadow({ mode: 'open'});
-        this.connectedCallback();
+       this.props = props
     }
 
     connectedCallback()
@@ -38,11 +36,10 @@ class sidebar extends HTMLElement
                 )
             );
 
-        const container = document.getElementsByClassName('content')[0];
-        render(virtualDom, container);
+        // const container = document.getElementsByClassName('content')[0];
+        // render(virtualDom, container);
+        return virtualDom
     }
 }
-
-window.customElements.define('sidebar-component', sidebar);
 
 export default sidebar;

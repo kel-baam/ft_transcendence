@@ -1,18 +1,11 @@
 import createElement from "../framework/createElement.js";
-import render from "../framework/render.js";
 
-class header extends HTMLElement
+class header 
 {
-    constructor()
+    constructor(props)
     {  
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.connectedCallback();
-    }
-    
-    connectedCallback()
-    {
-       this.render()
+        this.props = props
+        this.render()
     }
     
     render()
@@ -79,12 +72,8 @@ class header extends HTMLElement
         );
         
     
-        // const container = document.getElementsByTagName('header')[0];
-
-        render(virtualDom, document.getElementById('global'));
+        return virtualDom;
     }
 }
-
-window.customElements.define('header-component', header);
 
 export default header;
