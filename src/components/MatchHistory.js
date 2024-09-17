@@ -1,0 +1,98 @@
+import createDOMElement from "../framework/createDOMElement.js";
+import render from "../framework/render.js";
+import createElement from "../framework/createElement.js";
+
+class MatchHistory extends HTMLElement
+{
+    constructor()
+    {
+        super()
+        this.attachShadow({ mode: 'open' });
+        this.items = [];
+        this.root = document.getElementsByClassName('other-cards')[0]
+        this.connectedCallBack()
+    }
+
+    connectedCallBack()
+    {
+        this.render()
+        // this.addEventListeners()
+    }
+
+    render()
+    {
+        render(createElement('div', { className: 'match-history-container' },
+          createElement('div', { className: 'title-item' },
+              createElement('span', {},
+                  createElement('h1', {}, 'Match history')
+              )
+          ),
+          createElement('div', { className: 'center-div' },
+              createElement('div', { className: 'match-result-item' },
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                  ),
+                  createElement('div', { className: 'match-result' },
+                      createElement('span', { className: 'user_score', style: 'color: #D44444;' }, '1'),
+                      createElement('span', { style: 'color: #0B42AF;' }, '-'),
+                      createElement('span', { className: 'opponent_score', style: 'color: #0AA989;' }, '3')
+                  ),
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/niboukha.png', alt: 'profile picture' })
+                  )
+              ),
+              createElement('div', { className: 'match-result-item' },
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                  ),
+                  createElement('div', { className: 'match-result' },
+                      createElement('span', { className: 'user-score', style: 'color: #0B42AF;' }, '4'),
+                      createElement('span', { style: 'color: #0B42AF;' }, '-'),
+                      createElement('span', { className: 'opponent-score', style: 'color: #0B42AF;' }, '4')
+                  ),
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture' })
+                  )
+              ),
+              createElement('div', { className: 'match-result-item' },
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                  ),
+                  createElement('div', { className: 'match-result' },
+                      createElement('span', { className: 'user-score', style: 'color: #D44444;' }, '1'),
+                      createElement('span', { style: 'color: #0B42AF;' }, '-'),
+                      createElement('span', { className: 'opponent-score', style: 'color: #0AA989;' }, '3')
+                  ),
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture' })
+                  )
+              ),
+              createElement('div', { className: 'match-result-item' },
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                  ),
+                  createElement('div', { className: 'match-result' },
+                      createElement('span', { className: 'user-score', style: 'color: #D44444;' }, '1'),
+                      createElement('span', { style: 'color: #0B42AF;' }, '-'),
+                      createElement('span', { className: 'opponent-score', style: 'color: #0AA989;' }, '3')
+                  ),
+                  createElement('div', { className: 'picture-item' },
+                      createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture' })
+                  )
+              )
+          ),
+           createElement('div', { className: 'view-all-match' },
+                  createElement('a', { href: '#' }, 'View all')
+              )
+      ), this.root)
+      // render()
+
+    }
+
+    addEventListeners()
+    {
+
+    }
+}
+window.customElements.define('match-history', MatchHistory)
+export default MatchHistory

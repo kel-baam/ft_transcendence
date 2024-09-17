@@ -1,14 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
 
-
 @font-face {
+    ont-family: 'Ubuntu Sans';
+    src: url('./fonts/UbuntuSans-Regular.ttf') format('truetype');
     font-family: myFont;
-    src: url(../../assets/fonts/Season\ Prime.otf);
+    src: url(../fonts/Season\ Prime.otf);
 }
 
 @font-face {
-    font-family: hFont;
-    src: url(../../assets/fonts/Playground.ttf);
+    font-family: 'Ubuntu Sans', hFont;
+    src: url(../fonts/Playground.ttf);
 }
 
 body{
@@ -26,8 +27,6 @@ html{
 #landing-header{
     height: 100vh;
 }
-
-
 
 .logo{
     width: 80px;
