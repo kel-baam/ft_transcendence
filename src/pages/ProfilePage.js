@@ -1,37 +1,29 @@
 import createElement from "../framework/createElement.js";
-import createDOMElement from "../framework/createDOMElement.js";
 import render from "../framework/render.js";
-import  "../components/header.js";
-import "../components/sidebar.js"
-import "../components/MatchHistory.js";
-import  "../components/UserProfile.js";
-import "../components/WiningRate.js";
-import "../components/FreindsReqPending.js"
-import "../components/Achievement.js"
+import UserProfile from "../components/UserProfile.js";
+import WinningRate from "../components/WiningRate.js";
+import Achievement from "../components/Achievement.js";
+import Friends from "../components/FreindsReqPending.js";
+import MatchHistory from "../components/MatchHistory.js";
+import header from "../components/header.js";
+import sidebar from "../components/sidebar.js";
+import { diff , patch} from "../framework/diff.js";
 
-class Profile extends HTMLElement
+class Profile 
 {
     constructor()
     {
         console.log("----> is profile constr the component")
-        super();
-        this.attachShadow({ mode: 'open' });
         this.items = [];
-        this.root = "";
+        this.root = document.body;
         // this.fetchData()
-        this.connectedCallBack()
+        this.render()    
     }
     
-    connectedCallBack()
-    {
-        this.render()
-        // this.addEventListeners()
-    }
-
     async fetchData()
     {
         try {
-                    const response = await fetch(''); // Replace with your API URL
+                const response = await fetch(''); // Replace with your API URL
 
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -45,61 +37,67 @@ class Profile extends HTMLElement
     
     render()
     {
-
-        this.createHeaderTag();
-        this.createContentTag();
-
-
+        console.log("------> here content tag ")
+        const vdom = createElement('div', {id:'global'}, 
+            createElement(header, {}), createElement('div', { className: 'content' },
+                createElement(sidebar, {}), createElement('div', {className:'global-content'},
+                    createElement('div', {className:'profile-content'},
+                        createElement('div', {className:'profile-info'}, 
+                        createElement('div', {className:'infos'}, createElement(UserProfile, {}), 
+                        createElement(WinningRate, {})), 
+                        createElement('div', {className:'other-cards'}, createElement(Achievement, {}), 
+                        createElement(Friends, {}), createElement(MatchHistory, {}))))
+                        ,createElement('div', { className: 'friends-bar' }))
+            ))
+            render(vdom, this.root)
+            // this.root.__vdom = vdom
+            this.drawWinningCircle()
+            // const newVdom = createElement('div', {id:'global'})
+            // console.log("----> here every thing was good  !!!")
+            // const patches = diff(this.root.__vdom, newVdom)
+            // console.log(">>>>>> patches = ", patches)
+            // patch(document.body, patches)
 
     }
 
-    createHeaderTag()
-    {
-        document.createElement('header-component');
-    }
-
-    createContentTag()
-    {
-        const virtualDom = createElement('div', { className: 'content' });
-        const domElement = createDOMElement(virtualDom);
+    drawWinningCircle() {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const percentage = 50; 
         
-        document.getElementById('global').appendChild(domElement);
-        document.createElement('sidebar-component');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        this.createGlobalContent();
-        this.createFriendContent();
-    }
-    
-    createGlobalContent()
-    {
-        const virtualDom = createElement('div', { className: 'global-content' });
-        const domElement = createDOMElement(virtualDom);
-        document.getElementsByClassName('content')[0].appendChild(domElement);
-        this.createProfileContent();
-    }                        
+        const endAngle = (Math.PI * 2) * (percentage / 100);
+        this.drawCircle('#ddd',endAngle , (Math.PI * 2), canvas);
 
-    createProfileContent()
-    {
+        this.drawCircle('#0AA989', 0, endAngle, canvas);
 
-        this.root = document.getElementsByClassName('global-content')[0];
-        render(createElement('div', {className:'profile-content'},
-                createElement('div', {className:'profile-info'}, 
-                    createElement('div', {className:'infos'}), 
-                    createElement('div', {className:'other-cards'}))), this.root)
-        document.createElement('user-profile');
-        document.createElement('winning-rate');
-        document.createElement('achievements-element')
-        document.createElement('friends-element')
-        document.createElement('match-history')
+        this.drawPercentageText(canvas);
+
+        }
+        drawCircle(color, startAngle, endAngle, canvas) {
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 82;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = color;
+            ctx.stroke();
+        }
+        drawPercentageText(canvas) {
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const percentage = 50;
+        ctx.font = '26px "myFont"';
+        ctx.fillStyle = '#0AA989'; 
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${percentage}%`, centerX, centerY);
     }
-    
-    createFriendContent()
-    {
-        const virtualDom = createElement('div', { className: 'friends-bar' });
-        const domElement = createDOMElement(virtualDom);
-        document.getElementsByClassName('content')[0].appendChild(domElement);
-    }
-    
+   
     addEventListeners()
     {
 
@@ -107,6 +105,5 @@ class Profile extends HTMLElement
 
 
 }
-window.customElements.define('profile-element', Profile);
 
 export default Profile;

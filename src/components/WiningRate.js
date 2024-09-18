@@ -1,15 +1,16 @@
-import render from "../framework/render.js";
+// import render from "../framework/render.js";
 import createElement from "../framework/createElement.js";
-import createDOMElement from "../framework/createDOMElement.js";
+// import createDOMElement from "../framework/createDOMElement.js";
 
-class WinningRate extends HTMLElement{
-    constructor()
+class WinningRate {
+    constructor(props)
     {
-        super()
-        this.items = []
-        this.attachShadow({ mode: 'open' });
-        this.root =  document.getElementsByClassName('infos')[0]
-        this.connectedCallBack()
+        // super()
+        this.props = props
+        // this.attachShadow({ mode: 'open' });
+        // this.root =  document.getElementsByClassName('infos')[0]
+        // this.connectedCallBack()
+        this.render()
     }
     
     connectedCallBack()
@@ -61,7 +62,7 @@ class WinningRate extends HTMLElement{
     
     render()
     {
-        render(createElement('div', { className: 'wining-rate-container' },
+        return(createElement('div', { className: 'wining-rate-container' },
             createElement('div', { className: 'title' },
                 createElement('span', {},
                     createElement('h1', {}, 'Wining rate')
@@ -90,9 +91,9 @@ class WinningRate extends HTMLElement{
                     )
                 )
             )
-        ), this.root)
+        ))
         
-        this.drawWinningCircle()
+        // this.drawWinningCircle()
         
     }
 
