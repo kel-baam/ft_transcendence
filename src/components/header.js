@@ -70,8 +70,6 @@ class header
                 )
             )
         );
-        
-    
         return virtualDom;
     }
 }

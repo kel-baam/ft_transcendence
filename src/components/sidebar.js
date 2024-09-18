@@ -6,12 +6,14 @@ class sidebar
     constructor(props)
     {
        this.props = props
+       this.render();
+
     }
 
-    connectedCallback()
-    {
-        this.render();
-    }
+    // connectedCallback()
+    // {
+    //     this.render();
+    // }
 
     render()
     {
