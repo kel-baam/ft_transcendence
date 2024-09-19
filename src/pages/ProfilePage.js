@@ -5,8 +5,8 @@ import WinningRate from "../components/WiningRate.js";
 import Achievement from "../components/Achievement.js";
 import Friends from "../components/FreindsReqPending.js";
 import MatchHistory from "../components/MatchHistory.js";
-import header from "../components/header.js";
-import sidebar from "../components/sidebar.js";
+import Header from "../components/header.js";
+import Sidebar from "../components/sidebar.js";
 import { diff , patch} from "../framework/diff.js";
 
 class Profile 
@@ -39,8 +39,8 @@ class Profile
     {
         console.log("------> here content tag ")
         const vdom = createElement('div', {id:'global'}, 
-            createElement(header, {}), createElement('div', { className: 'content' },
-                createElement(sidebar, {}), createElement('div', {className:'global-content'},
+            createElement(Header, {}), createElement('div', { className: 'content' },
+                createElement(Sidebar, {}), createElement('div', {className:'global-content'},
                     createElement('div', {className:'profile-content'},
                         createElement('div', {className:'profile-info'}, 
                         createElement('div', {className:'infos'}, createElement(UserProfile, {}), 
@@ -49,15 +49,13 @@ class Profile
                         createElement(Friends, {}), createElement(MatchHistory, {}))))
                         ,createElement('div', { className: 'friends-bar' }))
             ))
-            render(vdom, this.root)
-            // this.root.__vdom = vdom
+            
+            const container = document.body;
+            const patches = diff(container.__vdom, vdom, container);
+            console.log(">>>>>>>>> patches :", patches)
+            patch(document.body, patches);
+            container.__vdom = vdom;
             this.drawWinningCircle()
-            // const newVdom = createElement('div', {id:'global'})
-            // console.log("----> here every thing was good  !!!")
-            // const patches = diff(this.root.__vdom, newVdom)
-            // console.log(">>>>>> patches = ", patches)
-            // patch(document.body, patches)
-
     }
 
     drawWinningCircle() {

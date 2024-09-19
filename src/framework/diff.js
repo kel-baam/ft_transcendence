@@ -52,7 +52,7 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
         {
             // console.log("OLD chILD => ", oldChildren);
             // console.log("NEW chILD => ", newChildren);
-            console.log("--------> path : ", path)
+            // console.log("--------> path : ", path)
             diffNode(oldChildren[i], newChildren[i], patches, i, [...path, i]);
         }
     }
@@ -65,7 +65,7 @@ function getNodeByPath(dom, path) {
         parent = currentNode;
         currentNode = currentNode.childNodes[index];
 
-        console.log(">>>>>>>>> currentNode : ", currentNode, index)
+        // console.log(">>>>>>>>> currentNode : ", currentNode, index)
     });
     return parent;
 }
@@ -83,13 +83,13 @@ export function patch(dom, patches) {
                 break;
             case 'REMOVE':
                 const targetNodeToRemove = targetNode.childNodes[patches[i].index];
-                console.log("--------> target node : ", targetNode, patches[i].index)
-                console.log("remove : -> ", targetNodeToRemove);
+                // console.log("--------> target node : ", targetNode, patches[i].index)
+                // console.log("remove : -> ", targetNodeToRemove);
                 targetNode.removeChild(targetNodeToRemove);
                 break;
             case 'REPLACE':
                 const targetNodeToReplace = targetNode.childNodes[patches[i].index];
-                console.log("replace : -> ", targetNodeToReplace);
+                // console.log("replace : -> ", targetNodeToReplace);
                 targetNodeToReplace.replaceWith(createDOMElement(patches[i].vNode));
                 break;
             case 'TEXT':

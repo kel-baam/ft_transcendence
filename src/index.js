@@ -1,6 +1,9 @@
 import HomePage from "./pages/HomePage.js";
 import ProfilePage from "./pages/ProfilePage.js"; // Example for another page
 import LandingPage from "./pages/LandingPage.js";
+import LeaderboardPage from "./pages/LeaderboardPage.js"
+
+
 function loadComponent(component) {
     const instance = new component();
 }
@@ -9,37 +12,43 @@ function handleRouting(path) {
     let component;
     console.log(path);
     switch (path) {
-        case '/profile':
+        case 'profile':
             component = ProfilePage;
+            break;
+        case 'leaderboard':
+            component = LeaderboardPage;
+            break;
+        case 'home':
+            component = HomePage;
             break;
         default:
             component = HomePage;
-            // component = LandingPage;
-            // component = HomePage;
     }
     loadComponent(component);
 }
 
-// function addGlobalEventListeners() {
-//     document.addEventListener('click', event => {
-//         console.log("-----------------------------------------")
-//         if (event.target.matches('.side-bar a')) {
-//             event.preventDefault(); // Prevent default anchor behavior
-//             const path = event.target.getAttribute('href');
-//             console.log(path);
-//             handleRouting(path);
-//             window.history.pushState(null, '', path); // Update the URL
-//         }
-//     });
-// }
+function addGlobalEventListeners()
+{
+    document.addEventListener('click', event => {
+        // Ensure you are targeting an anchor element inside the sidebar
+        const link = event.target.closest('.side-bar a');
+        
+        if (link) {
+            event.preventDefault(); // Prevent default anchor behavior
+            const path = link.getAttribute('href');
+            console.log("Navigating to path:", path);
+            handleRouting(path);
+            window.history.pushState(null, '', path); // Update the URL
+        }
+    });
+}
 
-window.addEventListener('load', () => {
-    // addGlobalEventListeners();
-    
+window.addEventListener('load', () =>
+{
+    document.body.innerHTML = ''
+    addGlobalEventListeners();
+    const request = new XMLHttpRequest();
+
     handleRouting(window.location.pathname); // Initial page load
 });
 
-// Handle browser navigation (e.g., back and forward)
-// window.addEventListener('popstate', () => {
-//     handleRouting(window.location.pathname);
-// });
