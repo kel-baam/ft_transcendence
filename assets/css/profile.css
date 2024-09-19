@@ -1,3 +1,20 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* font-family: 'Poppins', sans-serif; */
+    font-family: myFont;
+}
+
+@font-face {
+    font-family: hFont;
+    src: url(Playground.ttf);
+}
+
+@font-face {
+    font-family: myFont;
+    src: url(Season\ Prime.otf);
+}
 /*--------------------------profile card----------------------------*/
 
 .profile-content
@@ -10,17 +27,18 @@
     width: 100%;
     height: 100%;
     /* border: 1px solid yellow; */
+    
 }
 
 .profile-info
 {
     width: 95%;
+    /* background-color: rgba(217, 217, 217, 0.05); */
     height: 93%;
     display: grid;
     grid-template-rows:repeat(2, 48.5%);
     row-gap: 3%;
     border-radius: 50px;
-    /* font-family: myFont; */
     /* border: 1px solid rgb(255, 0, 0); */
 
 }
@@ -67,7 +85,7 @@
 }
 
 
-.title-rate
+.title
 {
     /* border: 2px solid black; */
     display: flex;
@@ -78,7 +96,6 @@
     letter-spacing: 2px;
     font-size: 25px;
 }
-
 .circle-and-buttons
 {
     display: grid;
@@ -91,15 +108,9 @@
 
 }
 
-.circle-and-buttons text
-{
-    font-family: myFont;
-}
-
 .profile-info h1
 {
     /* border: 2px solid black; */
-    font-family: myFont;
     letter-spacing: 2px;
     font-size: 25px;
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
@@ -196,8 +207,6 @@
 .view-all-match a{
     text-decoration: none;
     color: #14397C;
-    font-family: myFont;
-
 }
 
 .center-div{
@@ -305,7 +314,7 @@
 
 .friends-scope-item
 {
-    display: none;
+    display: grid;
     grid-auto-rows: 20%;
     row-gap: 6%;
     padding-top: 10px;
@@ -383,7 +392,7 @@
 }
 .view-all-link-fr
 {
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -483,7 +492,7 @@
 
 .infos-user-container > div:nth-child(1)
 {
-    /* border: 2px solid green; */
+    /* border: 12px solid green; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -533,9 +542,7 @@
     height: 28px;
     border-radius: 30px;
     padding-left: 10px;
-    font-family: myFont;
-    
-    background: url("../images/pencil.png")  no-repeat right;
+    background: url("../../../assets/images/pencil.png")  no-repeat right;
 }
 
 
@@ -556,25 +563,18 @@
 
 .infos-user-container > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > span:nth-child(1)
 {
-    font-family: myFont;
     display: flex;
     justify-content: flex-end;
     /* border: 2px solid red; */
     padding-right: 69px;
 }
-.infos-user-container > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div span,
-.infos-user-container > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) >div span
-{
-    font-family: myFont;
 
-}
 
 .infos-user-container > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) 
 {
     color: #5293CB;
     display: flex;
     align-items: center;
-    /* font-family: myFont; */
     /* border: 2px solid greenyellow; */
     width: 627px;
     height: 30px;
@@ -620,16 +620,23 @@ progress
 {
     -webkit-appearance: none;
     height: 10px;
-    width: 100%;
+    width: 88.8%;
     position: relative;
     bottom: 2px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
+    appearance: none;
+    /* background-color: #236647;  */
+}
+
+progress::-webkit-progress-bar {
+    background-color: #e0e0e0; /* Background color for WebKit browsers */
+    border-radius: 20px; /* Round the corners for WebKit browsers */
 }
 
 progress::-webkit-progress-value {
-    background-color: #236647; 
-    border-radius: 20px;
+    background-color: #236647; /* Color of the progress value for WebKit browsers */
+    border-radius: 20px; /* Round the corners for WebKit browsers */
 }
 
 progress::-webkit-progress-bar {
@@ -637,40 +644,16 @@ progress::-webkit-progress-bar {
     border-radius: 20px;
 }
 
+progress::-moz-progress-bar {
+    background-color: #236647; /* Color of the progress value for Mozilla Firefox */
+    border-radius: 20px; /* Round the corners for Mozilla Firefox */
+}
+
 /*-------------------------------*/
-
-.circular-progress {
-    --size: 200px;
-    --half-size: calc(var(--size) / 2);
-    --stroke-width: 10px;
-    --radius: calc((var(--size) - var(--stroke-width)) / 2);
-    --circumference: calc(var(--radius) * pi * 2);
-    --dash: calc((var(--progress) * var(--circumference)) / 100);
-  }
-  
-  .circular-progress circle {
-    cx: var(--half-size);
-    cy: var(--half-size);
-    r: var(--radius);
-    stroke-width: var(--stroke-width);
-    fill: none;
-    stroke-linecap: round;
-  }
-  
-  .circular-progress circle.bg {
-    stroke: #ddd;
-  }
-  
-  .circular-progress circle.fg {
-    transform: rotate(-90deg);
-    transform-origin: var(--half-size) var(--half-size);
-    stroke-dasharray: var(--dash) calc(var(--circumference) - var(--dash));
-    transition: stroke-dasharray 0.3s linear 0s;
-    stroke: #0AA989;
-  }
-
-
-
+canvas
+{
+    font-family: myFont;
+}
 
 /* -----------FRIENDS-SCOP------------- */
 
@@ -859,9 +842,7 @@ progress::-webkit-progress-bar {
     text-align: end;
     margin-right: 20px;
 }
-/*---------------------- don't delete this scop -------*/
-
-/* .request-scop .request-info .request-icons .fa-solid
+.request-scop .request-info .request-icons .fa-solid
 {
     font-size: 30px;
     color: #0AA989;
@@ -870,7 +851,7 @@ progress::-webkit-progress-bar {
 {
     color: #D44444;
     font-size: 25px;
-} */
+}
 /* / ----------------------pending-friends------ */
 .pending-scop .pending-list .fa-regular
 {

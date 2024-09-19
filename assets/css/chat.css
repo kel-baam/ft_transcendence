@@ -5,7 +5,7 @@
     grid-template-columns: 25% 74%;
     display: grid;
     gap:1em; 
-    height: 100%;
+    height: 100%; 
 }
 
 /* ----------- chat list ----------- */
@@ -30,7 +30,6 @@
 .chat-content .chat-list-container .chat-list-header{
     background-color: transparent;
     font-family: myFont;
-    /* border: 1px solid rgb(255, 124, 1);  */
     border-radius: 56px;
     color: #0A466E;
     display: flex;
@@ -43,7 +42,6 @@
     font-size: xx-large;
     color: rgba(10, 70, 110, 1);
 }
-
     /* ----------- chat list items ----------- */
 
 .chat-content .chat-list-container .chat-list-items{
@@ -67,16 +65,13 @@
 .chat-content .chat-list-container .chat-list-items .chat-item:hover{
     background-color: rgba(208, 210, 217, 0.514);
 }
-
     /* ----------- avatar ----------- */
 
 .chat-content .chat-list-container .chat-list-items .chat-item .contact-avatar{
-    /* border: 1px solid rgb(255, 255, 255); */
     border-radius: 50px;
     width: 60px;
     height: 60px;
-    background-color: #2C3453;
-    
+    background-color: #2C3453; 
 }
 
 .chat-content .chat-list-container .chat-list-items .chat-item .contact-box{
@@ -101,9 +96,8 @@
 
 .time-last-message{
     padding: 8px;
-    /* border: 1px solid rgb(255, 251, 2); */
     font-size:medium;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: myFont;
     color: rgba(158, 158, 158, 1);
     justify-content: end;
     display: flex;
@@ -116,7 +110,6 @@
     color: rgba(155, 155, 155, 1);
     border-radius: 70px;
     padding-left: 5px;
-    /* border: 1px solid rgb(255, 251, 2); */
 }
 
 /* ----------- time of the last msg  ----------- */
@@ -131,32 +124,44 @@
 .message-list .header{
     background-color: transparent;
     padding: 5px;
-    padding-left: 20px;
+    padding-left: 30px;
     border-radius: 40px;
-    grid-template-columns: 6.8% 40% 50% 5%;
-    display: grid;
-    
+    grid-template-columns: 6% 41% 49.5% 3%;
+    display: grid;    
 } 
 
 .message-list .header .contact-avatar{
     margin-top: 5px; 
     height: 60px;
     width: 60px;
-    /* border: 1px solid rgb(255, 124, 1); */
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .message-list .header .contact-name{
-    border-radius: inherit;
     padding-top: 26px;
     font-size: larger;
+    color: #0A466E;
+    font-family: myFont;
+    color: #0A466E;
+    /* border: 1px solid rgb(234, 1, 255); */
+
 }
 
-.message-list .header .play-button{
-    padding: 11px;
-    border-radius: inherit;
+.message-list .header .play-button {
+    padding-right: 20px;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
+    align-items: center;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
+
+.message-list .header .play-button .btn{
+    border-radius: 50px;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+
 
 .message-list .header .play-button button{
     border: none;
@@ -169,23 +174,21 @@
     font-weight: bold;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.4);
     cursor: grabbing;
-
-}
-
-.message-list .header .play-button button{
     transition-duration: 0.5s;
-
 }
-
 
 .message-list .header .more-info{
-    border-radius: inherit;
     padding-top: 21px;
+    /* border: 1px solid rgb(234, 1, 255); */
+
 }
 
 .message-list .header .more-info .bi-three-dots-vertical{
-    /* transform: rotate(90deg); */
     color: #2C3453;
+    padding-top: 21px;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+
 }
 
 .message-list .separator{
@@ -198,7 +201,6 @@
 .message-list .content-msg-list{
     background-color: transparent;
     grid-template-rows: 50% 50%;
-    
     height: 27%; /*should be a variable depend of lenth of the message*/
     display: grid;
 } 
@@ -208,9 +210,7 @@
 .message-list .content-msg-list .sender{
     padding: 15px;
     width: 50%;
-    grid-template-columns: 12% 88%;
-    /* border: 1px solid rgb(1, 43, 158); */
-    /* gap : 1em; */
+    grid-template-columns: 11.5% 88%;
     display: grid;
 }
 
@@ -255,7 +255,6 @@
     width: 50%;
     display: flex;
     justify-self: end;
-    /* border: 1px solid rgb(1, 43, 158); */
 }
 
 .message-list .content-msg-list .receiver .msg{
@@ -277,7 +276,6 @@
     background-color: #E8E9EC;
 }
 .message-list .content-msg-list .receiver .msg .msg-content{
-    /* border: 1px solid rgb(255, 251, 2); */
     color: #0A466E;
     padding: 16px;
     font-family: 'Josefin Sans Semibold';
@@ -285,7 +283,6 @@
 }
 
 .message-list .content-msg-list .receiver .msg .msg-time{
-    /* border: 1px solid rgb(255, 251, 2); */
     color: #9E9E9E;
     display: flex;
     justify-content: center;
@@ -298,39 +295,51 @@
 .message-list .typing{
     border-radius: 0px 0px 56px 56px ;
     background-color: #E8E9EC;
-    grid-template-columns: 90% 10%;
+    grid-template-columns: 94% 4%;
     display: grid;
-
 }
 
 .message-list .typing .input-msg{
     background-color: inherit;
     border-radius: 0px 0px 0px 56px;
-    font-size: 16px;
-    font-family: myFont;
+    font-size: 20px;
+    font-family: 'Josefin Sans Semibold';
     padding: 15px;
     padding-left: 60px;
     border: none;
+    /* border: 1px solid rgb(234, 1, 255); */
 }  
 
-.message-list .typing .send-icon{    
-    /* border: 1px solid rgb(255, 251, 2); */
-    /* border-radius: 0px 0px 56px 0px ; */
-    display: flex;
-    justify-self: center;
-    padding-top: 50px;
+.message-list .typing input:focus{
+    outline: none;
 }
 
+.message-list .typing .send-icon{    
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    align-items: center;
+    /* border: 1px solid rgb(234, 1, 255); */
 
+}
+
+.message-list .typing .fa-paper-plane
+{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    padding: 8px;
+    background-color: #b8b5b479;
+    display: flex;
+    align-items: center;
+}
 /*----------------------more Settings--------------------------*/
 
-
 .chat-content .about-friend{
+    /* border: 1px solid rgb(234, 1, 255); */
     background-color: #FFEEBF;
     border-radius: 56px;
-    opacity: 1;
     grid-template-rows: 10% 0.5% 89.5%;
-    /* display: grid; */
     padding: 0;
     display: none;
 }
@@ -339,10 +348,10 @@
     background-color: transparent;
     grid-template-columns: 85% 10%;
     display: grid;
-    /* border: 1px solid rgb(0, 255, 238); */
     font-weight: bold;
     font-size: 25px;
     font-family: myFont;
+    /* border: 1px solid rgb(234, 1, 255); */
 
 }
 
@@ -350,12 +359,9 @@
     color: #B8B5B4;
     margin: auto;
     padding-left: 30px;
-    /* border: 1px solid rgb(34, 71, 69); */
 }
 
-
 .chat-content .about-friend .header .fa-xmark{
-    /* border: 1px solid rgb(34, 71, 69); */
     align-items: center;
     display: flex;
     color:  #B8B5B4;
@@ -371,52 +377,53 @@
     grid-template-rows: 25% 8% 25% 10%;
     gap: 1em;
     display: grid;
-    /* border: 1px solid rgb(34, 71, 69); */
+    /* border: 1px solid rgb(234, 1, 255); */
+
 }
 
 .chat-content .about-friend .content-friend .friend-info{
-    /* border: 1px solid rgb(34, 71, 69); */
     grid-template-rows: 80% 10%;
     display: grid;
+    /* border: 1px solid rgb(42, 150, 15); */
 }
 
 .chat-content .about-friend .content-friend .friend-info .avatar{
-    /* border: 1px solid rgba(255, 255, 255, 0.562); */
     width: 100px;
     height: 100px;
     border-radius: 50px;
     margin:auto;
     background-color: #2C3453;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .chat-content .about-friend .content-friend .friend-info .name{
     display: flex;
-    /* border: 1px solid rgb(34, 71, 69); */
     justify-content: center;
     color: #0A466E;
     font-weight: bold;
     font-size: 20px;
     align-items: center;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .chat-content .about-friend .content-friend .level{
-    /* border: 1px solid rgb(34, 71, 69); */
     width: 80%;
     margin:auto;
     height: 12px;
     border-radius: 10px;
     background: linear-gradient(to right, rgba(17, 194, 64, 1), rgba(55, 164, 84, 1), rgba(255, 255, 255, 1));
-
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .chat-content .about-friend .content-friend .options{
-    /* border: 1px solid rgb(34, 71, 69); */
     grid-template-rows: 50% 25%;
     display: grid;
     padding: 15px;
     justify-content: center;
     align-items: center;
+    font-size: 20px;
 
+    /* border: 1px solid rgb(234, 1, 255); */
 
 }
 
@@ -440,11 +447,9 @@
     margin-left: 25%;
     color:  #0A466E;
     font-weight: 100;
-
 }
 
 .chat-content .about-friend .content-friend .play{
-    /* border: 1px solid rgb(34, 71, 69); */
     background-color: transparent;
     align-items: center;
     display: flex;
@@ -469,9 +474,7 @@
 .chat-content .about-friend .content-friend .play button:hover{
     rotate: 360deg;
     transition: 0.6s;
-    /* height: 60px; */
 }
-
 
 .hidden{
     display: none;

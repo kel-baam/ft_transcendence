@@ -1,4 +1,63 @@
-<div id="landing-header">
+
+import createElement from "../framework/createElement.js";
+import createDOMElement from "../framework/createDOMElement.js";
+import render from "../framework/render.js"
+import landingPageHeader from "../components/landingPageheader.js"
+import aboutUs from  "../components/aboutUs.js"
+import Footer  from "../components/footer.js";
+import Team from "../components/teamSection.js";
+
+class landingPage{
+
+
+    constructor()
+    {
+        this.root = document.body;
+        this.render()
+    }
+    render()
+    {   
+        this.creatLandingPage()
+    }
+
+    creatLandingPage()
+    {
+        const vdom =  createElement("div",{id:"all"},createElement("div",{id:"landing-login"},
+                    createElement(landingPageHeader,{}),
+                    createElement(aboutUs,{}),
+                    createElement(Team,{}),
+                    createElement(Footer,{}),
+                )
+        );
+        console.log(vdom)
+        render(vdom,this.root)
+    }
+}
+
+// window.customElements.define('my-landing', landingPage);
+
+export default landingPage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* <div id="landing-header">
     <nav class="landing-nav">
         <img class="logo" src="assets/images/logo.png" alt="logo">
         <ul class="nav-links">
@@ -22,7 +81,6 @@
         <img src="assets/images/player1.png" alt="player-pic" >
     </div>
 </div>
-
 <!-- ---------ABOUT SECTION------->
 <div id="about-section">
     <h2>ABOUT US</h2>
@@ -171,4 +229,4 @@
     <div class="footer-copy-right">
         <p>Copyright &copy;2024 Designed by 1337 students (power girls team)</p>
     </div>
-</div>
+</div> */
