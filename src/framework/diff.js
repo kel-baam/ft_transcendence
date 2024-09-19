@@ -1,77 +1,111 @@
-// Utility function to create a unique key for nodes
-function generateKey(node) {
-    return node.props && node.props.key ? node.props.key : null;
-}
+import createDOMElement from "./createDOMElement.js";
 
-// Function to create patches from diffing process
-export function diff(oldVNode, newVNode) {
+export function diff(oldVNode, newVNode)
+{
     const patches = [];
-    diffNode(oldVNode, newVNode, patches, 0);
+    diffNode(oldVNode, newVNode, patches, 0, [0]);
     return patches;
 }
 
-// Recursive function to diff nodes
-function diffNode(oldVNode, newVNode, patches, index) {
-    if (!oldVNode) {
-        // If there's no oldVNode, add newVNode as a new element
-        patches.push({ type: 'CREATE', vNode: newVNode, index });
-    } else if (!newVNode) {
-        // If there's no newVNode, remove the oldVNode
-        patches.push({ type: 'REMOVE', index });
-    } else if (oldVNode.type !== newVNode.type) {
-        // If the types are different, replace the oldVNode with the newVNode
-        patches.push({ type: 'REPLACE', vNode: newVNode, index });
-    } else if (typeof oldVNode === 'string' && oldVNode !== newVNode) {
-        // If both are text nodes and different, update the text content
-        patches.push({ type: 'TEXT', text: newVNode, index });
-    } else {
-        // If nodes are the same type, diff their children
-        const oldChildren = oldVNode.props.children || [];
-        const newChildren = newVNode.props.children || [];
-        const maxLength = Math.max(oldChildren.length, newChildren.length);
+function diffNode(oldVNode, newVNode, patches, index,path = [])
+{
+    // console.log('Diffing nodes at index', index, 'Old VNode:', oldVNode, 'New VNode:', newVNode);
+    if (!oldVNode && newVNode)
+    {
+        patches.push({ type: 'CREATE', vNode: newVNode, index , path});
+    }
+    else if (oldVNode && !newVNode)
+    {
+        patches.push({ type: 'REMOVE', index , path});
+    }
+    else if (oldVNode && newVNode && oldVNode.tag !== newVNode.tag)
+    {
+        patches.push({ type: 'REPLACE', vNode: newVNode, index, path });
+    }
+    else if (typeof oldVNode === 'string' && oldVNode !== newVNode) {
+        patches.push({ type: 'TEXT', text: newVNode, index, path });
+    }
+    else if (oldVNode && newVNode)
+    {
+        const oldProps = oldVNode.props || {};
+        const newProps = newVNode.props || {};
         
-        for (let i = 0; i < maxLength; i++) {
-            diffNode(oldChildren[i], newChildren[i], patches, i);
+        for (const key in newProps) {
+            if (oldProps[key] !== newProps[key]) {
+                patches.push({ type: 'PROPS', props: { [key]: newProps[key] }, index, path });
+            }
+        }
+        for (const key in oldProps) {
+            if (!(key in newProps)) {
+                patches.push({ type: 'REMOVE_PROP', prop: key, index, path });
+            }
+        }
+
+        const oldChildren = oldVNode.children || [];
+        const newChildren = newVNode.children || [];
+        const maxLength = Math.max(oldChildren.length, newChildren.length);
+
+        // console.log("--------> oldnode", oldVNode)
+        // console.log("--------> newnode", newVNode)
+
+        for (let i = 0; i < maxLength; i++)
+        {
+            // console.log("OLD chILD => ", oldChildren);
+            // console.log("NEW chILD => ", newChildren);
+            console.log("--------> path : ", path)
+            diffNode(oldChildren[i], newChildren[i], patches, i, [...path, i]);
         }
     }
 }
 
-// Function to apply patches to the real DOM
+function getNodeByPath(dom, path) {
+    let currentNode = dom, parent = currentNode;
+
+    path.forEach(index => {
+        parent = currentNode;
+        currentNode = currentNode.childNodes[index];
+
+        console.log(">>>>>>>>> currentNode : ", currentNode, index)
+    });
+    return parent;
+}
+
+
 export function patch(dom, patches) {
-    patches.forEach(patch => {
-        switch (patch.type) {
+    // patches.forEach(patch => {
+    for(let i = patches.length - 1; i >= 0; i--)
+    {
+        const targetNode = getNodeByPath(dom, patches[i].path); // Get the target node by path
+        
+        switch (patches[i].type) {
             case 'CREATE':
-                dom.appendChild(createDOMElement(patch.vNode));
+                targetNode.appendChild(createDOMElement(patches[i].vNode));
                 break;
             case 'REMOVE':
-                dom.removeChild(dom.childNodes[patch.index]);
+                const targetNodeToRemove = targetNode.childNodes[patches[i].index];
+                console.log("--------> target node : ", targetNode, patches[i].index)
+                console.log("remove : -> ", targetNodeToRemove);
+                targetNode.removeChild(targetNodeToRemove);
                 break;
             case 'REPLACE':
-                dom.replaceChild(createDOMElement(patch.vNode), dom.childNodes[patch.index]);
+                const targetNodeToReplace = targetNode.childNodes[patches[i].index];
+                console.log("replace : -> ", targetNodeToReplace);
+                targetNodeToReplace.replaceWith(createDOMElement(patches[i].vNode));
                 break;
             case 'TEXT':
-                dom.childNodes[patch.index].textContent = patch.text;
+                targetNode.textContent = patches[i].text;
                 break;
-        }
-    });
-}
+            case 'PROPS':
+                const targetNodeA = targetNode.childNodes[patches[i].index];;
+                for (const key in patches[i].props) {
+                    targetNodeA[key] = patches[i].props[key];
+                }
+                break;
+            case 'REMOVE_PROP':
+                const removeTargetNode = targetNode.childNodes[patches[i].index];
+                delete removeTargetNode[patches[i].prop];
+                break;
 
-// Helper function to create DOM element from virtual node
-function createDOMElement(vNode) {
-    if (typeof vNode === 'string') {
-        return document.createTextNode(vNode);
+            }
     }
-
-    const element = document.createElement(vNode.type);
-    Object.keys(vNode.props).forEach(prop => {
-        if (prop !== 'children') {
-            element[prop] = vNode.props[prop];
-        }
-    });
-
-    vNode.props.children.forEach(child => {
-        element.appendChild(createDOMElement(child));
-    });
-
-    return element;
 }

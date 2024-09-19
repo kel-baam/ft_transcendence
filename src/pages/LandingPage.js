@@ -7,7 +7,7 @@ import aboutUs from  "../components/aboutUs.js"
 import Footer  from "../components/footer.js";
 import Team from "../components/teamSection.js";
 
-class landingPage{
+class LandingPage{
 
 
     constructor()
@@ -29,14 +29,13 @@ class landingPage{
                     createElement(Footer,{}),
                 )
         );
-        console.log(vdom)
         render(vdom,this.root)
     }
 }
 
 // window.customElements.define('my-landing', landingPage);
 
-export default landingPage
+export default LandingPage
 
 
 

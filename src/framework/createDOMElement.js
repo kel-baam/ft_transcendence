@@ -1,13 +1,25 @@
 function createDOMElement(virtualDOM) {
+    // Handle text nodes
+
+
+    // console.log("in cDOM : ", virtualDOM);
     if (typeof virtualDOM === 'string') {
         return document.createTextNode(virtualDOM);
     }
-    var element
-    if(virtualDOM)
-    {
-        element = document.createElement(virtualDOM.tag);
-    }
-    if (virtualDOM && virtualDOM.props) {
+
+    // Check if virtualDOM.tag is a function (component)
+    // if (typeof virtualDOM.tag === 'function') {
+    //     // Check if it's a class-based component
+    //     const componentInstance = new virtualDOM.tag(virtualDOM.props);  // Instantiate the component
+    //     const componentVNode = componentInstance.render();  // Call the render method to get virtual DOM
+    //     return createDOMElement(componentVNode);  // Recursively create DOM for the component's virtual DOM
+    // }
+
+    // Create regular HTML elements
+    var element = document.createElement(virtualDOM.tag);
+
+    // Set properties and attributes
+    if (virtualDOM.props) {
         Object.keys(virtualDOM.props).forEach(prop => {
             if (prop.startsWith('on')) {
                 // Handle event listeners
@@ -20,15 +32,15 @@ function createDOMElement(virtualDOM) {
             }
         });
     }
-1
-    if (virtualDOM && virtualDOM.children) {
+
+    // Recursively handle children
+    if (virtualDOM.children) {
         virtualDOM.children.forEach(child => {
             element.appendChild(createDOMElement(child));
         });
     }
-    if (element)
-        return element;
-    return null
+
+    return element;
 }
 
 export default createDOMElement;

@@ -1,55 +1,22 @@
 import createElement from "../framework/createElement.js";
 import createDOMElement from "../framework/createDOMElement.js";
-import "./leaderboard_profil.js";
-import "./welcomingsection.js";
+import LeaderboardHome from "./leaderboardHome.js";
+import WelcomingSection from "./welcomingsection.js";
 
-class hometop extends HTMLElement
-{
-    constructor()
-    {
-        super();
-        this.attachShadow({ mode: 'open'});
-        this.connectedCallback();
-    }
-
-    connectedCallback()
-    {
+class HomeTop {
+    constructor(props) {
+        this.props = props;
         this.render();
     }
 
-    render()
-    {
-        // console.log("hhomwtop");
-        const virtualDom = createElement('div', { className: 'home-top' });
+    render() {
+        const virtualDom = createElement('div', { className: 'home-top' }, 
+            createElement(LeaderboardHome, {}),
+            createElement(WelcomingSection, {})
+        );
 
-        const domElement = createDOMElement(virtualDom);
-        
-        document.getElementsByClassName('home-content')[0].appendChild(domElement);
-        
-        this.leaderBoardCreate();
-        this.welcomingSectionCreate();
-    }
-    
-    leaderBoardCreate()
-    {
-        const virtualDom = createElement('div', { className: 'leader-board' });
-        const domElement = createDOMElement(virtualDom);
-        
-        document.getElementsByClassName('home-top')[0].appendChild(domElement);
-        document.createElement('leaderboard-component');
-    }
-    
-    welcomingSectionCreate()
-    {
-        const virtualDom = createElement('div', { className: 'welcoming-section' });
-        const domElement = createDOMElement(virtualDom);
-        
-        document.getElementsByClassName('home-top')[0].appendChild(domElement);
-        
-        document.createElement('welcomingsection-component');
+        return virtualDom;
     }
 }
 
-window.customElements.define('hometop-component', hometop);
-
-export default hometop;
+export default HomeTop;

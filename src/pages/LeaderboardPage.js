@@ -8,7 +8,7 @@ import sidebar from "../components/sidebar.js";
 
 import leaderboard_main from "../components/leaderboard_main.js";
 
-class leaderboard {
+class leaderboardPage {
 
     constructor()
     {
@@ -29,12 +29,9 @@ class leaderboard {
             createElement(sidebar, {}),
             createElement("div",{id:"global-content"},
             createElement(leaderboard_main,{})
-        )
-                
-            )
-        )
+        )))
         render(vdom,this.root)
     }
 }
 
-export default leaderboard
+export default leaderboardPage

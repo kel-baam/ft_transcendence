@@ -1,28 +1,46 @@
-import "./pages/HomePage.js"; // Assuming this imports the custom components
-import "./pages/ProfilePage.js"
-import landingPage from"./pages/landingPage.js"
-import Leaderboard from "./pages/Leaderboard.js";
-
+import HomePage from "./pages/HomePage.js";
+import ProfilePage from "./pages/ProfilePage.js"; // Example for another page
+import LandingPage from "./pages/LandingPage.js";
+import LoginPage from "./pages/LoginPage.js";
 function loadComponent(component) {
-    const element = document.createElement(component);
+    const instance = new component();
 }
 
-function handleRouting(path)
-{
-    console.log(path)
-    if (path === '/assets/')
-    {
-        new Leaderboard()
-        // loadComponent('my-landing')
+function handleRouting(path) {
+    let component;
+    console.log(path);
+    switch (path) {
+        case '/profile':
+            component = ProfilePage;
+            break;
+        default:
+            component = LoginPage;
+            // component = LandingPage;
+            // component = HomePage;
     }
-    // else
-    // {
-    //     loadComponent('profile-element');
-    // }
+    loadComponent(component);
 }
 
-// Load the correct component on initial load
-window.addEventListener('load', () =>
-{
-    handleRouting(window.location.pathname);
+// function addGlobalEventListeners() {
+//     document.addEventListener('click', event => {
+//         console.log("-----------------------------------------")
+//         if (event.target.matches('.side-bar a')) {
+//             event.preventDefault(); // Prevent default anchor behavior
+//             const path = event.target.getAttribute('href');
+//             console.log(path);
+//             handleRouting(path);
+//             window.history.pushState(null, '', path); // Update the URL
+//         }
+//     });
+// }
+
+window.addEventListener('load', () => {
+    // addGlobalEventListeners();
+    
+    handleRouting(window.location.pathname); // Initial page load
 });
+
+// Handle browser navigation (e.g., back and forward)
+// window.addEventListener('popstate', () => {
+//     handleRouting(window.location.pathname);
+// });

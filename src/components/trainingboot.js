@@ -1,31 +1,23 @@
 import createElement from "../framework/createElement.js";
 import render from "../framework/render.js";
-import createDOMElement from "../framework/createDOMElement.js";
-class trainingboot extends HTMLElement
-{
-    constructor()
-    {
-        super();
-        this.attachShadow({ mode: 'open'});
-        this.connectedCallback();
-    }
 
-    connectedCallback()
-    {
+class TrainingBoot {
+    constructor(props) {
+        this.props = props;
         this.render();
     }
 
-    render()
-    {
-        render(createElement('div', { className: 'training-boot' },
+    render() {
+        const virtualDom = createElement('div', { className: 'training-boot' },
             createElement('h1', null, 'Training'),
             createElement('img', { src: './images/paddles-removebg-preview.png' }),
             createElement('a', { href: 'playerVSplayer' }, 
-            createElement('button', { type: 'button', className: 'btn' }, 'PLAY'))
-        ), document.getElementsByClassName('home-down')[0])
+                createElement('button', { type: 'button', className: 'btn' }, 'PLAY')
+            )
+        );
+
+        return virtualDom;
     }
 }
 
-window.customElements.define('trainingboot-component', trainingboot);
-
-export default trainingboot;
+export default TrainingBoot;

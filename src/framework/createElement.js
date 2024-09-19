@@ -1,8 +1,7 @@
 function createElement(tag, props = {}, ...children) {
-    if(tag.prototype)
+    if (tag.prototype)
     {
-        const tagOb = new tag(props)
-        return tagOb.render()
+        return new tag(props).render();
     }
     return {tag, props, children};
 }

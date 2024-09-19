@@ -1,23 +1,16 @@
 import createElement from "../framework/createElement.js";
 import render from "../framework/render.js";
-import createDOMElement from "../framework/createDOMElement.js";
-class tournamentsection extends HTMLElement
-{
-    constructor()
-    {
-        super();
-        this.attachShadow({ mode: 'open'});
-        this.connectedCallback();
-    }
 
-    connectedCallback()
-    {
+class TournamentSection {
+    constructor(props) {
+        this.props = props;
         this.render();
     }
-
-    hierarchy()
-    {
-        return createElement('div', { className: 'hierarchy' }, 
+    
+    render() {
+        const virtualDom = createElement('div', { className: 'tournament' },
+            createElement('h1', null, 'Tournament'),
+            createElement('div', { className: 'hierarchy' }, 
                 createElement('div', { className: 'col1' }, 
                     createElement('div', { className: 'girl-div' }, 
                         createElement('img', { src: './images/bnt-removebg-preview.png', className: 'player1' })
@@ -49,21 +42,14 @@ class tournamentsection extends HTMLElement
                         createElement('img', { src: './images/playervs-removebg-preview.png', className: 'player5' })
                     )
                 )
-            );
-    }
-
-    render()
-    {
-        render( createElement('div', { className: 'tournament' },
-            createElement('h1', null, 'Tournament'),
-            this.hierarchy(),
+            ),
             createElement('a', { href: 'tournament' }, 
-                createElement('button', { type: 'button', className: 'btn' }, 'Play'))
-        ), document.getElementsByClassName('home-down')[0]);
+                createElement('button', { type: 'button', className: 'btn' }, 'Play')
+            )
+        );
 
+        return virtualDom;
     }
 }
 
-window.customElements.define('tournamentsection-component', tournamentsection);
-
-export default tournamentsection;
+export default TournamentSection;
