@@ -15,7 +15,7 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
         patches.push({ type: 'CREATE', vNode: newVNode, index , path});
     }
     else if (oldVNode && !newVNode)
-{
+    {
         patches.push({ type: 'REMOVE', index , path});
     }
     else if (oldVNode && newVNode && oldVNode.tag !== newVNode.tag)
@@ -59,75 +59,53 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
 }
 
 function getNodeByPath(dom, path) {
-    let currentNode = dom;
+    let currentNode = dom, parent = currentNode;
+
     path.forEach(index => {
+        parent = currentNode;
         currentNode = currentNode.childNodes[index];
-        console.log(">>>>>>>>> currentNode : ", currentNode)
+
+        console.log(">>>>>>>>> currentNode : ", currentNode, index)
     });
-    return currentNode;
+    return parent;
 }
 
-// export function patch(dom,patches) {
-//     patches.forEach(patch => {
-//         const targetNode = getNodeByPath(dom, patch.path);
-//         console.log("-------> ", targetNode)
-//         switch (patch.type) {
-//             // case 'CREATE':
-//             //     dom.appendChild(createDOMElement(patch.vNode));
-//             //     break;
-//             // case 'REMOVE':
-//             //     const nodeToRemove = dom.childNodes[patch.index];
-//             //     if (nodeToRemove) {
-//             //         dom.removeChild(nodeToRemove);
-//             //     }
-//             //     break;
-//             case 'REPLACE':
-//                 // const parent = patch.parent;
-
-//                 // console.log("=========> ", parent);
-//                 // console.log("kkkkkk",document.body)
-//                 // console.log(patch.index);
-//                 // const dom =  
-//                 const oldNode = parent.childNodes[patch.index];
-//                 const newNode = createDOMElement(patch.vNode);
-//                 parent.replaceChild(newNode, oldNode);
-//                 break;
-//             // case 'TEXT':
-//             //     if (dom.childNodes[patch.index]) dom.childNodes[patch.index].textContent = patch.text;
-//             //     break;
-//             // case 'PROPS':
-//             //     const targetNode = dom.childNodes[patch.index];
-//             //     for (const key in patch.props) {
-//             //         targetNode[key] = patch.props[key];
-//             //     }
-//             //     break;
-//             // case 'REMOVE_PROP':
-//             //     const removeTargetNode = dom.childNodes[patch.index];
-//             //     delete removeTargetNode[patch.prop];
-//             //     break;
-//         }
-//     });
-// }
 
 export function patch(dom, patches) {
-    patches.forEach(patch => {
-        const targetNode = getNodeByPath(dom, patch.path); // Get the target node by path
-
-        switch (patch.type) {
+    // patches.forEach(patch => {
+    for(let i = patches.length - 1; i >= 0; i--)
+    {
+        const targetNode = getNodeByPath(dom, patches[i].path); // Get the target node by path
+        
+        switch (patches[i].type) {
             case 'CREATE':
-                targetNode.appendChild(createDOMElement(patch.vNode));
+                targetNode.appendChild(createDOMElement(patches[i].vNode));
                 break;
             case 'REMOVE':
-                const targetNodeToRemove = targetNode;
-                targetNodeToRemove.parentNode.removeChild(targetNodeToRemove);
+                const targetNodeToRemove = targetNode.childNodes[patches[i].index];
+                console.log("--------> target node : ", targetNode, patches[i].index)
+                console.log("remove : -> ", targetNodeToRemove);
+                targetNode.removeChild(targetNodeToRemove);
                 break;
             case 'REPLACE':
-                const targetNodeToReplace = targetNode;
-                targetNodeToReplace.replaceWith(createDOMElement(patch.vNode));
+                const targetNodeToReplace = targetNode.childNodes[patches[i].index];
+                console.log("replace : -> ", targetNodeToReplace);
+                targetNodeToReplace.replaceWith(createDOMElement(patches[i].vNode));
                 break;
             case 'TEXT':
-                targetNode.textContent = patch.text;
+                targetNode.textContent = patches[i].text;
                 break;
-        }
-    });
+            case 'PROPS':
+                const targetNodeA = targetNode.childNodes[patches[i].index];;
+                for (const key in patches[i].props) {
+                    targetNodeA[key] = patches[i].props[key];
+                }
+                break;
+            case 'REMOVE_PROP':
+                const removeTargetNode = targetNode.childNodes[patches[i].index];
+                delete removeTargetNode[patches[i].prop];
+                break;
+
+            }
+    }
 }

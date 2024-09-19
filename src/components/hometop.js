@@ -1,8 +1,6 @@
 import createElement from "../framework/createElement.js";
 import createDOMElement from "../framework/createDOMElement.js";
-import "./leaderboard.js";
-import "./welcomingsection.js";
-import Leaderboard from "./leaderboard.js";
+import LeaderboardHome from "./leaderboardHome.js";
 import WelcomingSection from "./welcomingsection.js";
 
 class HomeTop {
@@ -13,7 +11,7 @@ class HomeTop {
 
     render() {
         const virtualDom = createElement('div', { className: 'home-top' }, 
-            createElement(Leaderboard, {}),
+            createElement(LeaderboardHome, {}),
             createElement(WelcomingSection, {})
         );
 

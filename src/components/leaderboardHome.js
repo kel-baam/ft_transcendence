@@ -1,7 +1,7 @@
 import createElement from "../framework/createElement.js";
 import render from "../framework/render.js";
 
-class Leaderboard {
+class LeaderboardHome {
     constructor(props) {
         this.props = props;
         this.render();
@@ -72,4 +72,4 @@ class Leaderboard {
     }
 }
 
-export default Leaderboard;
+export default LeaderboardHome;

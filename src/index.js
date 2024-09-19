@@ -1,6 +1,6 @@
 import HomePage from "./pages/HomePage.js";
 import ProfilePage from "./pages/ProfilePage.js"; // Example for another page
-
+import LandingPage from "./pages/LandingPage.js";
 function loadComponent(component) {
     const instance = new component();
 }
@@ -14,6 +14,8 @@ function handleRouting(path) {
             break;
         default:
             component = HomePage;
+            // component = LandingPage;
+            // component = HomePage;
     }
     loadComponent(component);
 }
