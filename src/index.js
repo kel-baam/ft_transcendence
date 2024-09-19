@@ -33,6 +33,7 @@ function handleRouting(path) {
 
 window.addEventListener('load', () => {
     // addGlobalEventListeners();
+    
     handleRouting(window.location.pathname); // Initial page load
 });
 

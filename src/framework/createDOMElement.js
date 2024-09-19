@@ -2,7 +2,7 @@ function createDOMElement(virtualDOM) {
     // Handle text nodes
 
 
-    console.log("in cDOM : ", virtualDOM);
+    // console.log("in cDOM : ", virtualDOM);
     if (typeof virtualDOM === 'string') {
         return document.createTextNode(virtualDOM);
     }
