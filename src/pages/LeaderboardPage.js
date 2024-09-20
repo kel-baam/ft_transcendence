@@ -2,13 +2,12 @@ import createElement from "../framework/createElement.js";
 import createDOMElement from "../framework/createDOMElement.js";
 import render from "../framework/render.js"
 
-
-import header from "../components/header.js";
-import sidebar from "../components/sidebar.js";
-
+import { diff , patch} from "../framework/diff.js";
+import Header from "../components/header.js";
+import Sidebar from "../components/sidebar.js";
 import leaderboard_main from "../components/leaderboard_main.js";
 
-class leaderboardPage {
+class LeaderboardPage {
 
     constructor()
     {
@@ -18,20 +17,20 @@ class leaderboardPage {
 
     render()
     {
-       this.leaderboard()
+        const vdom= createElement("div", {id: "global"},
+            createElement(Header, {}),
+            createElement("div", {className: "content"},
+            createElement(Sidebar, {}),
+            createElement(leaderboard_main, {})
+        ));
+
+        const container = document.body;
+        const patches = diff(container.__vdom, vdom, container);
+        console.log("paaaatches test==>",patches)
+        patch(document.body, patches);
+        container.__vdom = vdom;
     }
 
-    leaderboard()
-    {
-        const vdom= createElement("div",{id:"global"},
-            createElement(header, {}),
-            createElement("div",{className:"content"},
-            createElement(sidebar, {}),
-            createElement("div",{id:"global-content"},
-            createElement(leaderboard_main,{})
-        )))
-        render(vdom,this.root)
-    }
 }
 
-export default leaderboardPage
+export default LeaderboardPage

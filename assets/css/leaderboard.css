@@ -11,6 +11,8 @@
     align-items: center;
     height: 20%;
     margin-top: 20px;
+    border: 1px solid yellow;
+
 }
 
 .leaderboard-title h1

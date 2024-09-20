@@ -10,7 +10,7 @@ class Sidebar {
     render() {
         // Create the virtual DOM structure
         const virtualDom = createElement('div', { className: 'side-bar' }, 
-            createElement('a', { href: 'profile' }, 
+            createElement('a', { href: 'profile' },
                 createElement('i', { className: 'fa-regular fa-circle-user icon' })
             ),
             createElement('a', { href: 'chat' }, 

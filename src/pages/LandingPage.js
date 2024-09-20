@@ -6,6 +6,7 @@ import landingPageHeader from "../components/landingPageheader.js"
 import aboutUs from  "../components/aboutUs.js"
 import Footer  from "../components/footer.js";
 import Team from "../components/teamSection.js";
+import { diff , patch} from "../framework/diff.js";
 
 class LandingPage{
 
@@ -29,7 +30,11 @@ class LandingPage{
                     createElement(Footer,{}),
                 )
         );
-        render(vdom,this.root)
+
+        const container = document.body;
+        const patches = diff(container.__vdom, vdom, container);
+        patch(document.body, patches);
+        container.__vdom = vdom;
     }
 }
 

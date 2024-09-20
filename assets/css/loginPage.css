@@ -1,4 +1,4 @@
-.login-page-content{
+#login-page-content{
     background: #161C40;
     width: 100vw;
     height: 100vh;
@@ -7,7 +7,7 @@
     /* border: 1px solid red; */
 }
 
-.login-page-content .top{
+#login-page-content .top{
     display: flex;
     align-items: center;
     position: relative;
@@ -18,7 +18,7 @@
 
 /* --------logo-------------- */
 
-.login-page-content .top .logo{
+#login-page-content .top .logo{
     width: 80px;
     height: 50px;
     cursor: pointer;
@@ -27,13 +27,13 @@
     /* border: 1px solid green; */
 }
 
-.login-page-content .top .logo:hover{
+#login-page-content .top .logo:hover{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
     transition: 0.5s;
 }
 
-.login-page-content .top .logo:active{
+#login-page-content .top .logo:active{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
     transition: 0.5s;
@@ -41,7 +41,7 @@
 
 /* ---------------------Icon---------------- */
 
-.login-page-content .top i
+#login-page-content .top .house
 {
     color: #5293CB;
     cursor: pointer;
@@ -55,46 +55,45 @@
 
 /* -------------------CONTENT--------------- */
 
-.login-page-content .down{
+#login-page-content .down{
     height: 100%;
     display: grid;
     grid-template-columns: 49% 51%;
-    /* border: 1px solid red; */
-
 
 }
 
-.login-page-content .down .player{
+#login-page-content .down .player{
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding-left: 100px;
-    /* border: 1px solid rgb(0, 4, 255); */
+    /* border: 1px solid red; */
 
 }
 
-.login-page-content .down .player img{
+#login-page-content .down .player img{
     width: 550px;
     height: 550px;
     filter: drop-shadow(0px 4px 4px rgba(57, 71, 153, 0.96));
 }
 
-.login-page-content .down .info{
+#login-page-content .down .info{
     display: grid;
     grid-template-rows: 35% 65%;
     /* border: 1px solid red; */
 
 }
 
-.login-page-content .down .title{
+#login-page-content .down .title{
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
+    align-items: flex-end;
+    justify-content: flex-start;
     padding-bottom: 40px;
     /* border: 1px solid red; */
+
 }
 
-.login-page-content .down .title h1{
+#login-page-content .down .title h1{
     font-family: myFont;
     letter-spacing: 2px;
     font-size: 60px;
@@ -102,7 +101,7 @@
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
 }
 
-.login-page-content .down .login{
+#login-page-content .down .login{
     width: 400px;
     height: 300px;
     border-radius: 50px;
@@ -118,10 +117,15 @@
     box-shadow: 1px 1px 1px rgba(57, 71, 153, 0.96);
 }
 
-.login-page-content .down .login .btn{
+#login-page-content .down .login .bord img{
+    width: 24px;
+    height: 24px;
+}
+
+#login-page-content .down .login .bord{
     background: rgba(217, 217, 217, 0.30);
     width: 300px;
-    height: 50px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,26 +135,10 @@
     transition-duration: 0.3s;
     -webkit-transition-property: transform;
     transition-property: transform;
-    position: relative;
     border: 1px solid rgba(255, 255, 255, 0.30);
 }
 
-.login-page-content .down .login .btn img{
-    width: 24px;
-    height: 24px;
-}
-
-
-.login-page-content .down .login .btn p{
-    text-decoration: none;
-    font-family: myFont;
-    letter-spacing: 2px;
-    font-size: 20px;
-    color: #FFEEBF;
-    text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
-}
-
-.login-page-content .down .login span{
+#login-page-content .down .login span{
     font-family: Josefin Sans;
     font-size: 20px;
     color: rgba(255, 255, 255, 0.65);
@@ -158,16 +146,25 @@
     padding-bottom: 30px;
 }
 
-.login-page-content .down .login .intr{
+#login-page-content .down .login a{
+    text-decoration: none;
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 20px;
+    color: #FFEEBF;
+    position: relative;
+}
+
+#login-page-content .down .login .intr{
     padding-right: 6px;
 }
 
-.login-page-content .down .login .btn img{
+#login-page-content .down .login a img{
     position: absolute;
-    right: 80%;
+    right: 110%;
 }
 
-.login-page-content .down .login .btn:hover{
+#login-page-content .down .login .bord:hover{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
