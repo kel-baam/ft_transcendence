@@ -2,6 +2,7 @@ import HomePage from "./pages/HomePage.js";
 import ProfilePage from "./pages/ProfilePage.js"; // Example for another page
 import LandingPage from "./pages/LandingPage.js";
 import LeaderboardPage from "./pages/LeaderboardPage.js"
+import LoginPage from "./pages/LoginPage.js";
 
 
 function loadComponent(component) {
@@ -19,7 +20,10 @@ function handleRouting(path) {
             component = LeaderboardPage;
             break;
         case 'home':
-            component = HomePage;
+            component = LoginPage;
+            break;
+        case 'login':
+            component = LoginPage;
             break;
         default:
             component = HomePage;
@@ -31,7 +35,7 @@ function addGlobalEventListeners()
 {
     document.addEventListener('click', event => {
         // Ensure you are targeting an anchor element inside the sidebar
-        const link = event.target.closest('.side-bar a');
+        const link = event.target.closest('a');
         
         if (link) {
             event.preventDefault(); // Prevent default anchor behavior

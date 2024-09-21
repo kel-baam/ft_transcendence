@@ -26,7 +26,6 @@ class LeaderboardPage {
 
         const container = document.body;
         const patches = diff(container.__vdom, vdom, container);
-        console.log("paaaatches test==>",patches)
         patch(document.body, patches);
         container.__vdom = vdom;
     }

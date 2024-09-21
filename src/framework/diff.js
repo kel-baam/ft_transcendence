@@ -80,8 +80,6 @@ export function patch(dom, patches) {
         
         switch (patches[i].type) {
             case 'CREATE':
-                console.log("targetNode,,",targetNode)
-                console.log("patches[i].vNode",patches[i].path)
                 targetNode.appendChild(createDOMElement(patches[i].vNode));
                 break;
             case 'REPLACE':
