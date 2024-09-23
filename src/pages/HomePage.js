@@ -6,6 +6,7 @@ import Sidebar from "../components/sidebar.js";
 import HomeTop from "../components/hometop.js";
 import HomeDown from "../components/homedown.js";
 import { diff , patch} from "../framework/diff.js";
+import dispatch from "../framework/dispatch.js";
 
 
  
@@ -23,7 +24,7 @@ class HomePage
                 createElement('div', {className: 'content'}, 
                     createElement(Sidebar, {}),createElement('div', {className: 'home-content'},
                         createElement(HomeTop, {}),
-                        createElement(HomeDown, {})
+                        createElement(HomeDown, {dispatch})
                     ), createElement('div', {className: 'friends'})
                 ));
 

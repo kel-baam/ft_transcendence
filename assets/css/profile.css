@@ -6,15 +6,17 @@
     font-family: myFont;
 }
 
-@font-face {
-    font-family: hFont;
-    src: url(Playground.ttf);
-}
 
 @font-face {
     font-family: myFont;
-    src: url(Season\ Prime.otf);
+    src: url(../fonts/Season\ Prime.otf);
 }
+
+@font-face {
+    font-family: hFont;
+    src: url(../fonts/Playground.ttf);
+}
+
 /*--------------------------profile card----------------------------*/
 
 .profile-content

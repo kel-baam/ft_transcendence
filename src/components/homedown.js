@@ -7,6 +7,7 @@ import "./playervsplayersection.js";
 import TrainingBoot from "./trainingboot.js";
 import TournamentSection from "./tournamentsection.js";
 import PlayerVsPlayer from "./playervsplayersection.js";
+import dispatch from "../framework/dispatch.js";
 
 class HomeDown {
 
@@ -17,7 +18,7 @@ class HomeDown {
 
     render() {
         const virtualDom = createElement('div', { className: 'home-down' }, 
-            createElement(TrainingBoot, null),
+            createElement(TrainingBoot, { dispatch: this.props.dispatch }),
             createElement(TournamentSection, null),
             createElement(PlayerVsPlayer, null)
         );
