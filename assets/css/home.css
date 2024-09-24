@@ -1,36 +1,50 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* font-family: 'Poppins', sans-serif; */
+    font-family: myFont;
+}
 
 /* --------------------home-Content------------------ */
 
 .home-content{
-    padding: 8px;
+    /* padding: 8px; */
     background-color: rgba(217, 217, 217, 0.05);
     border-radius: 56px;
     display: grid;
-    grid-template-rows: 50% 50%;
+
+    width: 100%;
+    /* background-color: rgba(217, 217, 217, 0.05); */
     height: 100%;
-    /* row-gap: 0.2em; */
+    grid-template-rows: 49% 49%;
+    row-gap: 2%;
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
 .home-content .home-top{
-    padding: 15px;
+    padding-top: 1%;
+    padding-right: 1%;
+    padding-left: 1%;
+    /* padding-bottom: 1%; */
     /* padding-right: 15px; */
     /* padding-top: 6px; */
     display: grid;
-    grid-template-columns: 32.2% 65.8%;
-    column-gap: 1.5em;
+    grid-template-columns: 32.66% 66.3%;
+    column-gap: 1%;
     /* border: 1px solid rgb(255, 1, 1); */
 }
 
 .home-content .home-top .leader-board{
     border-radius: 50px;
     background: #FFEEBF;
-
 }
 
 .home-content .home-top .welcoming-section{
     border-radius: 50px;
     background: #FFEEBF;
+    height: 97%;
+    /* padding: 3%; */
     /* display: grid;
     grid-template-columns: 60% 40%; */
     position: relative;
@@ -124,21 +138,21 @@
     position: absolute;
     right: 0;
     left: 55%;
-    top: 23px;
+    top: 8.7%;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.53));
 
     /* border: 1px solid rgb(255, 1, 1); */
 }
 
 .home-content .home-down{
-    /* padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 6px;
-    padding-bottom: 8px; */
-    padding: 15px;
+    /* padding-top: 1%; */
+    padding-right: 1%;
+    padding-left: 1%;
+    padding-bottom: 1%;
+    /* padding: 15px; */
     display: grid;
-    grid-template-columns: 32.2% 32.2% 32.2%;
-    column-gap: 1.5em;
+    grid-template-columns: 32.66% 32.66% 32.66%;
+    column-gap: 1%;
     /* border: 1px solid rgb(255, 251, 1); */
 
 }
@@ -171,7 +185,8 @@
     align-items: center;
     justify-content: center;
     filter: blur(0.5px);
-    text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
+    text-shadow: 0px 2px 2px rgba(145, 126, 126, 0.5);
+
 
     /* border: 1px solid rgb(255, 1, 1); */
 }
@@ -185,8 +200,8 @@
     color: #D9DBBC;
     font-size: 24px;
     position: relative;
-    left: 34%;
-    top: 50%;
+    left: 35%;
+    top: 49%;
     background: #D44444;
     padding: 15px;
     text-align: center;
@@ -212,8 +227,8 @@
     color: #D9DBBC;
     font-size: 24px;
     position: relative;
-    left: 34%;
-    bottom: 8px;
+    left: 35%;
+    /* bottom: 0%; */
     background: #D44444;
     padding: 15px;
     text-align: center;
@@ -240,7 +255,8 @@
     font-size: 24px;
     position: relative;
     left: 35%;
-    top: 1px;
+    top: 11.9%;
+    /* top: 1px; */
     background: #D44444;
     padding: 15px;
     text-align: center;
@@ -419,7 +435,9 @@
 .home-content .home-down .tournament .hierarchy .vs{
     width: 30px;
     height: 30px;
+    
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
+
 
 }
 
@@ -444,7 +462,6 @@
     align-items: center;
     justify-content: center;
     padding-right: 10px;
-    filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
 
     /* border: 1px solid #6372fc; */
 }
@@ -472,10 +489,12 @@
 .home-content .home-down .player-vs-player{
     border-radius: 50px;
     background: #FFEEBF;
+    /* height: 100%; */
+    /* border: 1px solid #5a79e0; */
 }
 
 .home-content .home-down .players{
-    height: 50%;
+    /* height: 1%; */
     display: grid;
     grid-template-columns: 45% 10% 45%;
     /* border: 1px solid #E0DA5A; */
@@ -518,8 +537,11 @@
 
 .home-content .home-top .leader-board{
     display: grid;
-    grid-template-rows: 10% 10% 10% 10% 60%;
-
+    grid-template-rows: 9.25% 9.25% 9.25% 9.25% 60%;
+    /* width: 100%; */
+    height: 97%;
+    padding: 3%;
+    /* row-gap: 0.5%; */
     /* border: 1px solid #E0DA5A; */
 }
 
@@ -532,7 +554,7 @@
 
 .home-content .home-top .leader-board .winners .coll1 img{
     width: 100px;
-    height: 60px;
+    /* height: 100%; */
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
     padding-right: 5px;
 
@@ -540,8 +562,7 @@
 
 .home-content .home-top .leader-board .winners .coll2{
     display: grid;
-    grid-template-columns: 33% 33% 33%;
-
+    grid-template-columns: 32.5% 34% 33.5%;
     /* border: 1px solid #00e759; */
 }
 
@@ -553,11 +574,11 @@
     /* border: 2px solid #000000; */
 }
 
-.home-content .home-top .leader-board .winners .coll2 .happy{
+.home-content .home-top .leader-board .winners .coll2 .player{
     display: flex;
     align-items: center;
     justify-content: center;
-    filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
+    filter: drop-shadow(0px 2px 2px rgba(145, 126, 126, 0.5));
     
     /* border: 2px solid #000000; */
 }
@@ -575,45 +596,46 @@
     width: 40px;
     height: 40px;
     filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
+    /* border: 2px solid #000000; */
 
 }
 
-.home-content .home-top .leader-board .winners .coll2 .happy-woman{
+.home-content .home-top .leader-board .winners .coll2 .first-player{
     width: 60px;
     height: 60px;
-    filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
+    filter: drop-shadow(0px 4px 4px rgba(180, 164, 164, 0.5));
+
 }
 
 .home-content .home-top .leader-board .winners .coll3{
     display: grid;
     grid-template-columns: 50% 50%;
-    /* border: 2px solid #000000; */
+    border-radius: 50px;
 }
 
-.home-content .home-top .leader-board .winners .coll3 .woman{
+.home-content .home-top .leader-board .winners .coll3 .second-player{
     padding-left: 40px;
     height: 44px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
-    /* border: 2px solid #ff0000; */
-
+    filter: drop-shadow(0px 4px 4px rgba(156, 141, 141, 0.5));
 }
 
-.home-content .home-top .leader-board .winners .coll3 .man-div{
+.home-content .home-top .leader-board .winners .coll3 .third-player{
     padding-right: 48px;
     height: 44px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    filter: drop-shadow(0px 4px 4px rgba(49, 44, 44, 0.5));
+    filter: drop-shadow(0px 4px 4px rgba(156, 141, 141, 0.5));
     /* border: 2px solid #ff0000; */
 }
 
 .home-content .home-top .leader-board .winners .coll3 img{
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50px;
 }
 
 .home-content .home-top .leader-board .winners .coll4{
@@ -727,4 +749,3 @@
 
     /* border: 2px solid #ff0000; */
 }
-
