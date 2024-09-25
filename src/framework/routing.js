@@ -11,22 +11,22 @@ function loadComponent(component) {
 export function handleRouting(path)
 {
     let component;
-    console.log(path);
+    console.log("----> " ,path);
     switch (path) {
-        case 'profile':
+        case '/profile':
             component = ProfilePage;
             break;
-        case 'leaderboard':
+        case '/leaderboard':
             component = LeaderboardPage;
             break;
-        case 'home':
+        case '/home':
             component = HomePage;
             break;
-        case 'login':
+        case '/login':
             component = LoginPage;
             break;
         default:
-            component = LoginPage;
+            component = HomePage;
             // component = LandingPage;
     }
     loadComponent(component);

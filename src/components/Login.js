@@ -30,7 +30,7 @@ class Login
             'div', { class: 'login-page-content' }, 
             createElement('div', { className: 'top' }, 
                 createElement('img', { src: './images/logo.png', className: 'logo' }),
-                createElement('a', { href: 'home' }, 
+                createElement('a', { href: '/home' }, 
                     createElement('i', { className: 'fa-solid fa-house icon', onclick:this.handleButtonClick })
                 )
             ),

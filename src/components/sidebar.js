@@ -21,22 +21,22 @@ class Sidebar {
 
     render() {
         const virtualDom = createElement('div', { className: 'side-bar' }, 
-            createElement('a', { href: 'profile' },
+            createElement('a', { href: '/profile' },
                 createElement('i', { className: 'fa-regular fa-circle-user icon', onclick:this.handleButtonClick })
             ),
-            createElement('a', { href: 'chat' }, 
+            createElement('a', { href: '/chat' }, 
                 createElement('i', { className: 'fa-regular fa-message icon', onclick:this.handleButtonClick })
             ),
-            createElement('a', { href: 'home' }, 
+            createElement('a', { href: '/home' }, 
                 createElement('i', { className: 'fa-sharp fa-solid fa-house-chimney icon', onclick:this.handleButtonClick })
             ),
-            createElement('a', { href: 'leaderboard' }, 
+            createElement('a', { href: '/leaderboard' }, 
                 createElement('i', { className: 'fa-solid fa-ranking-star icon', onclick:this.handleButtonClick })
             ),
-            createElement('a', { href: 'playerVSplayer' }, 
+            createElement('a', { href: '/playerVSplayer' }, 
                 createElement('i', { className: 'fa-solid fa-network-wired fa-rotate-90 icon', onclick:this.handleButtonClick })
             ),
-            createElement('a', { href: 'tournament' }, 
+            createElement('a', { href: '/tournament' }, 
                 createElement('i', { className: 'fa-solid fa-trophy icon', onclick:this.handleButtonClick })
             )
         );

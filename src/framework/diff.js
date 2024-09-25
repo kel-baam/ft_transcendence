@@ -77,17 +77,6 @@ export function patch(dom, patches) {
     for(let i = 0; i < patches.length; i++)
     {
         const targetNode = getNodeByPath(dom, patches[i].path);
-
-        switch (patches[i].type) {
-            case 'REMOVE':
-                    const targetNodeToRemove = targetNode.childNodes[patches[i].index];
-                    targetNode.removeChild(targetNodeToRemove);
-                    break;
-        }
-    }
-    for(let i = 0; i < patches.length; i++)
-    {
-        const targetNode = getNodeByPath(dom, patches[i].path);
         
         switch (patches[i].type) {
             case 'CREATE':
