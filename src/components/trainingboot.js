@@ -1,5 +1,5 @@
 import createElement from "../framework/createElement.js";
-import render from "../framework/render.js";
+import { handleRouting } from "../framework/routing.js";
 
 class TrainingBoot {
     constructor(props) {
@@ -9,12 +9,13 @@ class TrainingBoot {
     }
 
     handleButtonClick = () => {
-        // Dispatch an action or event here
-        console.log('PLAY button clicked!');
+        const link = event.target.closest('a');
         
-        // Example of dispatching a navigation action
-        if (this.props.dispatch) {
-            this.props.dispatch({ type: 'NAVIGATE', payload: '#profile'});
+        if (link) {
+            event.preventDefault();
+            const path = link.getAttribute('href');
+            handleRouting(path);
+            window.history.pushState(null, '', path);
         }
     }
     
@@ -22,11 +23,10 @@ class TrainingBoot {
         const virtualDom = createElement('div', { className: 'training-boot' },
             createElement('h1', null, 'Training'),
             createElement('img', { src: './images/paddles-removebg-preview.png' }),
-            createElement('a', { href: '#profile' }, 
+            createElement('a', { href: 'profile' }, 
                 createElement('button', { type: 'button', className: 'btn', onclick:this.handleButtonClick }, 'PLAY')
             )
         );
-
         return virtualDom;
     }
 }

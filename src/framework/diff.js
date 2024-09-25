@@ -9,12 +9,11 @@ export function diff(oldVNode, newVNode)
 
 function diffNode(oldVNode, newVNode, patches, index,path = [])
 {
-    // console.log('Diffing nodes at index', index, 'Old VNode:', oldVNode, 'New VNode:', newVNode);
-    if (!oldVNode && newVNode)
+    if ((!oldVNode && newVNode) || (oldVNode === undefined && newVNode))
     {
         patches.push({ type: 'CREATE', vNode: newVNode, index , path});
     }
-    else if (oldVNode && !newVNode)
+    else if ((oldVNode && !newVNode) || (oldVNode && newVNode === undefined))
     {
         patches.push({ type: 'REMOVE', index , path});
     }
@@ -45,10 +44,9 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
         const newChildren = newVNode.children || [];
         const maxLength = Math.max(oldChildren.length, newChildren.length);
 
+
         for (let i = 0; i < maxLength; i++)
-        {
             diffNode(oldChildren[i], newChildren[i], patches, i, [...path, i]);
-        }
     }
 }
 
@@ -64,7 +62,19 @@ function getNodeByPath(dom, path) {
 
 
 export function patch(dom, patches) {
-    for(let i = patches.length - 1; i >= 0; i--)
+ 
+    for (let i = patches.length - 1; i >= 0; i--)
+    {
+        const targetNode = getNodeByPath(dom,  patches[i].path);
+        switch (patches[i].type) {
+           case 'REMOVE':
+                const targetNodeToRemove = targetNode.childNodes[patches[i].index];
+                targetNode.removeChild(targetNodeToRemove);
+                break;
+        }
+      
+    }
+    for(let i = 0; i < patches.length; i++)
     {
         const targetNode = getNodeByPath(dom, patches[i].path);
 
@@ -100,7 +110,7 @@ export function patch(dom, patches) {
                 const removeTargetNode = targetNode.childNodes[patches[i].index];
                 delete removeTargetNode[patches[i].prop];
                 break;
-
             }
     }
 }
+

@@ -12,7 +12,7 @@ class Achievement
     createBadgeItem() {
         return createElement('div', { className: 'badge-item' },
             createElement('img', { 
-                src: '../../assets/images/lock.png', 
+                src: './images/lock.png', 
                 alt: 'lock icon' 
             })
         );

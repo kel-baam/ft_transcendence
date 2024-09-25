@@ -34,7 +34,7 @@ class Informations extends HTMLElement
                         {},
                         createElement(
                             'img',
-                            { src: '../../assets/images/informations_icon.png', alt:'informations icon'}
+                            { src: './images/informations_icon.png', alt:'informations icon'}
                         ),
                         createElement('h1', {}, 'Informations')
                     ),
@@ -43,7 +43,7 @@ class Informations extends HTMLElement
                         {},
                         createElement(
                             'img',
-                            { src: '../../assets/images/blocked_fr_icon.png', alt: 'blocked friends icon' }
+                            { src: './images/blocked_fr_icon.png', alt: 'blocked friends icon' }
                         ),
                         createElement('h2', {}, 'Blocked friends')
                     )
@@ -57,7 +57,7 @@ class Informations extends HTMLElement
                         createElement(
                             'div',
                             {},
-                            createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture', className: 'profile-pic' })
+                            createElement('img', { src: './images/kel-baam.png', alt: 'profile picture', className: 'profile-pic' })
                         ),
                         createElement(
                             'div',

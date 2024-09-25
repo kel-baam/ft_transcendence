@@ -13,7 +13,6 @@ class Profile
 {
     constructor()
     {
-        console.log("----> is profile constr the component")
         this.items = [];
         this.root = document.body;
         // this.fetchData()
@@ -37,7 +36,6 @@ class Profile
     
     render()
     {
-        console.log("------> here content tag ")
         const vdom = createElement('div', {id:'global'}, 
             createElement(Header, {}), createElement('div', { className: 'content' },
                 createElement(Sidebar, {}), createElement('div', {className:'global-content'},
@@ -52,7 +50,6 @@ class Profile
             
             const container = document.body;
             const patches = diff(container.__vdom, vdom, container);
-            console.log(">>>>>>>>> patches :", patches)
             patch(document.body, patches);
             container.__vdom = vdom;
             this.drawWinningCircle()

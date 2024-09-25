@@ -23,7 +23,7 @@ class Friends
     //         createElement('div', { className: 'chat-icon' },
     //             createElement('a', { href: '#' },
     //                 createElement('img', { 
-    //                     src: '../../assets/images/tabler_message (1).png', 
+    //                     src: './images/tabler_message (1).png', 
     //                     alt: 'chat icon' 
     //                 })
     //             )
@@ -53,7 +53,7 @@ class Friends
         createElement('div', { className: 'friends-scope-item' },
             createElement('div', { className: 'friend-item' },
                 createElement('div', { className: 'picture-item' },
-                    createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture', className: 'picture-item' })
+                    createElement('img', { src: './images/kel-baam.png', alt: 'profile picture', className: 'picture-item' })
                 ),
                 createElement('div', { className: 'data-user' },
                     createElement('span', {}, 'kawtar el-baamrani'),
@@ -61,13 +61,13 @@ class Friends
                 ),
                 createElement('div', { className: 'chat-icon' },
                     createElement('a', { href: '#' },
-                        createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+                        createElement('img', { src: './images/tabler_message (1).png', alt: '' })
                     )
                 )
             ),
             createElement('div', { className: 'friend-item' },
                 createElement('div', { className: 'picture-item' },
-                    createElement('img', { src: '../../assets/images/niboukha.png', alt: 'profile picture', className: 'picture-item' })
+                    createElement('img', { src: './images/niboukha.png', alt: 'profile picture', className: 'picture-item' })
                 ),
                 createElement('div', { className: 'data-user' },
                     createElement('span', {}, 'Nisrin boukhari'),
@@ -75,13 +75,13 @@ class Friends
                 ),
                 createElement('div', { className: 'chat-icon' },
                     createElement('a', { href: '#' },
-                        createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+                        createElement('img', { src: './images/tabler_message (1).png', alt: '' })
                     )
                 )
             ),
             createElement('div', { className: 'friend-item' },
                 createElement('div', { className: 'picture-item' },
-                    createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
+                    createElement('img', { src: './images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
                 ),
                 createElement('div', { className: 'data-user' },
                     createElement('span', {}, 'karima jarmoum'),
@@ -89,13 +89,13 @@ class Friends
                 ),
                 createElement('div', { className: 'chat-icon' },
                     createElement('a', { href: '#' },
-                        createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+                        createElement('img', { src: './images/tabler_message (1).png', alt: '' })
                     )
                 )
             ),
             createElement('div', { className: 'friend-item' },
                 createElement('div', { className: 'picture-item' },
-                    createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
+                    createElement('img', { src: './images/kjarmoum.png', alt: 'profile picture', className: 'picture-item' })
                 ),
                 createElement('div', { className: 'data-user' },
                     createElement('span', {}, 'karima jarmoum'),
@@ -103,7 +103,7 @@ class Friends
                 ),
                 createElement('div', { className: 'chat-icon' },
                     createElement('a', { href: '#' },
-                        createElement('img', { src: '../../assets/images/tabler_message (1).png', alt: '' })
+                        createElement('img', { src: './images/tabler_message (1).png', alt: '' })
                     )
                 )
             )

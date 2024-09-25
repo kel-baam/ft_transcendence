@@ -25,7 +25,7 @@ class MatchHistory
           createElement('div', { className: 'center-div' },
               createElement('div', { className: 'match-result-item' },
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                      createElement('img', { src: './images/shicham.jpeg', alt: 'profile picture' })
                   ),
                   createElement('div', { className: 'match-result' },
                       createElement('span', { className: 'user_score', style: 'color: #D44444;' }, '1'),
@@ -33,12 +33,12 @@ class MatchHistory
                       createElement('span', { className: 'opponent_score', style: 'color: #0AA989;' }, '3')
                   ),
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/niboukha.png', alt: 'profile picture' })
+                      createElement('img', { src: './images/niboukha.png', alt: 'profile picture' })
                   )
               ),
               createElement('div', { className: 'match-result-item' },
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                      createElement('img', { src: './images/shicham.jpeg', alt: 'profile picture' })
                   ),
                   createElement('div', { className: 'match-result' },
                       createElement('span', { className: 'user-score', style: 'color: #0B42AF;' }, '4'),
@@ -46,12 +46,12 @@ class MatchHistory
                       createElement('span', { className: 'opponent-score', style: 'color: #0B42AF;' }, '4')
                   ),
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/kjarmoum.png', alt: 'profile picture' })
+                      createElement('img', { src: './images/kjarmoum.png', alt: 'profile picture' })
                   )
               ),
               createElement('div', { className: 'match-result-item' },
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                      createElement('img', { src: './images/shicham.jpeg', alt: 'profile picture' })
                   ),
                   createElement('div', { className: 'match-result' },
                       createElement('span', { className: 'user-score', style: 'color: #D44444;' }, '1'),
@@ -59,12 +59,12 @@ class MatchHistory
                       createElement('span', { className: 'opponent-score', style: 'color: #0AA989;' }, '3')
                   ),
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture' })
+                      createElement('img', { src: './images/kel-baam.png', alt: 'profile picture' })
                   )
               ),
               createElement('div', { className: 'match-result-item' },
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/shicham.jpeg', alt: 'profile picture' })
+                      createElement('img', { src: './images/shicham.jpeg', alt: 'profile picture' })
                   ),
                   createElement('div', { className: 'match-result' },
                       createElement('span', { className: 'user-score', style: 'color: #D44444;' }, '1'),
@@ -72,7 +72,7 @@ class MatchHistory
                       createElement('span', { className: 'opponent-score', style: 'color: #0AA989;' }, '3')
                   ),
                   createElement('div', { className: 'picture-item' },
-                      createElement('img', { src: '../../assets/images/kel-baam.png', alt: 'profile picture' })
+                      createElement('img', { src: './images/kel-baam.png', alt: 'profile picture' })
                   )
               )
           ),

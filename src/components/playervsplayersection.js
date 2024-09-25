@@ -1,5 +1,6 @@
 import createElement from "../framework/createElement.js";
-import render from "../framework/render.js";
+import { handleRouting } from "../framework/routing.js";
+
 
 class PlayerVsPlayer {
     constructor(props) {
@@ -7,8 +8,18 @@ class PlayerVsPlayer {
         this.render();
     }
 
+    handleButtonClick = () => {
+        const link = event.target.closest('a');
+        
+        if (link) {
+            event.preventDefault();
+            const path = link.getAttribute('href');
+            handleRouting(path);
+            window.history.pushState(null, '', path);
+        }
+    }
+    
     render() {
-        // Create the virtual DOM structure
         const virtualDom = createElement('div', { className: 'player-vs-player' },
             createElement('div', { className: 'player-vs-player' }),
             createElement('div', { className: 'player-vs-player' }, 
@@ -25,8 +36,8 @@ class PlayerVsPlayer {
                     )
                 )
             ),
-            createElement('a', { href: 'playerVSplayer' }, 
-                createElement('button', { type: 'button', className: 'btn' }, 'PLAY'))
+            createElement('a', { href: 'login' }, 
+                createElement('button', { type: 'button', className: 'btn', onclick:this.handleButtonClick }, 'PLAY'))
         );
 
         return virtualDom;

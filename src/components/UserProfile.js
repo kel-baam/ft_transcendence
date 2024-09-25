@@ -21,7 +21,7 @@ class UserProfile{
         return(
             createElement('div', { className: 'infos-user-container' },
                 createElement('div', {},
-                    createElement('img', { src: '../../assets/images/kel-baam.png' }),
+                    createElement('img', { src: './images/kel-baam.png' }),
                     createElement('i', { className: 'fa-solid fa-camera', style: 'color: #5293CB;'  })
                 ),
                 createElement('div', {},
@@ -53,7 +53,7 @@ class UserProfile{
                                 createElement('span', { style: ' color: #0B42AF;' }, '3.9')
                             ),
                             createElement('div', { style:'color: #FBCA35; font-size: 16px;', className: 'achievement-item' },
-                                createElement('img', { src: '../../assets/images/ach.png' }),
+                                createElement('img', { src: './images/ach.png' }),
                                 createElement('span', {}, 'Silver')
                             )
                         )

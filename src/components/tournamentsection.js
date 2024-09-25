@@ -1,5 +1,6 @@
 import createElement from "../framework/createElement.js";
-import render from "../framework/render.js";
+import { handleRouting } from "../framework/routing.js";
+
 
 class TournamentSection {
     constructor(props) {
@@ -7,6 +8,17 @@ class TournamentSection {
         this.render();
     }
     
+    handleButtonClick = () => {
+        const link = event.target.closest('a');
+        
+        if (link) {
+            event.preventDefault();
+            const path = link.getAttribute('href');
+            handleRouting(path);
+            window.history.pushState(null, '', path);
+        }
+    }
+
     render() {
         const virtualDom = createElement('div', { className: 'tournament' },
             createElement('h1', null, 'Tournament'),
@@ -43,8 +55,8 @@ class TournamentSection {
                     )
                 )
             ),
-            createElement('a', { href: 'tournament' }, 
-                createElement('button', { type: 'button', className: 'btn' }, 'Play')
+            createElement('a', { href: 'login' }, 
+                createElement('button', { type: 'button', className: 'btn', onclick:this.handleButtonClick }, 'PLAY')
             )
         );
 
