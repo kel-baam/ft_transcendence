@@ -46,7 +46,7 @@ function addGlobalEventListeners()
             var path = link.getAttribute('href');
             if (path != null)
                 {
-                    // path = link.getAttribute('href');
+                    path = link.getAttribute('href');
                     console.log("Navigating to path:", path);
                     handleRouting(path);
                     window.history.pushState(null, '', path); // Update the URL
@@ -59,7 +59,7 @@ window.addEventListener('load', () =>
 {
     document.body.innerHTML = ''
     addGlobalEventListeners();
-    const request = new XMLHttpRequest();
+    // const request = new XMLHttpRequest();
 
     handleRouting(window.location.pathname); // Initial page load
 });

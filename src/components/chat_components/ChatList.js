@@ -20,7 +20,7 @@ class ChatList
                     createElement('i', { className: 'fa-brands fa-rocketchat'})
                 ),
                 createElement('div',{ className: 'separator'}),
-                createElement(ChatListItems,{})
+                createElement(ChatListItems,{}),
             );
         return (vdom);
     }

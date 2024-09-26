@@ -71,6 +71,10 @@ export function patch(dom, patches) {
                 const targetNodeToRemove = targetNode.childNodes[patches[i].index];
                 targetNode.removeChild(targetNodeToRemove);
                 break;
+            case 'REMOVE_PROP':
+                const removeTargetNode = targetNode.childNodes[patches[i].index];
+                delete removeTargetNode[patches[i].prop];
+                break;   
         }
       
     }
@@ -95,11 +99,7 @@ export function patch(dom, patches) {
                     targetNodeA[key] = patches[i].props[key];
                 }
                 break;
-            case 'REMOVE_PROP':
-                const removeTargetNode = targetNode.childNodes[patches[i].index];
-                delete removeTargetNode[patches[i].prop];
-                break;
-            }
+        }
     }
 }
 

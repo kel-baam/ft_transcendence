@@ -22,7 +22,7 @@
 }
 
 .chat-content .chat-list-container .separator{
-    background-color: rgba(7, 50, 207, 0.61);
+    background-color: rgba(208, 210, 217, 0.61);
     border-radius: 56px;
 }
 
@@ -127,7 +127,7 @@
     padding-left: 30px;
     border-radius: 40px;
     grid-template-columns: 6% 41% 49.5% 3%;
-    display: grid;    
+    display: grid;
 } 
 
 .message-list .header .contact-avatar{
@@ -371,7 +371,7 @@
     border-radius: 56px;
 }
 
-.chat-content .about-friend .content-friend{
+.chat-content .about-friend .about-friend-content{
     grid-template-rows: 25% 8% 25% 10%;
     gap: 1em;
     display: grid;
@@ -379,13 +379,13 @@
 
 }
 
-.chat-content .about-friend .content-friend .friend-info{
+.chat-content .about-friend .about-friend-content .friend-info{
     grid-template-rows: 80% 10%;
     display: grid;
     /* border: 1px solid rgb(42, 150, 15); */
 }
 
-.chat-content .about-friend .content-friend .friend-info .avatar{
+.chat-content .about-friend .about-friend-content .friend-info .avatar{
     width: 100px;
     height: 100px;
     border-radius: 50px;
@@ -394,7 +394,7 @@
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
-.chat-content .about-friend .content-friend .friend-info .name{
+.chat-content .about-friend .about-friend-content .friend-info .name{
     display: flex;
     justify-content: center;
     color: #0A466E;
@@ -404,7 +404,7 @@
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
-.chat-content .about-friend .content-friend .level{
+.chat-content .about-friend .about-friend-content .level{
     width: 80%;
     margin:auto;
     height: 12px;
@@ -413,7 +413,7 @@
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
-.chat-content .about-friend .content-friend .options{
+.chat-content .about-friend .about-friend-content .options{
     grid-template-rows: 50% 25%;
     display: grid;
     padding: 15px;
@@ -425,7 +425,7 @@
 
 }
 
-.chat-content .about-friend .content-friend .options .fa-address-card{
+.chat-content .about-friend .about-friend-content .options .fa-address-card{
     color: #0A466E;
     justify-self: center;
     display: flex;
@@ -435,7 +435,7 @@
     margin-left: 25px;
 }
 
-.chat-content .about-friend .content-friend .options .fa-user-lock{
+.chat-content .about-friend .about-friend-content .options .fa-user-lock{
     color: #0A466E;
     display: flex;
     color: #D44444;
@@ -447,14 +447,14 @@
     font-weight: 100;
 }
 
-.chat-content .about-friend .content-friend .play{
+.chat-content .about-friend .about-friend-content .play{
     background-color: transparent;
     align-items: center;
     display: flex;
     justify-content: center;
 }
 
-.chat-content .about-friend .content-friend .play button{
+.chat-content .about-friend .about-friend-content .play button{
     background-color: #D44444;
     color: #D9DBBC;
     border-radius: 100px;
@@ -469,7 +469,7 @@
     filter: drop-shadow(0px 4px 4px rgba(212, 68, 68, 0.29));
 }
 
-.chat-content .about-friend .content-friend .play button:hover{
+.chat-content .about-friend .about-friend-content .play button:hover{
     rotate: 360deg;
     transition: 0.6s;
 }

@@ -1,6 +1,5 @@
 import createElement from "../framework/createElement.js";
 import render from "../framework/render.js";
-import createDOMElement from "../framework/createDOMElement.js";
 import { diff , patch} from "../framework/diff.js";
 
 import Header from "../components/header.js";
@@ -12,9 +11,8 @@ import AboutFriend from "../components/chat_components/AboutFriend.js"
 
 class Chat {
 
-    constructor(props)
+    constructor()
     {
-        this.props = props;
         this.render();
     }
 
@@ -27,10 +25,11 @@ class Chat {
                     createElement(Sidebar, {}), 
                         createElement('div', {className:'global-content'}, 
                             createElement('div', { className: 'chat-content' },
-                                createElement(ChatList, {},),
+                                createElement(ChatList, {}),
                                 createElement('div', { className: 'hidden' }), 
                                 createElement(MessageList, {}),
                                 createElement(AboutFriend, {}),
+                                
                             ))));
 
         const container = document.body;
@@ -40,4 +39,4 @@ class Chat {
     }
 }
 
-export default Chat;
+export default Chat; 

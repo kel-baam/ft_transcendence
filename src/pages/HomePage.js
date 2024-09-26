@@ -11,9 +11,9 @@ import { diff , patch} from "../framework/diff.js";
  
 class HomePage
 {
-    constructor(props)
+    constructor()
     {
-        this.props = props;
+        
         this.render();
     }
 
@@ -34,7 +34,7 @@ class HomePage
         const patches = diff(container.__vdom, newVdom, container);
         patch(document.body, patches);
         container.__vdom = newVdom;
-    }                    
+    }
 }
 
 export default HomePage
