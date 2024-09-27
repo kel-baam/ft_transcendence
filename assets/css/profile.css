@@ -709,7 +709,7 @@ canvas
     overflow-y: scroll;
     overflow-x: none;
 }
-
+/* 
 .friend-info,.pending-scop .pending-info{
     display: grid;
     grid-template-columns: 1fr 1fr 3fr;
@@ -720,7 +720,7 @@ canvas
     background-color: #CBCBCB;
     height: 60px;
     margin: 5px 5px 0 5px;
-}
+} */
 
 .friend-info p{
     font-size: 17px;
@@ -949,13 +949,13 @@ canvas
     font-family: myFont;
     color: #0AA989;
 }
- 
+/*  
 .separator{
     color: #14397C;
     margin: auto;  
     font-size: 20px;
     font-weight: bold;  
-}
+} */
 
 .view-all-match-history .content .match-info .right{
     grid-template-columns: 85% 15%;

@@ -30,7 +30,7 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
         const newProps = newVNode.props || {};
         
         for (const key in newProps) {
-            if (oldProps[key] !== newProps[key]) {
+            if (oldProps[key] !== undefined && newProps[key] !== undefined && oldProps[key].toString() !== newProps[key].toString()) {
                 patches.push({ type: 'PROPS', props: { [key]: newProps[key] }, index, path });
             }
         }
@@ -71,13 +71,13 @@ export function patch(dom, patches) {
                 const targetNodeToRemove = targetNode.childNodes[patches[i].index];
                 targetNode.removeChild(targetNodeToRemove);
                 break;
+            }
+            
         }
-      
-    }
-    for(let i = 0; i < patches.length; i++)
-    {
-        const targetNode = getNodeByPath(dom, patches[i].path);
-        
+        for(let i = 0; i < patches.length; i++)
+            {
+                const targetNode = getNodeByPath(dom, patches[i].path); // Get the target node by path
+                
         switch (patches[i].type) {
             case 'CREATE':
                 targetNode.appendChild(createDOMElement(patches[i].vNode));
@@ -97,9 +97,11 @@ export function patch(dom, patches) {
                 break;
             case 'REMOVE_PROP':
                 const removeTargetNode = targetNode.childNodes[patches[i].index];
-                delete removeTargetNode[patches[i].prop];
-                break;
-            }
+                console.log("------> removeTarget : ", removeTargetNode[patches[i].prop])
+                // delete removeTargetNode[patches[i].prop];
+                removeTargetNode.removeAttribute(patches[i].prop)
+                break;   
+        }
     }
 }
 
