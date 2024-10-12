@@ -15,7 +15,6 @@
     display: grid;
 
     width: 100%;
-    /* background-color: rgba(217, 217, 217, 0.05); */
     height: 100%;
     grid-template-rows: 49% 49%;
     row-gap: 2%;

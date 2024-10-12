@@ -55,7 +55,7 @@ class TournamentSection {
                     )
                 )
             ),
-            createElement('a', { href: 'login' }, 
+            createElement('a', { href: '/tournament' }, 
                 createElement('button', { type: 'button', className: 'btn', onclick:this.handleButtonClick }, 'PLAY')
             )
         );

@@ -4,6 +4,11 @@ import LandingPage from "../pages/LandingPage.js";
 import LeaderboardPage from "../pages/LeaderboardPage.js"
 import LoginPage from "../pages/LoginPage.js"
 import ChatPage from "../pages/ChatPage.js"
+import PlayerVSplayerPage from "../pages/PlayerVSplayerPage.js";
+import TournamentPage from "../pages/TournamentPage.js";
+import WaitPlayerJoinPage from "../pages/WaitPlayerJoinPage.js";
+import Local_tournament_form from "../pages/Local_tournament_form.js";
+
 
 function loadComponent(component) {
     const instance = new component();
@@ -12,7 +17,7 @@ function loadComponent(component) {
 export function handleRouting(path)
 {
     let component;
-    console.log("----> " ,path);
+    console.log("---->" ,path);
     switch (path) {
         case '/profile':
             component = ProfilePage;
@@ -29,9 +34,18 @@ export function handleRouting(path)
         case '/login':
             component = LoginPage;
             break;
+        case '/playerVSplayer':
+            component = PlayerVSplayerPage;
+            break;
+        case '/tournament':
+            component = TournamentPage;
+            break;
+        case '/Local_tournament_form':
+            component = Local_tournament_form;
+            break;
+            
         default:
             component = HomePage;
-            // component = LandingPage;
     }
     loadComponent(component);
 }

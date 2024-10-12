@@ -33,7 +33,7 @@ class Sidebar {
             createElement('a', { href: '/leaderboard' }, 
                 createElement('i', { className: 'fa-solid fa-ranking-star icon', onclick:this.handleButtonClick })
             ),
-            createElement('a', { href: '/playerVSplayer' }, 
+            createElement('a', { href: '/playerVSplayer' },
                 createElement('i', { className: 'fa-solid fa-network-wired fa-rotate-90 icon', onclick:this.handleButtonClick })
             ),
             createElement('a', { href: '/tournament' }, 

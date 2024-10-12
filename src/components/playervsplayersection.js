@@ -36,7 +36,7 @@ class PlayerVsPlayer {
                     )
                 )
             ),
-            createElement('a', { href: 'login' }, 
+            createElement('a', { href: '/playerVSplayer' }, 
                 createElement('button', { type: 'button', className: 'btn', onclick:this.handleButtonClick }, 'PLAY'))
         );
 

@@ -7,4 +7,3 @@ window.addEventListener('load', () =>
 
     handleRouting(window.location.pathname);
 });
-

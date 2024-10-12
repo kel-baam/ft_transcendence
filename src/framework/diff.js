@@ -30,7 +30,8 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
         const newProps = newVNode.props || {};
         
         for (const key in newProps) {
-            if (oldProps[key] !== undefined && newProps[key] !== undefined && oldProps[key].toString() !== newProps[key].toString()) {
+            if ((oldProps[key] !== undefined && newProps[key] !== undefined && oldProps[key].toString() !== newProps[key].toString())
+                || (oldProps[key] === undefined && newProps[key] !== undefined)  ) {
                 patches.push({ type: 'PROPS', props: { [key]: newProps[key] }, index, path });
             }
         }
