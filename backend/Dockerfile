@@ -1,25 +1,34 @@
-# Use a Docker image that has Docker installed
-FROM docker:latest
+# Use an official Python image as the base
+FROM python:3.12-slim
 
-# Install Python and other dependencies
-RUN apk add --no-cache python3 py3-pip libpq gcc
-
-# Set environment variables
+# Set environment variables to prevent Python from writing .pyc files and to flush output
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Create a working directory
+# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy requirements file and install dependencies
-COPY requirements.txt /usr/src/app/
-RUN pip3 install --upgrade pip && pip3 install -r requirements.txt
+# Install system dependencies for PostgreSQL and build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    gcc \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the rest of your application code
-COPY . /usr/src/app/
+# Copy requirements.txt to the working directory
+COPY requirements.txt .
 
-# Expose the desired port
+# Install dependencies in the virtual environment
+# RUN pip install --upgrade pip && pip install -r requirements.txt --verbose
+RUN apt-get update && apt-get install -y build-essential libpq-dev && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+# Copy the rest of your application code to the container
+COPY . .
+
+# Expose the desired port (replace with your app's port if needed)
 EXPOSE 8000
 
 # Command to run your application with Daphne
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "myproject.asgi:application"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "transcendence.asgi:application"]

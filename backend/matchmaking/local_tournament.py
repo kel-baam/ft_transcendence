@@ -48,7 +48,8 @@ def create_matches(players, tournament):
             match = Match.objects.create(player1=players[i], player2=players[i + 1], tournament=tournament)
             print(f"Match created between Player {players[i].name} and Player {players[i + 1].name}")
 
-# def validate_input(request):
+def validate_input(request):
+    pass
 #     value = request.GET.get('value', '').strip()
 #     validation_type = request.GET.get('type', '').strip()
 

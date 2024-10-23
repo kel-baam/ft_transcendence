@@ -64,12 +64,12 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True  # For development
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",  # Your Django backend
-    'http://localhost:3000',
+    "https://my-codespace-username.github.codespaces.dev:8000",
+    'https://my-codespace-username.github.codespaces.dev:3000',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost",
+    "https://my-codespace-username.github.codespaces.dev",
 ]
 
 ROOT_URLCONF = 'transcendence.urls'
@@ -99,10 +99,10 @@ ASGI_APPLICATION = "transcendence.asgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'niboukha',
+        'NAME': 'mydatabase',
         'USER': 'niboukha',
-        'PASSWORD': 'your_password_here',
-        'HOST': 'localhost',
+        'PASSWORD': '1234',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

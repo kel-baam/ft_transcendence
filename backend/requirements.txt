@@ -1,6 +1,6 @@
-Django>=4.2,<5.0
+Django<5.0,>=4.2
 djangorestframework
 channels
 daphne
 psycopg2
-channels_redis
+django-cors-headers
