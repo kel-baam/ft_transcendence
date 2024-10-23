@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - django_network
+
+  web:
+    build: ./backend
+    command: ["daphne", "-b", "0.0.0.0", "-p", "8000", "myproject.asgi:application"]
+    volumes:
+      - ./backend:/usr/src/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=postgres://myuser:mypassword@db:5432/mydatabase
+      - REDIS_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
+    networks:
+      - django_network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - django_network
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    networks:
+      - django_network
+
+volumes:
+  postgres_data:
+
+networks:
+  django_network:
