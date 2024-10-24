@@ -1,6 +1,5 @@
 import createElement from "../framework/createElement.js";
-import { handleRouting } from "../framework/routing.js";
-
+import render from "../framework/render.js";
 
 class Sidebar {
     constructor(props) {
@@ -8,36 +7,26 @@ class Sidebar {
         this.render();
     }
 
-    handleButtonClick = () => {
-        const link = event.target.closest('a');
-        
-        if (link) {
-            event.preventDefault();
-            const path = link.getAttribute('href');
-            handleRouting(path);
-            window.history.pushState(null, '', path);
-        }
-    }
-
     render() {
+        // Create the virtual DOM structure
         const virtualDom = createElement('div', { className: 'side-bar' }, 
-            createElement('a', { href: '/profile' },
-                createElement('i', { className: 'fa-regular fa-circle-user icon', onclick:this.handleButtonClick })
+            createElement('a', { href: 'profile' },
+                createElement('i', { className: 'fa-regular fa-circle-user icon' })
             ),
-            createElement('a', { href: '/chat' }, 
-                createElement('i', { className: 'fa-regular fa-message icon', onclick:this.handleButtonClick })
+            createElement('a', { href: 'chat' }, 
+                createElement('i', { className: 'fa-regular fa-message icon' })
             ),
-            createElement('a', { href: '/home' }, 
-                createElement('i', { className: 'fa-sharp fa-solid fa-house-chimney icon', onclick:this.handleButtonClick })
+            createElement('a', { href: 'home' }, 
+                createElement('i', { className: 'fa-sharp fa-solid fa-house-chimney icon' })
             ),
-            createElement('a', { href: '/leaderboard' }, 
-                createElement('i', { className: 'fa-solid fa-ranking-star icon', onclick:this.handleButtonClick })
+            createElement('a', { href: 'leaderboard' }, 
+                createElement('i', { className: 'fa-solid fa-ranking-star icon' })
             ),
-            createElement('a', { href: '/playerVSplayer' },
-                createElement('i', { className: 'fa-solid fa-network-wired fa-rotate-90 icon', onclick:this.handleButtonClick })
+            createElement('a', { href: 'playerVSplayer' }, 
+                createElement('i', { className: 'fa-solid fa-network-wired fa-rotate-90 icon' })
             ),
-            createElement('a', { href: '/tournament' }, 
-                createElement('i', { className: 'fa-solid fa-trophy icon', onclick:this.handleButtonClick })
+            createElement('a', { href: 'tournament' }, 
+                createElement('i', { className: 'fa-solid fa-trophy icon' })
             )
         );
 

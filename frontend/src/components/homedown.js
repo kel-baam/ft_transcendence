@@ -18,7 +18,7 @@ class HomeDown {
 
     render() {
         const virtualDom = createElement('div', { className: 'home-down' }, 
-            createElement(TrainingBoot, { dispatch: this.props.dispatch }),
+            createElement(TrainingBoot, {}),
             createElement(TournamentSection, null),
             createElement(PlayerVsPlayer, null)
         );

@@ -21,11 +21,11 @@ function createDOMElement(virtualDOM) {
     // Set properties and attributes
     if (virtualDOM.props) {
         Object.keys(virtualDOM.props).forEach(prop => {
-            if (prop.startsWith('on')) {
-                // Handle event listeners
-                const event = prop.slice(2).toLowerCase();
-                element.addEventListener(event, virtualDOM.props[prop]);
-            } else if (prop.startsWith('data-') || prop === 'class' || prop === 'for') {
+            // if (prop.startsWith('on')) {
+            //     // Handle event listeners
+            //     const event = prop.slice(2).toLowerCase();
+            //     element.addEventListener(event, virtualDOM.props[prop]);
+             if (prop.startsWith('data-') || prop === 'class' || prop === 'for') {
                 element.setAttribute(prop, virtualDOM.props[prop]);
             } else {
                 element[prop] = virtualDOM.props[prop];

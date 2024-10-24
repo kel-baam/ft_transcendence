@@ -1,19 +1,20 @@
 import createDOMElement from "./createDOMElement.js";
 
-export function diff(oldVNode, newVNode)
+export function diff(oldVNode, newVNode, index)
 {
     const patches = [];
-    diffNode(oldVNode, newVNode, patches, 0, [0]);
+    diffNode(oldVNode, newVNode, patches, index, [index]);
     return patches;
 }
 
 function diffNode(oldVNode, newVNode, patches, index,path = [])
 {
-    if ((!oldVNode && newVNode) || (oldVNode === undefined && newVNode))
+    // console.log('Diffing nodes at index', index, 'Old VNode:', oldVNode, 'New VNode:', newVNode);
+    if (!oldVNode && newVNode)
     {
         patches.push({ type: 'CREATE', vNode: newVNode, index , path});
     }
-    else if ((oldVNode && !newVNode) || (oldVNode && newVNode === undefined))
+    else if (oldVNode && !newVNode)
     {
         patches.push({ type: 'REMOVE', index , path});
     }
@@ -30,11 +31,12 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
         const newProps = newVNode.props || {};
         
         for (const key in newProps) {
-            if ((oldProps[key] !== undefined && newProps[key] !== undefined && oldProps[key].toString() !== newProps[key].toString())
-                || (oldProps[key] === undefined && newProps[key] !== undefined)  ) {
+            if ((oldProps[key] && newProps[key] && oldProps[key].toString() !== newProps[key].toString()) 
+                || ( oldProps[key] !== newProps[key] ) ) {
                 patches.push({ type: 'PROPS', props: { [key]: newProps[key] }, index, path });
             }
         }
+
         for (const key in oldProps) {
             if (!(key in newProps)) {
                 patches.push({ type: 'REMOVE_PROP', prop: key, index, path });
@@ -45,9 +47,10 @@ function diffNode(oldVNode, newVNode, patches, index,path = [])
         const newChildren = newVNode.children || [];
         const maxLength = Math.max(oldChildren.length, newChildren.length);
 
-
         for (let i = 0; i < maxLength; i++)
+        {
             diffNode(oldChildren[i], newChildren[i], patches, i, [...path, i]);
+        }
     }
 }
 
@@ -55,7 +58,10 @@ function getNodeByPath(dom, path) {
     let currentNode = dom, parent = currentNode;
 
     path.forEach(index => {
+        // console.log("<<<<<< index : ", index)
+        // console.log("----> parent : ", parent, "     ||||||||   ",parent.childNodes.length )
         parent = currentNode;
+        // if(currentNode.childNodes[index] !== undefined)
         currentNode = currentNode.childNodes[index];
     });
     return parent;
@@ -63,22 +69,22 @@ function getNodeByPath(dom, path) {
 
 
 export function patch(dom, patches) {
- 
-    for (let i = patches.length - 1; i >= 0; i--)
+    for(let i = patches.length - 1; i >= 0; i--)
     {
-        const targetNode = getNodeByPath(dom,  patches[i].path);
+        const targetNode = getNodeByPath(dom, patches[i].path);
+        // console.log("remove target node : ", targetNode)
         switch (patches[i].type) {
-           case 'REMOVE':
-                const targetNodeToRemove = targetNode.childNodes[patches[i].index];
-                targetNode.removeChild(targetNodeToRemove);
-                break;
-            }
-            
+            case 'REMOVE':
+                    const targetNodeToRemove = targetNode.childNodes[patches[i].index];
+                    targetNode.removeChild(targetNodeToRemove);
+                    break;
         }
-        for(let i = 0; i < patches.length; i++)
-            {
-                const targetNode = getNodeByPath(dom, patches[i].path); // Get the target node by path
-                
+    }
+
+    for(let i = 0; i < patches.length; i++)
+    {
+        const targetNode = getNodeByPath(dom, patches[i].path);
+        
         switch (patches[i].type) {
             case 'CREATE':
                 targetNode.appendChild(createDOMElement(patches[i].vNode));
@@ -98,11 +104,10 @@ export function patch(dom, patches) {
                 break;
             case 'REMOVE_PROP':
                 const removeTargetNode = targetNode.childNodes[patches[i].index];
-                console.log("------> removeTarget : ", removeTargetNode[patches[i].prop])
-                // delete removeTargetNode[patches[i].prop];
+                // delete removeTargetNode[patches[i].prop];//to check
                 removeTargetNode.removeAttribute(patches[i].prop)
-                break;   
-        }
+                break;
+
+            }
     }
 }
-

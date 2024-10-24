@@ -1,4 +1,6 @@
 import createElement from "../framework/createElement.js";
+import createDOMElement from "../framework/createDOMElement.js";
+import render from "../framework/render.js";
 import Header from "../components/header.js";
 import Sidebar from "../components/sidebar.js";
 import HomeTop from "../components/hometop.js";
@@ -6,6 +8,8 @@ import HomeDown from "../components/homedown.js";
 import { diff , patch} from "../framework/diff.js";
 import dispatch from "../framework/dispatch.js";
 
+
+ 
 class HomePage
 {
     constructor(props)
@@ -28,7 +32,7 @@ class HomePage
         // document.body.innerHTML = ''
         // render(newVdom, container);
 
-        const patches = diff(container.__vdom, newVdom, container);
+        const patches = diff(container.__vdom, newVdom, 0);
         patch(document.body, patches);
         container.__vdom = newVdom;
     }                    

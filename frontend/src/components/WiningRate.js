@@ -1,67 +1,59 @@
-// import render from "../framework/render.js";
 import createElement from "../framework/createElement.js";
-// import createDOMElement from "../framework/createDOMElement.js";
 
 class WinningRate {
     constructor(props)
     {
-        // super()
         this.props = props
-        // this.attachShadow({ mode: 'open' });
-        // this.root =  document.getElementsByClassName('infos')[0]
-        // this.connectedCallBack()
-        this.render()
+        // console.log("===================> this.props : ", this.props)
     }
     
-    connectedCallBack()
-    {
-        this.render()
-        // const container = document.getElementsByClassName('infos')[0]
-        // container.appendChild(this.root)
-        // this.addEventListeners()
-    }
+  
 
-
-    drawWinningCircle() {
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const percentage = 50; 
+    // drawWinningCircle() {
+    //     const canvas = document.getElementById('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     const percentage = 50; 
         
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const endAngle = (Math.PI * 2) * (percentage / 100);
-        this.drawCircle('#ddd',endAngle , (Math.PI * 2), canvas);
+    //     const endAngle = (Math.PI * 2) * (percentage / 100);
+    //     this.drawCircle('#ddd',endAngle , (Math.PI * 2), canvas);
 
-        this.drawCircle('#0AA989', 0, endAngle, canvas);
+    //     this.drawCircle('#0AA989', 0, endAngle, canvas);
 
-        this.drawPercentageText(canvas);
+    //     this.drawPercentageText(canvas);
 
-        }
-        drawCircle(color, startAngle, endAngle, canvas) {
-            const ctx = canvas.getContext('2d');
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 82;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.lineWidth = 8;
-            ctx.strokeStyle = color;
-            ctx.stroke();
-        }
-        drawPercentageText(canvas) {
-        const ctx = canvas.getContext('2d');
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const percentage = 50;
-        ctx.font = '26px "myFont"';
-        ctx.fillStyle = '#0AA989'; 
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`${percentage}%`, centerX, centerY);
-    }
+    //     }
+    //     drawCircle(color, startAngle, endAngle, canvas) {
+    //         const ctx = canvas.getContext('2d');
+    //         const centerX = canvas.width / 2;
+    //         const centerY = canvas.height / 2;
+    //         const radius = 82;
+    //         ctx.beginPath();
+    //         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    //         ctx.lineWidth = 8;
+    //         ctx.strokeStyle = color;
+    //         ctx.stroke();
+    //     }
+    //     drawPercentageText(canvas) {
+    //     const ctx = canvas.getContext('2d');
+    //     const centerX = canvas.width / 2;
+    //     const centerY = canvas.height / 2;
+    //     const percentage = 50;
+    //     ctx.font = '26px "myFont"';
+    //     ctx.fillStyle = '#0AA989'; 
+    //     ctx.textAlign = 'center';
+    //     ctx.textBaseline = 'middle';
+    //     ctx.fillText(`${percentage}%`, centerX, centerY);
+    // }
     
     render()
     {
+        const winBtn  = createElement('button', { className: 'win-button' },
+            'Win',
+            createElement('br'),
+            `${this.props.wins}` + '/' + `${this.props.total_matches}`
+        )
         return(createElement('div', { className: 'wining-rate-container' },
             createElement('div', { className: 'title' },
                 createElement('span', {},
@@ -74,20 +66,20 @@ class WinningRate {
                     )
                 ),
                 createElement('div', { className: 'buttons' },
-                    createElement('button', { className: 'win-button' },
+                    createElement('button', { className: 'win-button', onclik:'' },
                         'Win',
                         createElement('br'),
-                        '51/150'
+                        `${this.props.wins}` + '/' + `${this.props.total_matches}`
                     ),
-                    createElement('button', { className: 'lose-button' },
+                    createElement('button', { className: 'lose-button', onclick:'' },
                         'Lose',
                         createElement('br'),
-                        '0/150'
+                        `${this.props.losses}` + '/' + `${this.props.total_matches}`
                     ),
-                    createElement('button', { className: 'draw-button' },
+                    createElement('button', { className: 'draw-button', onclick:'' },
                         'Draw',
                         createElement('br'),
-                        '0/150'
+                        `${this.props.draws}` + '/' + `${this.props.total_matches}`
                     )
                 )
             )
@@ -102,5 +94,4 @@ class WinningRate {
 
     }
 }
-window.customElements.define('winning-rate', WinningRate)
 export default WinningRate
