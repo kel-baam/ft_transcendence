@@ -11,7 +11,7 @@ class Local_tournament_form {
     }
 
     async fetchCsrfToken() {
-        const response = await fetch('"https://expert-meme-p9vxvrg474gh76gq.github.dev/api/csrf-token/');
+        const response = await fetch('https://expert-meme-p9vxvrg474gh76gq-8000.app.github.dev/api/csrf-token/');
         const data = await response.json();
         return data.csrfToken;
     }
@@ -36,16 +36,16 @@ class Local_tournament_form {
     //     return data.isValid;
     // }
 
-    handleButtonClick = () => {
-        const link = event.target.closest('a');
+    // handleButtonClick = () => {
+        // const link = event.target.closest('a');
         
-        if (link) {
-            event.preventDefault();
-            const path = link.getAttribute('href');
-            handleRouting(path);
-            window.history.pushState(null, '', path);
-        }
-    }
+        // if (link) {
+        //     event.preventDefault();
+        //     const path = link.getAttribute('href');
+        //     handleRouting(path);
+        //     window.history.pushState(null, '', path);
+        // }
+    // }
 
     handleSubmit = async (event) => {
         event.preventDefault();
@@ -59,14 +59,14 @@ class Local_tournament_form {
                 event.target.player4.value,
             ],
         };
-
+        console.log("-----> enter in handle submit");
         const submitBtn = event.target.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
 
         try {
-            const csrfToken = await this.fetchCsrfToken(); // Fetch CSRF token
+            const csrfToken = await this.fetchCsrfToken();
         
-            const response = await fetch("https://expert-meme-p9vxvrg474gh76gq.github.dev/api/local-tournament/", {
+            const response = await fetch("https://expert-meme-p9vxvrg474gh76gq-8000.app.github.dev/api/local-tournament/", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,20 +74,20 @@ class Local_tournament_form {
                 },
                 body: JSON.stringify(formData),
             });
-        
-            // Check if the response is okay
+
+            console.log("Response status:", response.status);
+            
             if (!response.ok) {
-                const errorText = await response.text(); // Get response as text
-                console.error("Error response:", errorText); // Log the error response
+                const errorText = await response.text();
+                console.error("Error response:", errorText);
                 throw new Error("An error occurred");
             }
-        
-            const successData = await response.json(); // Attempt to parse the JSON response
+            const successData = await response.json();
             console.log(successData.message);
         } catch (error) {
             console.log("Error:", error.message);
         } finally {
-            submitBtn.disabled = false; // Re-enable the button
+            submitBtn.disabled = false;
         }
         
     };
@@ -117,9 +117,9 @@ class Local_tournament_form {
                                 createElement('input', { type: 'text', name: 'player4', value: 'player4', className: 'player4' })
                             ),
                             createElement('div', { className: 'submit' },
-                                createElement('a', { href: '/hierarchy'},
-                                createElement('button', { type: 'submit', id: 'submitbtn', disabled: false, onclick:this.handleButtonClick }, 'SUBMIT')
-                            ))
+                                // createElement('a', { href: '/hierarchy'},
+                                createElement('button', { type: 'submit', id: 'submitbtn', disabled: false }, 'SUBMIT')
+                            )
                         )
                     ),
                     createElement('div', { className: 'friends' })

@@ -9,6 +9,7 @@ import random
 def local_tournament(request):
     if request.method == 'POST':
         try:
+            print(request)
             data = json.loads(request.body)
             tournament_name = data['tournament_name']
             players = data['players']

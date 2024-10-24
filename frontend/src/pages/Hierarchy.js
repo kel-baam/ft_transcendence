@@ -9,39 +9,6 @@ class Hierarchy {
         this.render();
     }
 
-    createTournamentBracket(numPlayers, container) {
-        const rounds = Math.log2(numPlayers);
-        for (let i = 0; i < rounds; i++) {
-            const roundDiv = document.createElement("div");
-            roundDiv.className = "round";
-
-            const matchesPerRound = Math.pow(2, rounds - i - 1);
-            for (let j = 0; j < matchesPerRound; j++) {
-                const matchDiv = document.createElement("div");
-                matchDiv.className = "match";
-                matchDiv.innerText = `Match ${j + 1}`;
-                roundDiv.appendChild(matchDiv);
-            }
-
-            container.appendChild(roundDiv);
-        }
-    }
-
-    createHierarchy() {
-        document.getElementById("generateBracket").addEventListener("click", () => {
-            const numPlayers = parseInt(document.getElementById("numPlayers").value);
-            const bracketContainer = document.getElementById("bracket");
-            bracketContainer.innerHTML = '';
-
-            if (numPlayers < 2 || (numPlayers & (numPlayers - 1)) !== 0) {
-                alert("Please enter a valid power of 2 (2, 4, 8, 16, ...).");
-                return;
-            }
-
-            this.createTournamentBracket(numPlayers, bracketContainer);
-        });
-    }
-
     render() {
         const newVdom = createElement(
             'div',
@@ -49,14 +16,60 @@ class Hierarchy {
             createElement(Header, {}),
             createElement('div', { className: 'content' },
                 createElement(Sidebar, {}),
-                createElement('div', { className: 'hierarchy-content' },
-                    createElement('div', {},
-                        createElement('label', { htmlFor: 'numPlayers' }, 'Enter number of players:'),
-                        createElement('input', { type: 'number', id: 'numPlayers', min: 2 }),
-                        createElement('button', { id: 'generateBracket' }, 'Generate Bracket')
+                createElement('div', { className: 'hierarchy-global-content' }, 
+                    createElement('div', { className: 'title' }, 
+                        createElement('h1', {}, 'Tournament in Progress')
                     ),
-                    createElement('h1', {}, 'Tournament in Progress'),
-                    createElement('div', { id: 'bracket' })
+                    createElement('div', { className: 'rounds' },
+                        createElement('div', { className: 'round1' },
+                            createElement('div', { className: 'match1' },
+                                createElement('div', { className: 'player1' },
+                                    createElement('img', { src: './images/kel-baam.png' }),
+                                    createElement('h2', {}, 'username')
+                                ),
+                                createElement('div', { className: 'vs' },
+                                    createElement('img', { src: './images/vs (2).png' })
+                                ),
+                                createElement('div', { className: 'player2' },
+                                    createElement('img', { src: './images/shicham.png' }),
+                                    createElement('h2', {}, 'username')
+                                )
+                            ),
+                            createElement('div', { className: 'match2' },
+                                createElement('div', { className: 'player1' },
+                                    createElement('img', { src: './images/niboukha.png' }),
+                                    createElement('h2', {}, 'username')
+                                ),
+                                createElement('div', { className: 'vs' },
+                                    createElement('img', { src: './images/vs (2).png' })
+                                ),
+                                createElement('div', { className: 'player2' },
+                                    createElement('img', { src: './images/kjarmoum.png' }),
+                                    createElement('h2', {}, 'username')
+                                )
+                            )
+                        ),
+                        createElement('div', { className: 'round2' },
+                            createElement('div', { className: 'player1' },
+                                createElement('img', { src: './images/kel-baam.png' }),
+                                createElement('h2', {}, 'username')
+                            ),
+                            createElement('div', { className: 'vs' },
+                                createElement('img', { src: './images/vs (2).png' })
+                            ),
+                            createElement('div', { className: 'player2' },
+                                createElement('img', { src: './images/kjarmoum.png' }),
+                                createElement('h2', {}, 'username')
+                            )
+                        ),
+                        createElement('div', { className: 'round3' },
+                            createElement('img', { src: './images/kel-baam.png' }),
+                            createElement('h2', {}, 'username')
+                        ),
+                        createElement('div', { className: 'trophy' },
+                            createElement('img', { src: './images/gold-cup-removebg-preview.png' })
+                        )
+                    )
                 ),
                 createElement('div', { className: 'friends' })
             )
@@ -64,7 +77,6 @@ class Hierarchy {
 
         const container = document.body;
 
-        // Initialize __vdom if it's not already defined
         if (!container.__vdom) {
             container.__vdom = null;
         }
@@ -73,8 +85,6 @@ class Hierarchy {
         patch(document.body, patches);
         container.__vdom = newVdom;
 
-        // Call createHierarchy after the new elements have been rendered
-        this.createHierarchy(); 
     }
 }
 
