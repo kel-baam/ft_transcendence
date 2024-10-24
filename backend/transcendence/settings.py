@@ -36,6 +36,7 @@ CHANNEL_LAYERS = {
     },
 }
 CORS_ALLOW_CREDENTIALS = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -61,16 +62,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 CORS_ALLOW_ALL_ORIGINS = True  # For development
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://my-codespace-username.github.codespaces.dev:8000",
-    'https://my-codespace-username.github.codespaces.dev:3000',
+    "https://urban-winner-6w6j6grq5jgh4rxv.github.dev",
+    "https://urban-winner-6w6j6grq5jgh4rxv-8000.app.github.dev",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://my-codespace-username.github.codespaces.dev",
+    "https://urban-winner-6w6j6grq5jgh4rxv.github.dev",
+    "https://urban-winner-6w6j6grq5jgh4rxv-8000.app.github.dev",
 ]
+
 
 ROOT_URLCONF = 'transcendence.urls'
 

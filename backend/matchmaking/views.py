@@ -17,6 +17,6 @@ def index(request):
 
 # from django.http import JsonResponse
 
+@ensure_csrf_cookie
 def csrf_token_view(request):
-    csrf_token = get_token(request)
-    return JsonResponse({'csrfToken': csrf_token})
+    return JsonResponse({'csrfToken': get_token(request)})

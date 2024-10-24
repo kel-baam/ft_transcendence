@@ -11,7 +11,7 @@ class Local_tournament_form {
     }
 
     async fetchCsrfToken() {
-        const response = await fetch('https://expert-meme-p9vxvrg474gh76gq-8000.app.github.dev/api/csrf-token/');
+        const response = await fetch('https://urban-winner-6w6j6grq5jgh4rxv-8000.app.github.dev/api/csrf-token/');
         const data = await response.json();
         return data.csrfToken;
     }
@@ -66,7 +66,7 @@ class Local_tournament_form {
         try {
             const csrfToken = await this.fetchCsrfToken();
         
-            const response = await fetch("https://expert-meme-p9vxvrg474gh76gq-8000.app.github.dev/api/local-tournament/", {
+            const response = await fetch("https://urban-winner-6w6j6grq5jgh4rxv-8000.app.github.dev/api/local-tournament/", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
