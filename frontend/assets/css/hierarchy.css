@@ -6,54 +6,269 @@
     /* font-family: 'Poppins', sans-serif; */
     font-family: myFont;
 }
-.hierarchy-content
-{
+
+.hierarchy-global-content{
+    padding: 16px;
+    padding-bottom: 100px;
     background-color: rgba(217, 217, 217, 0.05);
     border-radius: 56px;
-    width: 100%;
-    height: 100%;
+    display: grid;
+    grid-template-rows: 15% 75%;
+    height: 97%;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
-#bracket {
+.hierarchy-global-content .title{
     display: flex;
-    flex-direction: column;
-    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+    /* padding-top: 100px; */
 }
 
-.round {
+.hierarchy-global-content h1{
+    font-family: myFont;
+    font-size: 50px;
+    color: #FFEEBF;
+    letter-spacing: 5px;
+}
+
+.hierarchy-global-content .rounds{
+    height: 128%;
+    display: grid;
+    
+    grid-template-columns: 25% 25% 25% 25%;
+
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round1{
+    display: grid;
+    grid-template-rows: 50% 50%;
+
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round1 .match1,
+.hierarchy-global-content .rounds .round1 .match2{
+    display: grid;
+    grid-template-rows: 40% 20% 40%;
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player1,
+.hierarchy-global-content .rounds .round1 .match2 .player1
+{
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 10px;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
-.match {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 80px;
-    text-align: center;
+.hierarchy-global-content .rounds .round1 .match1 .player2,
+.hierarchy-global-content .rounds .round1 .match2 .player2{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player1 img,
+.hierarchy-global-content .rounds .round1 .match2 .player1 img
+{
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+ 
+    position: absolute;
+    top: 50px;
+    right: 10px;
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player2 img,
+.hierarchy-global-content .rounds .round1 .match2 .player2 img{
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+
+    position: absolute;
+    right: 10px;
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player1 h2,
+.hierarchy-global-content .rounds .round1 .match2 .player1 h2
+{
+    font-family: myFont;
+    font-size: 15px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    right: 1px;
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player2 h2,
+.hierarchy-global-content .rounds .round1 .match2 .player2 h2{
+    font-family: myFont;
+    font-size: 15px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    top: 70px;
+    right: 1px;
+    
+
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .vs,
+.hierarchy-global-content .rounds .round1 .match2 .vs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
 }
 
-.match::after {
-    content: '';
-    width: 2px;
-    height: 20px;
-    background-color: #ccc;
+.hierarchy-global-content .rounds .round1 .match1 .vs img,
+.hierarchy-global-content .rounds .round1 .match2 .vs img{
+    width: 40px;
+    height: 40px;
+
     position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 28px;
 }
 
-button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
+
+.hierarchy-global-content .rounds .round2
+{
+    display: grid;
+    grid-template-rows: 40% 20% 40%;
+    /* border: 1px solid rgb(234, 1, 255); */
 }
 
-button:hover {
-    background-color: #45a049;
+.hierarchy-global-content .rounds .round2 .player1{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+
 }
+
+.hierarchy-global-content .rounds .round2 .player2{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.hierarchy-global-content .rounds .round2 .player1 img{
+    width: 130px;
+    height: 130px;
+    border-radius: 100%;
+    position: absolute;
+    top: 120px;
+    right: 100px;
+}
+
+.hierarchy-global-content .rounds .round2 .player2 img{
+    width: 130px;
+    height: 130px;
+    border-radius: 100%;
+    position: absolute;
+    top: 10px;
+    right: 100px;
+}
+
+.hierarchy-global-content .rounds .round2 .player2 h2{
+    font-family: myFont;
+    font-size: 20px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    bottom: 115px;
+    right: 110px;
+}
+
+.hierarchy-global-content .rounds .round2 .player1 h2{
+    font-family: myFont;
+    font-size: 20px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    bottom: 7px;
+    right: 110px;
+
+}
+
+
+.hierarchy-global-content .rounds .round2 .vs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.hierarchy-global-content .rounds .round2 .vs img{
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    right: 120px;
+}
+
+.hierarchy-global-content .rounds .round3
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(234, 1, 255); */
+    position: relative;
+}
+
+.hierarchy-global-content .rounds .round3 img{
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    position: absolute;
+    bottom: 290px;
+    left: 70px;
+}
+
+.hierarchy-global-content .rounds .round3 h2
+{
+    font-family: myFont;
+    font-size: 24px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+    position: absolute;
+    bottom: 250px;
+    /* bottom: 7px; */
+    left: 85px;
+    /* right: 100px; */
+}
+
+.hierarchy-global-content .rounds .trophy
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.hierarchy-global-content .rounds .trophy img
+{
+    width: 250px;
+    height: 250px;
+    position: absolute;
+    right: 250px;
+}
+
+
