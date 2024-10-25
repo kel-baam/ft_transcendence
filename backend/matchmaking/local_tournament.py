@@ -32,12 +32,12 @@ def local_tournament(request):
 
             tournament_id, matches = create_matches(player_instances, tournament)
 
-            match_ids = [match.id for match in matches] if matches else []
-            print("Match IDs:", match_ids)
+            match_id = [match.id for match in matches] if matches else []
+            print("Match IDs:", match_id)
             return JsonResponse({
                 "message": "Tournament created successfully!",
                 "tournament_id": tournament_id,
-                "match_ids": match_ids
+                "match_id": match_id
             })
 
         except KeyError as e:
@@ -58,30 +58,3 @@ def create_matches(players, tournament):
             print(f"Match created between Player {players[i].name} and Player {players[i + 1].name}")
     return tournament.id, matches
 
-
-
-
-
-
-def validate_input(request):
-    pass
-
-#     value = request.GET.get('value', '').strip()
-#     validation_type = request.GET.get('type', '').strip()
-
-#     if not value:
-#         return JsonResponse({'isValid': False, 'error': 'Input cannot be empty'})
-
-#     if validation_type == 'tournament':
-#         if Tournament.objects.filter(name=value).exists():
-#             return JsonResponse({'isValid': False, 'error': 'Tournament name already exists'})
-#         else:
-#             return JsonResponse({'isValid': True})
-
-#     elif validation_type == 'player':
-#         if Player.objects.filter(name=value).exists():
-#             return JsonResponse({'isValid': False, 'error': 'Player name already exists'})
-#         else:
-#             return JsonResponse({'isValid': True})
-
-#     return JsonResponse({'isValid': False, 'error': 'Invalid validation type'})

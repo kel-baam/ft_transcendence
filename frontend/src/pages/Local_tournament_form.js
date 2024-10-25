@@ -60,9 +60,14 @@ class Local_tournament_form {
             const successData = await response.json();
 
             console.log("Tournament ID:", successData.tournament_id);
-            console.log("Created Matches:", successData.matches);
+            console.log("Created Matches:", successData.match_id);
             console.log(successData.message);
-            
+
+            localStorage.setItem("tournamentData", JSON.stringify({
+                tournament_id: successData.tournament_id,
+                match_id: successData.match_id
+            }));
+        
             this.handleButtonClick();
         } catch (error) {
             console.log("Error:", error.message);
