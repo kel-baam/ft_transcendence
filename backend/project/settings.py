@@ -84,8 +84,8 @@ DATABASES = {
         'NAME': 'tran',
         'USER': 'shicham',
         'PASSWORD': 'shicham',
-        'HOST': 'localhost',  # or your database server address
-        'PORT': '5432',       # Default PostgreSQL port
+        'HOST': 'localhost',  
+        'PORT': '5433',
     }
 }
 

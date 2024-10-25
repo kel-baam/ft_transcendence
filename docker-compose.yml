@@ -5,7 +5,7 @@ services:
     image: postgres:13
     environment:
       POSTGRES_DB: mydatabase
-      POSTGRES_USER: niboukha
+      POSTGRES_USER: shicham
       POSTGRES_PASSWORD: 1234
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -14,7 +14,7 @@ services:
 
   backend:
     build: ./backend
-    command: ["daphne", "-b", "0.0.0.0", "-p", "8000", "transcendence.asgi:application"]
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - ./backend:/usr/src/app
     ports:
