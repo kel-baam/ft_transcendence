@@ -66,13 +66,13 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True  # For development
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://urban-winner-6w6j6grq5jgh4rxv.github.dev",
-    "https://urban-winner-6w6j6grq5jgh4rxv-8000.app.github.dev",
+    "https://petrifying-hex-vw4x4vg966g3695j.github.dev",
+    "https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://urban-winner-6w6j6grq5jgh4rxv.github.dev",
-    "https://urban-winner-6w6j6grq5jgh4rxv-8000.app.github.dev",
+    "https://petrifying-hex-vw4x4vg966g3695j.github.dev",
+    "https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev",
 ]
 
 

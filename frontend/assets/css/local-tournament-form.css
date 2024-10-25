@@ -100,8 +100,8 @@
 }
 
 input:focus {
-    outline: none; /* Removes the default outline on focus */
-    border: none;  /* Removes the border when clicked */
+    outline: none;
+    border: none;
 }
 
 .tournament-form .form .players-name input.player2{

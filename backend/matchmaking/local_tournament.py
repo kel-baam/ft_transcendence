@@ -30,9 +30,15 @@ def local_tournament(request):
                 player_instances.append(player)
                 print(f"Player '{player_name}' created with ID: {player.id}")
 
-            create_matches(player_instances, tournament)
+            tournament_id, matches = create_matches(player_instances, tournament)
 
-            return JsonResponse({"message": "Tournament created successfully!"})
+            match_ids = [match.id for match in matches]
+
+            return JsonResponse({
+                "message": "Tournament created successfully!",
+                "tournament_id": tournament_id,
+                "match_ids": match_ids
+            })
 
         except KeyError as e:
             return JsonResponse({"error": f"Missing field: {str(e)}"}, status=400)
@@ -44,13 +50,22 @@ def local_tournament(request):
 
 def create_matches(players, tournament):
     random.shuffle(players)
+    matches = []
     for i in range(0, len(players), 2):
         if i + 1 < len(players):
             match = Match.objects.create(player1=players[i], player2=players[i + 1], tournament=tournament)
+            matches.append(match)
             print(f"Match created between Player {players[i].name} and Player {players[i + 1].name}")
+    return tournament.id, matches
+
+
+
+
+
 
 def validate_input(request):
     pass
+
 #     value = request.GET.get('value', '').strip()
 #     validation_type = request.GET.get('type', '').strip()
 
