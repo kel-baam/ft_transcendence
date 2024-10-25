@@ -32,8 +32,8 @@ def local_tournament(request):
 
             tournament_id, matches = create_matches(player_instances, tournament)
 
-            match_ids = [match.id for match in matches]
-
+            match_ids = [match.id for match in matches] if matches else []
+            print("Match IDs:", match_ids)
             return JsonResponse({
                 "message": "Tournament created successfully!",
                 "tournament_id": tournament_id,
