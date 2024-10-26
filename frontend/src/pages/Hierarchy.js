@@ -7,11 +7,6 @@ class Hierarchy {
     constructor(props) {
         this.props = [];
         this.fetchData();
-        // console.log("----------> ")
-        // console.log(this.props.players[0].player1.name)
-        // console.log(this.props.matches[0].player1.name); // Outputs: "Player A"
-        // console.log(this.props.matches[1].player2);
-        // this.render();
     }
     
     fetchPlayerDetails = async (matchIds) => {
@@ -60,59 +55,76 @@ class Hierarchy {
             createElement('div', { className: 'content' },
                 createElement(Sidebar, {}),
                 createElement('div', { className: 'hierarchy-global-content' }, 
-                    createElement('div', { className: 'title' }, 
-                        createElement('h1', {}, 'Tournament in Progress')
-                    ),
-                    createElement('div', { className: 'rounds' },
-                        createElement('div', { className: 'round1' },
-                            createElement('div', { className: 'match1' },
-                                createElement('div', { className: 'player1' },
-                                    createElement('img', { src: './images/kel-baam.png' }),
-                                    createElement('h2', {}, `${this.props.players[0].player1.name}`)
-                                ),
-                                createElement('div', { className: 'vs' },
-                                    createElement('img', { src: './images/vs (2).png' })
-                                ),
-                                createElement('div', { className: 'player2' },
-                                    createElement('img', { src: './images/shicham.png' }),
-                                    createElement('h2', {}, `${this.props.players[0].player2.name}`)
-                                )
-                            ),
-                            createElement('div', { className: 'match2' },
-                                createElement('div', { className: 'player1' },
-                                    createElement('img', { src: './images/niboukha.png' }),
-                                    createElement('h2', {}, `${this.props.players[1].player1.name}`)
-                                ),
-                                createElement('div', { className: 'vs' },
-                                    createElement('img', { src: './images/vs (2).png' })
-                                ),
-                                createElement('div', { className: 'player2' },
-                                    createElement('img', { src: './images/kjarmoum.png' }),
-                                    createElement('h2', {}, `${this.props.players[1].player2.name}`)
-                                )
-                            )
-                        ),
-                        createElement('div', { className: 'round2' },
-                            createElement('div', { className: 'player1' },
-                                createElement('img', { src: './images/kel-baam.png' }),
-                                createElement('h2', {}, 'username')
-                            ),
-                            createElement('div', { className: 'vs' },
-                                createElement('img', { src: './images/vs (2).png' })
-                            ),
-                            createElement('div', { className: 'player2' },
-                                createElement('img', { src: './images/kjarmoum.png' }),
-                                createElement('h2', {}, 'username')
-                            )
-                        ),
-                        createElement('div', { className: 'round3' },
+                    
+            createElement('div', { className: 'title' },
+                createElement('h1', {}, 'Tournament in Progress')
+            ),
+            createElement('div', { className: 'rounds' },
+                createElement('div', { className: 'round1' },
+                    createElement('div', { className: 'match1' },
+                        createElement('div', { className: 'player1' },
                             createElement('img', { src: './images/kel-baam.png' }),
-                            createElement('h2', {}, 'username')
+                            createElement('h2', {}, `${this.props.players[0].player1.name}`)
                         ),
-                        createElement('div', { className: 'trophy' },
-                            createElement('img', { src: './images/gold-cup-removebg-preview.png' })
+                        createElement('div', { className: 'vs' },
+                            createElement('img', { src: './images/vs (2).png' })
+                        ),
+                        createElement('div', { className: 'player2' },
+                            createElement('img', { src: './images/shicham.png' }),
+                            createElement('h2', {}, `${this.props.players[0].player2.name}`)
+                        )
+                    ),
+                    createElement('div', { className: 'match2' },
+                        createElement('div', { className: 'player1' },
+                            createElement('img', { src: './images/niboukha.png' }),
+                            createElement('h2', {}, `${this.props.players[1].player1.name}`)
+                        ),
+                        createElement('div', { className: 'vs' },
+                            createElement('img', { src: './images/vs (2).png' })
+                        ),
+                        createElement('div', { className: 'player2' },
+                            createElement('img', { src: './images/kjarmoum.png' }),
+                            createElement('h2', {}, `${this.props.players[1].player2.name}`)
                         )
                     )
+                ),
+                createElement('div', { className: 'btn_1' },
+                    createElement('div', { className: 'first' },
+                        createElement('a', { href: '' },
+                            createElement('button', { type: 'button', className: 'btn' }, 'play')
+                        )
+                    ),
+                    createElement('div', { className: 'second' },
+                        createElement('a', { href: '' },
+                            createElement('button', { type: 'button', className: 'btn' }, 'play')
+                        )
+                    )
+                ),
+                createElement('div', { className: 'round2' },
+                    createElement('div', { className: 'player1' },
+                        createElement('img', { src: './images/kel-baam.png' }),
+                        createElement('h2', {}, 'username')
+                    ),
+                    createElement('div', { className: 'vs' },
+                        createElement('img', { src: './images/vs (2).png' })
+                    ),
+                    createElement('div', { className: 'player2' },
+                        createElement('img', { src: './images/kjarmoum.png' }),
+                        createElement('h2', {}, 'username')
+                    )
+                ),
+                createElement('div', { className: 'btn_2' },
+                    createElement('a', { href: '' },
+                        createElement('button', { type: 'button', className: 'btn' }, 'play')
+                    )
+                ),
+                createElement('div', { className: 'round3' },
+                    createElement('img', { src: './images/kel-baam.png' }),
+                    createElement('h2', {}, 'username')
+                ),
+                createElement('div', { className: 'trophy' },
+                    createElement('img', { src: './images/gold-cup-removebg-preview.png' })
+                ))
                 ),
                 createElement('div', { className: 'friends' })
             )
