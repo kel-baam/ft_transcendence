@@ -4,10 +4,11 @@ from .models import *
 
 class RequestUpdateConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("---------__> hello the client is connected , "+ self.scope)
-        self.req_status = self.scope['url_route']['kwargs']['status']
-        self.req_id = self.scope['url_route']['kwargs']['id']
-        print(">>>>>>>>>>>>>>>>>>> self.req_status " + self.req_status + "   self.req_id" + self.req_id)
+        print("------------------------------> here connected")
+        # print("---------__> hello the client is connected , "+ self.scope)
+        # self.req_status = self.scope['url_route']['kwargs']['status']
+        # self.req_id = self.scope['url_route']['kwargs']['id']
+        # print(">>>>>>>>>>>>>>>>>>> self.req_status " + self.req_status + "   self.req_id" + self.req_id)
         await self.accept()
 
     # async def disconnect(self, close_code):
@@ -17,7 +18,7 @@ class RequestUpdateConsumer(AsyncWebsocketConsumer):
         # )
     async def disconnect(self, close_code):
         pass
-    async def receive(self, text_data):
+    def receive(self, text_data):
         # self.req_id = self.scope['url_route']['kwargs']['status']
         # self.req_id = self.scope['url_route']['kwargs']['id']
         text_data_json = json.loads(text_data)
@@ -31,11 +32,3 @@ class RequestUpdateConsumer(AsyncWebsocketConsumer):
         #         'message': message
         #     }
         # )
-
-    async def chat_message(self, event):
-        message = event['message']
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))

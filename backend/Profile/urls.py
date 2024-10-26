@@ -7,6 +7,6 @@ urlpatterns = [
 ]
 
 websocket_urlpatterns =[
-    path('/requests/', RequestUpdateConsumer.as_asgi()),
+    path('requests/', RequestUpdateConsumer.as_asgi()),
 ]
 
