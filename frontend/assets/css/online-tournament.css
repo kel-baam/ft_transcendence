@@ -1,0 +1,224 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.online-tournament{
+    padding: 8px;
+    background-color: rgba(217, 217, 217, 0.05);
+    border-radius: 56px;
+    display: grid;
+    grid-template-columns: 35% 35% 30%;
+    height: 97%;
+    overflow: hidden;
+    /* border: 1px solid rgb(56, 1, 255); */
+}
+
+.online-tournament .availableTournament,
+.online-tournament .joinedTournament
+{
+    display: grid;
+    grid-template-rows: 18% 80%;
+    position: relative;
+    height: 98%;
+    width: 95%;
+    overflow: hidden;
+
+    /* border: 1px solid rgb(203, 218, 1); */
+}
+
+.online-tournament .availableTournament .title,
+.online-tournament .joinedTournament .title
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .availableTournament .title h1,
+.online-tournament .joinedTournament .title h1
+{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 35px;
+    color: #FFEEBF;
+    position: absolute;
+    top: 7%;
+
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .tournaments
+{
+    display: grid;
+    grid-auto-rows: 11.1%;
+    row-gap: 0.03em;
+    align-items: center;
+    justify-content: center;
+    height: 98%;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    width: 106%;
+    scrollbar-width: 10px;
+    
+    /* border: 1px solid rgb(245, 7, 7); */
+}
+
+.online-tournament .tournaments .available
+{
+    display: grid;
+    grid-template-columns: 20% 70% 10%;
+    justify-content: center;
+    align-items: center;
+    background-color: #CBCBCB;
+    border-radius: 30px;
+    width: 450px;
+    height: 65px;
+    position: relative;
+
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .tournaments .available img{
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    position: absolute;
+    left: 20px;
+}
+
+.online-tournament .tournaments .available a{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 20px;
+    color: #0446A4;
+    text-decoration: none;
+    position: absolute;
+    left: 18%;
+    cursor: pointer;
+}
+
+.online-tournament .availableTournament .tournaments .available i{
+    position: absolute;
+    left: 90%;
+}
+
+/* ------------------------------ */
+
+.online-tournament .createTournament
+{
+    display: grid;
+    grid-template-rows: 20% 80%;
+    position: relative;
+    height: 90%;
+    width: 95%;
+    overflow: hidden;
+    /* position: relative; */
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.online-tournament .createTournament .title
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+
+.online-tournament .createTournament .title h1
+{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 35px;
+    color: #FFEEBF;
+
+    /* border: 1px solid rgb(1, 225, 255); */
+}
+
+.online-tournament .createTournament form{
+    display: grid;
+    grid-template-rows: 20% 60% 20%;
+    justify-content: center;
+    position: relative;
+}
+
+.online-tournament .createTournament form .image img
+{
+    position: absolute;
+    left: 40%;
+    top: -3%;
+}
+
+.online-tournament .createTournament form .image .edit_icon{
+    position: absolute;
+    left: 55%;
+    top: 10%;
+}
+
+.online-tournament .createTournament form .createInput
+{
+    position: absolute;
+    left: 20%;
+    top: 17%;
+}
+
+.online-tournament .createTournament form .createInput label{
+    letter-spacing: 2px;
+    font-family: myFont;
+    font-size: 15px;
+    color: #FFFFFF;
+    transition: 0.3s;
+    pointer-events: none;
+    line-height: 2em;
+}
+
+.online-tournament .createTournament form .createInput input{
+    letter-spacing: 2px;
+    font-family: myFont;
+    width: 284px;
+    height: 52px;
+    background-color: #CBCBCB;
+    font-size: 15px;
+    color: #56748fbe;
+    border-radius: 10px;
+    letter-spacing: 3px;
+    padding: 15px;
+    border: none;
+    cursor: text;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.online-tournament .createTournament form button{
+    display: inline-block;
+    width: 150px;
+    height: 70px;
+    font-family: myFont;
+    color: #D9DBBC;
+    font-size: 24px;
+    background: #D44444;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
+    text-shadow: 0px 4px 4px rgba(232, 235, 68, 0.3);
+    transition-duration: 0.4s;
+
+    position: absolute;
+    left: 35%;
+    top: 70%;
+}
+
+.online-tournament .createTournament form button:hover,
+.online-tournament .createTournament form button:focus,
+.online-tournament .createTournament form button:active{
+    transform: scale(1.1);
+}

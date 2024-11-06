@@ -2,48 +2,45 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Tournament, Player, Match
+from .serializers import PlayerSerializer, MatchSerializer
 import random
 
 @csrf_exempt
-
 def local_tournament(request):
     if request.method == 'POST':
-        try:
-            print(request)
-            data = json.loads(request.body)
-            tournament_name = data['tournament_name']
-            players = data['players']
+        tournament_name = request.POST.get('tournament_name')
+        if not tournament_name or not tournament_name.strip():
+            return JsonResponse({"error": "Tournament name cannot be empty."}, status=400)
+
+        players = []
+        player_names = set()
+        for i in range(4):
+            player_name = request.POST.get(f'players[{i}][name]')
+            player_image = request.FILES.get(f'players[{i}][image]')
             
-            if not tournament_name.strip():
-                return JsonResponse({"error": "Tournament name cannot be empty."}, status=400)
-
-            if not all(player.strip() for player in players):
+            if not player_name or not player_name.strip():
                 return JsonResponse({"error": "Player names cannot be empty."}, status=400)
+            if player_name in player_names:
+                return JsonResponse({"error": f"Player name '{player_name}' is duplicated. Each player must have a unique name."}, status=400)
+            if player_image is None:
+                return JsonResponse({"error": f"No image file uploaded for player {player_name}."}, status=400)
+            player_names.add(player_name)
+            players.append((player_name, player_image))
 
-            if len(players) != len(set(players)):
-                return JsonResponse({"error": "Player names must be unique."}, status=400)
+        tournament = Tournament.objects.create(name=tournament_name)
+        player_instances = []
+        for player_name, player_image in players:
+            player = Player.objects.create(name=player_name, image=player_image, tournament=tournament)
+            player_instances.append(player)
 
-            tournament = Tournament.objects.create(name=tournament_name)
-            player_instances = []
-            for player_name in players:
-                player = Player.objects.create(name=player_name, tournament=tournament)
-                player_instances.append(player)
-                print(f"Player '{player_name}' created with ID: {player.id}")
+        tournament_id, matches = create_matches(player_instances, tournament)
 
-            tournament_id, matches = create_matches(player_instances, tournament)
-
-            match_id = [match.id for match in matches] if matches else []
-            print("Match IDs:", match_id)
-            return JsonResponse({
-                "message": "Tournament created successfully!",
-                "tournament_id": tournament_id,
-                "match_id": match_id
-            })
-
-        except KeyError as e:
-            return JsonResponse({"error": f"Missing field: {str(e)}"}, status=400)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        serialized_Matches = MatchSerializer(matches, many=True).data
+        return JsonResponse({
+            "message": "Tournament created successfully!",
+            "tournament_id": tournament_id,
+            "matches": serialized_Matches,
+        })
 
     return JsonResponse({"error": "Invalid method"}, status=405)
 
@@ -55,6 +52,5 @@ def create_matches(players, tournament):
         if i + 1 < len(players):
             match = Match.objects.create(player1=players[i], player2=players[i + 1], tournament=tournament)
             matches.append(match)
-            print(f"Match created between Player {players[i].name} and Player {players[i + 1].name}")
     return tournament.id, matches
 

@@ -9,6 +9,7 @@ import TournamentPage from "../pages/TournamentPage.js";
 import WaitPlayerJoinPage from "../pages/WaitPlayerJoinPage.js";
 import Local_tournament_form from "../pages/Local_tournament_form.js";
 import Hierarchy from "../pages/Hierarchy.js";
+import Online_tournament from "../pages/Online_tournament.js";
 
 function loadComponent(component) {
     const instance = new component();
@@ -42,6 +43,9 @@ export function handleRouting(path)
             break;
         case '/Local_tournament_form':
             component = Local_tournament_form;
+            break;
+        case '/Online_tournament':
+            component = Online_tournament;
             break;
         case '/hierarchy':
             component = Hierarchy;

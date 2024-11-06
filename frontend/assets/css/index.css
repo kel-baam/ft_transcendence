@@ -20,6 +20,7 @@
     background: #161C40;
     /* width: 100vw; */
     height: 100vh;
+    overflow: hidden;
     display: grid;
     grid-template-rows: 8% 92%;
     /* border: 1px solid red; */

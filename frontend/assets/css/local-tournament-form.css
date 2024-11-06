@@ -11,6 +11,7 @@
     border-radius: 56px;
     display: grid;
     grid-template-rows: 20% 60% 20%;
+    /* border: 1px solid rgb(225, 255, 1); */
 }
 
 .tournament-form .game-title{
@@ -31,13 +32,18 @@
     margin-bottom: 10px;
 }
 
-.tournament-form .form{
+.tournament-form form{
+    display: grid;
+    grid-template-rows: 90% 10%;
+}
+
+.tournament-form form .form{
     display: grid;
     grid-template-columns: 50% 50%;
     /* border: 1px solid rgb(1, 238, 255); */
 }
 
-.tournament-form .form .tournament-name input {
+.tournament-form form .form .tournament-name input {
     letter-spacing: 2px;
     font-family: myFont;
     width: 284px;
@@ -56,7 +62,7 @@
     left: 31.5%;
 }
 
-.tournament-form .form .tournament-name label {
+.tournament-form form .form .tournament-name label {
     letter-spacing: 2px;
     font-family: myFont;
     font-size: 15px;
@@ -68,23 +74,45 @@
     left: 32%;
 }
 
-.tournament-form .form .players-name label{
+.tournament-form form .form .players-name label{
     letter-spacing: 2px;
     font-family: myFont;
     font-size: 15px;
     color: #FFFFFF;
     transition: 0.3s;
     pointer-events: none;
+
     position: absolute;
     top: 38%;
     left: 53.5%;
 }
 
-.tournament-form .form .players-name input.player1{
+.tournament-form form .form .players-name .players{
+    display: grid;
+    grid-template-rows: 25% 25% 25% 25%;
+    position: relative;
+    left: 60px;
+    top: -11%;
+    right: 40%;
+    
+    /* border: 1px solid rgb(1, 238, 255); */
+}
+
+.tournament-form form .form .players-name .players .line1{
+    display: grid;
+    grid-template-columns: 28% 10%;
+    position: absolute;
+    top: 190px;
+
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+
+.tournament-form form .form .players-name .players .line1 input.player1{
     font-family: myFont;
     width: 284px;
+    height: 55px;
     letter-spacing: 2px;
-    height: 52px;
     background-color: #CBCBCB;
     font-size: 15px;
     color: #56748fbe;
@@ -94,22 +122,61 @@
     border: none;
     cursor: text;
     box-sizing: border-box;
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.tournament-form form .form .players-name .players .line1 .image
+{
+    display: grid;
+    grid-template-columns: 10% 10%;
+    position: relative;
+    /* border: 1px solid rgb(11, 237, 49); */
+
+}
+
+.tournament-form form .form .players-name .players .line1 .image img
+{
+    width: 55px;
+    height: 55px;
+    border-radius: 100%;
     position: absolute;
-    top: 41%;
-    left: 53%;
+    left: 230px; 
 }
 
-input:focus {
-    outline: none;
-    border: none;
+.tournament-form form .form .players-name .players .image .edit_icon{
+    position: absolute;
+    left: 270px;
+    color: #5293CB;
+    cursor: pointer;
+    font-size: 24px;
+    transition: color 0.4s ease, filter 0.4s ease;
+    /* bottom: 1px; */
+
 }
 
-.tournament-form .form .players-name input.player2{
+.tournament-form form .form .players-name .players .edit_icon input {
+    display: none;
+}
+
+
+/* ---------------------------------------- */
+
+.tournament-form form .form .players-name .players .line2{
+    display: grid;
+    grid-template-columns: 28% 10%;
+    position: absolute;
+    top: 280px;
+
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+
+.tournament-form form .form .players-name .players .line2 input.player2{
     font-family: myFont;
     width: 284px;
-    height: 52px;
-    background-color: #CBCBCB;
+    height: 55px;
     letter-spacing: 2px;
+    background-color: #CBCBCB;
     font-size: 15px;
     color: #56748fbe;
     border-radius: 20px;
@@ -118,17 +185,51 @@ input:focus {
     border: none;
     cursor: text;
     box-sizing: border-box;
-    position: absolute;
-    top: 48%;
-    left: 53%;
+    /* border: 1px solid rgb(255, 1, 1); */
 }
 
-.tournament-form .form .players-name input.player3{
+.tournament-form form .form .players-name .players .line2 .image
+{
+    display: grid;
+    grid-template-columns: 10% 10%;
+    position: relative;
+    /* border: 1px solid rgb(11, 237, 49); */
+
+}
+
+.tournament-form form .form .players-name .players .line2 .image img
+{
+    width: 55px;
+    height: 55px;
+    border-radius: 100%;
+    position: absolute;
+    left: 230px; 
+}
+
+.tournament-form form .form .players-name .players .line2 .image .edit_icon{
+    position: absolute;
+    left: 270px;
+    /* bottom: 1px; */
+}
+
+/* ------------------------- */
+
+.tournament-form form .form .players-name .players .line3{
+    display: grid;
+    grid-template-columns: 28% 10%;
+    position: absolute;
+    top: 370px;
+
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+
+.tournament-form form .form .players-name .players .line3 input.player3{
     font-family: myFont;
     width: 284px;
-    height: 52px;
-    background-color: #CBCBCB;
+    height: 55px;
     letter-spacing: 2px;
+    background-color: #CBCBCB;
     font-size: 15px;
     color: #56748fbe;
     border-radius: 20px;
@@ -137,16 +238,50 @@ input:focus {
     border: none;
     cursor: text;
     box-sizing: border-box;
-    position: absolute;
-    top: 55%;
-    left: 53%;
+    /* border: 1px solid rgb(255, 1, 1); */
 }
 
-.tournament-form .form .players-name input.player4{
+.tournament-form form .form .players-name .players .line3 .image
+{
+    display: grid;
+    grid-template-columns: 10% 10%;
+    position: relative;
+    /* border: 1px solid rgb(11, 237, 49); */
+
+}
+
+.tournament-form form .form .players-name .players .line3 .image img
+{
+    width: 55px;
+    height: 55px;
+    border-radius: 100%;
+    position: absolute;
+    left: 230px; 
+}
+
+.tournament-form form .form .players-name .players .line3 .image .edit_icon{
+    position: absolute;
+    left: 270px;
+    /* bottom: 1px; */
+}
+
+/* ------------------------- */
+
+.tournament-form form .form .players-name .players .line4{
+    display: grid;
+    grid-template-columns: 28% 10%;
+    position: absolute;
+    top: 460px;
+
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+
+.tournament-form form .form .players-name .players .line4 input.player4{
     font-family: myFont;
-    letter-spacing: 2px;
     width: 284px;
-    height: 52px;
+    height: 55px;
+    letter-spacing: 2px;
     background-color: #CBCBCB;
     font-size: 15px;
     color: #56748fbe;
@@ -156,21 +291,46 @@ input:focus {
     border: none;
     cursor: text;
     box-sizing: border-box;
-    position: absolute;
-    top: 62%;
-    left: 53%;
+    /* border: 1px solid rgb(255, 1, 1); */
 }
 
-.tournament-form .submit{
+.tournament-form form .form .players-name .players .line4 .image
+{
+    display: grid;
+    grid-template-columns: 10% 10%;
+    position: relative;
+    /* border: 1px solid rgb(11, 237, 49); */
+
+}
+
+.tournament-form form .form .players-name .players .line4 .image img
+{
+    width: 55px;
+    height: 55px;
+    border-radius: 100%;
+    position: absolute;
+    left: 230px; 
+}
+
+.tournament-form form .form .players-name .players .line4 .image .edit_icon{
+    position: absolute;
+    left: 270px;
+    /* bottom: 1px; */
+}
+
+/* -------------------------------------------------- */
+
+.tournament-form form .submit{
     display: flex;
     justify-content: center;
     align-items: center;
-    /* position: absolute; */
+    position: relative;
 }
 
 .tournament-form .submit button{
-    position: relative;
-    bottom: 40%;
+    position: absolute;
+    top: 90%;
+    left: 43.5%;
     display: inline-block;
     border: none;
     width: 200px;
