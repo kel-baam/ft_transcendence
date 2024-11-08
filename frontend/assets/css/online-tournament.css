@@ -112,7 +112,7 @@
 .online-tournament .createTournament
 {
     display: grid;
-    grid-template-rows: 20% 80%;
+    grid-template-rows: 22% 79%;
     position: relative;
     height: 90%;
     width: 95%;
@@ -147,18 +147,28 @@
     position: relative;
 }
 
-.online-tournament .createTournament form .image img
+.online-tournament .createTournament form .image .creator_avatar
 {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
     position: absolute;
     left: 40%;
-    top: -3%;
+    top: -5%;
 }
 
-.online-tournament .createTournament form .image .edit_icon{
+.online-tournament .createTournament form .image .edit_icon input{
+
+    display: none;
+}
+
+.online-tournament .createTournament form .image .edit_icon i{
     position: absolute;
     left: 55%;
-    top: 10%;
+    top: 7.5%;
+    /* display: none; */
 }
+
 
 .online-tournament .createTournament form .createInput
 {
@@ -194,6 +204,60 @@
     margin-bottom: 20px;
 }
 
+
+.online-tournament .createTournament form .game-visibility-options{
+    position: absolute;
+    top: 71%;
+    left: 20%;
+    display: flex;
+    gap: 10px;
+
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option input[type="radio"] {
+    display: none;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 21px;
+    background-color: #CBCBCB;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+    /* border: 1px solid rgb(1, 255, 242); */
+
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option input[type="radio"] + span{
+    padding: 15px 40px;
+    font-family: myFont;
+    letter-spacing: 2px;
+    color: #0446A4;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option input[type="radio"]:checked + span {
+    color: #FFEEBF;
+    background-color: #0446A4;
+    font-family: myFont;
+    letter-spacing: 2px;
+    border-radius: 20px;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option:hover {
+    background-color: #CBCBCB;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option span {
+    border-radius: 20px;
+    transition: color 0.3s;
+    font-family: myFont;
+}
+
+
 .online-tournament .createTournament form button{
     display: inline-block;
     width: 150px;
@@ -214,7 +278,7 @@
 
     position: absolute;
     left: 35%;
-    top: 70%;
+    top: 85%;
 }
 
 .online-tournament .createTournament form button:hover,

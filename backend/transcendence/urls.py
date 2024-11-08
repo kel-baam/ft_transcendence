@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('matchmaking.urls')),
+    path('tournament/', include('tournament.urls')),
 ]
 
 if settings.DEBUG:
