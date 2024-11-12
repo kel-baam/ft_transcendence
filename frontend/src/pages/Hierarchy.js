@@ -11,7 +11,7 @@ class Hierarchy {
     
     fetchData = () => {
         const tournamentData = JSON.parse(localStorage.getItem("tournamentData"));
-        
+        console.log("tournamentData--> : ", tournamentData);
         if (tournamentData) {
             this.props = tournamentData.matches;
             this.render();
@@ -38,27 +38,27 @@ class Hierarchy {
                     createElement('div', { className: 'match1' },
                         createElement('div', { className: 'player1' },
                             createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[0].player1.image}` }),
-                            createElement('h2', {}, `${this.props[0].player1.name}`)
+                            createElement('h2', {}, `${this.props[0].player1.nickname}`)
                         ),
                         createElement('div', { className: 'vs' },
                             createElement('img', { src: './images/vs (2).png' })
                         ),
                         createElement('div', { className: 'player2' },
                             createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[0].player2.image}` }),
-                            createElement('h2', {}, `${this.props[0].player2.name}`)
+                            createElement('h2', {}, `${this.props[0].player2.nickname}`)
                         )
                     ),
                     createElement('div', { className: 'match2' },
                         createElement('div', { className: 'player1' },
                             createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[1].player1.image}` }),
-                            createElement('h2', {}, `${this.props[1].player1.name}`)
+                            createElement('h2', {}, `${this.props[1].player1.nickname}`)
                         ),
                         createElement('div', { className: 'vs' },
                             createElement('img', { src: './images/vs (2).png' })
                         ),
                         createElement('div', { className: 'player2' },
                             createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[1].player2.image}` }),
-                            createElement('h2', {}, `${this.props[1].player2.name}`)
+                            createElement('h2', {}, `${this.props[1].player2.nickname}`)
                         )
                     )
                 ),

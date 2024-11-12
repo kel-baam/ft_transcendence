@@ -1,9 +1,10 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Tournament, Player, Match
-from .serializers import PlayerSerializer, MatchSerializer
+from .models import Tournament, Player, Match, User
+from .serializers import MatchSerializer
 import random
+from django.shortcuts import get_object_or_404
 
 @csrf_exempt
 def local_tournament(request):
@@ -17,7 +18,7 @@ def local_tournament(request):
         for i in range(4):
             player_name = request.POST.get(f'players[{i}][name]')
             player_image = request.FILES.get(f'players[{i}][image]')
-            
+            print(player_name)
             if not player_name or not player_name.strip():
                 return JsonResponse({"error": "Player names cannot be empty."}, status=400)
             if player_name in player_names:
@@ -27,10 +28,22 @@ def local_tournament(request):
             player_names.add(player_name)
             players.append((player_name, player_image))
 
-        tournament = Tournament.objects.create(name=tournament_name)
+
+        user = User.objects.create(username='niboukha')
+
+        tournament = Tournament.objects.create(
+            name=tournament_name,
+            creator=get_object_or_404(User, username='niboukha'),
+            type='local')
+    
         player_instances = []
         for player_name, player_image in players:
-            player = Player.objects.create(name=player_name, image=player_image, tournament=tournament)
+            player = Player.objects.create(
+                nickname=player_name,
+                user=get_object_or_404(User, username='niboukha'),
+                image=player_image,
+                is_guest=True,
+                is_local=True,)
             player_instances.append(player)
 
         tournament_id, matches = create_matches(player_instances, tournament)
@@ -44,13 +57,15 @@ def local_tournament(request):
 
     return JsonResponse({"error": "Invalid method"}, status=405)
 
-
 def create_matches(players, tournament):
     random.shuffle(players)
     matches = []
     for i in range(0, len(players), 2):
         if i + 1 < len(players):
-            match = Match.objects.create(player1=players[i], player2=players[i + 1], tournament=tournament)
+            match = Match.objects.create(
+                player1=players[i],
+                player2=players[i + 1],
+                tournament=tournament)
             matches.append(match)
     return tournament.id, matches
 

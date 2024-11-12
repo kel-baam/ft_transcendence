@@ -23,6 +23,7 @@ services:
       - DEBUG=1
       - DATABASE_URL=postgres://niboukha:1234@db:5432/mydatabase
       - REDIS_URL=redis://redis:6379/1
+      - DJANGO_SETTINGS_MODULE=transcendence.settings
     depends_on:
       - db
       - redis
@@ -31,6 +32,7 @@ services:
 
   redis:
     image: redis:alpine
+    container_name: redis
     ports:
       - "6379:6379"
     networks:

@@ -41,8 +41,6 @@ class Local_tournament_form {
             }
         }
 
-        const submitBtn = event.target.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
         try {
             const csrfToken = await this.fetchCsrfToken();
 
@@ -61,7 +59,7 @@ class Local_tournament_form {
             }
 
             const successData = await response.json();
-            
+            console.log(successData);
             localStorage.setItem("tournamentData", JSON.stringify({
                 tournament_id: successData.tournament_id,
                 matches: successData.matches
@@ -69,8 +67,6 @@ class Local_tournament_form {
             this.handleButtonClick();
         } catch (error) {
             console.log("Error:", error.message);
-        } finally {
-            submitBtn.disabled = false;
         }
         
     };

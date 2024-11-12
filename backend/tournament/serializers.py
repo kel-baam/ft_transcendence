@@ -4,7 +4,7 @@ from .models import Player, Match
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
-        fields = ['id', 'name', 'image']
+        fields = ['id', 'nickname', 'image', 'is_guest', 'is_local']
 
 
 class MatchSerializer(serializers.ModelSerializer):
@@ -14,5 +14,3 @@ class MatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
         fields = ['id', 'player1', 'player2']
-
-

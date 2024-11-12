@@ -36,10 +36,11 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [('redis', 6379)],
         },
     },
 }
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
@@ -69,8 +70,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True  # For development
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOW_CREDENTIALS = True
+
 CORS_ALLOWED_ORIGINS = [
     "https://petrifying-hex-vw4x4vg966g3695j.github.dev",
     "https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev",
@@ -80,7 +83,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://petrifying-hex-vw4x4vg966g3695j.github.dev",
     "https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev",
 ]
-
 
 ROOT_URLCONF = 'transcendence.urls'
 
