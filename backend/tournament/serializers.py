@@ -1,11 +1,20 @@
 from rest_framework import serializers
-from .models import Player, Match
+from .models import Player, Match, Tournament
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
-        fields = ['id', 'nickname', 'image', 'is_guest', 'is_local']
+        fields = ['id', 'nickname', 'image', 'is_local']
 
+class TournamentSerializer(serializers.ModelSerializer):
+    creator_image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tournament
+        fields = ['name', 'creator', 'type', 'created_at', 'creator_image']
+
+    def get_creator_image(self, obj):
+        return obj.get_creator_image()
 
 class MatchSerializer(serializers.ModelSerializer):
     player1 = PlayerSerializer()

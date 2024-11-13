@@ -29,20 +29,19 @@ def local_tournament(request):
             players.append((player_name, player_image))
 
 
-        user = User.objects.create(username='niboukha')
+        user = User.objects.get(id=11)
 
         tournament = Tournament.objects.create(
             name=tournament_name,
-            creator=get_object_or_404(User, username='niboukha'),
+            creator=user,
             type='local')
     
         player_instances = []
         for player_name, player_image in players:
             player = Player.objects.create(
                 nickname=player_name,
-                user=get_object_or_404(User, username='niboukha'),
+                user=user,
                 image=player_image,
-                is_guest=True,
                 is_local=True,)
             player_instances.append(player)
 

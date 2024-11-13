@@ -34,7 +34,7 @@ class TournamentPage
                 ),
                 createElement('div', { className: 'btns-local-online' },
                     createElement('div', { className: 'online' },
-                        createElement('a', { href: '/Online_tournament'},
+                        createElement('a', { href: '/online_tournament'},
                         createElement('button', { type: 'button', className: 'btn' }, 'Online')
                     )),
                     createElement('div', { className: 'or' },

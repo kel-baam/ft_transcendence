@@ -102,9 +102,10 @@
     cursor: pointer;
 }
 
-.online-tournament .availableTournament .tournaments .available i{
+.online-tournament .tournaments .available i{
     position: absolute;
     left: 90%;
+    /* border: 1px solid rgb(1, 255, 242); */
 }
 
 /* ------------------------------ */

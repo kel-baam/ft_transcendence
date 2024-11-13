@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .user_joind_tournaments import get_user_joined_tournaments
+from .display_tournaments import joined_tournaments, available_tournaments
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -15,11 +15,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-        tournament_data = await get_user_joined_tournaments(self.user_id)
+        joined_tournaments_data = await joined_tournaments(self.user_id)
+        available_tournaments_data = await available_tournaments(self.user_id)
 
-        print("tournament data -> : ", tournament_data)
+        print("joined_tournaments-> : ", joined_tournaments_data)
+        print("available_tournaments-> : ", available_tournaments_data)
         await self.send(text_data=json.dumps({
-            'joined_tournaments': tournament_data
+            'joined_tournaments': joined_tournaments_data,
+            'available_tournaments': available_tournaments_data
         }))
 
     async def disconnect(self, close_code):
@@ -31,10 +34,26 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
         action = data.get('action')
+        print("action -----> ", action)
+        if action == 'get_joined_tournaments' | action == 'get_available_tournaments':
+            joined_tournaments_data = await joined_tournaments(self.user_id)
+            available_tournaments_data = await available_tournaments(self.user_id)
 
-        if action == 'get_joined_tournaments':
-            tournament_data = await get_user_joined_tournaments(self.user_id)
-
+            print("joined_tournaments-> : ", joined_tournaments_data)
+            print("available_tournaments-> : ", available_tournaments_data)
             await self.send(text_data=json.dumps({
-                'joined_tournaments': tournament_data
+                'joined_tournaments': joined_tournaments_data,
+                'available_tournaments': available_tournaments_data
             }))
+        #     tournament_data = await joined_tournaments(self.user_id)
+
+        #     await self.send(text_data=json.dumps({
+        #         'joined_tournaments': tournament_data
+        #     }))
+            
+        # elif action == 'get_available_tournaments':
+        #     tournament_data = await available_tournaments(self.user_id)
+        #     print("here------>", tournament_data)
+        #     await self.send(text_data=json.dumps({
+        #         'available_tournaments': tournament_data
+        #     }))

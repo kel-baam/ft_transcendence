@@ -30,6 +30,16 @@ def generate_fake_data():
         if not isinstance(user, User):
             raise ValueError("The selected object is not a valid User instance.")
         
+        players = [
+            Player.objects.create(
+                nickname=fake.unique.user_name(),
+                user=random.choice(users),  # Link to a random user
+                image="media/player_images/uknown.png",
+                is_local=fake.boolean(),
+            )
+            for _ in range(num_players_per_tournament)
+        ]
+        
         tournament = Tournament.objects.create(
             name=fake.company(),
             creator=user,
@@ -38,14 +48,6 @@ def generate_fake_data():
         )
 
         # Create players for each tournament
-        players = [
-            Player.objects.create(
-                nickname=fake.unique.user_name(),
-                user=random.choice(users),  # Link to a random user
-                is_local=fake.boolean(),
-            )
-            for _ in range(num_players_per_tournament)
-        ]
 
 
         for player in players:

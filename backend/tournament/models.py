@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-
+from django.core.exceptions import ObjectDoesNotExist
 # class Tournament(models.Model):
 #     name = models.CharField(max_length=100)
 #     def __str__(self):
@@ -52,10 +52,8 @@ class Player(models.Model):
     nickname = models.CharField(max_length=50, default="NoNickname")
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='players')
     image = models.ImageField(upload_to='player_images/', blank=True, null=True)
-    # is_guest = models.BooleanField(default=False) i think that i don't need this guest
-    # cuz if it's local i don't need to know who you're and if you're in an online tour 
-    # in the checkment i need to know who you're(it's effect to the validation of the form )
     is_local = models.BooleanField(default=True)
+    tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE, related_name='players', null=True, blank=True)
 
     def __str__(self):
         return self.nickname
@@ -68,17 +66,25 @@ class Tournament(models.Model):
         ('public', 'Public'),
         ('private', 'Private')
     ]
-    
     type = models.CharField(max_length=50, blank=True, null=True, choices=type_choices)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
+    def get_creator_image(self):
+        try:
+            player = Player.objects.get(user_id=self.creator.id, tournament=self)
+            return player.image.url if player.image else 'default-image.jpg'
+        except Player.DoesNotExist:
+            return '../../frontend/assets/css/uknown.png'
+
+
     def clean(self):
         valid_types = {'local', 'public', 'private'}
         if self.type and self.type not in valid_types:
             raise ValidationError(f"Invalid tournament type: {self.type}. Valid types are: {', '.join(valid_types)}.")
-    
+
     def __str__(self):
         return self.name
+
 
 class PlayerTournament(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tournament_entries')
