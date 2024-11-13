@@ -1,0 +1,23 @@
+
+services:
+    frontend:
+        build: ./frontEnd
+        volumes:
+        - "./frontEnd:/usr/share/nginx/html"
+        ports:
+        - "80:80"
+        networks:
+        - app-network
+    backend:
+        build: ./backEnd
+        volumes:
+        - "./backEnd:/app"
+        ports:
+        - "8000:8000"
+        networks:
+        - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
