@@ -11,7 +11,7 @@ class TournamentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tournament
-        fields = ['name', 'creator', 'type', 'created_at', 'creator_image']
+        fields = ['id', 'name', 'creator', 'type', 'created_at', 'creator_image']
 
     def get_creator_image(self, obj):
         return obj.get_creator_image()

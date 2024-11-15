@@ -1,4 +1,4 @@
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 from .models import Tournament, User, PlayerTournament
 from asgiref.sync import sync_to_async
 from .serializers import TournamentSerializer
@@ -30,15 +30,15 @@ def available_tournaments(user_id):
         Q(creator=11) | Q(participants__user=11)
     ).annotate(
         num_participants=Count(
-            'participants',
-            filter=Q(participants__status='accepted')
-        ) + 1
+        'players',
+        filter=Q(players__is_local='False') & Q(players__tournament__id=F('id'))
+        )
     ).filter(
         num_participants__lt=4
     ).distinct()
 
-    # for tournament in available_tournaments:
-    #     print(f"Tournament ID: {tournament.id}, Num Participants: {tournament.num_participants}")
+    for tournament in available_tournaments:
+        print(f"Tournament ID: {tournament.id}, Num Participants: {tournament.num_participants}")
     serialized_tournaments = TournamentSerializer(available_tournaments, many=True)
 
     print("--------------available------------")

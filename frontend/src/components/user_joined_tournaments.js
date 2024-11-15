@@ -168,7 +168,7 @@ class UserJoinedTournaments
     {
         this.socket = new WebSocket('wss://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/ws/tournaments/');
 
-        console.log("WebSocket connected");
+        console.log("joined_tournaments WebSocket connected");
 
         this.socket.onmessage = (event) =>
         {
@@ -192,6 +192,42 @@ class UserJoinedTournaments
         this.socket.onclose = () => { console.log("WebSocket connection closed"); };
     }
 
+    handleIconClick = (tournament, type) =>
+    {
+        const ws = new WebSocket("wss://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/ws/tournaments/");
+        console.log(type)
+        ws.onopen = () => {
+            console.log("click WebSocket connection opened");
+            ws.send(JSON.stringify({
+                action: type,
+                tournamentId: tournament.id,
+                // userId: this.state.userId,
+            }));
+        };
+    
+        ws.onmessage = (event) =>
+        {
+            const data = JSON.parse(event.data);
+            console.log("Received WebSocket message: ", data.message);
+            console.log("--------- : ", tournament)
+            if (data.message === "You have left the tournament" || data.message === "Tournament deleted successfully")
+            {
+                alert(data.message);
+                console.log("data.message --------------> ", data.message)
+                this.setState
+                ({
+                    joined_tournaments: this.state.joined_tournaments.filter(t => t.id !== tournament.id),
+                });
+            }
+            else { console.log('There was a problem with the tournament action'); }
+        };
+    
+        ws.onerror = (error) => { console.error('WebSocket error: ', error); };
+    
+        ws.onclose = () => { console.log('WebSocket connection closed'); };
+    };
+    
+
     render()
     {
         const { joined_tournaments, available_tournaments } = this.state;
@@ -200,13 +236,16 @@ class UserJoinedTournaments
                 return createElement('div', { className: 'available' },
                     createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${tournament.creator_image}` }),
                     createElement('a', { href: '#' }, tournament.name),
-                    createElement('i', { className: type === 'joined' ? 'fa-regular fa-circle-xmark icon' : 'fa-solid fa-user-plus icon' })
+                    createElement('i', { 
+                        className: type === 'leave' ? 'fa-regular fa-circle-xmark icon' : 'fa-solid fa-user-plus icon', 
+                        onClick: () => this.handleIconClick(tournament, type) // Pass tournament and type to the click handler
+                    })
                 );
             }) : [];
         };
 
-        const joinedTournamentList = renderTournamentList(joined_tournaments, 'joined');
-        const availableTournamentList = renderTournamentList(available_tournaments, 'available');
+        const joinedTournamentList = renderTournamentList(joined_tournaments, 'leave');
+        const availableTournamentList = renderTournamentList(available_tournaments, 'join');
 
         const newVdom = createElement('div', { id: 'global' },
             createElement(Header, {}),

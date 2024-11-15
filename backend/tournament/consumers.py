@@ -1,6 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .display_tournaments import joined_tournaments, available_tournaments
+from .models import Tournament, PlayerTournament
+from asgiref.sync import sync_to_async
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -20,6 +22,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
         print("joined_tournaments-> : ", joined_tournaments_data)
         print("available_tournaments-> : ", available_tournaments_data)
+
         await self.send(text_data=json.dumps({
             'joined_tournaments': joined_tournaments_data,
             'available_tournaments': available_tournaments_data
@@ -30,12 +33,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-
+        
     async def receive(self, text_data):
         data = json.loads(text_data)
         action = data.get('action')
+        tournament_id = data.get("tournamentId")
+
         print("action -----> ", action)
-        if action == 'get_joined_tournaments' | action == 'get_available_tournaments':
+        print("tournament_id -----> ", tournament_id)
+        if action == 'get_joined_tournaments' or action == 'get_available_tournaments':
             joined_tournaments_data = await joined_tournaments(self.user_id)
             available_tournaments_data = await available_tournaments(self.user_id)
 
@@ -45,6 +51,28 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'joined_tournaments': joined_tournaments_data,
                 'available_tournaments': available_tournaments_data
             }))
+
+        if action == 'leave':
+            tournament = await sync_to_async(Tournament.objects.get)(id=tournament_id)
+
+            if tournament.creator_id == 11:
+                await sync_to_async(tournament.delete)()
+                await self.send(text_data=json.dumps({
+                    "message": "Tournament deleted successfully"
+                }))
+            else:
+                await sync_to_async(PlayerTournament.objects.filter)(user=11, tournament=tournament).delete()
+                await self.send(text_data=json.dumps({
+                    "message": "You have left the tournament"
+                }))
+
+        if action == 'join':
+            tournament = await sync_to_async(Tournament.objects.get)(id=tournament_id)
+            
+
+
+
+
         #     tournament_data = await joined_tournaments(self.user_id)
 
         #     await self.send(text_data=json.dumps({

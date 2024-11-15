@@ -55,7 +55,7 @@ class Player(models.Model):
     image = models.ImageField(upload_to='player_images/', blank=True, null=True)
     is_local = models.BooleanField(default=True)
     tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE, related_name='players', null=True, blank=True)
-
+    
     def __str__(self):
         return self.nickname
 
@@ -76,7 +76,6 @@ class Tournament(models.Model):
             return player.image.url if player.image else 'default-image.jpg'
         except Player.DoesNotExist:
             return '../../frontend/assets/css/uknown.png'
-
 
     def clean(self):
         valid_types = {'local', 'public', 'private'}
