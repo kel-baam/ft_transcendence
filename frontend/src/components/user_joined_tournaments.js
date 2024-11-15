@@ -78,10 +78,12 @@ import Header from "./header.js";
 import Sidebar from "./sidebar.js";
 import { diff, patch } from "../framework/diff.js";
 import { handleRouting } from "../framework/routing.js";
+import { showErrorNotification } from "./alertNotification.js";
 
-class UserJoinedTournaments {
-
-    constructor(props) {
+class UserJoinedTournaments
+{
+    constructor(props)
+    {
         this.props = props;
         this.state = {
             joined_tournaments: [],
@@ -92,18 +94,21 @@ class UserJoinedTournaments {
         this.connectWebSocket();
     }
 
-    setState(newState) {
+    setState(newState)
+    {
         this.state = { ...this.state, ...newState };
         this.render();
     }
 
-    async fetchCsrfToken() {
+    async fetchCsrfToken()
+    {
         const response = await fetch('https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/tournament/api/csrf-token/');
         const data = await response.json();
         return data.csrfToken;
     }
 
-    handleSubmit = async (event) => {
+    handleSubmit = async (event) =>
+    {
         event.preventDefault();
 
         const formElement = document.querySelector('form');
@@ -121,51 +126,75 @@ class UserJoinedTournaments {
 
             const response = await fetch("https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/tournament/api/online-tournament/", {
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                },
+                headers: { 'X-CSRFToken': csrfToken, },
                 body: formData,
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
+            if (!response.ok)
+            {
+                const errorText = await response.json();
+
                 console.error("Error response:", errorText);
+
+                showErrorNotification(errorText.message);
+                this.highlightInvalidInput(formElement);
                 throw new Error("An error occurred");
             }
 
             const successData = await response.json();
             console.log(successData);
-        } catch (error) {
-            console.log("Error:", error.message);
         }
-    };
+        catch (error){ console.log("Error:", error.message); }
+    }
 
-    connectWebSocket() {
+    highlightInvalidInput(formElement)
+    {
+        const inputs = formElement.querySelectorAll('input, select, textarea');
+        inputs.forEach(input =>
+        {
+            input.style.borderColor = '';
+            input.style.backgroundColor = '';
+            
+            if (input.value === '')
+            {
+                input.style.borderColor = 'red';
+                input.style.backgroundColor = '#ffe6e6';
+                input.focus();
+            }
+        });
+    }
+
+    connectWebSocket()
+    {
         this.socket = new WebSocket('wss://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/ws/tournaments/');
+
         console.log("WebSocket connected");
 
-        this.socket.onmessage = (event) => {
+        this.socket.onmessage = (event) =>
+        {
             const data = JSON.parse(event.data);
+
             console.log("Received data:", data);
 
-            if (data && Array.isArray(data.joined_tournaments)) {
+            if (data && Array.isArray(data.joined_tournaments))
+            {
                 console.log('Received tournaments data:', data.joined_tournaments);
-                this.setState({
+
+                this.setState(
+                {
                     joined_tournaments: data.joined_tournaments,
                     available_tournaments: data.available_tournaments,
                 });
-            } else {
-                console.log('No valid tournaments data found');
             }
+            else { console.log('No valid tournaments data found'); }
         };
-
         this.socket.onerror = (error) => { console.error("WebSocket error:", error); };
         this.socket.onclose = () => { console.log("WebSocket connection closed"); };
     }
 
-    render() {
+    render()
+    {
         const { joined_tournaments, available_tournaments } = this.state;
-
         const renderTournamentList = (tournaments, type) => {
             return tournaments ? tournaments.map(tournament => {
                 return createElement('div', { className: 'available' },
@@ -203,7 +232,7 @@ class UserJoinedTournaments {
                         createElement('form', { onSubmit: this.handleSubmit },
                             createElement('div', { className: 'image' },
                                 createElement('img', {
-                                    src: './images/uknown.png',
+                                    src: './images/people_14024721.png',
                                     alt: 'avatar',
                                     className: 'creator_avatar'
                                 }),

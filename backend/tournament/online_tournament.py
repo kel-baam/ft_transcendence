@@ -26,7 +26,11 @@ def online_tournament(request):
 
         validation_error = validate_tournament_creation(tournament_name, creator_avatar, creator_nickname, invited_users, tournament_type, tournament_creator)
         if validation_error:
-            return JsonResponse({"error": validation_error}, status=400)
+            return JsonResponse({
+                "status": "error",
+                "message": "There was an issue with the data you submitted. Please check the form fields and try again.",
+                "error_details": validation_error
+            }, status=400)
         
         users = []
         user1, created = User.objects.get_or_create(username=tournament_creator)

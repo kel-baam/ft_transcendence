@@ -2,8 +2,9 @@ import createElement from "../framework/createElement.js";
 import Header from "../components/header.js";
 import Sidebar from "../components/sidebar.js";
 import { diff, patch } from "../framework/diff.js";
-import { handleRouting } from "../framework/routing.js";
 import UserJoinedTournaments from "../components/user_joined_tournaments.js";
+import { handleRouting } from "../framework/routing.js";
+import { showErrorNotification } from "../components/alertNotification.js";
 // import User_available_tournaments from "../components/user_available_tournaments.js"
 
 class OnlineTournament {
@@ -22,7 +23,7 @@ class OnlineTournament {
             return data.csrfToken;
         } catch (error) {
             console.error("Error fetching CSRF token:", error);
-            throw error; // Rethrow to handle it in the calling function
+            throw error;
         }
     }
 
@@ -32,7 +33,6 @@ class OnlineTournament {
         const formElement = event.target;
         const formData = new FormData(formElement);
 
-        // You can add some form data directly here, or customize the formData dynamically
         formData.append('user', 'niboukha');
         formData.append('player[0][name]', 'shicham');
         formData.append('player[1][name]', 'kaoutar');
@@ -49,9 +49,11 @@ class OnlineTournament {
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
+                const errorText = await response.json();
                 console.error("Error response:", errorText);
-                throw new Error("An error occurred during submission.");
+                showErrorNotification(errorText.message);
+                this.highlightInvalidInput(formElement);
+                throw new Error("An error occurred");
             }
 
             const successData = await response.json();
@@ -73,7 +75,20 @@ class OnlineTournament {
             reader.readAsDataURL(file);
         }
     };
-   
+
+    highlightInvalidInput(formElement) {
+        const inputs = formElement.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.style.borderColor = '';
+            input.style.backgroundColor = '';
+            
+            if (input.value === '') {
+                input.style.borderColor = 'red';
+                input.style.backgroundColor = '#ffe6e6';
+                input.focus();
+            }
+        });
+    }
     render() {
         const newVdom = createElement('div', { id: 'global' }, 
             createElement(Header, {}),
@@ -112,7 +127,7 @@ class OnlineTournament {
     renderImageUploadSection() {
         return createElement('div', { className: 'image' },
             createElement('img', {
-                src: './images/uknown.png',
+                src: './images/people_14024721.png',
                 alt: 'avatar',
                 className: 'creator_avatar'
             }),
