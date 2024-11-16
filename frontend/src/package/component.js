@@ -134,6 +134,8 @@ export function defineComponent({
        * @param {Object.<string, Any>} state the new state to be merged with the existing state
        */
       updateState(state) {
+        // console.log("-----------------> vdom : ", this.#vdom)
+        // console.log(">>>>>>>>>>>>>>>>>>>> state : ", state)
         this.state = { ...this.state, ...state }
         this.#patch()
       }

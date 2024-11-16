@@ -20,7 +20,7 @@ import { handleRouting } from "./package/routing.js";
 //     });
 // }
 
-window.addEventListener('load', () =>
+window.addEventListener('DOMContentLoaded', () =>
 {
     // document.body.innerHTML = ''
     // addGlobalEventListeners();

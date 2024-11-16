@@ -18,7 +18,8 @@ export function createApp(RootComponent, props = {}) {
         if (isMounted) {
           throw new Error('The application is already mounted')
         }
-  
+        // console.log("----------------------> props : ", props)
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Rootcopm : ", RootComponent)
         parentEl = _parentEl
         vdom = h(RootComponent, props)
         mountDOM(vdom, parentEl)
