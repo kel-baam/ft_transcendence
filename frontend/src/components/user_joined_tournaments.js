@@ -79,6 +79,7 @@ import Sidebar from "./sidebar.js";
 import { diff, patch } from "../framework/diff.js";
 import { handleRouting } from "../framework/routing.js";
 import { showErrorNotification } from "./alertNotification.js";
+import { playerForm } from "./playerForm.js";
 
 class UserJoinedTournaments
 {
@@ -88,6 +89,7 @@ class UserJoinedTournaments
         this.state = {
             joined_tournaments: [],
             available_tournaments: [],
+            isModalVisible:false,
         };
 
         this.socket = null;
@@ -194,43 +196,59 @@ class UserJoinedTournaments
 
     handleIconClick = (tournament, type) =>
     {
-        const ws = new WebSocket("wss://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/ws/tournaments/");
-        console.log(type)
-        ws.onopen = () => {
-            console.log("click WebSocket connection opened");
-            ws.send(JSON.stringify({
-                action: type,
-                tournamentId: tournament.id,
-                // userId: this.state.userId,
-            }));
-        };
-    
-        ws.onmessage = (event) =>
+        if (type == 'leave')
         {
-            const data = JSON.parse(event.data);
-            console.log("Received WebSocket message: ", data.message);
-            console.log("--------- : ", tournament)
-            if (data.message === "You have left the tournament" || data.message === "Tournament deleted successfully")
+            const ws = new WebSocket("wss://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/ws/tournaments/");
+            console.log(type)
+            ws.onopen = () => {
+                console.log("click WebSocket connection opened");
+                ws.send(JSON.stringify({
+                    action: type,
+                    tournamentId: tournament.id,
+                    // userId: this.state.userId,
+                }));
+            };
+        
+            ws.onmessage = (event) =>
             {
-                alert(data.message);
-                console.log("data.message --------------> ", data.message)
-                this.setState
-                ({
-                    joined_tournaments: this.state.joined_tournaments.filter(t => t.id !== tournament.id),
-                });
-            }
-            else { console.log('There was a problem with the tournament action'); }
-        };
-    
-        ws.onerror = (error) => { console.error('WebSocket error: ', error); };
-    
-        ws.onclose = () => { console.log('WebSocket connection closed'); };
+                const data = JSON.parse(event.data);
+                console.log("Received WebSocket message: ", data.message);
+                console.log("--------- : ", tournament)
+                if (data.message === "You have left the tournament" || data.message === "Tournament deleted successfully")
+                {
+                    alert(data.message);
+                    console.log("data.message --------------> ", data.message)
+                    this.setState
+                    ({
+                        joined_tournaments: this.state.joined_tournaments.filter(t => t.id !== tournament.id),
+                    });
+                }
+                else { console.log('There was a problem with the tournament action'); }
+            };
+        
+            ws.onerror = (error) => { console.error('WebSocket error: ', error); };
+        
+            ws.onclose = () => { console.log('WebSocket connection closed'); };
+        }
+        else if (type == 'join')
+        {
+            this.setState({
+                isModalVisible: true
+            })
+
+            const a = playerForm();
+            // this.setState({
+            //     isModalVisible: false
+            // })
+
+            console.log("heeeee ----> ", a);
+        }
+        
     };
-    
 
     render()
     {
-        const { joined_tournaments, available_tournaments } = this.state;
+        const { joined_tournaments, available_tournaments, isModalVisible } = this.state;
         const renderTournamentList = (tournaments, type) => {
             return tournaments ? tournaments.map(tournament => {
                 return createElement('div', { className: 'available' },
@@ -238,7 +256,7 @@ class UserJoinedTournaments
                     createElement('a', { href: '#' }, tournament.name),
                     createElement('i', { 
                         className: type === 'leave' ? 'fa-regular fa-circle-xmark icon' : 'fa-solid fa-user-plus icon', 
-                        onClick: () => this.handleIconClick(tournament, type) // Pass tournament and type to the click handler
+                        onClick: () => this.handleIconClick(tournament, type)
                     })
                 );
             }) : [];
@@ -247,11 +265,12 @@ class UserJoinedTournaments
         const joinedTournamentList = renderTournamentList(joined_tournaments, 'leave');
         const availableTournamentList = renderTournamentList(available_tournaments, 'join');
 
+        console.log(isModalVisible);
         const newVdom = createElement('div', { id: 'global' },
             createElement(Header, {}),
             createElement('div', { className: 'content' },
                 createElement(Sidebar, {}),
-                createElement('div', { className: 'online-tournament' },
+                createElement('div', { className: isModalVisible ? 'online-tournament blur' : 'online-tournament' },
                     createElement('div', {},
                         createElement('div', { className: 'availableTournament' },
                             createElement('div', { className: 'title' },
@@ -319,9 +338,8 @@ class UserJoinedTournaments
                     )
                 ),
                 createElement('div', { className: 'friends' })
-            )
+            ),
         );
-
         const container = document.body;
         const patches = diff(container.__vdom, newVdom, container);
         patch(document.body, patches);
