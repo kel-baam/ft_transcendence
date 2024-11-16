@@ -11,7 +11,7 @@ class Local_tournament_form {
     }
 
     async fetchCsrfToken() {
-        const response = await fetch('https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/tournament/api/csrf-token/');
+        const response = await fetch('http://localhost:8000/tournament/api/csrf-token/');
         const data = await response.json();
         return data.csrfToken;
     }
@@ -44,7 +44,7 @@ class Local_tournament_form {
         try {
             const csrfToken = await this.fetchCsrfToken();
 
-            const response = await fetch("https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/tournament/api/local-tournament/", {
+            const response = await fetch("http://localhost:8000/tournament/api/local-tournament/", {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrfToken,

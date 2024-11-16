@@ -1,3 +1,5 @@
+import createElement from "../framework/createElement.js";
+
 export function showErrorNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'error-notification';

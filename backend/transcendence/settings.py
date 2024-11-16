@@ -74,14 +74,16 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "https://petrifying-hex-vw4x4vg966g3695j.github.dev",
-    "https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://frontend:80",
+# ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://petrifying-hex-vw4x4vg966g3695j.github.dev",
-    "https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev",
+    "http://localhost:8080",
+    "http://frontend:80",
+    "http://backend:8000",
+    "http://localhost:8000",
+    "ws://localhost:8000",
 ]
 
 ROOT_URLCONF = 'transcendence.urls'

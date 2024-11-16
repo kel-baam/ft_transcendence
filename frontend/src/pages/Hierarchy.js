@@ -37,27 +37,27 @@ class Hierarchy {
                 createElement('div', { className: 'round1' },
                     createElement('div', { className: 'match1' },
                         createElement('div', { className: 'player1' },
-                            createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[0].player1.image}` }),
+                            createElement('img', { src: `http://localhost:8000${this.props[0].player1.image}` }),
                             createElement('h2', {}, `${this.props[0].player1.nickname}`)
                         ),
                         createElement('div', { className: 'vs' },
                             createElement('img', { src: './images/vs (2).png' })
                         ),
                         createElement('div', { className: 'player2' },
-                            createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[0].player2.image}` }),
+                            createElement('img', { src: `http://localhost:8000${this.props[0].player2.image}` }),
                             createElement('h2', {}, `${this.props[0].player2.nickname}`)
                         )
                     ),
                     createElement('div', { className: 'match2' },
                         createElement('div', { className: 'player1' },
-                            createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[1].player1.image}` }),
+                            createElement('img', { src: `http://localhost:8000${this.props[1].player1.image}` }),
                             createElement('h2', {}, `${this.props[1].player1.nickname}`)
                         ),
                         createElement('div', { className: 'vs' },
                             createElement('img', { src: './images/vs (2).png' })
                         ),
                         createElement('div', { className: 'player2' },
-                            createElement('img', { src: `https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev${this.props[1].player2.image}` }),
+                            createElement('img', { src: `http://localhost:8000${this.props[1].player2.image}` }),
                             createElement('h2', {}, `${this.props[1].player2.nickname}`)
                         )
                     )

@@ -18,7 +18,7 @@ class User_available_tournaments {
     }
 
     connectWebSocket() {
-        this.socket = new WebSocket('wss://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/ws/tournaments/');
+        this.socket = new WebSocket('ws://localhost:8000/ws/tournaments/');
         console.log("available -> WebSocket connected");
 
         this.socket.onopen = (event) => {

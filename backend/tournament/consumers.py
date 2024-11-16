@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .display_tournaments import joined_tournaments, available_tournaments
-from .models import Tournament, PlayerTournament
+from .models import Tournament, PlayerTournament, Player
 from asgiref.sync import sync_to_async
 
 class TournamentConsumer(AsyncWebsocketConsumer):
@@ -61,27 +61,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     "message": "Tournament deleted successfully"
                 }))
             else:
-                await sync_to_async(PlayerTournament.objects.filter)(user=11, tournament=tournament).delete()
+                await sync_to_async(PlayerTournament.objects.filter(user=11, tournament=tournament).delete)()
+                await sync_to_async(Player.objects.filter(user=11, tournament=tournament).delete)()
                 await self.send(text_data=json.dumps({
                     "message": "You have left the tournament"
                 }))
-
-        if action == 'join':
-            tournament = await sync_to_async(Tournament.objects.get)(id=tournament_id)
-            
-
-
-
-
-        #     tournament_data = await joined_tournaments(self.user_id)
-
-        #     await self.send(text_data=json.dumps({
-        #         'joined_tournaments': tournament_data
-        #     }))
-            
-        # elif action == 'get_available_tournaments':
-        #     tournament_data = await available_tournaments(self.user_id)
-        #     print("here------>", tournament_data)
-        #     await self.send(text_data=json.dumps({
-        #         'available_tournaments': tournament_data
-        #     }))
