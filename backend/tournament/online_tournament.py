@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .validate_online_tournament import validate_tournament_creation
+from .form_validations import validate_tournament_creation
 from .models import Tournament, Player, PlayerTournament, User
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -14,17 +14,11 @@ def online_tournament(request):
         creator_nickname = request.POST.get('nickname')
         tournament_type = request.POST.get('visibility')
         tournament_creator = request.POST.get('user')
-    
-        invited_users = []
-        for i in range(3):
-            invited_user = request.POST.get(f'player[{i}][name]')
-            if invited_user:
-                invited_users.append(invited_user)
+        selected_players = request.POST.getlist('selectedPlayers[]')
 
-        # i missed to check if the invited players is already an users in our website 
-        # in case of tournament is online
+        print("selected_players ------> , ", selected_players)
 
-        validation_error = validate_tournament_creation(tournament_name, creator_avatar, creator_nickname, invited_users, tournament_type, tournament_creator)
+        validation_error = validate_tournament_creation(tournament_name, creator_avatar, creator_nickname, tournament_type, tournament_creator, selected_players)
         if validation_error:
             return JsonResponse({
                 "status": "error",
@@ -35,9 +29,13 @@ def online_tournament(request):
         users = []
         user1, created = User.objects.get_or_create(username=tournament_creator)
         users.append(user1)
-        
-        for i, invited_user_name in enumerate(invited_users, start=2): 
-            user, created = User.objects.get_or_create(username=invited_user_name)
+
+        # for i, invited_user_name in enumerate(invited_users, start=2): 
+        #     user, created = User.objects.get_or_create(username=invited_user_name)
+        #     users.append(user)
+
+        for selected_player in selected_players:
+            user = User.objects.get(id = selected_player)
             users.append(user)
 
         tournament = Tournament.objects.create(

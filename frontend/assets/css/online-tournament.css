@@ -121,9 +121,9 @@
 .online-tournament .createTournament
 {
     display: grid;
-    grid-template-rows: 22% 79%;
+    grid-template-rows: 20% 80%;
     position: relative;
-    height: 90%;
+    /* height: 90%; */
     width: 95%;
     overflow: hidden;
     /* position: relative; */
@@ -154,6 +154,8 @@
     grid-template-rows: 20% 60% 20%;
     justify-content: center;
     position: relative;
+    /* border: 1px solid rgb(1, 225, 255); */
+
 }
 
 .online-tournament .createTournament form .image .creator_avatar
@@ -184,7 +186,9 @@
 {
     position: absolute;
     left: 20%;
-    top: 17%;
+    top: 12%;
+    /* border: 1px solid rgb(1, 225, 255); */
+
 }
 
 .online-tournament .createTournament form .createInput label{
@@ -208,6 +212,7 @@
     border-radius: 10px;
     letter-spacing: 3px;
     padding: 15px;
+    margin: 2px;
     border: none;
     cursor: text;
     box-sizing: border-box;
@@ -217,7 +222,7 @@
 
 .online-tournament .createTournament form .game-visibility-options{
     position: absolute;
-    top: 71%;
+    top: 73%;
     left: 20%;
     display: flex;
     gap: 10px;
@@ -271,8 +276,8 @@
 
 .online-tournament .createTournament form button{
     display: inline-block;
-    width: 150px;
-    height: 70px;
+    width: 130px;
+    height: 60px;
     font-family: myFont;
     color: #D9DBBC;
     font-size: 24px;
@@ -286,10 +291,10 @@
     box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
     text-shadow: 0px 4px 4px rgba(232, 235, 68, 0.3);
     transition-duration: 0.4s;
-
+    border: none;
     position: absolute;
     left: 35%;
-    top: 85%;
+    top: 86%;
 }
 
 .online-tournament .createTournament form button:hover,
@@ -297,3 +302,87 @@
 .online-tournament .createTournament form button:active{
     transform: scale(1.1);
 }
+
+/* --------------------------------------------------------------- */
+
+
+/* .online-tournament .createTournament form .createInput .results-container { */
+    /* width: 284px;
+    height: 80px;
+    border: 1px solid rgb(1, 225, 255);
+
+} */
+
+.online-tournament .createTournament form .createInput .player-card {
+    height: 30px;
+    width: 132px;
+    display: inline-block;
+    border-radius: 10px;
+    background-color: #CBCBCB;
+    margin: 3px;
+    overflow: hidden;
+    padding: 5px;
+    text-align: center; 
+    vertical-align: top;
+    position: relative;
+    /* border: 1px solid rgb(1, 225, 255); */
+}
+
+.online-tournament .createTournament form .createInput .player-card h3 {
+    margin: 0;
+    font-size: 14px;
+    font-family: myFont;
+    letter-spacing: 2px;
+    color: #0446A4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    width: 80%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.online-tournament .createTournament form .createInput .player-card i {
+    color: #858484;
+    position: absolute;
+    /* bottom: 30px; */
+    right: 5px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+
+.results-container {
+    position: absolute;
+    top: 85%;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    max-height: 100px;
+    overflow-y: auto;
+    background: #CBCBCB;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scrollbar-width: 5px;
+}
+
+.player-item {
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.player-item:hover {
+    background-color: #858484;
+}
+
+
+

@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Tournament, Player, Match, User
 from .serializers import MatchSerializer
 import random
-from django.shortcuts import get_object_or_404
 
 @csrf_exempt
 def local_tournament(request):

@@ -3,6 +3,7 @@ import Header from "../components/header.js";
 import Sidebar from "../components/sidebar.js";
 import { diff, patch } from "../framework/diff.js";
 import { handleRouting } from "../framework/routing.js";
+import { showErrorNotification } from "../components/alertNotification.js";
 
 class Local_tournament_form {
     constructor(props) {
@@ -41,32 +42,36 @@ class Local_tournament_form {
             }
         }
 
-        try {
+        try
+        {
             const csrfToken = await this.fetchCsrfToken();
 
             const response = await fetch("http://localhost:8000/tournament/api/local-tournament/", {
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                },
+                headers: { 'X-CSRFToken': csrfToken, },
                 body: dataFormData,
             });
             
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Error response:", errorText);
-                throw new Error("An error occurred");
+                const errorText = await response.json();
+                console.error("Error response:", errorText.error);
+                throw new Error(errorText.error);
             }
 
             const successData = await response.json();
+
             console.log(successData);
+
             localStorage.setItem("tournamentData", JSON.stringify({
                 tournament_id: successData.tournament_id,
                 matches: successData.matches
             }));
             this.handleButtonClick();
-        } catch (error) {
-            console.log("Error:", error.message);
+        }
+        catch (error)
+        {
+            showErrorNotification(error);
+            console.log(error);
         }
         
     };

@@ -15,7 +15,7 @@ class OnlineTournament {
 
     async fetchCsrfToken() {
         try {
-            const response = await fetch('https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/tournament/api/csrf-token/');
+            const response = await fetch('http://localhost:8000/tournament/api/csrf-token/');
             if (!response.ok) {
                 throw new Error("Failed to fetch CSRF token.");
             }
@@ -33,11 +33,9 @@ class OnlineTournament {
         const formElement = event.target;
         const formData = new FormData(formElement);
 
+        console.log("-------------> , ", formData)
         formData.append('user', 'niboukha');
-        formData.append('player[0][name]', 'shicham');
-        formData.append('player[1][name]', 'kaoutar');
-        formData.append('player[2][name]', 'karima');
-
+        
         try {
             const csrfToken = await this.fetchCsrfToken();
             const response = await fetch("https://petrifying-hex-vw4x4vg966g3695j-8000.app.github.dev/tournament/api/online-tournament/", {

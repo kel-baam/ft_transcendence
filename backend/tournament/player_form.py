@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .validate_online_tournament import validate_tournament_creation
 from .models import Tournament, Player, PlayerTournament, User
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -25,6 +24,7 @@ def player_form(request):
             is_local = False,
             tournament = tournament,
         )
+        
         print("playerData --------> : ", player_data)
     return JsonResponse({
         "status": "success",

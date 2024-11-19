@@ -80,6 +80,7 @@ import { diff, patch } from "../framework/diff.js";
 import { handleRouting } from "../framework/routing.js";
 import { showErrorNotification } from "./alertNotification.js";
 import { playerForm } from "./playerForm.js";
+import {addPlayerSelection} from "./selectPlayersTournament.js"
 
 class UserJoinedTournaments
 {
@@ -94,6 +95,7 @@ class UserJoinedTournaments
 
         this.socket = null;
         this.connectWebSocket();
+        addPlayerSelection();
     }
 
     setState(newState)
@@ -116,12 +118,14 @@ class UserJoinedTournaments
         const formElement = document.querySelector('form');
         const formData = new FormData(formElement);
 
-        console.log("formData : ", formData);
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
 
         formData.append('user', 'niboukha');
-        formData.append('player[0][name]', 'shicham');
-        formData.append('player[1][name]', 'kaoutar');
-        formData.append('player[2][name]', 'karima');
+        // formData.append('player[0][name]', 'shicham');
+        // formData.append('player[1][name]', 'kaoutar');
+        // formData.append('player[2][name]', 'karima');
 
         try {
             const csrfToken = await this.fetchCsrfToken();
@@ -245,7 +249,7 @@ class UserJoinedTournaments
 
                 console.log(tournament, "ooooooooooooooooooooooooooooooo")
   
-                fetch('http://localhost:8000/tournament/api/player_form/', {
+                fetch('http://localhost:8000/tournament/api/local_tournament_form/', {
                     method: 'POST',
                     headers: { 'X-CSRFToken': csrfToken, },
                     body: formData,
@@ -255,7 +259,7 @@ class UserJoinedTournaments
                     console.log("Backend Response:", data);
                     if(data.status === "error")
                     {
-                        playerForm()
+                        throw new Error(data.message || "An error occurred in the backend.");
                     }
                     else
                     {
@@ -266,7 +270,11 @@ class UserJoinedTournaments
                         
                 })
                 .catch((error) => {
-                    console.error("Error with backend request:", error);
+                    console.error("Error with backend response:", error.message);
+                        this.setState({
+                            isModalVisible: false
+                        });
+                        showErrorNotification(error.message);
                 });
             })
             .catch((error) => {
@@ -276,7 +284,6 @@ class UserJoinedTournaments
                 });
             });
         }
-        
     };
 
     render()
@@ -354,7 +361,7 @@ class UserJoinedTournaments
                                 createElement('label', {}, 'Nickname:'), createElement('br'),
                                 createElement('input', { type: 'text', name: 'nickname', placeholder: 'Enter Nickname...' }), createElement('br'),
                                 createElement('label', {}, 'Add Players:'), createElement('br'),
-                                createElement('input', { type: 'text', name: 'Add Players', placeholder: 'Enter Add Players...' }), createElement('br')
+                                createElement('div', { id: 'add_players' }), createElement('br')
                             ),
                             createElement('div', { className: 'game-visibility-options' },
                                 createElement('label', { className: 'radio-option' },
