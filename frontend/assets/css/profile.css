@@ -17,6 +17,22 @@
     src: url(../fonts/Playground.ttf);
 }
 
+/* .container nav .search input{
+    font-size: 16px;
+    font-family: myFont;
+    color: #ffffff;
+    margin-left: 14px;
+    outline: none;
+    border: none;
+    background: transparent;
+    width: 300px;
+}
+
+.container nav .search input::placeholder{
+    color: #5293CB;
+    font-size: 14px;
+} */
+
 /*--------------------------profile card----------------------------*/
 /* @property --progress{
 syntax: '<number>';
@@ -221,10 +237,14 @@ inherits: false;
     justify-content: center;
     color: #14397C;
     grid-column: span 2;
-    /* border: 2px solid black; */
-    /* padding-top: 2px; */
+    /* border: 2px solid red; */
+    padding-top: 2px;
 }
 
+/* .title-item span {
+    border: 2px solid red;
+
+} */
 
 .view-all-match
 {
@@ -246,11 +266,17 @@ inherits: false;
     display: grid;
     grid-auto-rows: 20%;
     row-gap: 6%;
-    padding-top: 6px;
+    padding-top: 20px;
     grid-column: span 2;
     /* border: 2px solid red; */
     align-items: center;
+    /* grid-row: span 2; */
     justify-content: center;
+
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    /* width: 106%; */
+    scrollbar-width: 10px;
 }
 
 .match-result-item
@@ -276,6 +302,7 @@ inherits: false;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap:4%
     /* border: 2px solid red; */
 
 }
@@ -307,7 +334,7 @@ inherits: false;
 {
     display: grid;
     grid-template-columns: 33.33% 33.33% 33.33%;
-    /* border: 2px solid green; */
+    border: 2px solid green;
     
 }
 
@@ -350,27 +377,38 @@ inherits: false;
     grid-auto-rows: 20%;
     row-gap: 6%;
     padding-top: 10px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    /* align-items: center; */
+    /* width: 106%; */
+    scrollbar-width: 10px;
     /* border: 2px solid rgb(1, 47, 255); */
 }
+
 .pending-friends-items
 {
     display: grid;
     grid-auto-rows: 20%;
     row-gap: 6%;
     padding-top: 10px;
+
 }
 
 .friend-item, .request-item, .pending-friend-item
 {
     display: grid;
-    grid-template-columns: 33% 30% 38%;
+    grid-template-columns: 32% 30% 36%;
     column-gap: 1%;
     color: #14397C;
+    /* justify-content: center; */
+    /* align-items: end; */
+
     /* border: 2px solid rgb(1, 255, 255); */
 
 }
 
-.friend-item .picture-item, .request-item  .picture-item, .pending-friend-item  .picture-item
+.friend-item .picture-item, 
+.request-item  .picture-item, .pending-friend-item  .picture-item
 {
     display: flex;
     justify-content: flex-end;
@@ -405,15 +443,6 @@ inherits: false;
     /* border: 2px solid rgb(0, 255, 76); */
 }
 
-.fa-check
-{
-    color: #0AA989;
-}
-
-.fa-circle-xmark
-{
-    color: #D44444;
-}
 
 .view-all-match
 {
@@ -726,6 +755,7 @@ canvas
 {
     margin: auto;
 }
+/* 
 .friends-list,
 .request-scop .request-list,
 .pending-scop .pending-list
@@ -738,7 +768,7 @@ canvas
     padding-bottom: 5px;
     overflow-y: scroll;
     overflow-x: none;
-}
+} */
 /* 
 .friend-info,.pending-scop .pending-info{
     display: grid;
@@ -936,8 +966,8 @@ canvas
     width: 85%;
     height: 95%;
     border-radius: 10px;
-    overflow-y:scroll;
-    overflow-x: none;
+    /* overflow-y:scroll;
+    overflow-x: none; */
 }
 
 .view-all-match-history .content .match-info{
@@ -1002,3 +1032,53 @@ canvas
     font-family: myFont;
     color: #D44444;
 }
+
+
+/* -------------------------------------- */
+
+.search
+{
+    width: 250px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin-left: 120px; */
+    cursor: pointer;
+    border-radius: 27px;
+    background: #CBCBCB;
+    padding-left: 50px;
+}
+
+.search input{
+    font-size: 16px;
+    font-family: myFont;
+    letter-spacing: 2px;
+    color: #807c7c;
+    margin-left: 20px;
+    outline: none;
+    border: none;
+    background: transparent;
+    width: 250px;
+}
+/* 
+.friend-info img ,
+.request-info img,
+.pending-info img
+
+{
+    margin-left: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius:50px;
+}
+
+.friend-info a,.request-scop a{
+    text-decoration: none;
+}
+
+.friend-info i
+{
+    font-size: 30px;
+    margin-left:  400px;
+} */

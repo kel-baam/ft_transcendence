@@ -9,6 +9,13 @@ const Comp = defineComponent({
             isLoading : true,
             isBlur : false,
             data : [],
+            activateSection:'friends',
+            viewAll: {
+              // MatchHistory : false,
+              // friends : false,
+              // requests: false,
+              // pending : false
+            }
             }
     },
     render(){
@@ -16,38 +23,50 @@ const Comp = defineComponent({
             [h(sidebarLeft, {}), h('div', {class:'global-content'
               
             },
-                [h('div', {class:'profile-content', style : { filter : this.state.isBlur ? 'blur(4px)': ''} 
+                [h('div', {class:'profile-content', style : (this.state.viewAll.MatchHistory || this.state.viewAll.SocialCard) ? { filter : 'blur(4px)'}: {} 
                 },[h('div', {class:'profile-info'}, 
                 [
                     h('div', {class:'infos'}, [h(UserCard, {}), h(UserWinRate, {})]),
                     h('div', {class:'other-cards'}, [h(UserAchievementsCard, {}), 
-                      h(SocialCard,{}), h(GameHistoryCard, {
+                      h(SocialCard,{
+                        on : 
+                        { blurProfile : this.blurProfile}
+                      }), h(GameHistoryCard, {
                         on : { blurProfile : this.blurProfile}
                       })])
                 ]
 
                 )])])
                 ,
-                (this.state.isBlur && h(GameHistoryCard, {viewAll : true}))
+                (this.state.viewAll.MatchHistory ?  h(GameHistoryCard, {viewAll : true, on : {
+                  removeBlurProfile: this.removeBlurProfile
+                }}) : null)
+                ,
+                (this.state.viewAll.SocialCard ? h(SocialCard, {viewAll : true, on : {
+                  removeBlurProfile: this.removeBlurProfile
+                },
+                activateSection:this.state.activateSection
+              }) : null)
+
               ]) 
             ])
     },
-    blurProfile()
+    blurProfile(viewAll, activateSection)
     {
-      this.updateState({isBlur:true})
+      // console.log("----------------------------> {...this.state.viewAll, MatchHistory:true}", {...this.state.viewAll, MatchHistory:true})
+      // const viewAll = { MatchHistory:true}
+      this.updateState({viewAll},activateSection)
+      console.log("===========================>> this.state : ", this.state)
       // console.log(">>>>>>>>>>>>>>>>>>> data after blur : ", data)
       // createApp(compMatchHistory).mount(document.body)
+    },
+    removeBlurProfile(viewAll)
+    {
+      // const viewAll = { MatchHistory:false}
+      this.updateState({viewAll})
+      // console.log(">>>>>>>>>>>>>>>>")
     }
 })
-
-const compMatchHistory = defineComponent(
-  {   
-      render()
-      {
-        return h('p1', {style : { position:'absolute', top : '500px', left : '900px'}}, ['hello match history !!!'])
-      }
-  }
-)
 
 const UserCard = defineComponent({
     state(){
@@ -168,7 +187,7 @@ const UserWinRate =  defineComponent({
                   this.updateState({activateSection:'lose'})
                 }}
                 }, [
-                  'Lose',
+                  'Loss',
                   h('br'),
                   `${this.state.data.loseMatches}` + '/' + `${this.state.data.totalMatches}`
                 ])
@@ -225,6 +244,7 @@ const SocialCard = defineComponent({
     {
         return {
           activateSection : 'friends',
+          viewAll:false,
           data:[
             {
               id:'1',
@@ -246,16 +266,61 @@ const SocialCard = defineComponent({
               user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
+            {
+              id:'4',
+              user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+              FirstName: 'karima', LastName: 'jarmoumi'}
+            },
+            {
+              id:'4',
+              user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+              FirstName: 'karima', LastName: 'jarmoumi'}
+            },
+            {
+              id:'4',
+              user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+              FirstName: 'karima', LastName: 'jarmoumi'}
+            },
+            // {
+            //   id:'4',
+            //   user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+            //   FirstName: 'karima', LastName: 'jarmoumi'}
+            // },
+            // {
+            //   id:'4',
+            //   user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+            //   FirstName: 'karima', LastName: 'jarmoumi'}
+            // },
+            // {
+            //   id:'4',
+            //   user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+            //   FirstName: 'karima', LastName: 'jarmoumi'}
+            // },
             
           ]
         }
     },
     render()
     {
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>. props : ", this.props)
-        return h('div', { class: 'friends-and-requetes-container'
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>+++++++++>>> curent section : ", this.state.activateSection)
+      console.log(">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<>>>>>>. props : ", this.props.activateSection)
+        if(this.props.viewAll && this.props.activateSection)
+        {
+          console.log(">>>>>>>>>>>>>>>>>>>>>>>> here  view all true")
+          this.state.viewAll = this.props.viewAll
+          this.state.activateSection = this.props.activateSection
+        }
+        return h('div', { class: 'friends-and-requetes-container',
+          style : this.state.viewAll ? {position :  'absolute', top : '17%', left: '30%',
+            backgroundColor: '#161C40', width:'800px', height : '700px',
+            'grid-template-rows' : '18% 76% '
+          } : {}
          }, [
-          h('div', { class: 'friends-and-req-buttons' }, [
+          
+          h('div', { class: 'friends-and-req-buttons', 
+            style : this.state.viewAll ? { display: 'flex', alignItems:'center',
+             justifyContent : 'center'} : {} }, 
+            !this.state.viewAll ? [
             h('div', {}, [
               h('button', { class: 'friends-button', style: {backgroundColor:  
                 this.state.activateSection === 'friends' ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
@@ -277,21 +342,49 @@ const SocialCard = defineComponent({
                 h('h1', {}, ['Pending'])
               ])
             ])
-          ])
+          ] : [h('div', { class: 'header'}, [
+            h('div', { class: 'search' }, [
+                h('a', { href: '#' }, [
+                    h('i', { class: 'fa-solid fa-magnifying-glass icon' })
+                ]),
+                h('input', { type: 'text', placeholder: 'Search...' }), 
+            ]),
+            h('div', { class: 'close-icon' }, [
+                // h('a', { href: '#', class: 'close-click' }, [
+                //     h('i', { class: 'fa-sharp fa-solid fa-rectangle-xmark' })
+                // ])
+                h('i', { 
+                  class: 'fa fa-close', 
+                  style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px'},
+                  on : { click : () => this.emit('removeBlurProfile', {SocialCard:false})}
+                })
+            ])
+        ])])
           ,
-          (this.state.activateSection === 'friends' && h(FriendsItems, {data:this.state.data})) ||
+          (this.state.activateSection === 'friends' && h(FriendsItems, {data:this.state.data, viewAll:this.state.viewAll})) ||
           (this.state.activateSection === 'requests' && h(RequestsItems, {data:this.state.data,
             on : {
               remove : this.removeRequest,
               accept : this.acceptRequest
-            }
+            },
+            viewAll:this.state.viewAll
           }))||
           (this.state.activateSection === 'pending' && h(PendingItems, {data:this.state.data,
             on : {
               remove : this.removeRequest
-            }
+            },
+            viewAll:this.state.viewAll
           })),
-          h('div', { class: 'view-all-link-fr', style : {color : '#14397C'} }, this.state.data.length >= 4 ? ['View all']: [])
+
+          h('div', { class: 'view-all-link-fr', style : {color : '#14397C'} },
+            this.state.data.length >= 4  && !this.state.viewAll ? 
+            [
+              h('a', { href: '#' , on : {click : () => this.emit('blurProfile', {SocialCard:true, 
+                activateSection:this.state.activateSection})}}, ['View all'])
+            ]: [])
+        //   h('div', { class: 'view-all-link-fr', style : {color : '#14397C'}, 
+
+        //     on : {click : ()=> this.emit('blurProfile', {SocialCard:true})} }, this.state.data.length >= 4 ? ['View all']: [])
         ])
     },
     removeRequest({id, i})
@@ -315,6 +408,7 @@ const SocialCard = defineComponent({
       // this.emit('changeActivateState', targetSection)
       // console.log(">>>>>>>>>>>>>>>>>>>>> here target section : ", targetSection)
       this.updateState({activateSection : 'requests'})
+      console.log("")
     }
     // removePendingRequest({id, i})
     // {
@@ -330,16 +424,24 @@ const FriendsItems = defineComponent({
   state()
   {
     return{
+      viewAll:false
       // data : []
     }
   },
   render()
   {
-    const data = this.props.data 
+    if (this.props.viewAll)
+      this.state.viewAll = this.props.viewAll
+    console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
+    const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
     // console.log("-----------------------> here friends items ")
-    return h('div', {class : 'friends-scope-item'}, this.props.data.slice(0,4).map((userFriend) =>
+    return h('div', {class : 'friends-scope-item',
+      style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
+    ,justifyContent : 'center'} : {}
+    }, data.map((userFriend) =>
       h(FriendItem, {
-        friend : userFriend
+        friend : userFriend,
+        viewAll:this.state.viewAll
       })
     )
   )
@@ -348,10 +450,21 @@ const FriendsItems = defineComponent({
 })
 
 const FriendItem = defineComponent({
+  state()
+  {
+    return {
+      viewAll : false,
+    }
+  },
   render()
   {
     const {user} = this.props.friend
-    return  h('div', { class: 'friend-item' },
+    if (this.props.viewAll)
+      this.state.viewAll = this.props.viewAll
+    return  h('div', { class: 'friend-item', style : this.state.viewAll ? 
+      {backgroundColor : '#CBCBCB', 'border-radius' : '15px',
+        width:'700px', height:'65px'
+      } : {} },
       [
         h('div', { class: 'picture-item' },
           [
@@ -378,22 +491,26 @@ const RequestsItems = defineComponent({
   state()
   {
     return{
-      // data : []
+      viewAll:false
     }
   },
   render()
   {
-
+    if (this.props.viewAll)
+      this.state.viewAll = this.props.viewAll
+    console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
+    const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
     // console.log("-----------------------> data : ", userRequests)
     // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> state data : ", this.state.data)
-    return h('div', {class : 'requestes-items'}, this.props.data.slice(0,4).map((userRequest, i) =>
+    return h('div', {class : 'requestes-items'}, data.slice(0,4).map((userRequest, i) =>
       // console.log(">>>>>>>>>> here  ", userRequest)
       h(RequestItem, {
         id : userRequest.id,
         user : userRequest.user,
         i,
         on : { remove: (id) => this.emit('remove', {id, i }),
-                accept : (id)  => this.emit('accept', {id, i})      
+                accept : (id)  => this.emit('accept', {id, i}),
+        viewAll:this.viewAll      
       }
       })
     ))
@@ -404,10 +521,12 @@ const RequestsItems = defineComponent({
 const RequestItem =  defineComponent({
   state()
   {
-
+    return {viewAll:false}
   },
   render()
   {
+    if (this.props.viewAll)
+      this.state.viewAll = this.props.viewAll
     // console.log("===========================> ", this.props)
     const {id, user} = this.props
     // console.log(">>>>>>>>>>>>>>>>>>> id , user ", id , "| ", user)
@@ -492,33 +611,112 @@ const GameHistoryCard = defineComponent({
       shownOnviewAll : false,
       data : [
         {
-          player1: {username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-          player2: {username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
           player1_points:'1',
           player2_points:'2',
           date : '10-11-2024'
         },
         {
-          player1: {username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-          player2: {username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
           player1_points:'1',
           player2_points:'2',
           date : '10-11-2024'
         },
         {
-          player1: {username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-          player2: {username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
           player1_points:'1',
           player2_points:'2',
           date : '10-11-2024'
         },
         {
-          player1: {username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-          player2: {username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
           player1_points:'1',
           player2_points:'2',
           date : '10-11-2024'
-        }
+        },
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        ,
+        {
+          player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
+          player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+          player1_points:'1',
+          player2_points:'2',
+          date : '10-11-2024'
+        },
+        
       ]
     }
   },
@@ -530,30 +728,30 @@ const GameHistoryCard = defineComponent({
       this.state.shownOnviewAll = this.props.viewAll
     }
     return h('div', { class: 'match-history-container' , 
-      style : this.state.shownOnviewAll ? {position :  'absolute', top : '30%', left: '40%'
-    } : {}},
+      style : this.state.shownOnviewAll ? {position :  'absolute', top : '17%', left: '30%',
+        backgroundColor: '#161C40', width:'800px', height : '700px', 'grid-template-rows': '10% 80% 10%'
+      } : {}},
       [
-         h('div', { class: 'title-item' },
+         h('div', { class: 'title-item', style : this.state.shownOnviewAll ? {justifyContent: 'space-between',paddingTop:'50px'}: {}},
           [
-            !this.state.shownOnviewAll ? h('span', {}, 
+             h('span', {}, 
               [
-                h('h1', {}, ['Match history'])
+                h('h1', {style : this.state.shownOnviewAll ? {color : '#FFEEBF', paddingLeft:'300px'} : {}}, ['Match history'])
               ]
-            ) : 
-            h('div', { class: 'search' }, [
-              h('a', { href: '#' }, [
-                  h('i', { class: 'fa-solid fa-magnifying-glass icon', 'aria-hidden': 'false' })
-              ]),
-              h('input', { type: 'text', placeholder: 'Search...' })
-          ])
+            ),this.state.shownOnviewAll ?
+            h('i', { 
+              class: 'fa fa-close', 
+              style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px', paddingRight:'50px'},
+              on : { click : () => this.emit('removeBlurProfile', {MatchHistory:false})}
+            }): null
           ]
         ),
-        h(GameHistoryItems, {data : this.state.data})
+        h(GameHistoryItems, {data : this.state.data, shownOnviewAll : this.state.shownOnviewAll ? true : false})
         ,
           h('div', { class: 'view-all-match' },
           this.state.data.length >= 4  && !this.state.shownOnviewAll ? 
           [
-            h('a', { href: '#' , on : {click : () => this.emit('blurProfile', this.state.data)}}, ['View all'])
+            h('a', { href: '#' , on : {click : () => this.emit('blurProfile', {MatchHistory:true})}}, ['View all'])
           ]: []
         )
       ]
@@ -563,25 +761,32 @@ const GameHistoryCard = defineComponent({
 const GameHistoryItems = defineComponent({
   state()
   {
-    // return {
-    //  shownOnviewAll : false
-    // }
+    return {
+     shownOnviewAll : false
+    }
   },
   render()
   {
     // console.log( "----------------------------------> data in game history : ", this.props.data)
-    // if (this.props.viewAll)
-    //     this.state.shownOnviewAll = this.props.viewAll
-    return h('div', {class:'center-div'},
-      this.props.data.slice(0,4).map((item)=> h('div', { class: 'match-result-item' },
+    this.state.shownOnviewAll = this.props.shownOnviewAll
+    const data = this.state.shownOnviewAll ? this.props.data : this.props.data.slice(0,4)
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.state.shownOnviewAll  : ', this.state.shownOnviewAll )
+    return h('div', {class:'center-div', 
+      style : this.state.shownOnviewAll ?  {'row-gap' :'0%', 'grid-auto-rows': '16.7%'} : {}},
+      data.map((item)=> h('div', { class: 'match-result-item',
+         style : this.state.shownOnviewAll ?  { width :'700px' , height: '75px'} : {}},
         [
           h('div', { class: 'picture-item' },
             [
-              h('img', { src: item.player1.image.src, alt: 'profile picture' })
+              h('img', { src: item.player1.image.src, alt: 'profile picture' }),
+              this.state.shownOnviewAll ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}},
+               [ `${item.player1.username}`]) : null
             ]
           ),
           h('div', { class: 'match-result' },
             [
+              this.state.shownOnviewAll ? hFragment([h('span', {style: {color: '#0B42AF', fontSize:'20px'}}, [`${item.date}`]), 
+              h('br')]): null,
               h('span', { class: 'user-score', style: {color: `${item.player1_points < item.player2_points ? '#D44444' : '#0AA989'}`} },
                  [`${item.player1_points}`]),
               h('span', { style: {color: '#0B42AF'} }, ['-']),
@@ -591,7 +796,9 @@ const GameHistoryItems = defineComponent({
           ),
           h('div', { class: 'picture-item' },
             [
+              this.state.shownOnviewAll ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}}, [`${item.player2.username}`]) : null,
               h('img', { src: item.player2.image.src, alt: 'profile picture' })
+
             ]
           )
         ]
