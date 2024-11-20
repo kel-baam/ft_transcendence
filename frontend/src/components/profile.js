@@ -9,7 +9,7 @@ const Comp = defineComponent({
             isLoading : true,
             isBlur : false,
             data : [],
-            activateSection:'friends',
+            // activateSection:'friends',
             viewAll: {
               // MatchHistory : false,
               // friends : false,
@@ -42,21 +42,22 @@ const Comp = defineComponent({
                   removeBlurProfile: this.removeBlurProfile
                 }}) : null)
                 ,
-                (this.state.viewAll.SocialCard ? h(SocialCard, {viewAll : true, on : {
+                (this.state.viewAll.SocialCard ? h(SocialCard, {viewAll : true,on : {
                   removeBlurProfile: this.removeBlurProfile
                 },
-                activateSection:this.state.activateSection
+                activateSection:this.state.viewAll.activateSection
               }) : null)
 
               ]) 
             ])
     },
-    blurProfile(viewAll, activateSection)
+    blurProfile(viewAll)
     {
       // console.log("----------------------------> {...this.state.viewAll, MatchHistory:true}", {...this.state.viewAll, MatchHistory:true})
       // const viewAll = { MatchHistory:true}
-      this.updateState({viewAll},activateSection)
-      console.log("===========================>> this.state : ", this.state)
+      // console.log("----------------------------------------> viewALL , activateSEction ", viewAll," | ")
+      this.updateState({viewAll})
+      // console.log("===========================>> this.state : ", this.state)
       // console.log(">>>>>>>>>>>>>>>>>>> data after blur : ", data)
       // createApp(compMatchHistory).mount(document.body)
     },
@@ -302,11 +303,11 @@ const SocialCard = defineComponent({
     },
     render()
     {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>+++++++++>>> curent section : ", this.state.activateSection)
-      console.log(">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<>>>>>>. props : ", this.props.activateSection)
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>+++++++++>>> curent section : ", this.state.activateSection)
+      // console.log(">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<>>>>>>. props : ", this.props.activateSection)
         if(this.props.viewAll && this.props.activateSection)
         {
-          console.log(">>>>>>>>>>>>>>>>>>>>>>>> here  view all true")
+          // console.log(">>>>>>>>>>>>>>>>>>>>>>>> here  view all true")
           this.state.viewAll = this.props.viewAll
           this.state.activateSection = this.props.activateSection
         }
@@ -318,8 +319,7 @@ const SocialCard = defineComponent({
          }, [
           
           h('div', { class: 'friends-and-req-buttons', 
-            style : this.state.viewAll ? { display: 'flex', alignItems:'center',
-             justifyContent : 'center'} : {} }, 
+            style : this.state.viewAll ? {display :'flex', justifyContent:'center'} : {} }, 
             !this.state.viewAll ? [
             h('div', {}, [
               h('button', { class: 'friends-button', style: {backgroundColor:  
@@ -347,7 +347,9 @@ const SocialCard = defineComponent({
                 h('a', { href: '#' }, [
                     h('i', { class: 'fa-solid fa-magnifying-glass icon' })
                 ]),
-                h('input', { type: 'text', placeholder: 'Search...' }), 
+                h('input', { type: 'text', placeholder: 'Search...', on :{input : (target) => {
+                  console.log("********************> target : ", target)
+                }} }), 
             ]),
             h('div', { class: 'close-icon' }, [
                 // h('a', { href: '#', class: 'close-click' }, [
@@ -355,14 +357,14 @@ const SocialCard = defineComponent({
                 // ])
                 h('i', { 
                   class: 'fa fa-close', 
-                  style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px'},
+                  style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px', marginLeft:'410px'},
                   on : { click : () => this.emit('removeBlurProfile', {SocialCard:false})}
                 })
             ])
         ])])
           ,
           (this.state.activateSection === 'friends' && h(FriendsItems, {data:this.state.data, viewAll:this.state.viewAll})) ||
-          (this.state.activateSection === 'requests' && h(RequestsItems, {data:this.state.data,
+          (this.state.activateSection === 'requests' && h(RequestsItems, {data:this.state.data,viewAll:this.state.viewAll,
             on : {
               remove : this.removeRequest,
               accept : this.acceptRequest
@@ -432,7 +434,7 @@ const FriendsItems = defineComponent({
   {
     if (this.props.viewAll)
       this.state.viewAll = this.props.viewAll
-    console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
+    // console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
     const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
     // console.log("-----------------------> here friends items ")
     return h('div', {class : 'friends-scope-item',
@@ -498,19 +500,21 @@ const RequestsItems = defineComponent({
   {
     if (this.props.viewAll)
       this.state.viewAll = this.props.viewAll
-    console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
+    // console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
     const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
     // console.log("-----------------------> data : ", userRequests)
     // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> state data : ", this.state.data)
-    return h('div', {class : 'requestes-items'}, data.slice(0,4).map((userRequest, i) =>
+    return h('div', {class : 'requestes-items', 
+      style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
+    }, data.map((userRequest, i) =>
       // console.log(">>>>>>>>>> here  ", userRequest)
       h(RequestItem, {
+        viewAll : this.state.viewAll,
         id : userRequest.id,
         user : userRequest.user,
         i,
         on : { remove: (id) => this.emit('remove', {id, i }),
-                accept : (id)  => this.emit('accept', {id, i}),
-        viewAll:this.viewAll      
+                accept : (id)  => this.emit('accept', {id, i})
       }
       })
     ))
@@ -521,16 +525,25 @@ const RequestsItems = defineComponent({
 const RequestItem =  defineComponent({
   state()
   {
-    return {viewAll:false}
+    return {
+      viewAll:false
+    }
   },
   render()
   {
     if (this.props.viewAll)
+    {
       this.state.viewAll = this.props.viewAll
+    }
     // console.log("===========================> ", this.props)
     const {id, user} = this.props
     // console.log(">>>>>>>>>>>>>>>>>>> id , user ", id , "| ", user)
-    return h('div', { class: 'request-item' }, [
+    return h('div', { class: 'request-item',
+      style : this.state.viewAll ? 
+      { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
+        width:'700px', height:'65px'
+      } : {}
+     }, [
       h('div', { class: 'picture-item' }, [
         h('img', { src: user.image.src, alt: 'profile picture', class: 'picture-item' })
       ]),
@@ -546,7 +559,6 @@ const RequestItem =  defineComponent({
             on : { click : () => this.emit('remove', id)}
           })
         ,
-        
           h('i', { 
             class: 'fa-solid fa-check',
              style: { fontSize:'24px', color: '#0AA989'},
@@ -562,14 +574,22 @@ const RequestItem =  defineComponent({
 const PendingItems = defineComponent({
   state()
   {
-    return{
-      // data : []
+    return {
+      viewAll:false
     }
   },
   render()
   {
-    return h('div', {class : 'pending-friends-items'}, this.props.data.slice(0,4).map((userPendingrequest, i)=>
+    if (this.props.viewAll)
+    {
+      this.state.viewAll = this.props.viewAll
+    }
+    const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
+    return h('div', {class : 'pending-friends-items',
+      style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
+    }, data.map((userPendingrequest, i)=>
     h(PendingItem, {
+      viewAll : this.state.viewAll,
       id : userPendingrequest.id,
       user : userPendingrequest.user,
       i,
@@ -582,13 +602,24 @@ const PendingItems = defineComponent({
 const PendingItem = defineComponent({
     state()
     {
-
+      return {
+        viewAll:false
+      }
     },
     render()
     {
+      if (this.props.viewAll)
+        {
+          this.state.viewAll = this.props.viewAll
+        }
       const {id, user} = this.props 
       // console.log("----------------> id : ", id , " | user : ", user)
-      return h('div', { class: 'pending-friend-item' }, [
+      return h('div', { class: 'pending-friend-item' , 
+        style : this.state.viewAll ? 
+      { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
+        width:'700px', height:'65px'
+      } : {}
+      }, [
         h('div', { class: 'picture-item' }, [
           h('img', { src: user.image.src, alt: 'profile picture', class : 'picture-item' })
         ]),
@@ -741,7 +772,7 @@ const GameHistoryCard = defineComponent({
             ),this.state.shownOnviewAll ?
             h('i', { 
               class: 'fa fa-close', 
-              style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px', paddingRight:'50px'},
+              style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px', paddingRight:'50px', paddingBottom:'45px'},
               on : { click : () => this.emit('removeBlurProfile', {MatchHistory:false})}
             }): null
           ]
