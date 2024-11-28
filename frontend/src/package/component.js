@@ -28,7 +28,8 @@ export function defineComponent({
       #parentComponent = null
       #dispatcher = new Dispatcher()
       #subscriptions = []
-  
+      #appContext = null
+
       /**
        * @type {import('./h').VNode[]}
        * Array of external VNodes passed to the component as children, to be inserted
@@ -58,7 +59,13 @@ export function defineComponent({
       onUnmounted() {
         return Promise.resolve(onUnmounted.call(this))
       }
-  
+      setAppContext(appContext) {
+             this.#appContext = appContext
+        }
+        
+      get appContext() {
+              return this.#appContext
+          }
       get parentComponent() {
         return this.#parentComponent
       }

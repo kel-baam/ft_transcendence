@@ -1,14 +1,14 @@
 import { setAttributes } from './attributes.js'
 import { addEventListeners } from './events.js'
 import { DOM_TYPES } from './h.js'
-// import { enqueueJob } from './scheduler'
 import { extractPropsAndEvents } from './utils/props.js'
+// import { enqueueJob } from './scheduler'
 
 export async function mountDOM(vdom, parentEl, index, hostComponent = null) {
     if (parentEl == null) {
       throw new Error('[mountDOM] Parent element is null')
     }
-  // console.log(">>>>>>>>>>>>>>>>>>> vdom : ", vdom)
+
     switch (vdom.type) {
       case DOM_TYPES.TEXT: {
         createTextNode(vdom, parentEl, index)
@@ -92,6 +92,7 @@ function createComponentNode(vdom, parentEl, index, hostComponent) {
     const { props, events } = extractPropsAndEvents(vdom)
     const component = new Component(props, events, hostComponent)
     component.setExternalContent(children)
+    component.setAppContext(hostComponent?.appContext ?? {})
 
     component.mount(parentEl, index)
     vdom.component = component

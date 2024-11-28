@@ -2,7 +2,7 @@ import { mountDOM } from './mount-dom.js'
 import { destroyDOM } from './destroy-dom.js'
 import { h } from './h.js'
 
-export function createApp(RootComponent, props = {}) {
+export function createApp(RootComponent, props = {}, options = {}) {
     let parentEl = null
     let isMounted = false
     let vdom = null
@@ -12,7 +12,10 @@ export function createApp(RootComponent, props = {}) {
       isMounted = false
       vdom = null
     }
-  
+    
+    const context = {
+    router: options.router || new NoopRouter(),
+    }
     return {
       mount(_parentEl) {
         if (isMounted) {
@@ -22,7 +25,9 @@ export function createApp(RootComponent, props = {}) {
         console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Rootcopm : ", RootComponent)
         parentEl = _parentEl
         vdom = h(RootComponent, props)
-        mountDOM(vdom, parentEl)
+        // mountDOM(vdom, parentEl)
+        mountDOM(vdom, parentEl, null, { appContext: context })
+        context.router.init()
   
         isMounted = true
       },
@@ -33,8 +38,12 @@ export function createApp(RootComponent, props = {}) {
         }
   
         destroyDOM(vdom)
+        context.router.destroy()
+
         reset()
       },
     }
   }
   
+
+// export function createApp(RootComponent, props = {}) {

@@ -1,31 +1,72 @@
-// import HomePage from "./pages/HomePage.js";
-// import ProfilePage from "./pages/ProfilePage.js"; // Example for another page
-// import LandingPage from "./pages/LandingPage.js";
-// import LeaderboardPage from "./pages/LeaderboardPage.js"
-import { handleRouting } from "./package/routing.js";
+import { Tournament } from './pages/tournaments/tournament.js';
+import { HashRouter,   RouterOutlet,h,createApp,defineComponent} from './package/index.js';
+import { LocalTournamentForm } from './pages/tournaments/local/LocalTournamentForm.js'
+import { Hierarchy } from './pages/tournaments/local/Hierarchy.js';
+import { Game } from './pages/game.js';
 
-// function addGlobalEventListeners()
-// {
-//     document.addEventListener('click', event => {
-//         // Ensure you are targeting an anchor element inside the sidebar
-//         const link = event.target.closest('.side-bar a');
-//         console.log(">>>>>>>>>>>>>>>>>> link ", link)
-//         if (link) {
-//             event.preventDefault(); // Prevent default anchor behavior
-//             const path = link.getAttribute('href');
-//             console.log("Navigating to path:", path);
-//             handleRouting(path);
-//             window.history.pushState(null, '', path); // Update the URL
-//         }
-//     });
-// }
+document.addEventListener('DOMContentLoaded', function() {
+  const links = document.querySelectorAll('.scroll-link');
 
-window.addEventListener('DOMContentLoaded', () =>
-{
-    // document.body.innerHTML = ''
-    // addGlobalEventListeners();
-    // const request = new XMLHttpRequest();
+  links.forEach(link => {
+      link.addEventListener('click', function(event) {
+          event.preventDefault();
 
-    handleRouting(window.location.pathname); // Initial page load
+          const targetId = link.getAttribute('href').substring(1);
+
+          const targetElement = document.getElementById(targetId);
+
+          if (targetElement) {
+              targetElement.scrollIntoView({
+                  behavior: 'smooth',  
+                  block: 'start',      
+              });
+          }
+      });
+  });
 });
+function beforeNavigate(from, to)
+{}
+const NotFound = defineComponent({
+      render() {
+        return h('div',{},[h('div',{},["404 THIS PAGE NotFound "])]) 
+      }
+})
 
+const router = new HashRouter([
+
+    // { path: '/2FA', component: TwoFactor },
+    // { path: '/', component: LandingPage },
+    // { path: '/login', component: Login },
+    // { path: '/landing',component:LandingPage},
+    // { path:'/profile', component: Profile},
+
+    {path:'/tournament',component: Tournament},
+    {path:'/tournament/local/form', component: LocalTournamentForm,
+      beforeEnter: (from) =>{
+        console.log("====================================> from : ", from)
+        if  (from !=='/tournament')
+          return '/tournament'
+      }
+    },
+    {path:'/tournament/local/hierachy', component:  Hierarchy,
+      // beforeEnter: (from) =>{
+      //   console.log("====================================> from : ", from)
+      //   if  (from !=='/tournament/local/form')
+      //     return '/tournament'
+      // }
+     },
+     {path:'/game', component: Game},
+
+    { path: '*',  component: NotFound },
+
+  ])
+
+
+
+
+const RootComponent = defineComponent({
+    render() {  return h(RouterOutlet,{})  }
+  })
+
+export const app = createApp(RootComponent,{}, { router })
+app.mount(document.body,{})
