@@ -31,7 +31,7 @@ export const Tournament = defineComponent({
                             h('button', { type: 'button', 
                                 on :{click:()=> {
 
-                                    this.appContext.router.navigateTo('/tournament/local/form')
+                                    this.appContext.router.navigateTo('/tournament/local')
                                     // console.log(">>>>>>>>>>>>>>>>>>>>>>> type ", this.appContext.router.param)
 
                                 }} ,class: 'btn'}, ['Local'])

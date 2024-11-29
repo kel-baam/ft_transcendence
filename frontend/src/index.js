@@ -3,6 +3,7 @@ import { HashRouter,   RouterOutlet,h,createApp,defineComponent} from './package
 import { LocalTournamentForm } from './pages/tournaments/local/LocalTournamentForm.js'
 import { Hierarchy } from './pages/tournaments/local/Hierarchy.js';
 import { Game } from './pages/game.js';
+import {NotFound} from './pages/404.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -26,11 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 function beforeNavigate(from, to)
 {}
-const NotFound = defineComponent({
-      render() {
-        return h('div',{},[h('div',{},["404 THIS PAGE NotFound "])]) 
-      }
-})
+// const NotFound = defineComponent({
+//       render() {
+//         return h('div',{},[h('div',{},["404 THIS PAGE NotFound "])]) 
+//       }
+// })
 
 const router = new HashRouter([
 
@@ -41,15 +42,17 @@ const router = new HashRouter([
     // { path:'/profile', component: Profile},
 
     {path:'/tournament',component: Tournament},
-    {path:'/tournament/local/form', component: LocalTournamentForm,
-      beforeEnter: (from) =>{
-        console.log("====================================> from : ", from)
-        if  (from !=='/tournament')
-          return '/tournament'
-      }
-    },
-    {path:'/tournament/local/hierachy', component:  Hierarchy,
+    {path:'/tournament/local', component: LocalTournamentForm,
       // beforeEnter: (from) =>{
+      //   console.log("====================================> from : ", from)
+      //   if  (from !=='/tournament')
+      //     return '/tournament'
+      // }
+    },
+    {path:'/tournament/local/hierachy/:id', component:  Hierarchy,
+      // beforeEnter: (from) =>{
+
+      //   // console.log("------------------------------------> this.params", to.appContext)
       //   console.log("====================================> from : ", from)
       //   if  (from !=='/tournament/local/form')
       //     return '/tournament'

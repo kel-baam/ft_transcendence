@@ -3,6 +3,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
 // import { Match } from './match.js'
 import { header } from '../../../components/header.js'
 import { sidebarLeft } from '../../../components/sidebar-left.js'
+import {NotFound} from '../../404.js';
 
 export const Hierarchy = defineComponent({
 
@@ -12,10 +13,13 @@ export const Hierarchy = defineComponent({
                 {
                     player1: { username:"niboukha", image:'./images/niboukha.png'  },
                     player2: { username:"kel-baam", image:'./images/niboukha.png'  },
+                    status :'finished'
                 },
                 {
                     player1: {  username:"shicham", image:'./images/niboukha.png'  },
                     player2: { username:"kjarmoum", image:'./images/niboukha.png' },
+                    status :'finished'
+
                 }
             ],
             // firstMatch:"", // You should add it to the props of LocalTournament to avoid the problem of re-initialization
@@ -25,6 +29,14 @@ export const Hierarchy = defineComponent({
 
     render()
     { 
+        console.log("------------------------------------> this.params of hierachy", this.appContext.router.params)
+        console.log("-> ", (this.state.data[0].status === 'finished'  && this.state.data[1].status === 'finished'));
+        if (this.appContext.router.params.id == 2)
+        {
+            console.log(">>>>>>>>>>>>>>>>>>>> id : ",(this.appContext.router.params.id))
+            // this.appContext.router.navigateTo('/*')
+            return h(NotFound, {})
+        }
         return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
             [h(sidebarLeft, {}),
                 h('div', { class: 'hierarchy-global-content' }, [
@@ -53,27 +65,26 @@ export const Hierarchy = defineComponent({
                             h('div', { class: 'first' }, [
                                 // h('a', { href: '' }, [
                                     h('button', { type: 'button', class: 'btn', on : {click:()=>{
-                                        this.emit('firstMatch-start',  'playable')
-                                        // this.updateState({firstMatch:"playable"}) 
+                                        // this.emit('firstMatch-start',  'playable')
+                                        this.appContext.router.navigateTo('/game' + '?matchId=' +'1' + '&type=' +'local' )
                                     }} ,
-                                    // style : (firstMatch === "completed") ? {
-                                    //     cursor: 'not-allowed', opacity: '0.6'
-                                    // } : {},
-                                    // disabled:firstMatch === "completed"
+                                    style : (this.state.data[0].status ==='finished') ? {
+                                        cursor: 'not-allowed', opacity: '0.6'
+                                    } : {},
+                                    disabled: (this.state.data[0].status ==='finished')
                                 }, ['play'])
                                 // ])
                             ]),
                             h('div', { class: 'second' }, [
                                 // h('a', { href: '' }, [
                                     h('button', { type: 'button', class: 'btn', on : {click:()=>{
-                                        this.emit('secondMatch-start', 'playable')
-                                        // this.updateState({secondMatch:"playable"})
+                                        this.appContext.router.navigateTo('/game' + '?matchId=' +'3' + '&type=' +'local')
                                     }
                                 } ,
-                                // style : (secondMatch === "completed") ? {
-                                //     cursor: 'not-allowed', opacity: '0.6'
-                                // } : {},
-                                // disabled:secondMatch === "completed"
+                                style : (this.state.data[1].status ==='finished') ? {
+                                    cursor: 'not-allowed', opacity: '0.6'
+                                } : {},
+                                disabled: (this.state.data[1].status ==='finished')
                             }, ['play'])
                             // ])
                         ])
@@ -95,11 +106,11 @@ export const Hierarchy = defineComponent({
                     h('div', { class: 'btn_2' }, [
                         h('a', { href: '' }, [
                             h('button', { type: 'button', class: 'btn', 
-                                // style: (this.state.firstMatch || this.state.secondMatch)?
-                                // {
-                                //     cursor: 'not-allowed', opacity: '0.6'
-                                // } : {},
-                                // disabled:(this.state.firstMatch || this.state.secondMatch)
+                                style: !(this.state.data[0].status === 'finished' && this.state.data[1].status === 'finished') ?
+                                {
+                                    cursor: 'not-allowed', opacity: '0.6'
+                                } : {},
+                                disabled:(this.state.data[0].status ==='finished' && this.state.data[1].status ==='finished')
                             }, ['play'])
                         ])
                     ]),

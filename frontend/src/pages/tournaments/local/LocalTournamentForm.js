@@ -73,7 +73,7 @@ export const LocalTournamentForm = defineComponent({
                             ]),
                             h('div', { class: 'submit' }, [
                                     h('button', { type: 'submit', id: 'submitbtn', disabled: false , on :{click:()=>{
-                                        this.appContext.router.navigateTo('/tournament/local/hierachy')
+                                        this.appContext.router.navigateTo('/tournament/local/hierachy/1')
                                     }}}, ['SUBMIT'])
                             ])
                         ])
