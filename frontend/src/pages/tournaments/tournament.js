@@ -21,7 +21,7 @@ export const Tournament = defineComponent({
                         h('div', { class: 'online' },
                             [ h('button', { type: 'button', class: 'btn',
                                 on :{click:()=>{
-                                    
+                                    this.appContext.router.navigateTo('/tournament/online')
                                 }}
                             }, ['Online']) ]),
                         h('div', { class: 'or' }, [
@@ -30,10 +30,7 @@ export const Tournament = defineComponent({
                         h('div', { class: 'local' }, [
                             h('button', { type: 'button', 
                                 on :{click:()=> {
-
                                     this.appContext.router.navigateTo('/tournament/local')
-                                    // console.log(">>>>>>>>>>>>>>>>>>>>>>> type ", this.appContext.router.param)
-
                                 }} ,class: 'btn'}, ['Local'])
                         ])
                     ])

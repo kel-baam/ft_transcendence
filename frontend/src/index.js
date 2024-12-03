@@ -1,6 +1,7 @@
 import { Tournament } from './pages/tournaments/tournament.js';
 import { HashRouter,   RouterOutlet,h,createApp,defineComponent} from './package/index.js';
-import { LocalTournamentForm } from './pages/tournaments/local/LocalTournamentForm.js'
+import { LocalTournament } from './pages/tournaments/local/LocalTournament.js'
+import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js';
 import { Hierarchy } from './pages/tournaments/local/Hierarchy.js';
 import { Game } from './pages/game.js';
 import {NotFound} from './pages/404.js';
@@ -42,7 +43,7 @@ const router = new HashRouter([
     // { path:'/profile', component: Profile},
 
     {path:'/tournament',component: Tournament},
-    {path:'/tournament/local', component: LocalTournamentForm,
+    {path:'/tournament/local', component: LocalTournament,
       // beforeEnter: (from) =>{
       //   console.log("====================================> from : ", from)
       //   if  (from !=='/tournament')
@@ -59,6 +60,17 @@ const router = new HashRouter([
       // }
      },
      {path:'/game', component: Game},
+
+     {path:'/tournament/online', component: OnlineTournament},
+    // {path:'/tournament/online/hierachy/:id', component:  Hierarchy,
+    //   // beforeEnter: (from) =>{
+
+    //   //   // console.log("------------------------------------> this.params", to.appContext)
+    //   //   console.log("====================================> from : ", from)
+    //   //   if  (from !=='/tournament/local/form')
+    //   //     return '/tournament'
+    //   // }
+    //  },
 
     { path: '*',  component: NotFound },
 
