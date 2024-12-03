@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
+
+.RegistrationForm
+{
+
+    /* border: 1px solid rgb(30, 255, 0); */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 90%;
+    margin-top: 40px;
+} 
+
+.formCard{
+    height: 70%;
+    width: 25%;
+    align-items: center;
+    margin: 30px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    background-color: rgba(255, 238, 191, 0.22); /* Semi-transparent background */
+ 
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+
+}
+.formCard h1 {
+    align-items: center;
+    font-size: 25px;
+    padding-top: 20px;
+    color: #FFEEBF;
+    font-family:  'Lemon',serif;
+
+
+}
+
+.formCard img {
+    width: 250px;
+    /* border: 1px solid rgb(212, 31, 18); */
+    margin-bottom: -30px;
+    margin-top: -30px;
+
+
+}
+.formCard form {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 7px;
+    /* padding-top: -50px; */
+}
+
+.formCard form  input{
+    width: 300px;
+    font-family: myFont;
+    height: 45px;
+    border-radius: 15px;
+    padding-left:15px ;
+    border: none;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+
+}
+
+.formCard form  input::placeholder{
+    margin-left: 50px;
+    font-size: 15px;
+    color: #A1AEC6;
+}
+
+.formCard form  .register-btn{
+    background-color: #D44444;
+    width: 140px;
+    height: 40px;
+    font-family: myFont;
+    text-align: center;
+    border-radius: 50px;
+    color: #FFEEBF;
+    border: none;
+    font-size: 16px;
+    /* border: 1px solid rgb(24, 212, 18); */
+    margin-top: 10px;
+}
+
