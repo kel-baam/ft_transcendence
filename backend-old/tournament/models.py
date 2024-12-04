@@ -24,26 +24,25 @@ class User(AbstractUser):
         app_label = 'tournament'
 
 class Player(models.Model):
-    user     = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='players')
     nickname = models.CharField(max_length=50, default="NoNickname")
-    avatar   = models.ImageField(upload_to='player_images/', blank=True, null=True)
-
-    # is_local   = models.BooleanField(default=True)
-    # tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE, related_name='players', null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='players')
+    image = models.ImageField(upload_to='player_images/', blank=True, null=True)
+    is_local = models.BooleanField(default=True)
+    tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE, related_name='players', null=True, blank=True)
     
     def __str__(self):
         return self.nickname
 
 class Tournament(models.Model):
-    name         = models.CharField(max_length=100)
-    creator      = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=100)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     type_choices = [
         ('local', 'Local'),
         ('public', 'Public'),
         ('private', 'Private')
     ]
-    type         = models.CharField(max_length=50, blank=True, null=True, choices=type_choices)
-    created_at   = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(max_length=50, blank=True, null=True, choices=type_choices)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def get_creator_image(self):
         try:
@@ -62,36 +61,34 @@ class Tournament(models.Model):
 
 
 class PlayerTournament(models.Model):
-    user            = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tournament_entries')
-    tournament      = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='participants')
-    status_choices  = [('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')]
-    status          = models.CharField(max_length=10, choices=status_choices, default='pending')
-
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tournament_entries')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='participants')
+    status_choices = [('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')]
+    status = models.CharField(max_length=10, choices=status_choices, default='pending')
     # role_choices = [('creator', 'Creator'), ('participant', 'Participant')]
     # role = models.CharField(max_length=11, choices=role_choices, default='participant')
-
-    invited_at      = models.DateTimeField(auto_now_add=True)
+    invited_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Invitation for {self.user.username} to {self.tournament.name} - Status: {self.status}"
     
 class Notification(models.Model):
-    user        = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='notifications')
-    message     = models.TextField()
-    created_at  = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='notifications')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Notification for {self.user.username}"
 
 
 class Match(models.Model):
-    player1         = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
-    player2         = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
-    tournament      = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
-    created_at      = models.DateTimeField(auto_now_add=True)
-    status_choices  = [('pending', 'Pending'), ('completed', 'Completed')]
-    status          = models.CharField(max_length=10, choices=status_choices, default='pending')
-    score           = models.CharField(max_length=50, blank=True, null=True)  # e.g., "3-2", if relevant to track
+    player1 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
+    player2 = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
+    created_at = models.DateTimeField(auto_now_add=True)
+    status_choices = [('pending', 'Pending'), ('completed', 'Completed')]
+    status = models.CharField(max_length=10, choices=status_choices, default='pending')
+    score = models.CharField(max_length=50, blank=True, null=True)  # e.g., "3-2", if relevant to track
 
     def __str__(self):
         return f"Match between {self.player1.nickname} and {self.player2.nickname} in {self.tournament.name}"
