@@ -48,8 +48,8 @@ export class HashRouter {
     // this.back()
     // console.log('---------------------------Number of entries in the history stack:', history.length);
 
-  console.log('Location changed:', window.location.href);
-  console.log('State object:', event.state);
+  // console.log('Location changed:', window.location.href);
+  // console.log('State object:', event.state);
 
   this.#test()}
 
@@ -114,7 +114,7 @@ export class HashRouter {
 
     if (shouldRedirect) {
       // this.#pushState(path)
-      console.log("jsjsjsjjsjsjs")
+      // console.log("jsjsjsjjsjsjs")
       return this.nav(redirectPath)
     }
 
@@ -160,16 +160,16 @@ export class HashRouter {
     const from = this.#matchedRoute
     const to = matcher.route
     const { shouldRedirect ,shouldNavigate,  redirectPath } = await this.#canChangeRoute(from, to)
-    console.log("=====================> redirectPath : ", shouldRedirect ,shouldNavigate,  redirectPath  )
+    // console.log("=====================> redirectPath : ", shouldRedirect ,shouldNavigate,  redirectPath  )
 
     if (shouldRedirect) {
       // this.#pushState(path)
-      console.log("kooooooooooooooooooooooooooooooooki",redirectPath)
+      // console.log("kooooooooooooooooooooooooooooooooki",redirectPath)
       return this.nav(redirectPath)
     }
     
     if (shouldNavigate) {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> here ")
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> here ")
       this.#matchedRoute = matcher.route
       this.#params = matcher.extractParams(path)
 
@@ -234,7 +234,7 @@ export class HashRouter {
 
     const result = await guard(from?.path, to?.path)
     if (result === false) {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------>>>>> here ")
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------>>>>> here ")
       return {
 
         shouldRedirect: false,
@@ -244,7 +244,7 @@ export class HashRouter {
     }
 
     if (typeof result === 'string') {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>> result ", result)
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>> result ", result)
       return {
         shouldRedirect: true,
         shouldNavigate: false,
@@ -252,7 +252,7 @@ export class HashRouter {
         // console.log("dkdkdkkddkk")
       }
     }
-    console.log("laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    // console.log("laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     return {
 
       shouldRedirect: false,

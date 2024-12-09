@@ -81,7 +81,7 @@ function makeMatcherWithoutParams(route) {
 
 
   function makeRouteWithParamsRegex({ path }) {
-    console.log("path=",path)
+    // console.log("path=",path)
     const regex = path.replace(
       /:([^/]+)/g,
       (_, paramName) => `(?<${paramName}>[^/]+)`

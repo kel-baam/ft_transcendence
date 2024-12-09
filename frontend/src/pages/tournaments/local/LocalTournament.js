@@ -1,53 +1,130 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../../../package/index.js'
+import { createApp, defineComponent, h } from '../../../package/index.js'
 import { header } from '../../../components/header.js'
 import { sidebarLeft } from '../../../components/sidebar-left.js'
+import { showErrorNotification } from '../errorNotification.js'
 
 export const LocalTournament = defineComponent({
-    state(){
-        return { }
+    state() {
+        return {
+            tournaments: []
+        };
     },
+
+    async fetchcsrftoken() {
+        const response = await fetch('http://localhost:8000/local/api/csrf-token/');
+        const data = await response.json();
+        return data.csrftoken;
+    },
+
+    async submitForm(event) {
+        event.preventDefault();
+
+        const formElement = document.querySelector('form');
+        const formData = new FormData(formElement);
+        const dataFormData = new FormData();
+
+        dataFormData.append('tournament_name', formData.get('tournament_name'));
+        for (let i = 1; i <= 4; i++) {
+            const playerName = formData.get(`player${i}`);
+            const playerImage = formData.get(`player${i}_image`);
+
+            if (playerName) {
+                dataFormData.append(`players[${i - 1}][name]`, playerName);
+                dataFormData.append(`players[${i - 1}][image]`, playerImage);
+            }
+        }
+
+        try {
+            const csrftoken = await this.fetchcsrftoken();
+
+            const response = await fetch("http://localhost:8000/local/api/tournaments/", {
+                method: 'POST',
+                body: dataFormData,
+                headers: { 'X-CSRFToken': csrftoken },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const errorText = await response.json();
+                console.error("Error response:", errorText.errors);
+                throw new Error(errorText.errors);
+            }
+
+            const successData = await response.json();
+            console.log("Tournament created:", successData);
+            formElement.reset();
+            
+            this.fetchTournaments();
+
+        } catch (error) {
+            showErrorNotification(error);
+            console.log(error);
+        }
+    },
+
+    fetchTournaments() {
+        console.log("Fetching tournaments through WebSocket...");
+
+        const socket = new WebSocket('ws://localhost:8000/ws/local/');
     
-    render()
-    {
-        return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
-            [h(sidebarLeft, {}),
+        socket.onopen = () => {
+            console.log('WebSocket connection established');
+        };
+    
+        socket.onmessage = (event) => {
+            const tournamentData = JSON.parse(event.data);
+
+            console.log("tournament data >>>> ", tournamentData);
+            if (tournamentData && tournamentData.tournaments) {
+                const tournamentsArray = Object.values(tournamentData.tournaments);
+                this.updateState({ tournaments: tournamentsArray });
+            } else {
+                console.error('Tournaments data is undefined or missing:', tournamentData);
+            }
+        };
+    
+        socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+    
+        socket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+    },
+
+    onMounted() {
+        console.log("initWebSocket function is being called");
+
+        this.fetchTournaments();
+    },
+
+    render() {
+        return h('div', { id: 'global' }, [
+            h(header, {}),
+            h('div', { class: 'content' }, [
+                h(sidebarLeft, {}),
                 h('div', { class: 'local-tournament' }, [
                     h('div', { class: 'create' }, [
                         h('div', { class: 'title' }, [
                             h('h1', {}, ['Created Tournaments'])
                         ]),
-                        h('div', { class: 'tournaments' }, [
-                            ...[
-                                { title: 'Battle of the Bgggggggggggggggggggggggggggggggest' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battleaaaaaaaaaaaaa of the Besta' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of taaaaaaaaaaaaaaahe Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' },
-                                { title: 'Battle of the Best' }
-                            ].map(tournament => 
-                                h('div', { class: 'created' }, [
-                                    h('img', { src: './images/niboukha.png' }),
-                                     h('a', { href: '#' }, [tournament.title]),
-                                    h('i', { class: 'fa-regular fa-circle-xmark icon' })
-                                ])
+                        h('div', { class: 'tournaments' },
+                            (this.state.tournaments.length > 0
+                                ? this.state.tournaments.map((tournament) =>
+                                    h('div', { class: 'created' }, [
+                                        h('img', { src: './images/ping-pong-equipment-.png' }),
+                                        h('a', { href: '#' }, [tournament.name]),
+                                        h('i', { class: 'fa-regular fa-circle-xmark icon' })
+                                    ]))
+                                : [h('p', {}, ['No tournaments created'])]
                             )
-                        ])
+                        )                                    
                     ]),
                     h('div', { class: 'create_one' }, [
                         h('div', { class: 'title' }, [
                             h('h2', {}, ['Create A Tournament'])
                         ]),
-                        h('form', {}, [
+                        h('form', { onsubmit: this.submitForm.bind(this) }, [
                             h('div', { class: 'form' }, [
                                 h('div', { class: 'tournament-name' }, [
                                     h('label', { htmlFor: 'fname' }, ['Tournament Name:']),
@@ -58,19 +135,19 @@ export const LocalTournament = defineComponent({
                                     h('div', { class: 'players' }, [
                                         ...[1, 2, 3, 4].map(i =>
                                             h('div', { class: 'section' }, [
-                                                h('input', { 
-                                                    type: 'text', 
-                                                    name: `player${i}`, 
-                                                    class: `player${i}`, 
-                                                    placeholder: 'Enter player name...' 
+                                                h('input', {
+                                                    type: 'text',
+                                                    name: `player${i}`,
+                                                    class: `player${i}`,
+                                                    placeholder: 'Enter player name...'
                                                 }),
                                                 h('div', { class: 'image' }, [
-                                                    h('img', { 
-                                                        src: './images/people_14024721.png', 
-                                                        alt: `Player ${i} Image`, 
-                                                        class: `player${i}-image` 
+                                                    h('img', {
+                                                        src: './images/people_14024721.png',
+                                                        alt: `Player ${i} Image`,
+                                                        class: `player${i}-image`
                                                     }),
-                                                    h('div', { 
+                                                    h('div', {
                                                         class: 'edit_icon',
                                                         on: {
                                                             click: () => {
@@ -78,11 +155,11 @@ export const LocalTournament = defineComponent({
                                                             }
                                                         }
                                                     }, [
-                                                        h('input', { 
-                                                            type: 'file', 
-                                                            id: `file-upload-${i}`, 
-                                                            name: `player${i}_image`, 
-                                                            accept: 'image/*', 
+                                                        h('input', {
+                                                            type: 'file',
+                                                            id: `file-upload-${i}`,
+                                                            name: `player${i}_image`,
+                                                            accept: 'image/*',
                                                             on: { change: (event) => {
                                                                 const file = event.target.files[0];
                                                                 if (file) {
@@ -102,17 +179,16 @@ export const LocalTournament = defineComponent({
                                     ])
                                 ]),
                                 h('div', { class: 'submit' }, [
-                                    h('button', { 
+                                    h('button', {
                                         type: 'submit',
-                                        disabled: false, 
-                                        on :{ click:()=>{ this.appContext.router.navigateTo('/tournament/local/hierachy/1') } }
+                                        disabled: false
                                     }, ['SUBMIT'])
                                 ])
                             ])
                         ])
-                    ])                    
-                ]) 
-            ]) 
-        ])
-    }
-})
+                    ])
+                ])
+            ])
+        ]);
+    },
+});

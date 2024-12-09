@@ -60,7 +60,7 @@ export function defineComponent({
         return Promise.resolve(onUnmounted.call(this))
       }
       setAppContext(appContext) {
-        console.log("context=>",appContext)
+        // console.log("context=>",appContext)
              this.#appContext = appContext
         }
         

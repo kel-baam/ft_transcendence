@@ -55,8 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'matchmaking',
-    'tournament',
+    # 'tournament',
+    # 'online',
+    'local',
 ]
 
 MIDDLEWARE = [
@@ -72,15 +73,10 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ALLOWED_ORIGINS = [
-#     "https://frontend:80",
-# ]
-
+CSRF_COOKIE_NAME ='csrfToken'
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
-    "http://frontend:80",
+    # "http://frontend:80",
     "http://backend:8000",
     "http://localhost:8000",
     "ws://localhost:8000",
@@ -116,10 +112,22 @@ DATABASES = {
         'NAME': 'mydatabase',
         'USER': 'niboukha',
         'PASSWORD': '1234',
-        'HOST': 'db',
+        'HOST': 'db', #db
         'PORT': '5432',
     }
 }
+
+# from pathlib import Path
+
+# BASE_DIR is now a Path object
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',  # Creates an SQLite database file
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

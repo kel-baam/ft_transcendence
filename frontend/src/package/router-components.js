@@ -5,7 +5,7 @@ import { h, hSlot } from './h.js'
 export const RouterLink = defineComponent({
   render() {
     const { to } = this.props
-    console.log(to)
+    // console.log(to)
     return h(
       'a',
       {
