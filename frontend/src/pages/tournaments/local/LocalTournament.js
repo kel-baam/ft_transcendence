@@ -19,11 +19,12 @@ export const LocalTournament = defineComponent({
     async submitForm(event) {
         event.preventDefault();
 
-        const formElement = document.querySelector('form');
-        const formData = new FormData(formElement);
-        const dataFormData = new FormData();
+        const formElement   = document.querySelector('form');
+        const formData      = new FormData(formElement);
+        const dataFormData  = new FormData();
 
-        dataFormData.append('tournament_name', formData.get('tournament_name'));
+        dataFormData.append('name', formData.get('tournament_name'));
+
         for (let i = 1; i <= 4; i++) {
             const playerName = formData.get(`player${i}`);
             const playerImage = formData.get(`player${i}_image`);
@@ -34,14 +35,15 @@ export const LocalTournament = defineComponent({
             }
         }
 
+        console.log("---------->", dataFormData);
         try {
             const csrftoken = await this.fetchcsrftoken();
-
+            console.log("------------------------")
             const response = await fetch("http://localhost:8000/local/api/tournaments/", {
-                method: 'POST',
-                body: dataFormData,
-                headers: { 'X-CSRFToken': csrftoken },
-                credentials: 'include'
+                method      : 'POST',
+                body        : dataFormData,
+                headers     : { 'X-CSRFToken': csrftoken },
+                credentials : 'include'
             });
 
             if (!response.ok) {
@@ -51,9 +53,9 @@ export const LocalTournament = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Tournament created:", successData);
+            console.log("Tournament created:", successData.message);
             formElement.reset();
-            
+            this.resetImagePreviews();
             this.fetchTournaments();
 
         } catch (error) {
@@ -82,7 +84,7 @@ export const LocalTournament = defineComponent({
                 console.error('Tournaments data is undefined or missing:', tournamentData);
             }
         };
-    
+
         socket.onerror = (error) => {
             console.error('WebSocket error:', error);
         };
@@ -92,10 +94,48 @@ export const LocalTournament = defineComponent({
         };
     },
 
+    resetImagePreviews() {
+        [1, 2, 3, 4].forEach(i => {
+            const playerImageElement = document.querySelector(`.player${i}-image`);
+            if (playerImageElement) {
+                playerImageElement.src = './images/people_14024721.png'
+            }
+        });
+    },
+
     onMounted() {
         console.log("initWebSocket function is being called");
 
         this.fetchTournaments();
+    },
+
+    async deleteATournament(id)
+    {
+        console.log("id ----> ", id)
+
+        try {
+            const csrftoken = await this.fetchcsrftoken();
+
+            const response = await fetch(`http://localhost:8000/local/api/tournaments/${id}/`, {
+                method: 'DELETE',
+                headers: { 
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json' 
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                console.log('Tournament deleted successfully!');
+                this.updateState({
+                    tournaments: this.state.tournaments.filter(tournament => tournament.id !== id)
+                });
+            } else {
+                console.error('Failed to delete tournament');
+            }
+        } catch (error) {
+            console.log('Error while deleting tournament:', error);
+        }
     },
 
     render() {
@@ -113,8 +153,19 @@ export const LocalTournament = defineComponent({
                                 ? this.state.tournaments.map((tournament) =>
                                     h('div', { class: 'created' }, [
                                         h('img', { src: './images/ping-pong-equipment-.png' }),
-                                        h('a', { href: '#' }, [tournament.name]),
-                                        h('i', { class: 'fa-regular fa-circle-xmark icon' })
+                                        h('a', {
+                                            on: {
+                                                click: () => {
+                                                    const tournamentId = tournament.id;
+                                                    this.appContext.router.navigateTo(`/tournament/local/hierachy/${tournamentId}`);
+                                                }}
+                                            }, [tournament.name]),
+                                        h('i', {
+                                            class: 'fa-regular fa-circle-xmark icon',
+                                            on: {
+                                                click: () => this.deleteATournament(tournament.id)
+                                            }
+                                        })
                                     ]))
                                 : [h('p', {}, ['No tournaments created'])]
                             )

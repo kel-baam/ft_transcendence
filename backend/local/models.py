@@ -27,7 +27,7 @@ class User(AbstractUser):
 class Tournament(models.Model):
     creator      = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name         = models.CharField(max_length=100)
-    created_at   = models.DateTimeField(auto_now_add=True)
+    created_at   = models.DateTimeField(auto_now_add=True, null=True)
 
     def get_creator_image(self):
         try:
@@ -45,6 +45,7 @@ class Player(models.Model):
     avatar      = models.ImageField(upload_to='player_images/', blank=True, null=True)
     score       = models.IntegerField(blank=True, null=True)
     rank        = models.IntegerField(blank=True, null=True)
+    
     def __str__(self):
         return self.nickname
 

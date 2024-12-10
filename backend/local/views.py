@@ -1,54 +1,78 @@
-from django.http                    import JsonResponse
+from rest_framework                 import serializers, status
+from rest_framework.decorators      import api_view
+from rest_framework.response        import Response
 from django.middleware.csrf         import get_token
-from django.views.decorators.csrf   import ensure_csrf_cookie
+from django.http                    import Http404
 from django.views.decorators.csrf   import csrf_exempt
 
-from .verifyForm                    import validate_form
+
 from .models                        import User, Tournament, Player
+from .serializers                   import TournamentSerializer
+from .verifyForm                    import validate_form
 
-import random
-
-@ensure_csrf_cookie
+@api_view(['GET'])
 def csrf_token_view(request):
-    return JsonResponse({'csrftoken': get_token(request)})
+    """csrf_token_view was called"""
+    return Response({'csrftoken': get_token(request)}, status=200)
 
 @csrf_exempt
+@api_view(['POST'])
+def create_tournament(request):
 
-def createTournament(request):
-    if request.method == 'POST':
-        tournament_name = request.POST.get('tournament_name')
-        players         = []
-        for i in range(4):
-            player_name  = request.POST.get(f'players[{i}][name]')
-            player_image = request.FILES.get(f'players[{i}][image]')
-            players.append({'name': player_name, 'image': player_image})
-        
-        validation_errors = validate_form(tournament_name, players)
-        
-        if validation_errors != "Form is valid!":
-            return JsonResponse({'status': 'error', 'errors': validation_errors}, status=400)
+    """Handle the creation of a new tournament"""
 
-        user = User.objects.get(id=11)
-
-        tournament  = Tournament.objects.create(
-            creator = user,
-            name    = tournament_name,
-        )
-
-        players_data = [
-            Player(
-                tournament=tournament,
-                nickname=player['name'],
-                avatar=player['image'],
-            )
-            for player in players
-        ]
-        players = Player.objects.bulk_create(players_data)
-        
-        return JsonResponse({
-            'status' : 'success',
-            "message": "Tournament created successfully!"})
+    players = []
     
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+    for key in request.data:
+        if key.startswith('players'):
+            parts = key.split('[')
+            index = int(parts[1].split(']')[0])
+            field = parts[2].split(']')[0]
+            
+            while len(players) <= index:
+                players.append({'name': '', 'image': ''})
+            
+            players[index][field] = request.data[key]
+    
+    tournament_name = request.data.get('name')
+    
+    try:
+        user = User.objects.get(id=11)
+    except User.DoesNotExist:
+        raise Http404("User not found")
 
+    validation_result   = validate_form(
+        tournament_name = tournament_name,
+        players         = players,
+        user            = user
+    )
+    if validation_result != "Form is valid!":
+        return Response({
+            'status'    : 'error',
+            'errors'    : validation_result
+        },  status      = status.HTTP_400_BAD_REQUEST)
 
+    creator_data    = {
+        'id'        : 11,
+        'username'  : "niboukha"
+    }
+
+    data            = {
+        'name'      : tournament_name,
+        'players'   : players,
+        'creator'   : creator_data['id']
+    }
+
+    serializer = TournamentSerializer(data=data)
+
+    if serializer.is_valid():
+        serializer.save(creator=user)
+        return Response({
+            'status'    : 'success',
+            'message'   : 'Tournament created successfully!'
+        },  status      = status.HTTP_201_CREATED)
+    else:
+        return Response({
+            'status'    : 'error',
+            'message'   : serializer.errors
+        },  status      = status.HTTP_400_BAD_REQUEST)

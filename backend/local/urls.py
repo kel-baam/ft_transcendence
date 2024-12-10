@@ -1,10 +1,12 @@
-from django.urls    import path
-from .views         import csrf_token_view, createTournament
+from django.urls        import path
+from .views             import csrf_token_view, create_tournament
+from .delete_tournament import delete_tournament
 
 urlpatterns = [
-    path('api/csrf-token/', csrf_token_view, name='csrf-token'),
+    path('api/csrf-token/', csrf_token_view, name='csrf_token_view'),
 
-    path('api/tournaments/', createTournament, name = 'createTournament'),
+    path('api/tournaments/', create_tournament, name = 'create_tournament'),
+    path('api/tournaments/<int:id>/', delete_tournament, name = 'delete_tournament'),
 ]
 
 
