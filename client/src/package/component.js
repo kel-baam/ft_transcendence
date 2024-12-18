@@ -30,7 +30,6 @@ export function defineComponent({
       #subscriptions = []
       #appContext = null
 
-  
       /**
        * @type {import('./h').VNode[]}
        * Array of external VNodes passed to the component as children, to be inserted
@@ -61,15 +60,12 @@ export function defineComponent({
         return Promise.resolve(onUnmounted.call(this))
       }
       setAppContext(appContext) {
-        this.#appContext = appContext
-      }
+             this.#appContext = appContext
+        }
         
       get appContext() {
-        return this.#appContext
-      }
-
-
-      
+              return this.#appContext
+          }
       get parentComponent() {
         return this.#parentComponent
       }
@@ -145,6 +141,7 @@ export function defineComponent({
        * @param {Object.<string, Any>} state the new state to be merged with the existing state
        */
       updateState(state) {
+ 
         this.state = { ...this.state, ...state }
         this.#patch()
       }

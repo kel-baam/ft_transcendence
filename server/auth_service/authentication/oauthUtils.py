@@ -1,6 +1,12 @@
 from django.conf import settings
 import requests
 
+import logging
+# import jwt
+
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def exchange_code_with_token(code,token_url,client_id,client_secret,redirect_uri):
 
@@ -40,4 +46,5 @@ from django.middleware.csrf import get_token
 
 def csrf_token_view(request):
     csrf_token = get_token(request)
+#     logger.debug("oooooooooooooooooooooooooooooooooooooooooooooooook",csrf_token)
     return JsonResponse({'csrf_token': csrf_token})

@@ -1,13 +1,14 @@
 import { setAttributes } from './attributes.js'
 import { addEventListeners } from './events.js'
 import { DOM_TYPES } from './h.js'
-// import { enqueueJob } from './scheduler'
 import { extractPropsAndEvents } from './utils/props.js'
+// import { enqueueJob } from './scheduler'
 
 export async function mountDOM(vdom, parentEl, index, hostComponent = null) {
     if (parentEl == null) {
       throw new Error('[mountDOM] Parent element is null')
     }
+
     switch (vdom.type) {
       case DOM_TYPES.TEXT: {
         createTextNode(vdom, parentEl, index)

@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    # 'rest_framework_simplejwt.token_blacklist',
     'authentication',
     'corsheaders',
     'django_otp',
@@ -175,10 +177,12 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_URL = 'login'
 
+
+
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -186,7 +190,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(minutes=60),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -210,12 +214,46 @@ CORS_ALLOW_CREDENTIALS = True
 # pip install pyjwt
 # CSRF_COOKIE_SAMESITE = 'None'
 CSRF_TRUSTED_ORIGINS = [
-    'https://legendary-bassoon-jpvw6597q7jcq7rp-80.app.github.dev'
+    'http://localhost:5500',
+    'http://localhost:3000',
+    "ws://localhost:8000",
+
 ]
-# CSRF_COOKIE_NAME ='csrfToken'
+CSRF_COOKIE_NAME ='koki'
 
 ASGI_APPLICATION = "auth.asgi.application"
 
 
 ALLOWED_HOSTS = ['*']
 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',  # Capture DEBUG level and above
+            'class': 'logging.StreamHandler',  # Send logs to the console
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Capture DEBUG level and above for django logger
+            'propagate': False,  # Do not propagate to the root logger
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Capture DEBUG level for request logs
+            'propagate': False,  # Prevents duplication in logs
+        },
+        '': {  # This is the root logger
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
+            'propagate': False,
+        },
+    },
+}
+
+
+APPEND_SLASH=False

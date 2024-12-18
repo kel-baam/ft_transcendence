@@ -1,32 +1,38 @@
 from django.urls import path
 from . import views
-from . import tokens
 from . import auth
 from . import consumers
+from . import jwt
 
 
-from .views import ItemListCreateView,verify_code,activate_two_Factor,validate_qrcode,tmpData,desactive2FA
-from .tokens import generate_new_token
-from .auth import intra_callback,callback_google,intra_login,token_require
+from .views import verify_code,activate_two_Factor,validate_qrcode,tmpData,desactive2FA
+from .auth import intra_callback,callback_google,intra_login,login,registerForm,LogoutView
 from .oauthUtils import csrf_token_view
+from .jwt import token_required, generate_new_token
 
 urlpatterns = [
-    path('authentication/intra/',auth.intra_login,name='intraOauth'),
-    path('authentication/intra/callback/',auth.intra_callback,name='intraCallback'),
-    path("authentication/google/",auth.google_login,name='googleOauth'),
-    path("authentication/google/callback/",auth.callback_google,name='googleCallback'),
-    path("authentication/twoFactor/verify/",views.verify_code,name='verifyCode'),
-    path("authentication/twoFactor/activate/",views.activate_two_Factor,name='active2FA'),
-    path("authentication/twoFactor/desactivate/",views.desactive2FA,name='active2FA'),
-    path("authentication/twoFactor/validateQrCode/",views.validate_qrcode,name='validateQrCode'),
-    path('authentication/validateAccess/',auth.token_require),
-    path("ws/some_path/", consumers.MyConsumer.as_asgi()),
-    path('get-csrf-token/',csrf_token_view, name='csrf_token'),
-    # this is just for testing so it is tmp
+    path('auth/intra/',auth.intra_login,name='intraOauth'),
+    path('auth/intra/callback/',auth.intra_callback,name='intraCallback'),
+    path("auth/google/",auth.google_login,name='googleOauth'),
+    path("auth/google/callback/",auth.callback_google,name='googleCallback'),
+    path('auth/login/',login),
+    path('auth/register/',registerForm),
+    path('auth/islogged/',jwt.token_required),
+    path('auth/logout/',LogoutView.as_view()),
+    path("api/refresh/token/",jwt.generate_new_token),
 
-    path("api/data/",ItemListCreateView.as_view()),
-    path("api/test/",views.tmpData),
 
     
-    path("api/refresh/token/",tokens.generate_new_token),
+    # FORGET PASSWORD
+
+    # 2FA
+    path("auth/twoFactor/verify/",views.verify_code,name='verifyCode'),
+    path("auth/twoFactor/activate/",views.activate_two_Factor,name='active2FA'),
+    path("auth/twoFactor/desactivate/",views.desactive2FA,name='active2FA'),
+    path("auth/twoFactor/validateQrCode/",views.validate_qrcode,name='validateQrCode'),
+
+    path('get-csrf-token/',csrf_token_view, name='csrf_token'),
+
 ]
+
+

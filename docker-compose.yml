@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   db:
@@ -37,7 +36,6 @@ services:
       - app_network
     depends_on:
       - db
-
   home-service:
     build: ./server/home_service
     container_name: home-service
@@ -47,9 +45,7 @@ services:
       - "8001:8001"
     depends_on:
       - db
-
-
-
+  
 volumes:
   postgres_data:
 

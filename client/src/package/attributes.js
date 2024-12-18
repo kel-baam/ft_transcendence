@@ -42,7 +42,7 @@ export function removeAttribute(el, name) {
 }
 
 export function setStyle(el, name, value) {
-el.style[name] = value
+  el.style[name] = value
 }
 
 export function removeStyle(el, name) {

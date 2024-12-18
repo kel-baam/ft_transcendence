@@ -2,12 +2,12 @@ from django.http import JsonResponse
 from django.conf import settings
 from decouple import config
 from django.views.decorators.csrf import csrf_exempt
-from .tokens import generateToken
+from .jwt import generateToken
 import pyotp
 import qrcode
 from io import BytesIO
 import base64
-from .decorators import accessTokenRequired
+# from .decorators import accessTokenRequired
 from datetime import timedelta
 
 
@@ -15,7 +15,7 @@ from datetime import timedelta
 def generate_otp():       
         return pyotp.TOTP(pyotp.random_base32(), interval=30)
 
-@accessTokenRequired    
+# @accessTokenRequired    
 def activate_two_Factor(request):
         user = request.user
         totp_secret = generate_otp()
@@ -31,7 +31,7 @@ def activate_two_Factor(request):
         qr_code_base64 = base64.b64encode(qr_code).decode('utf-8')
         return JsonResponse({'qrImage':qr_code_base64})
 
-@accessTokenRequired    
+# @accessTokenRequired    
 def validate_qrcode(request):
         if(request.method == 'POST'):
                 code = request.POST.get('code', 'none')
@@ -45,7 +45,7 @@ def validate_qrcode(request):
                         return JsonResponse({'message':'the code valid'},status=200)
         return JsonResponse({'status_code':'401','message':'the code invalid'},status=401)
 
-@accessTokenRequired
+# @accessTokenRequired
 def desactive2FA(request):
         print("heeeo")
         user = request.user
@@ -54,7 +54,7 @@ def desactive2FA(request):
         user.save()
         return  JsonResponse({'active2FA':user.enabled_twoFactor},status=200)
 
-@accessTokenRequired
+# @accessTokenRequired
 def verify_code(request):
         if(request.method =='POST'):
                 code = request.POST.get('code', 'none')
@@ -73,7 +73,7 @@ def verify_code(request):
         return JsonResponse({'status_code':'401','message':'the code invalid'},status=401)
 
 
-@accessTokenRequired
+# @accessTokenRequired
 def tmpData(request):
         return JsonResponse({'active2FA':request.user.enabled_twoFactor},status=200)
 

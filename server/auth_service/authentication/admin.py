@@ -3,4 +3,4 @@ from .models import User
 # Register your models here.
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('intraId','username', 'first_name', 'last_name', 'email', 'phone_number')
+    list_display = ('username', 'first_name', 'last_name', 'email', 'phone_number','password')

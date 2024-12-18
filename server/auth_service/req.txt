@@ -8,4 +8,5 @@ django-otp
 djangorestframework-simplejwt
 channels
 psycopg2
-
+daphne
+channels_redis

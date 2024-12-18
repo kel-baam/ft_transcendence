@@ -1,13 +1,9 @@
 import { defineComponent } from './component.js'
 import { h, hSlot } from './h.js'
-// import { HashRouter } from './router.js'
-
-
 
 export const RouterLink = defineComponent({
   render() {
     const { to } = this.props
-    // console.log(to)
     return h(
       'a',
       {
@@ -23,7 +19,6 @@ export const RouterLink = defineComponent({
     )
   },
 })
-
 
 export const RouterOutlet = defineComponent({
     state() {

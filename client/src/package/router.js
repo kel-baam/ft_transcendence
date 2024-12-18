@@ -12,11 +12,7 @@ export class NoopRouter {
   unsubscribe() {}
 };
 
-
 const ROUTER_EVENT = 'router-event'
-
-
-
 
 export class HashRouter {
   #isInitialized = false
@@ -26,8 +22,6 @@ export class HashRouter {
   #subscriptions = new WeakMap()
   #subscriberFns = new Set()
 
-
-  
   get matchedRoute() {
     return this.#matchedRoute
   }
@@ -44,21 +38,15 @@ export class HashRouter {
 
   get #currentRouteHash() {
     const hash = document.location.hash
-    if (hash === '') {
-      return '/'
-    }
+    if (hash === '')
+      { return '/' }
 
     return hash.slice(1)
   }
 
-  // Saved to a variable to be able to remove the event listener in the destroy() method.
   #onPopState = (event) => {
-    console.log("_________________________",event.state)
-    console.log("location namae",window.location.pathname)
-    // this.navigateTo(window.location.pathname)
-      this.#test()
-    // await this.#matchCurrentRoute()
-  }
+
+  this.#test()}
 
   constructor(routes = []) {
     assert(Array.isArray(routes), 'Routes must be an array')
@@ -83,24 +71,20 @@ export class HashRouter {
     if (!this.#isInitialized) {
       return
     }
-    console.log("/////////////////////////////////////////////////////////////")
+
     window.removeEventListener('popstate', this.#onPopState)
     Array.from(this.#subscriberFns).forEach(this.unsubscribe, this)
     this.#isInitialized = false
   }
 
-  async nav(path)
-  {
-    // /user/:id
-    // path = new URL(path, 'http://localhost:3000').pathname;  // '/login'
-    console.log("pathhhhhhhhhhhhhhhhhhhhhhhhh",path)
+  async nav(path) {
+
 
     const matcher = this.#matchers.find((matcher) =>
       
       matcher.checkMatch(path)
     )
 
-    // console.log(matcher,"|||")
     if (matcher == null) {
       console.warn(`[Router] No route matches path "${path}"`)
 
@@ -121,30 +105,24 @@ export class HashRouter {
       await this.#canChangeRoute(from, to)
 
     if (shouldRedirect) {
-      return this.navigateTo(redirectPath)
+      return this.nav(redirectPath)
     }
 
     if (shouldNavigate) {
       this.#matchedRoute = matcher.route
       this.#params = matcher.extractParams(path)
-      // console.log("paaaaaaaaaaaaaaaaaaath query",path)
+
+
       this.#query = matcher.extractQuery(path)
-      // console.log("---------------------------->",this.#query)
-      // this.#pushState(path)
       this.#dispatcher.dispatch(ROUTER_EVENT, {from, to, router: this })
     }
   }
-  async navigateTo(path) {
-    // /user/:id
-    // path = new URL(path, 'http://localhost:3000').pathname;  // '/login'
-    console.log("pathhhhhhhhhhhhhhhhhhhhhhhhh",path)
 
+  async navigateTo(path) {
     const matcher = this.#matchers.find((matcher) =>
-      
       matcher.checkMatch(path)
     )
 
-    // console.log(matcher,"|||")
     if (matcher == null) {
       console.warn(`[Router] No route matches path "${path}"`)
 
@@ -161,41 +139,43 @@ export class HashRouter {
 
     const from = this.#matchedRoute
     const to = matcher.route
-    const { shouldNavigate, shouldRedirect, redirectPath } =
-      await this.#canChangeRoute(from, to)
+    const { shouldRedirect ,shouldNavigate,  redirectPath } = await this.#canChangeRoute(from, to)
 
     if (shouldRedirect) {
-      return this.navigateTo(redirectPath)
+      return this.nav(redirectPath)
     }
-
+    
     if (shouldNavigate) {
       this.#matchedRoute = matcher.route
       this.#params = matcher.extractParams(path)
-      // console.log("paaaaaaaaaaaaaaaaaaath query",path)
+
       this.#query = matcher.extractQuery(path)
-      // console.log("---------------------------->",this.#query)
+
       this.#pushState(path)
       this.#dispatcher.dispatch(ROUTER_EVENT, {from, to, router: this })
     }
   }
 
   back() {
-    window.history.back()
+    window.history.back() 
   }
-
+ 
   forward() {
     window.history.forward()
   }
 
   subscribe(handler) {
     const unsubscribe = this.#dispatcher.subscribe(ROUTER_EVENT, handler)
+    
     this.#subscriptions.set(handler, unsubscribe)
     this.#subscriberFns.add(handler)
   }
 
   unsubscribe(handler) {
     const unsubscribe = this.#subscriptions.get(handler)
-    if (unsubscribe) {
+    
+    if (unsubscribe)
+    {
       unsubscribe()
       this.#subscriptions.delete(handler)
       this.#subscriberFns.delete(handler)
@@ -203,7 +183,7 @@ export class HashRouter {
   }
 
   #pushState(path) {
-    window.history.pushState({name:'test'}, 'info', `#${path}`)
+    window.history.pushState({}, '', `#${path}`)
   }
   #test()
   {
@@ -227,6 +207,7 @@ export class HashRouter {
     const result = await guard(from?.path, to?.path)
     if (result === false) {
       return {
+
         shouldRedirect: false,
         shouldNavigate: false,
         redirectPath: null,
@@ -240,8 +221,8 @@ export class HashRouter {
         redirectPath: result,
       }
     }
-
     return {
+
       shouldRedirect: false,
       shouldNavigate: true,
       redirectPath: null,

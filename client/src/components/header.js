@@ -1,7 +1,9 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../package/index.js'
 
-export const header = defineComponent({render(){
+export const header = defineComponent({
+ 
+    render(){
     return h('header', { class: 'container' }, [
         h('nav', {}, [
             h('a', { href: 'home' }, [
@@ -18,7 +20,19 @@ export const header = defineComponent({render(){
                 h('a', { href: 'settings' }, [
                     h('i', { class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false' })
                 ]),
-                h('a', { href: 'login' }, [
+                h('a', {on :{click: async (event)=> {
+                    event.preventDefault()
+                    fetch("http://localhost:3000/auth/logout/",{
+                        method:'POST',
+                        credentials: 'include',
+                    }).then(async (res)=>{
+                        if(res.ok)
+                        {
+                            this.appContext.router.navigateTo('/login')
+                        }
+                    })
+                   
+                }, }}, [
                     h('i', { class: 'fa-solid fa-arrow-right-from-bracket icon', 'aria-hidden': 'false' })
                 ])
             ])

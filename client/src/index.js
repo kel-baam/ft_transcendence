@@ -1,9 +1,12 @@
 import {RouterOutlet,h,createApp,defineComponent,HashRouter} from './package/index.js'
-import { Profile } from './components/profile.js'
-import { Login } from './components/login.js'
-import { LandingPage } from './components/landingPage.js'
-import { TwoFactor } from './components/twoFactor.js';
-// import { Form } from './components/form.js';
+// import { Profile } from './components/profile.js'
+import { Login } from './pages/login.js'
+import { LandingPage } from './pages/landingPage.js'
+// import { TwoFactor } from './components/twoFactor.js';
+import { customFetch } from './package/fetch.js';
+// import { InformationsForm } from './components/login/form.js';
+import { Register } from './pages/register.js';
+import { Home } from './pages/home.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -36,8 +39,7 @@ const NotFound = defineComponent({
 
 const test = defineComponent({
 
-    // Define a reactive variable to store data
-    // const data = ref(null);
+   
     state(){
       return {
           isLoading : false,
@@ -45,58 +47,48 @@ const test = defineComponent({
 
   }
   },
-    // Fetch data when the component is mounted
+
   onMounted(){
       console.log("-----------> here update state ")
       this.updateState({ isLoading: true })
       console.log("onmouunted-------------->",this.state.isLoading)
-      fetch('http://localhost:3000/home/',{
-        
-        credentials: 'include',
-      }
-      )
-        .then(response => response.json())
-        .then(dataFromBackend => {
-          console.log(dataFromBackend)
-          this.updateState({ data: dataFromBackend})
-          console.log("-----------> here update state ")
-          console.log(this.state.data,"||",this.state.isLoading)
-          // data.value = dataFromBackend;  // Store the response data
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
+      customFetch('http://localhost:3000/home/',{})
+      .then((data)=>{
+        console.log("data fetcheed",data)
+        if(!data.ok)
+        {
+          this.appContext.router.navigateTo('/401')
+
+        }
+      })
+  
     },
 
-    // Return data to the template
-  
-  // },
+   
   render() {
-    console.log(">>>>>>>> in render ")
     return h('div',{},[
       h('div',{},["heeeeelo in ur hooome"]),
-      this.state.isLoading ? h('h1', {style:{color:'red'}}, ["Data from backend"]) : h('h1', {style:{color:'red'}}, ['Loading...']),
 
     ]) 
   },
   
 })
 
-// console.log("thiiiiiiis")
 const router = new HashRouter([
 
-    { path: '/2FA', component: TwoFactor },
     { path: '/', component: LandingPage },
+    // { path: '/form', component: InformationsForm },
+    // { path: '/2FA', component: TwoFactor },
     { path: '/login', component: Login },
+    { path:'/home', component: Home},
 
-    { path: '/login/:id', component: Login },
-
-
-    { path: '/landing',component:LandingPage},
     { path:'/home', component: test},
+    { path: '/test',component: Home},
     { path: '/401',  component: NotFound },
+    { path: '/register',  component: Register },
 
-    { path: '/',  component: NotFound },
+
+
   ])
 
 
@@ -108,7 +100,5 @@ const RootComponent = defineComponent({
 
 
 export const app = createApp(RootComponent,{}, { router })
-// window.addEventListener('popstate', ()=>{
-//   console.log("i'm listiiiing===========================")
-// })
+
 app.mount(document.body,{})
