@@ -33,3 +33,20 @@ export function showErrorNotification(message) {
         notification.remove();
     }, 12000);
 }
+
+
+export function highlightInvalidInput(formElement){
+    const inputs = formElement.querySelectorAll('input, select, textarea');
+    inputs.forEach(input =>
+    {
+        input.style.borderColor = '';
+        input.style.backgroundColor = '';
+        
+        if (input.value === '')
+        {
+            input.style.borderColor = 'red';
+            input.style.backgroundColor = '#ffe6e6';
+            input.focus();
+        }
+    });
+}

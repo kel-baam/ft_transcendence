@@ -1,7 +1,7 @@
-import { createApp, defineComponent, h } from '../../../package/index.js'
-import { header } from '../../../components/header.js'
-import { sidebarLeft } from '../../../components/sidebar-left.js'
-import { showErrorNotification } from '../errorNotification.js'
+import { createApp, defineComponent, h }    from '../../../package/index.js'
+import { header }                           from '../../../components/header.js'
+import { sidebarLeft }                      from '../../../components/sidebar-left.js'
+import { showErrorNotification, highlightInvalidInput } from '../errorNotification.js';
 
 export const LocalTournament = defineComponent({
     state() {
@@ -28,18 +28,17 @@ export const LocalTournament = defineComponent({
         for (let i = 1; i <= 4; i++) {
             const playerName = formData.get(`player${i}`);
             const playerImage = formData.get(`player${i}_image`);
-
-            if (playerName) {
-                dataFormData.append(`players[${i - 1}][name]`, playerName);
-                dataFormData.append(`players[${i - 1}][image]`, playerImage);
+        
+            if (playerName && playerImage) {
+                dataFormData.append(`players[${i - 1}][nickname]`, playerName);
+                dataFormData.append(`players[${i - 1}][avatar]`, playerImage);
             }
         }
-
-        console.log("---------->", dataFormData);
+        
+        // console.log("---------->", dataFormData);
         try {
             const csrftoken = await this.fetchcsrftoken();
-            console.log("------------------------")
-            const response = await fetch("http://localhost:8000/local/api/tournaments/", {
+            const response  = await fetch("http://localhost:8000/local/api/tournaments/", {
                 method      : 'POST',
                 body        : dataFormData,
                 headers     : { 'X-CSRFToken': csrftoken },
@@ -60,6 +59,7 @@ export const LocalTournament = defineComponent({
 
         } catch (error) {
             showErrorNotification(error);
+            highlightInvalidInput(formElement)
             console.log(error);
         }
     },
@@ -151,7 +151,7 @@ export const LocalTournament = defineComponent({
                         h('div', { class: 'tournaments' },
                             (this.state.tournaments.length > 0
                                 ? this.state.tournaments.map((tournament) =>
-                                    h('div', { class: 'created' }, [
+                                    [h('div', { class: 'created' }, [
                                         h('img', { src: './images/ping-pong-equipment-.png' }),
                                         h('a', {
                                             on: {
@@ -161,19 +161,18 @@ export const LocalTournament = defineComponent({
                                                 }}
                                             }, [tournament.name]),
                                         h('i', {
-                                            class: 'fa-regular fa-circle-xmark icon',
-                                            on: {
-                                                click: () => this.deleteATournament(tournament.id)
-                                            }
+                                            class   : 'fa-regular fa-circle-xmark icon',
+                                            style   : { color : '#D44444' },
+                                            on      : { click: () => this.deleteATournament(tournament.id) }
                                         })
-                                    ]))
+                                    ])])
                                 : [h('p', {}, ['No tournaments created'])]
                             )
                         )                                    
                     ]),
                     h('div', { class: 'create_one' }, [
                         h('div', { class: 'title' }, [
-                            h('h2', {}, ['Create A Tournament'])
+                            h('h2', {}, ['Create a Tournament'])
                         ]),
                         h('form', { onsubmit: this.submitForm.bind(this) }, [
                             h('div', { class: 'form' }, [
@@ -201,9 +200,7 @@ export const LocalTournament = defineComponent({
                                                     h('div', {
                                                         class: 'edit_icon',
                                                         on: {
-                                                            click: () => {
-                                                                document.getElementById(`file-upload-${i}`).click();
-                                                            }
+                                                            click: () => { document.getElementById(`file-upload-${i}`).click(); }
                                                         }
                                                     }, [
                                                         h('input', {

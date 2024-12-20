@@ -11,14 +11,17 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "transcendence.settings")
 django.setup()
 
 # Delay import to avoid circular imports
-from local import routing as local_routing
+
+from local  import routing as local_routing
+from online import routing as online_routing 
+
 def get_application():
 
     return ProtocolTypeRouter({
         "http": get_asgi_application(),
         "websocket": AuthMiddlewareStack(
             URLRouter(
-                local_routing.websocket_urlpatterns
+                local_routing.websocket_urlpatterns + online_routing.websocket_urlpatterns
             )
         ),
     })

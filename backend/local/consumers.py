@@ -15,7 +15,7 @@ class CreatedTournaments(AsyncWebsocketConsumer):
         if not self.user.is_authenticated:
             await self.close()
             return
-        print("------------------------------------------")
+        # print("------------------------------------------")
         await self.accept()
 
         # await self.send(text_data=json.dumps({

@@ -5,7 +5,6 @@ from django.middleware.csrf         import get_token
 from django.http                    import Http404
 from django.views.decorators.csrf   import csrf_exempt
 
-
 from .models                        import User, Tournament, Player
 from .serializers                   import TournamentSerializer
 from .verifyForm                    import validate_form
@@ -22,7 +21,6 @@ def create_tournament(request):
     """Handle the creation of a new tournament"""
 
     players = []
-    
     for key in request.data:
         if key.startswith('players'):
             parts = key.split('[')
@@ -30,7 +28,7 @@ def create_tournament(request):
             field = parts[2].split(']')[0]
             
             while len(players) <= index:
-                players.append({'name': '', 'image': ''})
+                players.append({'nickname': '', 'avatar': ''})
             
             players[index][field] = request.data[key]
     

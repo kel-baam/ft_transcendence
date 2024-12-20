@@ -4,7 +4,7 @@ from .delete_tournament import delete_tournament
 
 urlpatterns = [
     path('api/csrf-token/', csrf_token_view, name='csrf_token_view'),
-
+    
     path('api/tournaments/', create_tournament, name = 'create_tournament'),
     path('api/tournaments/<int:id>/', delete_tournament, name = 'delete_tournament'),
 ]

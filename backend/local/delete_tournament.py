@@ -10,6 +10,6 @@ def delete_tournament(request, id):
     try:
         tournament = Tournament.objects.get(id=id)
         tournament.delete()
-        return Response({"message": "Tournament deleted successfully"})
+        return Response({"message": "Tournament deleted successfully"}, status=204)
     except Tournament.DoesNotExist:
         return Response({"error": "Tournament not found"}, status=400)

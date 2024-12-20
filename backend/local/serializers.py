@@ -7,9 +7,8 @@ class PlayerSerializer(serializers.ModelSerializer):
         fields  = ['nickname', 'avatar', 'score', 'rank']
 
     def create(self, validated_data):
-        # print("Creating player...")
+        # print("Creating player...", validated_data)
         return Player.objects.create(**validated_data)
-
 
 class TournamentSerializer(serializers.ModelSerializer):
     players     = PlayerSerializer(many=True)
@@ -23,7 +22,7 @@ class TournamentSerializer(serializers.ModelSerializer):
         players_data    = validated_data.pop('players')
         creator         = validated_data.pop('creator')
         # print(f"Creator: {creator}")
-        # print(f"Players data: {players_data}")
+        print(f"Players data: {players_data}")
 
         creator_instance = User.objects.get(id=11)
         # print(f"Creator instance: {creator_instance}")
@@ -37,7 +36,7 @@ class TournamentSerializer(serializers.ModelSerializer):
                 tournament  = tournament,
                 nickname    = player_data.get('nickname', 'NoNickname'),
                 avatar      = player_data.get('avatar', None),
-                score       = player_data.get('score', None),
-                rank        = player_data.get('rank', None)
+                score       = player_data.get('score', 0),
+                rank        = player_data.get('rank', 0)
             )
         return tournament

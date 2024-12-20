@@ -55,9 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'tournament',
-    # 'online',
+    'online',
     'local',
+    # 'tournament',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +76,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_NAME ='csrfToken'
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
-    # "http://frontend:80",
     "http://backend:8000",
     "http://localhost:8000",
     "ws://localhost:8000",

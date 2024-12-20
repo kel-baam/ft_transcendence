@@ -8,12 +8,12 @@ from django.core.exceptions     import ObjectDoesNotExist
 class User(AbstractUser):
     groups = models.ManyToManyField(
         Group,
-        related_name='tournament_users',
+        related_name='local_users',
         blank=True
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name='tournament_users',
+        related_name='local_users',
         blank=True
     )
 
@@ -43,8 +43,8 @@ class Player(models.Model):
     tournament  = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='participants')
     nickname    = models.CharField(max_length=50, default="NoNickname")
     avatar      = models.ImageField(upload_to='player_images/', blank=True, null=True)
-    score       = models.IntegerField(blank=True, null=True)
-    rank        = models.IntegerField(blank=True, null=True)
+    score       = models.IntegerField(blank=True, null=True, default=0)
+    rank        = models.IntegerField(blank=True, null=True, default=0)
     
     def __str__(self):
         return self.nickname
