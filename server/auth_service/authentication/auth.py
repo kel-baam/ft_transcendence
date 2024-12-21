@@ -80,19 +80,25 @@ def intra_login(request):
 
 
 def storeIntraData(intraData):
-        username = intraData.get('first_name')
-        last_name=intraData.get('last_name')
-        first_name = intraData.get('first_name')
-        email= intraData.get('email')
-        password = make_password("123456")
-        # pic  = intraData.get('image').get('link')
+        logger.debug("+++++++++++++++++++++++++++++++++i mstorind data")
         if intraData.get('phone')=='hidden':
                 phone_number=""
         else:
                 phone_number =  intraData.get('phone')
-        user=User(username=username,
-        last_name=last_name,email=email,phone_number=phone_number,first_name=first_name,password=password)
-        user.save()
+        data = {
+                'username' : intraData.get('first_name'),
+                'last_name' :intraData.get('last_name'),
+                'first_name' : intraData.get('first_name'),
+                'email' :intraData.get('email'),
+                'phone_number': phone_number,
+
+        }
+        response = requests.post('http://user-service:8001/api/user',data=data)
+        logger.debug("respo=>0",response)
+        # pic  = intraData.get('image').get('link')
+        # user=User(username=username,
+        # last_name=last_name,email=email,phone_number=phone_number,first_name=first_name,password=password)
+        # user.save()
 
 
 def intra_callback(request):
@@ -106,6 +112,8 @@ def intra_callback(request):
                 validateCode = exchange_code_with_token(code,config('TOKEN_URL'),config('CLIENT_ID'),config('SECRET_KEY'),config('REDIRECT_URI'))
                 if validateCode['status_code'] == 200:
                         user_info = get_user_info(validateCode['accessToken'],config('INTRA_API'))
+                        logger.debug("Headers----:---------------------------------")
+
                         user = User.objects.filter(email=user_info.get("email")).first()
                         if state == 'login' and not user:
                                 return redirect(f"{domain}/#/register")

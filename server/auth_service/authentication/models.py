@@ -1,33 +1,54 @@
 from django.db import models
 import pyotp
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import AbstractBaseUser
+# from channels.db import database_sync_to_async
 
 # Create your models here.
-
-class User(models.Model):
-    password = models.CharField(max_length=128, null=True)  # For hashed passwords
-    intraId = models.IntegerField(unique=True, blank=True, null=True)
-    username = models.CharField(max_length=150)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    email = models.EmailField(max_length=254)
-    picture = models.BinaryField()
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    gender = models.CharField(max_length=255,default='')
-    nationality = models.CharField(max_length=255,default='')
+class User(AbstractBaseUser):
+    username = models.CharField(max_length=50, unique=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50, unique=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True)
+    # picture = models.BinaryField()
+    picture = models.JSONField(null=True)
+    gender = models.CharField(max_length=255, null=True)
+    nationality = models.CharField(max_length=255, null=True) 
+    status = models.BooleanField(null=True)
     enabled_twoFactor = models.BooleanField(default=False)
-    refresh_token= models.CharField(max_length=255,null=True) 
-    secret =  models.CharField(max_length=255,null=True)
-    tmp_secret =  models.CharField(max_length=255,null=True)
+    def __str__(self):
+        return self.username
+    class Meta:
+        db_table = 'User'
+
+# class User(models.Model):
+#     password = models.CharField(max_length=128, null=True)  # For hashed passwords
+#     # intraId = models.IntegerField(unique=True, blank=True, null=True)
+#     username = models.CharField(max_length=150)
+#     first_name = models.CharField(max_length=30)
+#     last_name = models.CharField(max_length=30)
+#     email = models.EmailField(max_length=254)
+#     picture = models.BinaryField()
+#     phone_number = models.CharField(max_length=15, blank=True, null=True)
+#     gender = models.CharField(max_length=255,default='')
+#     nationality = models.CharField(max_length=255,default='')
+#     enabled_twoFactor = models.BooleanField(default=False)
+#     refresh_token= models.CharField(max_length=255,null=True) 
+#     secret =  models.CharField(max_length=255,null=True)
+#     tmp_secret =  models.CharField(max_length=255,null=True)
+
+#     class Meta:
+#         db_table = 'User'
 
     # image_url = models.URLField(max_length=255, default="https://example.com/default-image.jpg")
 
-    def __str__(self):
-        return self.username
-    def set_password(self, raw_password):
-        self.password = make_password(raw_password)
-    def check_password(self, raw_password):
-        return check_password(raw_password, self.password)
+    # def __str__(self):
+    #     return self.username
+    # def set_password(self, raw_password):
+    #     self.password = make_password(raw_password)
+    # def check_password(self, raw_password):
+    #     return check_password(raw_password, self.password)
  
 # class Player(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)

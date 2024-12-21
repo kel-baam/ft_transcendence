@@ -1,28 +1,26 @@
 
 services:
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: auth
-      POSTGRES_USER: koki
-      POSTGRES_PASSWORD: 123456789
+  db :
+    build: ./db
+    container_name: db-service
+    env_file:
+    - .env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app_network
+      - dataBase:/var/lib/postgresql/13/main
     ports:
       - 5432:5432
+    networks:
+      - app_network
+
   client-service:
     build: ./client
     container_name: client-service
     volumes:
-      - "./client:/usr/share/nginx/html"
-      # - "./nginx/nginx.conf:/etc/nginx/nginx.conf"/
+      - client_volume:/usr/share/nginx/html
     ports:
       - "3000:3000"
     depends_on:
       - auth-service
-      - home-service
       - db
     networks:
       - app_network
@@ -31,23 +29,73 @@ services:
     build: ./server/auth_service
     container_name: auth-service
     ports:
-        - "8000:8000"
+      - "8000:8000"
     networks:
       - app_network
     depends_on:
       - db
-  home-service:
-    build: ./server/home_service
-    container_name: home-service
-    networks:
-      - app_network
+    env_file:
+      - .env
+    volumes:
+      - auth_volume:/usr/src/app
+
+  user-service:
+      build: ./server/user_service
+      container_name: user-service
+      env_file:
+        - .env
+      ports:
+        - "8001:8001"
+      networks:
+        - app_network
+      depends_on:
+        - db
+      volumes:
+        - user_volume:/usr/src/app
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8001:8001"
+      - "8081:80"
     depends_on:
       - db
-  
+    networks:
+      - app_network
+    # volumes:
+    #   - pgadmin_data:/var/lib/pgadmin
+    restart: always
 volumes:
-  postgres_data:
+  dataBase:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/kel-baam/data/db/
+      o: bind
+    
+  auth_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/auth_service
+        o: bind
+
+  user_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/user_service
+        o: bind
+
+  client_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./client
+        o: bind
 
 networks:
   app_network:
