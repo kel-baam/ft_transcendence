@@ -40,6 +40,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
+# AUTH_USER_MODEL = 'matchmaking.CustomUser'
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'online',
     'local',
+    'matchmaking',
     # 'tournament',
 ]
 

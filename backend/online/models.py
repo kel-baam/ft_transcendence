@@ -7,8 +7,6 @@ from django.core.exceptions     import ObjectDoesNotExist
 from django.core.validators     import MinLengthValidator
 from django.db.models           import UniqueConstraint
 
-
-
 class User(AbstractUser):
     groups = models.ManyToManyField(
         Group,
@@ -28,13 +26,13 @@ class User(AbstractUser):
         app_label = 'online'
 
 class Tournament(models.Model):
-    creator      = models.ForeignKey(User, on_delete = models.CASCADE, null = True)
-    name         = models.CharField(max_length = 50, unique = True, validators=[MinLengthValidator(3)], blank=False)
+    creator      = models.ForeignKey(User, on_delete = models.CASCADE)
+    name         = models.CharField(max_length = 50, unique = True, validators=[MinLengthValidator(3)], null=True, blank=True)
     type_choices = [
         ('public', 'Public'),
         ('private', 'Private')
     ]
-    type         = models.CharField(max_length=50, null=True, choices=type_choices, default='private') # i remove this ", default='private'"
+    type         = models.CharField(max_length=50, choices=type_choices, default='private') # i remove this ", default='private'"
     created_at   = models.DateTimeField(auto_now_add=True)
 
     def get_creator_image(self):
@@ -44,12 +42,6 @@ class Tournament(models.Model):
         except Player.DoesNotExist:
             return '../../frontend/assets/css/uknown.png'
         
-    # def clean(self):
-    #     if not self.name:
-    #         raise ValidationError({
-    #             'name': 'Custom Error: Tournament name cannot be blank or empty.'
-    #         })
-    
     def __str__(self):
         return self.name
 
@@ -72,27 +64,11 @@ class PlayerTournament(models.Model):
     role_choices    = [('creator', 'Creator'), ('participant', 'Participant')]
     role            = models.CharField(max_length=11, choices=role_choices, default='participant')
     
-    nickname        = models.CharField(max_length=50, null=True, blank=False)
-    avatar          = models.ImageField(upload_to='player_images/', null=True, blank=False)
+    nickname        = models.CharField(max_length=50, null=True, blank=True)
+    avatar          = models.ImageField(upload_to='player_images/', null=True, blank=True)
     
     invited_at      = models.DateTimeField(auto_now_add=True)
     
-    # def clean(self):
- 
-    #     """  Custom validation to ensure nickname and avatar are not empty. """
-
-    #     if not self.nickname:
-    #         raise ValidationError({'nickname': 'Custom Error: Nickname cannot be empty.'})
-            
-    #     if not self.avatar:
-    #         raise ValidationError({'avatar': 'Custom Error: Avatar cannot be empty.'})
-        
-    #     if self.tournament.type == 'private':
-    #         existing_participants = PlayerTournament.objects.filter(tournament=self.tournament, role='participant')
-
-    #     if existing_participants.count() != 3:
-    #         raise ValidationError({'tournament': 'Custom Error: A private tournament can have exactly 3 participants in total.'})
-            
     class Meta:
         constraints = [
             UniqueConstraint(fields=['tournament', 'player'], name='unique_tournament_player')
@@ -113,25 +89,3 @@ class Match(models.Model):
 
     def __str__(self):
         return f"Match between {self.player1.nickname} and {self.player2.nickname} in {self.tournament.name}"
-
-
-
-# class Invitation(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='invitations')
-#     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='invitations')
-#     status_choices = [('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')]
-#     status = models.CharField(max_length=10, choices=status_choices, default='pending')
-#     invited_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f"Invitation for {self.user.nickname} to {self.tournament.name}"
-
-
-    
-# class Notification(models.Model):
-#     user        = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='notifications')
-#     message     = models.TextField()
-#     created_at  = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f"Notification for {self.user.username}"

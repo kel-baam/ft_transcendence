@@ -4,9 +4,11 @@ import { LocalTournament } from './pages/tournaments/local/LocalTournament.js'
 import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js';
 import { Hierarchy } from './pages/tournaments/local/Hierarchy.js';
 import { Game } from './pages/game.js';
-import {NotFound} from './pages/404.js';
-import {Home} from './pages/home.js';
-import {Profile} from './pages/profile.js';
+import { NotFound } from './pages/404.js';
+import { Home } from './pages/home.js';
+import { Profile } from './pages/profile.js';
+import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
+import { OnlinePvp } from './pages/pvp/online.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -60,8 +62,8 @@ const router = new HashRouter([
         //     return '/tournament'
         // }
     },
-    {path:'/game', component: Game},
-    {path:'/tournament/local/hierachy/:id', component:  Hierarchy,
+    { path:'/game', component: Game},
+    { path:'/tournament/local/hierachy/:id', component:  Hierarchy,
       // beforeEnter: (from) =>{
 
       //   // console.log("------------------------------------> this.params", to.appContext)
@@ -69,10 +71,14 @@ const router = new HashRouter([
       //   if  (from !=='/tournament/local/form')
       //     return '/tournament'
       // }
-     },
-     {path:'/tournament/online', component: OnlineTournament},
-     
-
+    },
+    { path:'/tournament/online', component: OnlineTournament},
+    
+    { path: '/playerVSplayer', component: PlayerVsPlayer},
+    { path: '/pvp_online', component: OnlinePvp},
+    
+    { path: '*',  component: NotFound },
+    
     // {path:'/tournament/online/hierachy/:id', component:  Hierarchy,
     //   // beforeEnter: (from) =>{
 
@@ -82,9 +88,6 @@ const router = new HashRouter([
     //   //     return '/tournament'
     //   // }
     //  },
-
-    { path: '*',  component: NotFound },
-
   ])
 
 

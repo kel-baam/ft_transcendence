@@ -214,7 +214,7 @@ export const CreateTournament = defineComponent({
                 ]),
                 h('div', { class: 'game-visibility-options' }, [
                     h('label', { class: 'radio-option' }, [
-                        h('input', { type: 'radio', name: 'visibility', checked: 'true' }),
+                        h('input', { type: 'radio', name: 'visibility', value: 'public', checked: 'true'}),
                         h('span', {}, ['Public'])
                     ]),
                     h('label', { class: 'radio-option' }, [

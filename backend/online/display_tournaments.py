@@ -5,19 +5,23 @@ from .serializers import TournamentSerializer
 
 @sync_to_async
 def joined_tournaments(user_id):
-    user = User.objects.get(id=user_id)
+    try:
+        user = User.objects.get(id=11)
+    except User.DoesNotExist:
+        return {"error": "User not found"}
     
-    # created_tournaments = Tournament.objects.filter(creator=11)
-    joined_tournaments  = Tournament.objects.filter(
-        participants__player__user_id   = 11,
-        participants__status            = 'accepted'
+    created_tournaments = Tournament.objects.filter(creator=user)
+
+    joined_tournaments = Tournament.objects.filter(
+        participants__player__user_id=user_id,
+        participants__status='accepted'
     )
 
-    # all_tournaments         = created_tournaments.union(joined_tournaments)
-    serialized_tournaments  = TournamentSerializer(joined_tournaments, many=True)
+    all_tournaments         = created_tournaments.union(joined_tournaments)
+    serialized_tournaments  = TournamentSerializer(all_tournaments, many=True)
 
-    print("------------joined--------------")
-    print(serialized_tournaments)
+    print("------------all_tournaments--------------")
+    print(serialized_tournaments.data)
 
     return serialized_tournaments.data
 

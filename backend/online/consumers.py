@@ -8,7 +8,7 @@ from .display_tournaments       import available_tournaments, joined_tournaments
 class Tournaments(AsyncWebsocketConsumer):
     async def connect(self):
         print("--------> opened")
-        self.user_id            = 11
+        self.user_id = 11
         # self.room_group_name    = f"user_{self.user_id}_tournaments"
 
         # await self.channel_layer.group_add(

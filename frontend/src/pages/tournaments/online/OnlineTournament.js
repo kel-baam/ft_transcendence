@@ -75,36 +75,39 @@ export const OnlineTournament = defineComponent({
         const formElement = event.target;
         const formData = new FormData(formElement);
         
-        formData.append('tournament_id', JSON.stringify(this.state.id))
+        formData.append('tournament_id', JSON.stringify(this.state.id));
+        formData.append('status', 'accepted');
+
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
 
-        // try {
-        //     const csrftoken = await this.fetchcsrftoken();
-        //     const response = await fetch("http://localhost:8000/online/api/tournaments/", {
-        //         method      : 'PUT',
-        //         body        : formData,
-        //         headers     : { 'X-CSRFToken': csrftoken },
-        //         credentials : 'include'
-        //     });
+        try {
+            const csrftoken = await this.fetchcsrftoken();
+            const response = await fetch("http://localhost:8000/online/api/tournaments/", {
+                method      : 'PUT',
+                body        : formData,
+                headers     : { 'X-CSRFToken': csrftoken },
+                credentials : 'include'
+            });
 
-        //     if (!response.ok) {
-        //         const errorText = await response.json();
-        //         console.error("Error response:", errorText);
-        //         throw new Error(errorText.error);
-        //     }
+            if (!response.ok) {
+                const errorText = await response.json();
+                console.error("Error response:", errorText);
+                throw new Error(errorText.error);
+            }
 
-        //     const successData = await response.json();
-        //     console.log("player added :", successData.message);
-        //     this.updateState({
-        //         isBlur: false
-        //     })
+            const successData = await response.json();
+            console.log("player added :", successData.message);
+            this.updateState({
+                isBlur: false
+            })
+            this.initWebSocket();
 
-        // } catch (error) {
-        //     showErrorNotification(error);
-        //     console.log(error);
-        // }
+        } catch (error) {
+            showErrorNotification(error);
+            console.log(error);
+        }
     },
 
 
@@ -141,7 +144,12 @@ export const OnlineTournament = defineComponent({
                 ]),
                 this.state.isBlur ? 
                 h('div', { class: 'join-player-form' }, [
-                    h('i', { class: 'fa-regular fa-circle-xmark icon' }),
+                    h('i', {
+                        class   : 'fa-regular fa-circle-xmark icon',
+                        on      : {
+                            click : () => { this.updateState({ isBlur: false }) }
+                        }
+                    }),
                     h('form', {
                         class   : 'form1',
                         on      : {submit: this.submitForm.bind(this) }

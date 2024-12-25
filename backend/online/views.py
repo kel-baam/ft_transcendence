@@ -24,7 +24,7 @@ class TournamentAPIView(APIView):
 
         creator     = User.objects.get(id=11)
         tournament  = None
-        
+
         try:
             tournament_data = {
                 'creator'   : creator.id,
@@ -68,7 +68,7 @@ class TournamentAPIView(APIView):
 
             if tournament.type == 'private':
                 existing_participants = PlayerTournament.objects.filter(tournament=tournament, role='participant')
-                if existing_participants.count()  != 3:
+                if existing_participants.count() != 3:
                     raise serializers.ValidationError('A private tournament have 3 participants excluding the creator.')
             
             return Response(
@@ -91,26 +91,47 @@ class TournamentAPIView(APIView):
 
             if tournament.creator_id == 11:
                 tournament.delete()
-                return Response({'message': 'Tournament deleted successfully'}, status=200)
+                return Response({'message': 'Tournament deleted successfully'}, status=201)
             else:
-                PlayerTournament.objects.filter(Player__user__id = 11, tournament=tournament).delete()
+                PlayerTournament.objects.filter(player__user__id = 11, tournament=tournament).delete()
                 return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
         except Tournament.DoesNotExist:
             return Response({"error": "Tournament not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, pk) :
-        tournament_id       = request.data.get("tournament_id")
-        avatar              = request.FILES.get("player_avatar")
-        nickname            = request.data.get("nickname")
+    def put(self, request):
+        try:
+            tournament_id   = request.data.get("tournament_id")
+            avatar          = request.FILES.get("player_avatar")
+            nickname        = request.data.get("nickname")
+            status_value    = request.data.get("status")
 
-        print(tournament_id, " ", avatar, " ", nickname)
+            player          = Player.objects.get(user_id=11)
 
-        validation_error = player_form_validation(avatar, nickname)
-        if validation_error:
-            return Response({"error": validation_error}, status=status.HTTP_400_BAD_REQUEST)
+            player_data = {
+                'tournament'    : tournament_id,
+                'player'        : player.id,
+                'status'        : status_value,
+                'nickname'      : nickname,
+                'avatar'        : avatar
+            }
 
-        return Response({"message": "PLayer joined successfully"}, status=status.HTTP_201_CREATED)
+            print("-----------> ", player_data)
 
+            serializer = PlayerTournamentSerializer(data=player_data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+            return Response(
+                {"message": "Player added successfully to the tournament."},
+                status=status.HTTP_200_OK
+                )
+        except ValidationError as ve:
+            return Response(
+                {"errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 # i don't have friends yet so i will get all the users of the website i will update it soon
 

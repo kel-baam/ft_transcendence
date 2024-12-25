@@ -12,8 +12,9 @@ django.setup()
 
 # Delay import to avoid circular imports
 
-from local  import routing as local_routing
-from online import routing as online_routing 
+from local          import routing as local_routing
+from online         import routing as online_routing 
+from matchmaking    import routing as matchmaking_routing
 
 def get_application():
 
@@ -21,7 +22,7 @@ def get_application():
         "http": get_asgi_application(),
         "websocket": AuthMiddlewareStack(
             URLRouter(
-                local_routing.websocket_urlpatterns + online_routing.websocket_urlpatterns
+                local_routing.websocket_urlpatterns + online_routing.websocket_urlpatterns + matchmaking_routing.websocket_urlpatterns
             )
         ),
     })
