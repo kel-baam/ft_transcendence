@@ -11,6 +11,30 @@ services:
       - 5432:5432
     networks:
       - app_network
+      
+  redis :
+    build: ./redis
+    container_name: redis-service
+    env_file:
+    - .env
+    # volumes:
+    #   - dataBase:/var/lib/postgresql/13/main
+    ports:
+      - "6378:6378"
+    networks:
+      - app_network
+
+    # redis-client :
+    #   build: ./redis-client
+    #   container_name: redis-service
+    #   env_file:
+    #   - .env
+      # volumes:
+      #   - dataBase:/var/lib/postgresql/13/main
+      # ports:
+      #   - 6379:6379
+      # networks:
+      #   - app_network
 
   client-service:
     build: ./client
@@ -73,7 +97,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/kel-baam/data/db/
+      device: ~/data/db/
       o: bind
     
   auth_volume:

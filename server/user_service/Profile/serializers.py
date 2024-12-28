@@ -57,7 +57,9 @@ class UserSerializer(serializers.ModelSerializer):
             password = attrs.get('password')
             try:
                 validate_password(password)
+                # logger.debug("before  password=>",attrs['password'])
                 attrs['password']=make_password(attrs['password'])
+                # logger.debug(" aafter save password=>",attrs['password'])
             except ValidationError as e:
                 raise serializers.ValidationError({"password": e.messages[0]})
         if 'first_name'in attrs and len(attrs.get('first_name')) < 2 :

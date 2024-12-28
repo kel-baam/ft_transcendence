@@ -17,7 +17,7 @@ def exchange_code_with_token(code,token_url,client_id,client_secret,redirect_uri
                 'client_id': client_id,
                 'client_secret': client_secret,
         }
-        print(data)
+        # print(data)
         response = requests.post(token_url,data=data)
         print(response)
         if(response.status_code == 200):

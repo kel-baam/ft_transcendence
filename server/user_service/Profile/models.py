@@ -14,6 +14,8 @@ class User(AbstractBaseUser):
     nationality = models.CharField(max_length=255, null=True) 
     status = models.BooleanField(null=True)
     enabled_twoFactor = models.BooleanField(default=False)
+    is_verify = models.BooleanField(default=False)
+
     def __str__(self):
         return self.username
     class Meta:

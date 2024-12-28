@@ -116,6 +116,15 @@ DATABASES = {
     }
 }
 
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://redis-service:6378/1',  # Adjust location if Redis is on a different host
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
 
 # AUTHENTICATION_BACKENDS = [
     
@@ -266,3 +275,27 @@ LOGGING = {
 
 
 APPEND_SLASH=False
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'kaoutarelbaamrani1@gmail.com'
+EMAIL_HOST_PASSWORD = 'eroxggwapnmixgko'
+
+
+# erox ggwa pnmi xgko 
+
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://redis-service:6378/0',  # Redis server URL (adjust if needed)
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+    }
+}

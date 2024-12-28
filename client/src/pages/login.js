@@ -4,7 +4,7 @@ import {showErrorNotification} from '../package/utils.js'
 export const Login = defineComponent({
     state(){
         return {
-            isLoading : true,
+            errors :{}
     }
     },
     intraEvent()
@@ -13,9 +13,15 @@ export const Login = defineComponent({
     },
     googleEvent(){
     
-                    window.location.href = "http://localhost:3000/auth/google/"
+                    window.location.href = `http://localhost:3000/auth/google/?type=${encodeURIComponent('login')}`
     },
-    loginForm:async(event)=>
+    getErrorMessage(id){
+        const error = this.state.errors[id];
+        console.log("wwwwwwwwwwwwwwwwwwwwwwwwwww iid",error,"key",id)
+
+        return error ? id : undefined;
+    },
+    async loginForm(event)
     {
         event.preventDefault()
         const response = await fetch('http://localhost:3000/auth/login/',{
@@ -24,10 +30,17 @@ export const Login = defineComponent({
         })
         if(!response.ok)
         {   
-            // console.log("test=>",response)
-            data = await response.json()
-            // showErrorNotification(data.error)
+            const errors = await response.json();
+            this.updateState({errors: errors });
         }
+        else
+        {
+            // console.log("this",this)
+            this.appContext.router.navigateTo('/home')
+            const errors = await response.json();
+            console.log(errors)
+        }
+            // this.appContext.navigateTo('/home');
 
     },
     render(){
@@ -52,19 +65,23 @@ export const Login = defineComponent({
                                 h('h1',{},['Step Into Your World'])]),
 
                     h('div',{class:'login'},[
-                        h('form',{class :'loginForm',onsubmit:this.loginForm},[
-                            h('div',{class:'inputSec',id:'username'},[
+                        h('form',{class :'loginForm',  on :{submit: ( event) => this.loginForm(event)}},[
+                            h('div',{class:'inputSec', id:this.getErrorMessage('username')},[
 
                                 h('i',{class:'fa-solid fa-user'}),
-                                h('input',{class:'input',type:'text',id:'username' ,name:'username',placeholder:'Username...'}),
+                                h('input',{class:'input',type:'text',name:'username',placeholder:'Username...'}),
                             ]),
-                            h('div',{class:'inputSec'},[
+                            h('div',{class:'inputSec',id:this.getErrorMessage('password')},[
 
                                 h('i',{class:'fa-solid fa-lock'}),
-                                h('input',{class:'input',type:'text',id:'password',name:'password',placeholder:'Password...'}),
+                                h('input',{class:'input',type:'text',name:'password',placeholder:'Password...'}),
                             ]),
                             h('div',{class:'resetPassword'},[
-                                h('a',{},['Forget Password']),
+                                h('a',{onclick:(e)=>{
+                                    e.preventDefault()
+                                    this.appContext.router.navigateTo('/password/reset?type=reset')
+        
+                                }},['Forget Password']),
                             ]),
                             h('button',{class:'btn'},['Login'])
                         ]),

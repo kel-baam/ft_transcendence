@@ -12,8 +12,8 @@ import logging
 
 
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+# logging.basicConfig(level=logging.DEBUG)
+# logger = logging.getLogger(__name__)
 class UserAuthenticationView(APIView):
     def get(self, request, username):
         try:
@@ -72,7 +72,8 @@ class UserInfoView(APIView):
    
 
     def post(self, request):
-        logger.debug('>>>>>>>>>>>>>>>> here in post user ')
+        # logger.debug('>>>>>>>>>>>>>>>> here in post user ')
+
         try:
             Userserializer = UserSerializer(data=request.data)
             if Userserializer.is_valid(raise_exception=True):
