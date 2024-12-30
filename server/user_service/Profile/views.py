@@ -31,7 +31,7 @@ class UserAuthenticationView(APIView):
 
 class UserInfoView(APIView):
 
-
+# /api/user ; /api/user?username='shicham'
     def get(self, request, username):
         # if request.query_params.get('username', None) :
         #     username = request.query_params.get('username', None)

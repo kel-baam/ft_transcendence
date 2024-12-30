@@ -10,6 +10,7 @@ import { Home } from './pages/home.js';
 
 import { settings } from './pages/settings.js';
 import { Profile } from './pages/profile.js';
+import { Chat } from './pages/chat.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -90,7 +91,9 @@ const router = new HashRouter([
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
     {path : '/settings', component: settings},
-    {path:'/profile', component: Profile}
+    {path:'/profile', component: Profile},
+    {path:'/chat', component: Chat}
+
 
 
   ])
