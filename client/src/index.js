@@ -8,6 +8,9 @@ import { customFetch } from './package/fetch.js';
 import { Register } from './pages/register.js';
 import { Home } from './pages/home.js';
 
+import { settings } from './pages/settings.js';
+import { Profile } from './pages/profile.js';
+
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
 
@@ -86,7 +89,8 @@ const router = new HashRouter([
     { path: '/test',component: Home},
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
-
+    {path : '/settings', component: settings},
+    {path:'/profile', component: Profile}
 
 
   ])

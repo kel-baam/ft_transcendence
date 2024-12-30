@@ -10,42 +10,42 @@ export const SocialCard = defineComponent({
           data:[
             {
               id:'1',
-              user :{username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'},
+              user :{username: 'kjarmoum', image: {src : './images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
             {
               id:'2',
-              user :{username: 'niboukha', image: {src : '../assets/images/kjarmoum.png'},
+              user :{username: 'niboukha', image: {src : './images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
             {
               id:'3',
-              user :{username: 'shicham', image: {src : '../assets/images/kjarmoum.png'},
+              user :{username: 'shicham', image: {src : './images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
             {
               id:'4',
-              user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
             {
               id:'4',
-              user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
             {
               id:'4',
-              user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
             {
               id:'4',
-              user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
               FirstName: 'karima', LastName: 'jarmoumi'}
             },
             // {
             //   id:'4',
-            //   user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
+            //   user :{username: 'kel-baam', image: {src : 'images/kjarmoum.png'},
             //   FirstName: 'karima', LastName: 'jarmoumi'}
             // },
             // {

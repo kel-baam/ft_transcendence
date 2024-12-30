@@ -4,15 +4,20 @@ import{createApp, defineComponent, DOM_TYPES, h,
 export const UserWinRate =  defineComponent({
     state(){
       return {
+        isLoading:true,
         data : {
-          totalMatches: '150',
-          loseMatches: '22',
-          winMatches : '40',
+          // total_matches: '150',
+          // losses: '22',
+          // wins : '40',
         },
         activateSection : 'win'
       }
     },
     render(){
+      const {data, isLoading} = this.state
+        if (isLoading) {
+            return h('div', { class: 'loading' }, ['Loading user stats...']);
+        }
 
         return h('div', { class: 'wining-rate-container' }, [
             h('div', { class: 'title' }, [
@@ -24,11 +29,13 @@ export const UserWinRate =  defineComponent({
             h('div', {class:'circular-container'}, 
                     [h('div', {class: 'circular_progress', style: {                        
                         background: this.state.activateSection === 'win' ? 
-                        `conic-gradient(#0AA989  calc(${ Math.round((this.state.data.winMatches/ this.state.data.totalMatches)* 100)} * 3.6deg), #CBCBCB 0deg)` :
-                        `conic-gradient(#D44444 calc(${ Math.round((this.state.data.loseMatches/ this.state.data.totalMatches)* 100)} * 3.6deg), #CBCBCB 0deg)`
+                        `conic-gradient(#0AA989  calc(${ Math.round( isNaN(data.wins / data.total_matches) ? 0 : 
+                          (data.wins / data.total_matches) * 100)} * 3.6deg), #CBCBCB 0deg)` :
+                        `conic-gradient(#D44444 calc(${ Math.round( isNaN(data.losses / data.total_matches) ? 0 : 
+                          (data.losses/ data.total_matches)* 100)} * 3.6deg), #CBCBCB 0deg)`
                       }}, [h('span', { style : {color: this.state.activateSection === 'win'? '#0AA989':'#D44444', fontSize : '22px'}}, 
-                        [this.state.activateSection === 'win' ? `${ Math.round((this.state.data.winMatches / this.state.data.totalMatches) * 100)}`+ '%':
-                         ` ${ Math.round((this.state.data.loseMatches/ this.state.data.totalMatches)* 100)}` + '%'])])])
+                        [this.state.activateSection === 'win' ? `${ Math.round((data.wins / data.total_matches) * 100)}`+ '%':
+                         ` ${ Math.round((data.losses/ data.total_matches)* 100)}` + '%'])])])
                 ,
               h('div', { class: 'buttons' }, [
                 h('button', { class: 'win-button', style : {color:' #0AA989', 
@@ -38,7 +45,7 @@ export const UserWinRate =  defineComponent({
                 }}}, [
                   'Win',
                   h('br'),
-                  `${this.state.data.winMatches}` + '/' + `${this.state.data.totalMatches}`
+                  `${data.wins}` + '/' + `${data.total_matches}`
                 ]),
                 h('button', { class: 'lose-button', style: {color: '#D44444',
                   backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
@@ -49,10 +56,37 @@ export const UserWinRate =  defineComponent({
                 }, [
                   'Loss',
                   h('br'),
-                  `${this.state.data.loseMatches}` + '/' + `${this.state.data.totalMatches}`
+                  `${data.losses}` + '/' + `${data.total_matches}`
                 ])
               ])
             ])
           ])
           
-}})
+  },
+  onMounted()
+  {
+      fetch('http://localhost:8001/api/user/lol/stats')
+      .then(result =>{
+
+          console.log("----------------------> data fetched ", result)
+          return result.json()
+      })
+      .then(res =>{
+        // console.log('>>>>>>>>>>>>>>>>>> here : ', res)
+          this.updateState({
+              isLoading: false,  
+              // data: res,
+              data : {
+                 total_matches: '0',
+                losses: '0',
+                wins : '0',
+              }  , 
+              error: null   
+          });
+          // console.log(">>>>>> res : ", res)
+      })
+      .catch(error=>{
+          // console.log(">>>>>>>>>>>> error : ", error)
+      })
+  }
+})

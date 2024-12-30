@@ -1,8 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
-from channels.db import database_sync_to_async
+# from channels.db import database_sync_to_async
 
 class User(AbstractBaseUser):
+    STATUS_CHOICES=[
+        ('online', 'Online'),
+        ('readyToPlay', 'ReadyToPlay'),
+        ('offline', 'Offline')
+    ]
     username = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

@@ -37,6 +37,7 @@ class UserInfoView(APIView):
         #     username = request.query_params.get('username', None)
         # else :
         #     username = request.user
+        logger.debug(">>>>>>>>>>>>>> here in get user")
         try:
             user = User.objects.get(username=username)
             Userserializer =UserSerializer(user, 

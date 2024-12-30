@@ -4,42 +4,39 @@ import{createApp, defineComponent, DOM_TYPES, h,
 export const UserCard = defineComponent({
     state(){
         return {
-            isLoading : false,
-            data : {},
-            // username : 'shicham',
-            // image : {src : '../../assets/images/kel-baam.png'},
-            // firstName : 'souad',
-            // lastName : 'hicham',
-            // score : '8',
-            // Rank : '8' ,
-            // level : '8.88',
-            // achievement : {src : '../../assets/images/ach.png', name : 'Silver'}
+            isLoading : true,
+            data : {
+                
+            },
 
         }
     },
 
     render(){
-        // const {data, isLoading} = this.state
+        const {data, isLoading} = this.state
         // const {username , image, firstName, lastName, score, level, achievement} = data
+        if (isLoading) {
+            return h('div', { class: 'loading' }, ['Loading user stats...']);
+        }
         return  h('div', { class: 'infos-user-container' },
             [h('div', {},
-            [ h('img', { src: '../assets/images/kel-baam.png' }),
+            [ h('img', { src: 'images/kel-baam.png' }),//picture from data
                 h('i', { class: 'fa-solid fa-camera', style: {color: '#5293CB'}  })]
             ),
             h('div', {},
             [ h('div', {},
                     [h('span', {},
-                    [ h('h1', {}, ['souad' + ' '+ 'hicham'])]
+                    [ h('h1', {}, [`${data.first_name}` + ' '+ `${data.last_name}`])]
                     )]
                 ),
                 h('div', {},
                 [ h('form', {action :'/'}, 
-                        [h('input', { type: 'text', value: 'shicham' })] )]
+                        [h('input', { type: 'text', value: `${data.username}` })] )]
                 
                 ),
                 h('div', {},
                     [h('div', {},
-                        [h('span', {},[ '8.88' + '%']),
+                        [h('span', {},[ `${data.level}` + '%']),
                         h('div', {},
                             [h('span', {}, ['level']),
                             h('progress', { max: '100', value: '80', style: {width: '593px' }, id: 'progress-level' })]
@@ -50,18 +47,18 @@ export const UserCard = defineComponent({
                             h('div', {},
                                 [
                                     h('span', {}, ['Rank : ']),
-                                    h('span', { style: {color: '#0B42AF'} }, ['8'])
+                                    h('span', { style: {color: '#0B42AF'} }, [`${data.Rank}`])
                                 ]
                             ),
                             h('div', {},
                                 [
                                     h('span', {}, ['Score : ']),
-                                    h('span', { style: {color: '#0B42AF' }}, ['9'])
+                                    h('span', { style: {color: '#0B42AF' }}, [`${data.score}`])
                                 ]
                             ),
                             h('div', { style: {color: '#FBCA35',fontSize: '16px' }, class: 'achievement-item' },
                                 [
-                                    h('img', { src: '../assets/images/ach.png' }),
+                                    h('img', { src: 'images/ach.png' }),
                                     h('span', {}, ['Silver'])
                                 ]
                             )
@@ -71,5 +68,27 @@ export const UserCard = defineComponent({
                 )]
             )]
         )
+    },
+
+   onMounted()
+    {
+        fetch('http://localhost:8001/api/user/lol')
+        .then(result =>{
+
+            // console.log("----------------------> data fetched ", result)
+            return result.json()
+        })
+        .then(res =>{
+            this.updateState({
+                isLoading: false,  
+                data: res,   
+                error: null   
+            });
+            // console.log(">>>>>> res : ", res)
+        })
+        .catch(error=>{
+            // console.log(">>>>>>>>>>>> error : ", error)
+        })
+      
     }
 })

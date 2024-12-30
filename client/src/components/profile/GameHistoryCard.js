@@ -8,107 +8,107 @@ export const GameHistoryCard = defineComponent({
         shownOnviewAll : false,
         data : [
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           ,
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           ,
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           ,
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           ,
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           ,
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           ,
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
           },
           ,
           {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : '../assets/images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : '../assets/images/kjarmoum.png'}},
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
+            player1_points:'1',
+            player2_points:'2',
+            date : '10-11-2024'
+          },
+          ,
+          {
+            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
+            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
             player1_points:'1',
             player2_points:'2',
             date : '10-11-2024'
