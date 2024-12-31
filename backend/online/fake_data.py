@@ -6,8 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 import random
 
 fake = Faker()
-
-# Create the user 'niboukha' with id 11
 def generate_fake_data():
     # Create 'niboukha' user
     niboukha = User.objects.create_user(
@@ -44,29 +42,33 @@ def generate_fake_data():
 
         # Add players to the tournament (other than the creator)
         players_in_tournament = [creator]  # Include creator as a player
+        available_users = [niboukha] + users  # List of all users
+
         for _ in range(4):  # Add 4 additional players (so total of 5 players)
-            player_user = random.choice([niboukha] + users)
-            if player_user not in players_in_tournament:  # Ensure no duplicates
-                players_in_tournament.append(player_user)
-                
-                # Create player entry
-                player = Player.objects.create(
-                    user=player_user,
-                    score=random.randint(0, 100),
-                    level=random.randint(1, 10),
-                    rank=random.randint(1, 100),
-                )
-                
-                # Create player tournament relationship
-                PlayerTournament.objects.create(
-                    tournament=tournament,
-                    player=player,
-                    status=random.choice(['pending', 'accepted', 'declined']),
-                    role='participant',  # Since creator is already assigned to role='creator'
-                    nickname=fake.user_name(),
-                    avatar=None,  # Assuming no avatar
-                    invited_at=timezone.now(),
-                )
+            # Select a random user from the available users who is not yet in the tournament
+            player_user = random.choice([user for user in available_users if user not in players_in_tournament])
+
+            players_in_tournament.append(player_user)  # Add player to the list
+            available_users.remove(player_user)  # Remove the selected user from the pool
+
+            # Create player entry
+            player = Player.objects.create(
+                user=player_user,
+                score=random.randint(0, 100),
+                level=random.randint(1, 10),
+                rank=random.randint(1, 100),
+            )
+
+            # Create player tournament relationship
+            PlayerTournament.objects.create(
+                tournament=tournament,
+                player=player,
+                status=random.choice(['pending', 'accepted', 'declined']),
+                role='participant',  # Since creator is already assigned to role='creator'
+                nickname=fake.user_name(),
+                avatar=None,  # Assuming no avatar
+                invited_at=timezone.now(),
+            )
 
         # Create a player entry for the creator
         player = Player.objects.create(
@@ -75,7 +77,7 @@ def generate_fake_data():
             level=random.randint(1, 10),
             rank=random.randint(1, 100),
         )
-        
+
         # Create player tournament relationship for the creator
         PlayerTournament.objects.create(
             tournament=tournament,
@@ -86,6 +88,26 @@ def generate_fake_data():
             avatar=None,  # Assuming no avatar
             invited_at=timezone.now(),
         )
+
+
+        # Create a player entry for the creator
+        # player = Player.objects.create(
+        #     user=creator,
+        #     score=random.randint(0, 100),
+        #     level=random.randint(1, 10),
+        #     rank=random.randint(1, 100),
+        # )
+        
+        # # Create player tournament relationship for the creator
+        # PlayerTournament.objects.create(
+        #     tournament=tournament,
+        #     player=player,
+        #     status=random.choice(['pending', 'accepted', 'declined']),
+        #     role='creator',  # Creator's role
+        #     nickname=fake.user_name(),
+        #     avatar=None,  # Assuming no avatar
+        #     invited_at=timezone.now(),
+        # )
 
     # Create a group
     group = Group.objects.create(name='players')

@@ -1,6 +1,6 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString}                          from '../../package/index.js'
-import { showErrorNotification, highlightInvalidInput } from '../../pages/tournaments/errorNotification.js';
+import { showErrorNotification, highlightInvalidInput } from '../../pages/utils/errorNotification.js';
 
 export const CreateTournament = defineComponent({
     state(){

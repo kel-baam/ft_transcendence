@@ -1,7 +1,7 @@
 import { createApp, defineComponent, h }    from '../../../package/index.js'
 import { header }                           from '../../../components/header.js'
 import { sidebarLeft }                      from '../../../components/sidebar-left.js'
-import { showErrorNotification, highlightInvalidInput } from '../errorNotification.js';
+import { showErrorNotification, highlightInvalidInput } from '../../utils/errorNotification.js';
 
 export const LocalTournament = defineComponent({
     state() {
@@ -139,6 +139,7 @@ export const LocalTournament = defineComponent({
     },
 
     render() {
+        console.log("hna", this.state.tournaments.length)
         return h('div', { id: 'global' }, [
             h(header, {}),
             h('div', { class: 'content' }, [
@@ -151,21 +152,23 @@ export const LocalTournament = defineComponent({
                         h('div', { class: 'tournaments' },
                             (this.state.tournaments.length > 0
                                 ? this.state.tournaments.map((tournament) =>
-                                    [h('div', { class: 'created' }, [
+                                    h('div', { class: 'created' }, [
                                         h('img', { src: './images/ping-pong-equipment-.png' }),
                                         h('a', {
                                             on: {
                                                 click: () => {
                                                     const tournamentId = tournament.id;
+                                                    
                                                     this.appContext.router.navigateTo(`/tournament/local/hierachy/${tournamentId}`);
+                                                    
                                                 }}
-                                            }, [tournament.name]),
+                                            }, ["tournament.name"]),
                                         h('i', {
                                             class   : 'fa-regular fa-circle-xmark icon',
                                             style   : { color : '#D44444' },
                                             on      : { click: () => this.deleteATournament(tournament.id) }
                                         })
-                                    ])])
+                                    ]))
                                 : [h('p', {}, ['No tournaments created'])]
                             )
                         )                                    

@@ -22,14 +22,18 @@ export const PlayerVsPlayer = defineComponent({
                             h('button', {
                                 type    : 'button',
                                 class   : 'btn',
-                                on      : { click:()=>{ this.appContext.router.navigateTo('/pvp_online') }}
-                                
+                                on      : {
+                                    click:()=>{ this.appContext.router.navigateTo('/pvp_online')},
+                                }
                              }, ['Online'])
+                        ]),
+                        h('div', { class: 'or' }, [
+                            h('h2', {}, ['Or'])
                         ]),
                         h('div', { class: 'local' }, [
                             h('button', {
                                 type    : 'button',
-                                class   : 'btn', //souad request to update status 
+                                class   : 'btn',
                                 on      : { click:()=>{   this.appContext.router.navigateTo('/pvp_local')}}
                             }, ['Local'])
                         ])

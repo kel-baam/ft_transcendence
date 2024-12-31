@@ -1,108 +1,121 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync               import sync_to_async
-from collections                import deque
-
-from .models                    import Player
+from asgiref.sync import sync_to_async
+from .models                    import Player, User
+import asyncio
 
 class Matchmaking(AsyncWebsocketConsumer):
-    matchmaking_queue = deque()
+    waiting_player = None 
 
     async def connect(self):
         print("--------> opened")
-        self.user_id    = 11
+        self.user_id = 11
 
         await self.accept()
         print("connected")
-        await self.populate_matchmaking_queue()
 
     async def disconnect(self, close_code):
         print("Disconnected")
-        
-        #confused about this step
-
-        if self.user_id in [player['user_id'] for player in self.matchmaking_queue]:
-            self.matchmaking_queue = deque([player for player in self.matchmaking_queue if player['user_id'] != self.user_id])
+        if Matchmaking.waiting_player and Matchmaking.waiting_player['user_id'] == self.user_id:
+            Matchmaking.waiting_player = None
 
     async def receive(self, text_data):
         print("---------> receive")
 
         data    = json.loads(text_data)
         action  = data.get('action')
-        
+
+        #fake
+        # Matchmaking.waiting_player = {
+        #         'user_id'   : 5,
+        #         'websocket' : self
+        #     }
+
         print("action--------> ", action)
+
         if action == 'find_opponent':
-            self.matchmaking_queue.append({'user_id': self.user_id, 'websocket': self})
-            print("--------->: ", self.matchmaking_queue)
-            await self.find_match()
+            await self.pair_players()
 
-    async def find_match(self):
-        matched_player      = None
-        best_match_score    = float('inf')
+    async def pair_players(self):
+        if Matchmaking.waiting_player is None or Matchmaking.waiting_player['user_id'] == self.user_id:
+            
+            Matchmaking.waiting_player = {
+                'user_id'   : self.user_id,
+                'websocket' : self
+            }
 
-        # print("enterrrrrrrrrrrrrrrr")
-        for player_data in self.matchmaking_queue:
-            # print("==> ", player_data['user_id'], self.user_id)
-            if player_data['user_id'] != self.user_id:
+            print(f"Player {self.user_id} is waiting for an opponent.")
 
-                player  = await self.get_player(player_data['user_id'])
-                score   = await self.calculate_match_score(self.user_id, player)
+            try:
+                await asyncio.wait_for(self.wait_for_opponent(), timeout=30)
+            except asyncio.TimeoutError:
+                await self.notify_timeout()
 
-                if score < best_match_score:
-                    best_match_score    = score
-                    matched_player      = player_data
+        else:
+            matched_player              = Matchmaking.waiting_player
+            Matchmaking.waiting_player  = None
 
-        if matched_player :
-            print("---> best matching : ", matched_player['user_id'], self.user_id )
-            room_name = f"match_{self.user_id}_{matched_player['user_id']}"
+            print(f"Match found: {self.user_id} vs {matched_player['user_id']}")
 
-            await self.create_room(room_name)
+            player_1_username = await self.get_user(matched_player['user_id'])
+            player_2_username = await self.get_user(self.user_id)
 
-            await self.send_to_player(self, 'match_found', matched_player['user_id'], room_name)
-            await self.send_to_player(matched_player['websocket'], 'match_found', self.user_id, room_name)
+            print(player_1_username, player_2_username)
+            room_name   = f"match_{self.user_id}_{matched_player['user_id']}"
 
-    async def create_room(self, room_name):
-        await self.channel_layer.group_add(
-            room_name,
-            self.channel_name
-        )
-        # print(f"Room created: {room_name}")
+            await self.channel_layer.group_add(room_name, self.channel_name)
+            await self.channel_layer.group_add(room_name, matched_player['websocket'].channel_name)
 
-    async def calculate_match_score(self, user_id, player):
-        player1     = await self.get_player(user_id)
+            await self.channel_layer.group_send(
+                room_name,
+                {
+                    "type"          : "notify_match",
+                    "action"        : "match_found",
+                    "opponent_id_1": {
+                        "id"        : matched_player['user_id'],
+                        "username"  : player_1_username,
+                    },
+                    "opponent_id_2": {
+                        "id"        : self.user_id,
+                        "username"  : player_2_username,
+                    },
+                    "room_name"     : room_name,
+                },
+            )
 
-        level_diff  = abs(player1.level - player.level)
-        rank_diff   = abs(player1.rank - player.rank)
+    async def wait_for_opponent(self):
+        """Simulate waiting for an opponent."""
+        while Matchmaking.waiting_player:
+            await asyncio.sleep(1)
 
-        score = level_diff * 0.3 + rank_diff * 0.7
-
-        # print("---------> score : ", score)
-
-        return score
-
-    @sync_to_async
-    def get_player(self, player_id):
-        return Player.objects.get(id=player_id)
-
-    async def send_to_player(self, websocket, action, opponent_id, room_name):
-        await websocket.send(text_data=json.dumps({
-            'action'        : action,
-            'opponent_id'   : opponent_id,
-            'room_name'     : room_name,
+    async def notify_timeout(self):
+        """Notify the user if no opponent is found within the timeout period."""
+        await self.send(text_data=json.dumps({
+            "action": "match_not_found",
+            "message": "No opponent found within the time limit. Please try again later."
         }))
 
+    @sync_to_async
+    def get_user(self, user_id):
+        user = User.objects.get(id=user_id)
+        return user.username
 
-    async def populate_matchmaking_queue(self):
-        # Simulate fake WebSocket connections and player data for testing
-        fake_players = [
-            {'user_id': 1, 'websocket': self},  # Fake player 1
-            {'user_id': 2, 'websocket': self},  # Fake player 2
-            {'user_id': 3, 'websocket': self},  # Fake player 3
-            {'user_id': 4, 'websocket': self},  # Fake player 4
-        ]
+    async def notify_match(self, event):
 
-        # Add fake players to the matchmaking queue
-        for player in fake_players:
-            self.matchmaking_queue.append(player)
-        
-        print(f"Matchmaking queue populated with {len(fake_players)} fake players")
+        action          = event["action"]
+        opponent_id_1   = event["opponent_id_1"]
+        opponent_id_2   = event["opponent_id_2"]
+        room_name       = event["room_name"]
+
+        await self.send(text_data=json.dumps({
+            "action"        : action,
+            "opponent_id_1": {
+                "id": opponent_id_1["id"],
+                "username": opponent_id_1["username"],
+            },
+            "opponent_id_2": {
+                "id": opponent_id_2["id"],
+                "username": opponent_id_2["username"],
+            },
+            "room_name"     : room_name,
+        }))

@@ -6,7 +6,7 @@ import { sidebarLeft } from '../../../components/sidebar-left.js'
 import { CreateTournament } from '../../../components/tournament/createTournament.js'
 import { JoinedTournaments } from '../../../components/tournament/JoinedTournaments.js'
 import { AvailableTournaments } from '../../../components/tournament/AvailableTournaments.js'
-import { showErrorNotification, highlightInvalidInput } from '../errorNotification.js';
+import { showErrorNotification, highlightInvalidInput } from '../../utils/errorNotification.js';
 
 // const socket = new WebSocket('ws://localhost:8000/ws/online/');
 
@@ -121,7 +121,7 @@ export const OnlineTournament = defineComponent({
                 },
                 [
                     h('div', {}, [h(AvailableTournaments, {
-                        tournaments: this.state.availableTournaments,
+                        tournaments : this.state.availableTournaments,
                         on          :{
                             join:(id)=>{
                                 this.state.id = id;

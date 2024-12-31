@@ -3,7 +3,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
 // import { Match } from './match.js'
 // import { header } from '../../../components/header.js'
 // import { sidebarLeft } from '../../../components/sidebar-left.js'
-import { NotFound } from './404.js'
+import { NotFound } from './utils/404.js'
 
 export const Game = defineComponent(
     {

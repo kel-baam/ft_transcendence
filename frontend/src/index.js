@@ -4,7 +4,7 @@ import { LocalTournament } from './pages/tournaments/local/LocalTournament.js'
 import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js';
 import { Hierarchy } from './pages/tournaments/local/Hierarchy.js';
 import { Game } from './pages/game.js';
-import { NotFound } from './pages/404.js';
+import { NotFound } from './pages/utils/404.js';
 import { Home } from './pages/home.js';
 import { Profile } from './pages/profile.js';
 import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
