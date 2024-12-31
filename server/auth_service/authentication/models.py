@@ -5,6 +5,8 @@ from django.contrib.auth.models import AbstractBaseUser
 # from channels.db import database_sync_to_async
 
 # Create your models here.
+
+
 class User(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=50)
@@ -17,11 +19,37 @@ class User(AbstractBaseUser):
     nationality = models.CharField(max_length=255, null=True) 
     status = models.BooleanField(null=True)
     enabled_twoFactor = models.BooleanField(default=False)
-    is_verify = models.BooleanField(default=False)
+    is_verify = models.BooleanField(default=False,null=True)
+    verify_token =  models.CharField(max_length=255,null=True)
+    # refresh_token= models.CharField(max_length=255,null=True) 
+
+
     def __str__(self):
         return self.username
     class Meta:
         db_table = 'User'
+
+# class User(AbstractBaseUser):
+#     username = models.CharField(max_length=50, unique=True)
+#     first_name = models.CharField(max_length=50)
+#     last_name = models.CharField(max_length=50)
+#     email = models.EmailField(max_length=50, unique=True)
+#     phone_number = models.CharField(max_length=255, blank=True, null=True)
+#     # picture = models.BinaryField()
+#     picture = models.JSONField(null=True)
+#     gender = models.CharField(max_length=255, null=True)
+#     nationality = models.CharField(max_length=255, null=True) 
+#     status = models.BooleanField(null=True)
+#     enabled_twoFactor = models.BooleanField(default=False)
+#     is_verify = models.BooleanField(default=False,null=True)
+#     verify_token =  models.CharField(max_length=255,null=True)
+#     # refresh_token= models.CharField(max_length=255,null=True) 
+
+
+#     def __str__(self):
+#         return self.username
+#     class Meta:
+        # db_table = 'User'
 
 # class User(models.Model):
 #     password = models.CharField(max_length=128, null=True)  # For hashed passwords

@@ -32,7 +32,7 @@ import requests
 import logging
 import jwt
 from .serializers import  UserSerializer 
-
+import json
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -170,7 +170,7 @@ def login(request):
         domain = config('DOMAIN')
         user = User.objects.filter(username=username).first()
         if not user:
-                return Response({'username':'please verify your data'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'username':'invalid username','password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         if not check_password(password,user.password):
                 return Response({'password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)      
@@ -202,7 +202,6 @@ def  registerForm(request):
                         'email': email,
                         'password': password,
                         'verify_token':token,
-                        'is_verify' :False
                 }
                 response = requests.post('http://user-service:8001/api/user',json=data)
                 if(response.status_code == 200):
@@ -214,9 +213,9 @@ def  registerForm(request):
                         email_subject,
                         email_body,
                         settings.EMAIL_HOST_USER,
-                        [email],
+                        ['kaoutarelbaamrani@gmail.com'],
                         )
-                        return Response(status=status.HTTP_200_OK)
+                        return Response(status=status.HTTP_200_OK)                
                 return Response(response.json(),status=response.status_code)
         except Exception as e:
                 return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -230,17 +229,15 @@ def verify_email(request, uidb64, token):
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.filter(username=username).first()
         if(user):
-                if(user.token == token):
+                if(user.verify_token == token):
                         user.is_verify = True
                         response = redirect("http://localhost:3000/#/home")
                         return  set_tokens_in_cookies(user.email,response)
-        return Response(response.json(),status=status.HTTP_400_BAD_REQUEST)
+        return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
                 return redirect("http://localhost:3000/#/login")
 
-
-class LogoutView(APIView):
-    def post(self, request):
+def logout(request):
         try:
             refresh_token = request.COOKIES.get('refresh_token')
             token = RefreshToken(refresh_token)
@@ -254,14 +251,15 @@ class LogoutView(APIView):
 
 @api_view(['POST'])                 
 def password_reset_request(request):
-        logger.debug('wiiiiiiiiiiiiiiil=kwiiik')
         email = request.POST.get('email')
         user = User.objects.filter(email=email).first()
         if not user:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
         
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(str(user.username).encode())
+        user.verify_token =token
+        user.save()
         verification_link = f'http://localhost:3000/#/password/reset?type=change&uid={uid}&token={token}'
         email_body = f'Hi {user.first_name},\nWe received a request to reset the password for your account. If you didn’t make this request, you can safely ignore this email.\nTo reset your password, please click the link below:\n\n{verification_link}'
         email_subject = 'Reset Your Password'
@@ -274,12 +272,34 @@ def password_reset_request(request):
         return Response(status=status.HTTP_200_OK)
 
 
-def password_reset_confirm(request, uidb64, token):
-
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.filter(username=uid).first()
-        if user and default_token_generator.check_token(user, token):
-                
-                return redirect('http://localhost:3000/#/password/reset?type=change')
-        return Response(response.json(),status.HTTP_400_BAD_REQUEST)
-
+@csrf_exempt
+@api_view(['POST'])     
+def password_reset_confirm(request):
+        logger.debug(f"Request Body: {request.body.decode('utf-8')}")
+        try:
+                data = json.loads(request.body)
+                uid = urlsafe_base64_decode(data.get('uid')).decode()
+                user = User.objects.filter(username=uid).first()
+                token = data.get('token')
+                newPassword = data.get('newPassword')
+                confirmPassword = data.get('confirmPassword')
+                data = {
+                        'password':newPassword
+                }
+                if(user):
+                        if user.verify_token == token:
+                                if newPassword == confirmPassword:
+                                        userSerializer = UserSerializer(data=data,fields=['password'])
+                                        if userSerializer.is_valid(raise_exception=True):
+                                                user.password = make_password(newPassword)
+                                                user.save()
+                                                return Response(status=status.HTTP_200_OK)
+                                return Response({'password':"invalid password"},status=status.HTTP_400_BAD_REQUEST)
+                                
+                        return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
+        except serializers.ValidationError:
+            return Response({key: value[0] for key, value in userSerializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.debug("teeest=>",e)
+            return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+   

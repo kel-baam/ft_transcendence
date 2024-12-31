@@ -72,8 +72,6 @@ class UserInfoView(APIView):
    
 
     def post(self, request):
-        # logger.debug('>>>>>>>>>>>>>>>> here in post user ')
-
         try:
             Userserializer = UserSerializer(data=request.data)
             if Userserializer.is_valid(raise_exception=True):
@@ -84,7 +82,7 @@ class UserInfoView(APIView):
             print(">>>>>>>>>>> here validation error ")
             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(">>>>>>>>> here internal server")
+            print(">>>>>>>>> here internal server",e)
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         

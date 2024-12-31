@@ -1,6 +1,6 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString,RouterOutlet} from '../package/index.js'
+import{defineComponent,h} from '../package/index.js'
 import { RegisterForm } from '../components/login/registerForm.js'
+
 export const Register = defineComponent({
     state(){
         return {

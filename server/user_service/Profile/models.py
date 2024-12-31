@@ -14,7 +14,10 @@ class User(AbstractBaseUser):
     nationality = models.CharField(max_length=255, null=True) 
     status = models.BooleanField(null=True)
     enabled_twoFactor = models.BooleanField(default=False)
-    is_verify = models.BooleanField(default=False)
+    is_verify = models.BooleanField(default=False,null=True)
+    verify_token =  models.CharField(max_length=255,null=True)
+    # refresh_token= models.CharField(max_length=255,null=True) 
+
 
     def __str__(self):
         return self.username

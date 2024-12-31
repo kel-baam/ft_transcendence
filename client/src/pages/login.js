@@ -1,26 +1,31 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString,RouterOutlet} from '../package/index.js'
 import {showErrorNotification} from '../package/utils.js'
+
+
+
 export const Login = defineComponent({
     state(){
         return {
             errors :{}
     }
     },
+
     intraEvent()
     {
                 window.location.href = `http://localhost:3000/auth/intra/?type=${encodeURIComponent('login')}`
     },
+
     googleEvent(){
     
                     window.location.href = `http://localhost:3000/auth/google/?type=${encodeURIComponent('login')}`
     },
+
     getErrorMessage(id){
         const error = this.state.errors[id];
-        console.log("wwwwwwwwwwwwwwwwwwwwwwwwwww iid",error,"key",id)
-
         return error ? id : undefined;
     },
+
     async loginForm(event)
     {
         event.preventDefault()
@@ -34,15 +39,9 @@ export const Login = defineComponent({
             this.updateState({errors: errors });
         }
         else
-        {
-            // console.log("this",this)
             this.appContext.router.navigateTo('/home')
-            const errors = await response.json();
-            console.log(errors)
-        }
-            // this.appContext.navigateTo('/home');
-
     },
+    
     render(){
         return h ('div',{id:"global"},[
             h('div',{class:"login-page-content"},[
@@ -74,7 +73,7 @@ export const Login = defineComponent({
                             h('div',{class:'inputSec',id:this.getErrorMessage('password')},[
 
                                 h('i',{class:'fa-solid fa-lock'}),
-                                h('input',{class:'input',type:'text',name:'password',placeholder:'Password...'}),
+                                h('input',{class:'input',type:'password',name:'password',placeholder:'Password...'}),
                             ]),
                             h('div',{class:'resetPassword'},[
                                 h('a',{onclick:(e)=>{
