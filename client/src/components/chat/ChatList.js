@@ -20,9 +20,9 @@ export const ChatList = defineComponent(
                 h('div', { class : 'separator' }),
                 h(ChatListItems, {
                     on : {
-                        showMessages: (roomName) => {
-                            // console.log(">>>>>>>>>>>> rooom : ", roomName)
-                            this.emit('showMessages', roomName)
+                        showMessages: (data) => {
+                            // console.log(">>>>>>>>>>>> rooom : ", data)
+                            this.emit('showMessages', data)
                         }
                     }
                    
@@ -54,35 +54,35 @@ export const ChatList = defineComponent(
                 isLoading : false,
                 data : [
                     {
-                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}},
+                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}, level : '7.77'},
                         roomName: "walkerbarbara_joshuabrown",
                         content: "salut",
                         read: false,
                         timestamp: "2024-12-30T11:02:49.536257Z"
                     },
                     {
-                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}},
+                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}, level : '7.77'},
                         roomName: "walkerbarbara_joshuabrown",
                         content: "salut",
                         read: false,
                         timestamp: "2024-12-30T11:02:49.536257Z"
                     },
                     {
-                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}},
+                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'},level : '7.77'},
                         roomName: "walkerbarbara_joshuabrown",
                         content: "salut",
                         read: false,
                         timestamp: "2024-12-30T11:02:49.536257Z"
                     },
                     {
-                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}},
+                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}, level : '7.77'},
                         roomName: "walkerbarbara_joshuabrown",
                         content: "salut",
                         read: false,
                         timestamp: "2024-12-30T11:02:49.536257Z"
                     },
                     {
-                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}},
+                        user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}, level : '7.77'},
                         roomName: "walkerbarbara_joshuabrown",
                         content: "salut",
                         read: false,
@@ -101,10 +101,11 @@ export const ChatList = defineComponent(
             //     return h('div', { class: 'chat-list-items' }, ['is loading....']
             //      )
             return h('div', { class: 'chat-list-items' }, data.map((itemData)=>
+                // console.log(">>>>>>>>>>>>>>>>>> itemD")
                h(ChatItem, {itemData, on : {
-                showMessages: (roomName) => {
-                    // console.log(">>>>>>>>>>>> rooom : ", roomName)
-                    this.emit('showMessages', roomName)
+                showMessages: (roomName) => {//roomName passed by chat item by emit
+                    // console.log(">>>>-------------------------------------> rooom : ", roomName, "   ", itemData.user)
+                    this.emit('showMessages', {roomName, UserTarget: itemData.user})
                 }
             }
         })
@@ -136,7 +137,7 @@ const ChatItem =  defineComponent(
                 on : {
                     click : () => {
                         this.updateState({isClicked:true})
-                        this.emit('showMessages', roomName)
+                        this.emit('showMessages', {roomName})
                     }
                 },
                 style : isClicked ? {'background-color': 'rgba(208, 210, 217, 0.514)' } : {}

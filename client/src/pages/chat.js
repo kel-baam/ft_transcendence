@@ -11,12 +11,18 @@ export const Chat = defineComponent(
         state()
         {
             return {
-                roomName : ''
+                roomName : '',
+                UserTarget: {},
+                socket : {},
+                newMessageRecievied:false
+                // wsUrl: `ws://localhost:8080/ws/chat/chat/`
+
             }
         },
         render()
         {
-            const {roomName} = this.state
+            const {roomName, UserTarget} = this.state
+            console.log(">>>>>>>>>>>>>>>>>> roomName  ", roomName, "    ", UserTarget)
             return h('div', { id: 'global' }, [
                 h(header, {}),
                 h('div', { class : 'content' }, [
@@ -25,20 +31,30 @@ export const Chat = defineComponent(
                         h('div', { class : 'chat-content', style: {'grid-template-columns':'25% 74%' }}, [
                             h(ChatList, 
                                 { 
-                                on : { showMessages : (roomName) => {
-                                    this.updateState({roomName:roomName})
-                                    console.log(">>>>>>>>>>>>>>>>> rom : ", roomName)
+                                on : { showMessages : (data) => {
+                                        console.log("----------------> data : ", data)
+                                    this.updateState(data)
+                                    // console.log(">>>>>>>>>>>>>>>>> rom : ", roomName)
                                 } }
                                 // ChatListData: this.ChatListData,
                                 // socket: this.socket,
                                 // room: null
                             }),
-                            h(MessageList , {roomName : roomName})
+                            h(MessageList , {on : {
+                                newMessage : (message)=>{
+                                    this.state.socket
+                                    this.updateState({})
+                                }
+                            },roomName, UserTarget:UserTarget, sokcet : this.state.socket})
                         ])
                     ])
                 ])
             ])
             
+        },
+        onMounted()
+        {
+            this.state.socket = new WebSocket(this.state.wsUrl);
         }
     }
 )
