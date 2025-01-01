@@ -148,7 +148,7 @@ export const GameHistoryCard = defineComponent({
             h('div', { class: 'view-all-match' },
             this.state.data.length >= 4  && !this.state.shownOnviewAll ? 
             [
-              h('a', { href: '#' , on : {click : () => this.emit('blurProfile', {MatchHistory:true})}}, ['View all'])
+              h('a', { on : {click : () => this.emit('blurProfile', {MatchHistory:true})}}, ['View all'])
             ]: []
           )
         ]

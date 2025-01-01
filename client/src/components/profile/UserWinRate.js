@@ -29,10 +29,11 @@ export const UserWinRate =  defineComponent({
             h('div', {class:'circular-container'}, 
                     [h('div', {class: 'circular_progress', style: {                        
                         background: this.state.activateSection === 'win' ? 
-                        `conic-gradient(#0AA989  calc(${ Math.round( isNaN(data.wins / data.total_matches) ? 0 : 
-                          (data.wins / data.total_matches) * 100)} * 3.6deg), #CBCBCB 0deg)` :
+                        `conic-gradient(#0AA989  calc(${ 
+                          Math.round(isNaN(data.wins / data.total_matches) ? 0 : (data.wins / data.total_matches) * 100)
+                        } * 3.6deg), #CBCBCB 0deg)` :
                         `conic-gradient(#D44444 calc(${ Math.round( isNaN(data.losses / data.total_matches) ? 0 : 
-                          (data.losses/ data.total_matches)* 100)} * 3.6deg), #CBCBCB 0deg)`
+                          (data.losses / data.total_matches)* 100)} * 3.6deg), #CBCBCB 0deg)`
                       }}, [h('span', { style : {color: this.state.activateSection === 'win'? '#0AA989':'#D44444', fontSize : '22px'}}, 
                         [this.state.activateSection === 'win' ? `${ Math.round((data.wins / data.total_matches) * 100)}`+ '%':
                          ` ${ Math.round((data.losses/ data.total_matches)* 100)}` + '%'])])])
@@ -40,8 +41,9 @@ export const UserWinRate =  defineComponent({
               h('div', { class: 'buttons' }, [
                 h('button', { class: 'win-button', style : {color:' #0AA989', 
                   backgroundColor : this.state.activateSection === 'win'? '#ddd':'#CBCBCB'}, 
-                on : {click : () => {
-                  this.updateState({activateSection:'win'})
+                on : {
+                  click : () => {
+                      this.updateState({activateSection:'win'})
                 }}}, [
                   'Win',
                   h('br'),
@@ -50,8 +52,9 @@ export const UserWinRate =  defineComponent({
                 h('button', { class: 'lose-button', style: {color: '#D44444',
                   backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
                 } ,
-                on : {click : ()=> {
-                  this.updateState({activateSection:'lose'})
+                on : {
+                  click : ()=> {
+                    this.updateState({activateSection:'lose'})
                 }}
                 }, [
                   'Loss',
@@ -68,25 +71,28 @@ export const UserWinRate =  defineComponent({
       fetch('http://localhost:8001/api/user/lol/stats')
       .then(result =>{
 
-          console.log("----------------------> data fetched ", result)
+          // console.log("----------------------> data fetched ", result)
           return result.json()
       })
       .then(res =>{
         // console.log('>>>>>>>>>>>>>>>>>> here : ', res)
-          this.updateState({
-              isLoading: false,  
-              // data: res,
-              data : {
-                 total_matches: '0',
-                losses: '0',
-                wins : '0',
-              }  , 
-              error: null   
-          });
-          // console.log(">>>>>> res : ", res)
+          console.log(">>>>>>>>>>>>>>>>>>>>>> here ")
+        this.updateState({
+          isLoading: false,  
+          // data: res,
+          data : {
+            total_matches: '0',
+            losses: '0',
+            wins : '0',
+          }  , 
+          error: null   
+        });
+        console.log("----------------------> win states ", `${Math.round(isNaN(this.state.data.wins / this.state.data.total_matches) ? 0 :
+           (this.state.data.wins / this.state.data.total_matches) * 100)}`)
+        // console.log(">>>>>> res : ", res)
       })
       .catch(error=>{
-          // console.log(">>>>>>>>>>>> error : ", error)
+          console.log(">>>>>>>>>>>> error : ", error)
       })
   }
 })

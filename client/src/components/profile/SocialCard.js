@@ -142,7 +142,7 @@ export const SocialCard = defineComponent({
           h('div', { class: 'view-all-link-fr', style : {color : '#14397C'} },
             this.state.data.length >= 4  && !this.state.viewAll ? 
             [
-              h('a', { href: '#' , on : {click : () => this.emit('blurProfile', {SocialCard:true, 
+              h('a', { on : {click : () => this.emit('blurProfile', {SocialCard:true, 
                 activateSection:this.state.activateSection})}}, ['View all'])
             ]: [])
         //   h('div', { class: 'view-all-link-fr', style : {color : '#14397C'}, 
@@ -199,14 +199,14 @@ const FriendsItems = defineComponent({
     const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
     // console.log("-----------------------> here friends items ")
     return h('div', {class : 'friends-scope-item',
-      style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
-    ,justifyContent : 'center'} : {}
-    }, data.map((userFriend) =>
-      h(FriendItem, {
-        friend : userFriend,
-        viewAll:this.state.viewAll
-      })
-    )
+        style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
+          ,justifyContent : 'center'} : {}
+      }, data.map((userFriend) =>
+        h(FriendItem, {
+          friend : userFriend,
+          viewAll:this.state.viewAll
+        })
+      )
   )
   }
 
@@ -300,64 +300,62 @@ const RequestItem =  defineComponent({
     const {id, user} = this.props
     // console.log(">>>>>>>>>>>>>>>>>>> id , user ", id , "| ", user)
     return h('div', { class: 'request-item',
-      style : this.state.viewAll ? 
-      { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
-        width:'700px', height:'65px'
-      } : {}
-     }, [
-      h('div', { class: 'picture-item' }, [
-        h('img', { src: user.image.src, alt: 'profile picture', class: 'picture-item' })
-      ]),
-      h('div', { class: 'data-user' }, [
-        h('span', {}, [user.FirstName + ' ' + user.LastName]),
-        h('span', { style: {color: '#A7A4A4'} }, ['@' + user.username])
-      ]),
-      h('div', { class: 'accept-and-refuse-icons' }, [
-        
-          h('i', { 
-            class: 'fa fa-close', 
-            style: {fontSize:'24px', color:'#D44444'},
-            on : { click : () => this.emit('remove', id)}
-          })
-        ,
-          h('i', { 
-            class: 'fa-solid fa-check',
-             style: { fontSize:'24px', color: '#0AA989'},
-            on : {click : () => this.emit('accept', id)} })
-        
+        style : this.state.viewAll ? 
+        { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
+          width:'700px', height:'65px'
+        } : {}
+      }, [
+        h('div', { class: 'picture-item' }, [
+          h('img', { src: user.image.src, alt: 'profile picture', class: 'picture-item' })
+        ]),
+        h('div', { class: 'data-user' }, [
+          h('span', {}, [user.FirstName + ' ' + user.LastName]),
+          h('span', { style: {color: '#A7A4A4'} }, ['@' + user.username])
+        ]),
+        h('div', { class: 'accept-and-refuse-icons' }, [
+          
+            h('i', { 
+              class: 'fa fa-close', 
+              style: {fontSize:'24px', color:'#D44444'},
+              on : { click : () => this.emit('remove', id)}
+            })
+          ,
+            h('i', { 
+              class: 'fa-solid fa-check',
+              style: { fontSize:'24px', color: '#0AA989'},
+              on : {click : () => this.emit('accept', id)} })
+          
+        ])
       ])
-    ])
   },
   
 
 })
 
 const PendingItems = defineComponent({
-  state()
-  {
-    return {
-      viewAll:false
-    }
-  },
-  render()
-  {
-    if (this.props.viewAll)
+    state()
     {
-      this.state.viewAll = this.props.viewAll
+      return {
+        viewAll:false
+      }
+    },
+    render()
+    {
+        if (this.props.viewAll)
+          this.state.viewAll = this.props.viewAll
+        const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
+        return h('div', {class : 'pending-friends-items',
+            style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
+            }, data.map((userPendingrequest, i)=>
+            h(PendingItem, {
+              viewAll : this.state.viewAll,
+              id : userPendingrequest.id,
+              user : userPendingrequest.user,
+              i,
+              on : {remove : (id) => this.emit('remove', {id, i})}
+            })
+            ))
     }
-    const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
-    return h('div', {class : 'pending-friends-items',
-      style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
-    }, data.map((userPendingrequest, i)=>
-    h(PendingItem, {
-      viewAll : this.state.viewAll,
-      id : userPendingrequest.id,
-      user : userPendingrequest.user,
-      i,
-      on : {remove : (id) => this.emit('remove', {id, i})}
-    })
-    ))
-  }
 })
 
 const PendingItem = defineComponent({
@@ -376,22 +374,22 @@ const PendingItem = defineComponent({
       const {id, user} = this.props 
       // console.log("----------------> id : ", id , " | user : ", user)
       return h('div', { class: 'pending-friend-item' , 
-        style : this.state.viewAll ? 
-      { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
-        width:'700px', height:'65px'
-      } : {}
-      }, [
-        h('div', { class: 'picture-item' }, [
-          h('img', { src: user.image.src, alt: 'profile picture', class : 'picture-item' })
-        ]),
-        h('div', { class: 'data-user' }, [
-          h('span', {}, [user.FirstName + ' ' + user.LastName]),
-          h('span', { style:{ color: '#A7A4A4'} }, ['@' + user.username])
-        ]),
-        h('div', { class: 'cancel-icon' }, [
-            h('i', { class: 'fa fa-close', style: { fontSize: '24px', color: '#D44444'} ,
-            on : {click : () => this.emit('remove', id)}})
-        ])
-      ])
+          style : this.state.viewAll ? 
+          { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
+            width:'700px', height:'65px'
+          } : {}
+          }, [
+            h('div', { class: 'picture-item' }, [
+              h('img', { src: user.image.src, alt: 'profile picture', class : 'picture-item' })
+            ]),
+            h('div', { class: 'data-user' }, [
+              h('span', {}, [user.FirstName + ' ' + user.LastName]),
+              h('span', { style:{ color: '#A7A4A4'} }, ['@' + user.username])
+            ]),
+            h('div', { class: 'cancel-icon' }, [
+                h('i', { class: 'fa fa-close', style: { fontSize: '24px', color: '#D44444'} ,
+                on : {click : () => this.emit('remove', id)}})
+            ])
+          ])
     }
 })

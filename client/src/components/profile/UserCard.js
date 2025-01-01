@@ -86,7 +86,7 @@ export const UserCard = defineComponent({
             });
             // console.log(">>>>>> res : ", res)
         })
-        .catch(error=>{
+        .catch(error => {
             // console.log(">>>>>>>>>>>> error : ", error)
         })
       

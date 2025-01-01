@@ -55,6 +55,7 @@ export const Chat = defineComponent(
         onMounted()
         {
             this.state.socket = new WebSocket(this.state.wsUrl);
+            
         }
     }
 )
