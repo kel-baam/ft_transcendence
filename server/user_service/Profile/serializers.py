@@ -3,11 +3,22 @@ from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+import os
+import requests
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 
+import logging
+
+
+
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta():
         model = Player
-        fields = ['id', 'user','score', 'level', 'Rank']
+        fields = ['score', 'level', 'Rank']
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)
@@ -17,6 +28,10 @@ class UserSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(write_only=True, required=False)
     new_password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
+    player = PlayerSerializer()
+
+    picture = serializers.ImageField(max_length=None, required=False)
+
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
@@ -57,9 +72,7 @@ class UserSerializer(serializers.ModelSerializer):
             password = attrs.get('password')
             try:
                 validate_password(password)
-                # logger.debug("before  password=>",attrs['password'])
                 attrs['password']=make_password(attrs['password'])
-                # logger.debug(" aafter save password=>",attrs['password'])
             except ValidationError as e:
                 raise serializers.ValidationError({"password": e.messages[0]})
         if 'first_name'in attrs and len(attrs.get('first_name')) < 2 :
@@ -86,6 +99,19 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         player_data = validated_data.pop('player', {})
         user = User(**validated_data)
+        # if 'picture' in validated_data and validated_data['picture']:
+        #     picture_url = validated_data['picture']
+            
+        #     response = requests.get(picture_url)
+            
+        #     if response.status_code == 200:
+        #         # Create a temporary file to store the image
+        #         temp_image = NamedTemporaryFile(delete=True)
+        #         temp_image.write(response.content)
+        #         temp_image.flush()
+        #         # logger.debug(">>>>>>>>>>>>>>>>>>>> temp_image : %s", temp_image)
+        #         # Save the image file to the user's profile picture field
+        #         user.picture.save(f"{user.username}.jpg", File(temp_image))
         user.save()
         if player_data:
             Player.objects.create(user=user,**player_data)

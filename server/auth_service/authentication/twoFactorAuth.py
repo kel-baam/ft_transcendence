@@ -78,3 +78,4 @@ def tmpData(request):
         return JsonResponse({'active2FA':request.user.enabled_twoFactor},status=200)
 
 
+

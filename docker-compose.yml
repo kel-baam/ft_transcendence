@@ -75,7 +75,7 @@ services:
       depends_on:
         - db
       volumes:
-        - user_volume:/usr/src/app
+        - user_volume:/app
 
   pgadmin:
     image: dpage/pgadmin4:latest

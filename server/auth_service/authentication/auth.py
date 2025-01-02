@@ -23,9 +23,7 @@ from django.core.cache import cache
 import uuid
 from django.core.mail import send_mail,EmailMessage
 import smtplib
-from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
 from django.core import signing
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
@@ -47,7 +45,7 @@ def set_tokens_in_cookies(email,response):
         response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
         response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)  
         return response
-
+# ----------------------------------------------------------------------------------------google login and register-----------------------------------
 def google_login(request):
         query_type =  request.GET.get('type')
         redirect_url = config('GOOGLE_FULL_URI')
@@ -56,11 +54,30 @@ def google_login(request):
 
 
 def storeGoogleData(data):
-    domain = config('DOMAIN')
-    first_name = data.get('given_name')
-    last_name = data.get('family_name')
-    email = data.get('email')
-    return redirect(f"{domain}/#/home")
+        try:
+                domain = config('DOMAIN')
+                data = {
+                        'username' : data.get('given_name'),
+                        'last_name' : data.get('family_name'),
+                        'first_name' : data.get('given_name'),
+                        'email' :       data.get('email'),
+                        'phone_number': '',
+                        'password': '4475588@kdjndxxxxjfjjdfnbhf',
+                        'player' : {
+                                'Rank' : '0',
+                                'level':'0',
+                                'score':'0',
+                        },
+
+                }
+                response = requests.post('http://user-service:8001/api/user', json=data)
+                logger.debug("response from souad =============>",response)
+                if response.status_code == 200:
+                        return redirect(f"{domain}/#/home") 
+                else:
+                        return redirect(f"{domain}/#/login") 
+        except requests.RequestException as e:
+                return redirect(f"{domain}/#/login") 
 
 
 def handle_google_state(state, user, user_info):
@@ -93,7 +110,7 @@ def callback_google(request):
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
 
-
+#---------------------------------------------------------------------------- login with intra-------------------------------------------
 def intra_login(request):
         query_type =  request.GET.get('type')
         redirect_url = config('INTRA_FULL_URI')
@@ -103,7 +120,6 @@ def intra_login(request):
 
 
 def storeIntraData(intraData):
-
         try:
                 domain = config('DOMAIN')
                 if intraData.get('phone')=='hidden':
@@ -111,23 +127,29 @@ def storeIntraData(intraData):
                 else:
                         phone_number =  intraData.get('phone')
                 data = {
+                       
                         'username' : intraData.get('first_name'),
                         'last_name' :intraData.get('last_name'),
                         'first_name' : intraData.get('first_name'),
                         'email' :intraData.get('email'),
                         'phone_number': phone_number,
-                        'password': "4475588@kdjndjfjjdfnbhf"
+                        'password': '4475588@kdjndjfjjdfnbhf',
+                        'player' : {
+                                'Rank' : '0',
+                                'level':'0',
+                                'score':'0',
+                        },
+                        # 'picture':intraData.get('image').get('link')
                 }
-
                 response = requests.post('http://user-service:8001/api/user', json=data)
+                logger.debug("response from souad =============>",response)
                 if response.status_code == 200:
                         return redirect(f"{domain}/#/home") 
-                        logger.debug("User added successfully: %s", response.json())
                 else:
-                        return Response({"error":"check error from souad code"},status = response.status_code)
+                        return redirect(f"{domain}/#/login") 
         except requests.RequestException as e:
-                return Response({"error": "Request to user-service failed."})
-     
+                return redirect(f"{domain}/#/login") 
+
 
 
 def handle_state(state, user, user_info):
@@ -160,7 +182,7 @@ def intra_callback(request):
         return JsonResponse({'message': 'error'}, status = 404)
 
 
-
+# -----------------------------------------------------------login form ------------------------------------------------------
 # i guess this done for now
 @csrf_exempt
 @api_view(['POST'])                 
@@ -202,8 +224,14 @@ def  registerForm(request):
                         'email': email,
                         'password': password,
                         'verify_token':token,
+                        'player' : {
+                               'score':'0',
+                               'Rank' : '0',
+                               'level' : '0'
+                        }
                 }
                 response = requests.post('http://user-service:8001/api/user',json=data)
+                logger.debug('>>>>>>>>>>>>>> response from souad : %s', response)
                 if(response.status_code == 200):
                         uid = urlsafe_base64_encode(username.encode())
                         verification_link = f'http://localhost:3000/auth/verify/{uid}/{token}/'
@@ -222,21 +250,8 @@ def  registerForm(request):
 
 
 
-
-@api_view(['GET'])                 
-def verify_email(request, uidb64, token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.filter(username=username).first()
-        if(user):
-                if(user.verify_token == token):
-                        user.is_verify = True
-                        response = redirect("http://localhost:3000/#/home")
-                        return  set_tokens_in_cookies(user.email,response)
-        return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
-    except Exception as e:
-                return redirect("http://localhost:3000/#/login")
-
+@csrf_exempt
+@api_view(['POST'])                 
 def logout(request):
         try:
             refresh_token = request.COOKIES.get('refresh_token')
@@ -248,6 +263,21 @@ def logout(request):
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])                 
+def verify_email(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.filter(username=uid).first()
+        if(user):
+                if(user.verify_token == token):
+                        user.is_verify = True
+                        response = redirect("http://localhost:3000/#/home")
+                        return  set_tokens_in_cookies(user.email,response)
+        return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+                return redirect("http://localhost:3000/#/login")
+
+
 
 @api_view(['POST'])                 
 def password_reset_request(request):
@@ -256,7 +286,8 @@ def password_reset_request(request):
         if not user:
             return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
         
-        token = default_token_generator.make_token(user)
+        # token = default_token_generator.make_token(user.username)
+        token = generate_verification_token(user.username)
         uid = urlsafe_base64_encode(str(user.username).encode())
         user.verify_token =token
         user.save()
@@ -275,7 +306,6 @@ def password_reset_request(request):
 @csrf_exempt
 @api_view(['POST'])     
 def password_reset_confirm(request):
-        logger.debug(f"Request Body: {request.body.decode('utf-8')}")
         try:
                 data = json.loads(request.body)
                 uid = urlsafe_base64_decode(data.get('uid')).decode()
@@ -283,23 +313,15 @@ def password_reset_confirm(request):
                 token = data.get('token')
                 newPassword = data.get('newPassword')
                 confirmPassword = data.get('confirmPassword')
-                data = {
-                        'password':newPassword
-                }
+               
                 if(user):
-                        if user.verify_token == token:
+                        if  token == user.verify_token:
                                 if newPassword == confirmPassword:
-                                        userSerializer = UserSerializer(data=data,fields=['password'])
-                                        if userSerializer.is_valid(raise_exception=True):
-                                                user.password = make_password(newPassword)
-                                                user.save()
-                                                return Response(status=status.HTTP_200_OK)
-                                return Response({'password':"invalid password"},status=status.HTTP_400_BAD_REQUEST)
-                                
+                                        user.password =  make_password(str(newPassword))
+                                        # delete cookies for make person logout
+                                        user.save()
+                                        return Response({'password':"user added succssefylly"},status=200)
                         return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
-        except serializers.ValidationError:
-            return Response({key: value[0] for key, value in userSerializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            logger.debug("teeest=>",e)
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
    

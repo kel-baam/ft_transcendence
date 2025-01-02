@@ -14,13 +14,13 @@ export const UserAchievementsCard = defineComponent({
             h('div', { className: 'badges-container' }, [
               h('div', { className: 'badge-item' }, [
                 h('img', { 
-                  src: '../assets/images/lock.png', 
+                  src: './images/lock.png', 
                   alt: 'lock icon' 
                 })
               ]),
               h('div', { className: 'badge-item' }, [
                 h('img', { 
-                  src: '../assets/images/lock.png', 
+                  src: './images/lock.png', 
                   alt: 'lock icon' 
                 })
               ])
@@ -28,13 +28,13 @@ export const UserAchievementsCard = defineComponent({
             h('div', { className: 'badges-container' }, [
               h('div', { className: 'badge-item' }, [
                 h('img', { 
-                  src: '../assets/images/lock.png', 
+                  src: './images/lock.png', 
                   alt: 'lock icon' 
                 })
               ]),
               h('div', { className: 'badge-item' }, [
                 h('img', { 
-                  src: '../assets/images/lock.png', 
+                  src: './images/lock.png', 
                   alt: 'lock icon' 
                 })
               ])

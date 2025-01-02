@@ -32,6 +32,7 @@ export const ResetPassword = defineComponent({
             if(!res.ok)
             {
                 const  errors = await res.json()
+                console.log("errrrors",errors)
                 showErrorNotification(errors['password'])
             }
             else

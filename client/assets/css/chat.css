@@ -1,3 +1,4 @@
+
 .chat-content{
     background-color: rgb(151, 180, 18);
     background-color: rgba(217, 217, 217, 8%);
@@ -43,7 +44,8 @@
     font-size: xx-large;
     color: rgba(10, 70, 110, 1);
 }
-    /* ----------- chat list items ----------- */
+
+/* ----------- chat list items ----------- */
 
 .chat-content .chat-list-container .chat-list-items{
     padding: 5px;
@@ -51,6 +53,9 @@
     grid-template-rows: repeat(9, 10%);
     display: grid;
     gap: 0.2em;
+    overflow-y: auto;
+    overflow-x: hidden;
+
 }
 
 .chat-content .chat-list-container .chat-list-items .chat-item{
@@ -79,7 +84,6 @@
     grid-template-rows: 50% 50%;
     display:  grid;
 }
-
 
 .chat-list-items .chat-item .contact-box .contact-box-header{
     grid-template-columns: 60% 40%;
@@ -145,7 +149,6 @@
     font-family: myFont;
     color: #0A466E;
     /* border: 1px solid rgb(234, 1, 255); */
-
 }
 
 .message-list .header .play-button {
@@ -159,10 +162,7 @@
 .message-list .header .play-button .btn{
     border-radius: 50px;
     /* border: 1px solid rgb(234, 1, 255); */
-
 }
-
-
 
 .message-list .header .play-button button{
     border: none;
@@ -199,9 +199,10 @@
  
 .message-list .msg-list-content{
     background-color: transparent;
-    grid-template-rows: 50% 50%;
-    height: 27%; /*should be a variable depend of lenth of the message*/
-    display: grid;
+    /* grid-template-rows: 50% 50%; */
+    /* height: 27%; should be a variable depend of lenth of the message */
+    /* display: grid; */
+   
 } 
 
 /*----------------------sender-------------------------*/
@@ -211,6 +212,9 @@
     width: 50%;
     grid-template-columns: 11.5% 88%;
     display: grid;
+    float: left;
+    clear: both;
+
 }
 
 .message-list .msg-list-content .sender .sender-avatar{
@@ -224,7 +228,8 @@
     border-radius: 70px 50px 50px 0px;
     background: rgba(255, 255, 255, 0.5);
     width: 90%;
-    height: 50px; /*should be a variable depend of lenth of the message*/
+    
+    /* height: 50px; should be a variable depend of lenth of the message */
     backdrop-filter: blur(10px);
     grid-template-columns: 85% 13%;
     display: grid;
@@ -233,7 +238,8 @@
 .message-list .msg-list-content .sender .msg .msg-content{
     color: #0A466E;
     padding: 16px;
-    font-family: 'Josefin Sans Semibold';
+    font-size:medium;
+    font-family: myFont;
     
 }
 
@@ -249,21 +255,27 @@
 
 .message-list .msg-list-content .receiver{
     padding: 15px;
-    padding-left: 20px;
-    height: 80px;
+    /* padding-left: 20px; */
+    /* height: 80px; */
+    /* width: 50%; */
+    /* display: flex; */
+    /* justify-self: end; */
+
     width: 50%;
-    display: flex;
-    justify-self: end;
+    grid-template-columns: 88% 11.5%;
+    display: grid;
+    float: right;
+    clear: both;
 }
 
 .message-list .msg-list-content .receiver .msg{
     border-radius: 50px 70px 0px 50px;
     background: rgba(255, 255, 255, 0.5);
     width: 90%;
-    height: 50px; /*should be a variable depend of lenth of the message*/
     backdrop-filter: blur(10px);
     grid-template-columns: 85% 13%;
     display: grid;
+    margin-right: 3px;
 }
 
 
@@ -273,11 +285,14 @@
     height: 55px;
     border-radius: 50px;
     background-color: #E8E9EC;
+    justify-self: end;
+    margin-right: 15px;    
 }
 .message-list .msg-list-content .receiver .msg .msg-content{
     color: #0A466E;
     padding: 16px;
-    font-family: 'Josefin Sans Semibold';
+    font-size:medium;
+    font-family: myFont;
     
 }
 
@@ -302,10 +317,10 @@
     background-color: inherit;
     border-radius: 0px 0px 0px 56px;
     font-size: 20px;
-    font-family: 'Josefin Sans Semibold';
     padding: 15px;
     padding-left: 60px;
     border: none;
+    color: #0A466E;
     /* border: 1px solid rgb(234, 1, 255); */
 }  
 
@@ -486,3 +501,15 @@
 }
 
 
+/* ---custom scrool bar-- */
+
+.msg-list-content::-webkit-scrollbar{
+    width: 12px;
+}
+.msg-list-content::-webkit-scrollbar-track{
+    background-color: #FFEEBF;
+}
+.msg-list-content::-webkit-scrollbar-thumb{
+    background: #F45250;
+    border-radius: 10px;
+}

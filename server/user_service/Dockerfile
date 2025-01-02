@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     gcc \
     && apt-get clean \
+    && apt-get  -y install libmagic1\
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements.txt to the working directory

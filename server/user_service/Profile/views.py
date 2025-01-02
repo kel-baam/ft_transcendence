@@ -8,12 +8,15 @@ from rest_framework import serializers
 from django.core.exceptions import ValidationError
 
 import logging
+from PIL import Image
+import io
+import magic
 
 
 
 
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 class UserAuthenticationView(APIView):
     def get(self, request, username):
         try:
@@ -32,11 +35,11 @@ class UserAuthenticationView(APIView):
 class UserInfoView(APIView):
 
 
-    def get(self, request, username):
-        # if request.query_params.get('username', None) :
-        #     username = request.query_params.get('username', None)
-        # else :
-        #     username = request.user
+    def get(self, request):
+        if request.query_params.get('username', None) :
+            username = request.query_params.get('username', None)
+        else :
+            username = request.META.get('HTTP_X_AUTHENTICATED_USER')
         try:
             user = User.objects.get(username=username)
             Userserializer =UserSerializer(user, 
@@ -72,17 +75,55 @@ class UserInfoView(APIView):
    
 
     def post(self, request):
+        # if request.query_params.get('username', None) :
+        #     username = request.query_params.get('username', None)
+        # else :
+        #     username = request.user
+        # logger.debug(">>>>>>>>>>>>>>>>>>>>> request : %s", request.data)
+        # if (request.data['picture']):
+        #     picture_url = request.data['picture']
+        #     response = requests.get(picture_url)
+        
+        #     if response.status_code == 200:
+        #         try:
+        #             # Download the image and save it to the validated data
+        #             mime = magic.Magic(mime=True)
+        #             mime_type = mime.from_buffer(response.content)
+
+        #             if not mime_type.startswith('image'):
+        #                 raise ValidationError("The file is not a valid image.")
+
+        #             # Validate the image using Pillow
+        #             image = Image.open(io.BytesIO(response.content))
+        #             image.verify()  # Verify if the image is valid
+        #             image.close()
+
+        #             # Save the image as a temporary file
+        #             temp_image = NamedTemporaryFile(delete=True)
+        #             temp_image.write(response.content)
+        #             temp_image.flush()
+
+        #             # Create a file object and assign it to the 'picture' field
+        #             request.data['picture'] = File(temp_image, name=f"shicham.jpg")
+        #             logger.debug("wslna hnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa %s ",request.data['picture'])
+        #         except Exception as e:
+        #             logger.debug(">>>>>>>>>>> here validation error ",e)
+        #             raise ValidationError(f"Error saving image: {str(e)}")
+        #     else:
+        #         # logger.debug(">>>>>>>>>>> here validation error ",e)
+        #         raise ValidationError("Failed to download image from the provided URL.")
         try:
             Userserializer = UserSerializer(data=request.data)
             if Userserializer.is_valid(raise_exception=True):
+                # logger.debug(">>>>>>>>>>>>>>>>>>>Userserializer :  ", Userserializer.data)
                 # print(">>>>>>>>>>> user : ", Userserializer.data)
                 Userserializer.save()
                 return Response({"message " : "the user added successfully"}, status=status.HTTP_200_OK)
-        except serializers.ValidationError:
-            print(">>>>>>>>>>> here validation error ")
+        except serializers.ValidationError as e:
+            logger.debug(">>>>>>>>>>> here validation error %s",e)
             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(">>>>>>>>> here internal server",e)
+            logger.debug(">>>>>>>>> here internal server %s",e)
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         
@@ -90,11 +131,11 @@ class UserInfoView(APIView):
 class  UserStatsView(APIView):
 
 
-    def get(self, request, username):
-        # if request.query_params.get('username', None) :
-        #     username = request.query_params.get('username', None)
-        # else :
-        #     username = request.user
+    def get(self, request):
+        if request.query_params.get('username', None) :
+            username = request.query_params.get('username', None)
+        else :
+            username = request.user
         try:
             user = User.objects.get(username=username)
             matches_as_player1 = Match.objects.filter(player1=Player.objects.get(user=user))#add the status completed

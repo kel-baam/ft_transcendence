@@ -7,6 +7,10 @@ import { customFetch } from './package/fetch.js';
 // import { InformationsForm } from './components/login/form.js';
 import { Register } from './pages/register.js';
 import { Home } from './pages/home.js';
+
+import { settings } from './pages/settings.js';
+import { Profile } from './pages/profile.js';
+import { Chat } from './pages/chat.js';
 import { ResetPassword } from './pages/resetPassword.js';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -78,6 +82,7 @@ const test = defineComponent({
 const router = new HashRouter([
 
     { path: '/', component: LandingPage },
+    // { path: '/form', component: InformationsForm },
     // { path: '/2FA', component: TwoFactor },
     { path: '/login', component: Login },
     { path:'/home', component: Home},
@@ -85,8 +90,14 @@ const router = new HashRouter([
     { path:'/home', component: test},
     { path: '/test',component: Home},
     { path: '/401',  component: NotFound },
-    { path: '/password/reset',  component: ResetPassword },
     { path: '/register',  component: Register },
+    {path : '/settings', component: settings},
+    {path:'/profile', component: Profile},
+    { path: '/password/reset',  component: ResetPassword },
+    {path:'/chat', component: Chat}
+
+
+
   ])
 
 

@@ -9,7 +9,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=50, unique=True)
     phone_number = models.CharField(max_length=255, blank=True, null=True)
     # picture = models.BinaryField()
-    picture = models.JSONField(null=True)
+    # picture = models.ImageField(upload_to='user_pics/', blank=True, null=True)
     gender = models.CharField(max_length=255, null=True)
     nationality = models.CharField(max_length=255, null=True) 
     status = models.BooleanField(null=True)
@@ -17,6 +17,10 @@ class User(AbstractBaseUser):
     is_verify = models.BooleanField(default=False,null=True)
     verify_token =  models.CharField(max_length=255,null=True)
     # refresh_token= models.CharField(max_length=255,null=True) 
+    # picture = models.URLField(max_length=500, blank=True)
+    # picture = models.CharField(max_length=1000, blank=True, null=True)
+
+
 
 
     def __str__(self):

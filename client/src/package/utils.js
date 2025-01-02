@@ -54,6 +54,9 @@ export function highlightInvalidInput(formElement){
 }
 
 
+
+
+
 export function showSuccessNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'success-notification';

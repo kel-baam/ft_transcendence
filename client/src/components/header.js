@@ -1,6 +1,9 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../package/index.js'
 
+    const promise = new Promise((resolve, reject)=>{
+        resolve("hello world!")
+    })
 export const header = defineComponent({
  
     render(){
@@ -17,7 +20,7 @@ export const header = defineComponent({
             ]),
             h('div', { class: 'left-side' }, [
                 h(notifComponent, {}),
-                h('a', { href: 'settings' }, [
+                h('a', { href: '#/settings' }, [
                     h('i', { class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false' })
                 ]),
                 h('a', {on :{click: async (event)=> {
