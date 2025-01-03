@@ -156,7 +156,7 @@ def handle_state(state, user, user_info):
     domain = config('DOMAIN')
     if state == 'login':
         if not user:
-            return redirect(f"{domain}/#/register")
+            return redirect(f"{domain}/#/register")               
     elif state == 'register':
         if user:
             return redirect(f"{domain}/#/login")
@@ -175,6 +175,12 @@ def intra_callback(request):
                 if validateCode['status_code'] == 200:
                         user_info = get_user_info(validateCode['accessToken'],config('INTRA_API'))
                         user = User.objects.filter(email=user_info.get("email")).first()
+                        if state == 'login':
+                                if not user:
+                                        return redirect(f"{domain}/#/register")
+                        elif state == 'register':
+                                if user:
+                                        return redirect(f"{domain}/#/login")
                         response = handle_state(state,user,user_info)
                         if(request.COOKIES.get("access_token","default") == "default")  :         
                                 response = set_tokens_in_cookies(user_info.get("email"),response)
@@ -241,7 +247,7 @@ def  registerForm(request):
                         email_subject,
                         email_body,
                         settings.EMAIL_HOST_USER,
-                        ['kaoutarelbaamrani@gmail.com'],
+                        [email],
                         )
                         return Response(status=status.HTTP_200_OK)                
                 return Response(response.json(),status=response.status_code)
@@ -298,7 +304,7 @@ def password_reset_request(request):
                 email_subject,
                 email_body,
                 settings.EMAIL_HOST_USER,
-                ['kaoutarelbaamrani@gmail.com'],
+                [email],
         )
         return Response(status=status.HTTP_200_OK)
 

@@ -1,5 +1,6 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js'
+import { customFetch } from '../../package/fetch.js'
 
 export const UserCard = defineComponent({
     state(){
@@ -72,23 +73,31 @@ export const UserCard = defineComponent({
 
    onMounted()
     {
-        fetch('http://localhost:3000/api/user')
+        
+        customFetch('http://localhost:3000/api/user')
         .then(result =>{
 
-            // console.log("----------------------> data fetched ", result)
+            if (!result.ok)
+            {
+                console.log("res isn't okey ," , " | ", this)
+                
+                this.appContext.router.navigateTo('/login')
+            }
+
             return result.json()
         })
         .then(res =>{
-            console.log(">>>>>>>>>>>>>>> res : ", res)
+            console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
+            console.log("res is okey")
             this.updateState({
-                isLoading: false,  
-                data: res,   
-                error: null   
+                    isLoading: false,  
+                    data: res,   
+                    error: null   
             });
-            // console.log(">>>>>> res : ", res)
+
         })
         .catch(error => {
-            // console.log(">>>>>>>>>>>> error : ", error)
+            console.log(">>>>>>>>>>>> error : ", error)
         })
       
     }
