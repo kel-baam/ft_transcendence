@@ -5,6 +5,7 @@ import { sidebarLeft } from '../components/sidebar-left.js'
 import { Form } from '../components/settings/form.js'
 import { listBlockedFriends } from '../components/settings/listBlockedFriends.js'
 import {SecuritySettings} from '../components/settings/SecuritySettings.js'
+
 export const settings = defineComponent({
     state()
     {

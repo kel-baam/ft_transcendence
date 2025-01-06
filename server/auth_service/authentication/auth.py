@@ -31,6 +31,8 @@ import logging
 import jwt
 from .serializers import  UserSerializer 
 import json
+import random
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -56,8 +58,14 @@ def google_login(request):
 def storeGoogleData(data):
         try:
                 domain = config('DOMAIN')
+
+                login = data.get('given_name')
+                user = User.objects.filter(username=login).first()
+                while(user) :
+                        login = f"{data.get('given_name')}{random.randint(0, 9000)}"
+                        user = User.objects.filter(username=login).first()
                 data = {
-                        'username' : data.get('given_name'),
+                        'username' : login,
                         'last_name' : data.get('family_name'),
                         'first_name' : data.get('given_name'),
                         'email' :       data.get('email'),
@@ -68,7 +76,6 @@ def storeGoogleData(data):
                                 'level':'0',
                                 'score':'0',
                         },
-
                 }
                 response = requests.post('http://user-service:8001/api/user', json=data)
                 logger.debug("response from souad =============>",response)
@@ -77,6 +84,7 @@ def storeGoogleData(data):
                 else:
                         return redirect(f"{domain}/#/login") 
         except requests.RequestException as e:
+                logger.debug("exeption",e)
                 return redirect(f"{domain}/#/login") 
 
 
@@ -105,7 +113,8 @@ def callback_google(request):
                         user_info = get_user_info(validateCode['accessToken'],config('GOOGLE_API'))
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_google_state(state,user,user_info)
-                        if(request.COOKIES.get("access_token","default") == "default") :                    
+                        if(request.COOKIES.get("access_token","default") == "default" and 
+                        ((state == 'login' and user) or (state == 'register' and not user))) :                    
                                 response = set_tokens_in_cookies(user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
@@ -126,9 +135,16 @@ def storeIntraData(intraData):
                         phone_number=""
                 else:
                         phone_number =  intraData.get('phone')
+                login = intraData.get('login')
+                user = User.objects.filter(username=login).first()
+                while(user) :
+                        logger.debug('login',login)
+                        login = f"{intraData.get('login')}{random.randint(0, 9000)}"
+                        user = User.objects.filter(username=login).first()
+                 
                 data = {
                        
-                        'username' : intraData.get('first_name'),
+                        'username' : login,
                         'last_name' :intraData.get('last_name'),
                         'first_name' : intraData.get('first_name'),
                         'email' :intraData.get('email'),
@@ -142,9 +158,9 @@ def storeIntraData(intraData):
                         # 'picture':intraData.get('image').get('link')
                 }
                 response = requests.post('http://user-service:8001/api/user', json=data)
-                logger.debug("response from souad =============>",response)
+                logger.debug("response from souad =============>",response,"||data",data)
                 if response.status_code == 200:
-                        return redirect(f"{domain}/#/home") 
+                        return redirect(f"{domain}/#/home?type=register") 
                 else:
                         return redirect(f"{domain}/#/login") 
         except requests.RequestException as e:
@@ -169,20 +185,17 @@ def intra_callback(request):
         code = request.GET.get('code')
         state = request.GET.get('state', None)
         domain = config('DOMAIN')
-        
+
         if code :
                 validateCode = exchange_code_with_token(code,config('TOKEN_URL'),config('CLIENT_ID'),config('SECRET_KEY'),config('REDIRECT_URI'))
                 if validateCode['status_code'] == 200:
                         user_info = get_user_info(validateCode['accessToken'],config('INTRA_API'))
+                        # TODO i should here check user_info status code later
                         user = User.objects.filter(email=user_info.get("email")).first()
-                        if state == 'login':
-                                if not user:
-                                        return redirect(f"{domain}/#/register")
-                        elif state == 'register':
-                                if user:
-                                        return redirect(f"{domain}/#/login")
                         response = handle_state(state,user,user_info)
-                        if(request.COOKIES.get("access_token","default") == "default")  :         
+                        #  TODO maybe before setting coookie i should check access id is exist if note set it if yes decode it if i snot valid set new one
+                        if(request.COOKIES.get("access_token","default") == "default" and 
+                        ((state == 'login' and user) or (state == 'register' and not user)))  :         
                                 response = set_tokens_in_cookies(user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)

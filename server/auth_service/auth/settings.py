@@ -208,8 +208,8 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=60),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -245,33 +245,33 @@ ASGI_APPLICATION = "auth.asgi.application"
 ALLOWED_HOSTS = ['*']
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',  # Capture DEBUG level and above
-            'class': 'logging.StreamHandler',  # Send logs to the console
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for django logger
-            'propagate': False,  # Do not propagate to the root logger
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level for request logs
-            'propagate': False,  # Prevents duplication in logs
-        },
-        '': {  # This is the root logger
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',  # Capture DEBUG level and above
+#             'class': 'logging.StreamHandler',  # Send logs to the console
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for django logger
+#             'propagate': False,  # Do not propagate to the root logger
+#         },
+#         'django.request': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level for request logs
+#             'propagate': False,  # Prevents duplication in logs
+#         },
+#         '': {  # This is the root logger
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
+#             'propagate': False,
+#         },
+#     },
+# }
 
 
 APPEND_SLASH=False

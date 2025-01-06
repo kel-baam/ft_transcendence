@@ -39,7 +39,7 @@ def validate_qrcode(request):
                 totp = pyotp.TOTP(user.tmp_secret, interval=30)
                 if(totp.verify(code)):
                         user.secret = user.tmp_secret
-                        user.enabled_twoFactor = True
+                        # user.enabled_twoFactor = True
                         print("2fa=>",user.enabled_twoFactor)
                         user.save()
                         return JsonResponse({'message':'the code valid'},status=200)
@@ -50,7 +50,7 @@ def desactive2FA(request):
         print("heeeo")
         user = request.user
         print(user)
-        user.enabled_twoFactor = False
+        # user.enabled_twoFactor = False
         user.save()
         return  JsonResponse({'active2FA':user.enabled_twoFactor},status=200)
 

@@ -18,13 +18,11 @@ def exchange_code_with_token(code,token_url,client_id,client_secret,redirect_uri
                 'client_id': client_id,
                 'client_secret': client_secret,
         }
+        access_token = "none"
         response = requests.post(token_url,data=data)
-        print(response)
         if(response.status_code == 200):
                 token_data = response.json()
-                access_token= token_data.get('access_token')
-        else:
-                access_token = "none"
+                access_token = token_data.get('access_token')
 
         return {'status_code':response.status_code,'accessToken':access_token}
 
