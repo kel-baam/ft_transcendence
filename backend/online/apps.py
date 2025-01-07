@@ -5,8 +5,13 @@ import logging
 class OnlineConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'online'
+
     def ready(self):
+        # Connect the run_fake_data_generation function to the post_migrate signal
         post_migrate.connect(run_fake_data_generation, sender=self)
+        
+        import online.signals
+
 
 def run_fake_data_generation(sender, **kwargs):
     from django.conf import settings

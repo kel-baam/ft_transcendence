@@ -10,8 +10,9 @@ from .serializers                   import TournamentSerializer , PlayerTourname
 from .verifyForm                    import validate_form, player_form_validation
 from django.core.exceptions         import ValidationError
 from rest_framework                 import serializers
-
-
+from django.core.exceptions         import ObjectDoesNotExist
+from rest_framework.exceptions      import APIException
+from django.http                    import Http404
 import json
 
 @api_view(['GET'])
@@ -83,21 +84,6 @@ class TournamentAPIView(APIView):
                 tournament.delete()
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-
-    def delete(self, request):
-        try:
-            tournament_id   = request.data.get('tournamentId')
-            tournament      = get_object_or_404(Tournament, id = tournament_id)
-
-            if tournament.creator_id == 11:
-                tournament.delete()
-                return Response({'message': 'Tournament deleted successfully'}, status=201)
-            else:
-                PlayerTournament.objects.filter(player__user__id = 11, tournament=tournament).delete()
-                return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
-        except Tournament.DoesNotExist:
-            return Response({"error": "Tournament not found"}, status=status.HTTP_400_BAD_REQUEST)
-
     def put(self, request):
         try:
             tournament_id   = request.data.get("tournament_id")
@@ -105,8 +91,9 @@ class TournamentAPIView(APIView):
             nickname        = request.data.get("nickname")
             status_value    = request.data.get("status")
 
-            player          = Player.objects.get(user_id=11)
-
+            user    = User.objects.get(id=11)
+            player  = Player.objects.create(user=user)
+            
             player_data = {
                 'tournament'    : tournament_id,
                 'player'        : player.id,
@@ -132,6 +119,35 @@ class TournamentAPIView(APIView):
             )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request):
+        try:
+            tournament_id   = request.data.get('tournamentId')
+            tournament      = get_object_or_404(Tournament, id = tournament_id)
+
+            if tournament.creator_id == 11:
+                tournament.delete()
+                return Response({'message': 'Tournament deleted successfully'}, status=201)
+            else:
+                PlayerTournament.objects.filter(player__user__id = 11, tournament=tournament).delete()
+                return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
+        except Tournament.DoesNotExist:
+            return Response({"error": "Tournament not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class CustomAPIException(APIException):
+    status_code     = status.HTTP_400_BAD_REQUEST
+    default_detail  = "A server error occurred."
+    default_code    = "error"
+
+    def __init__(self, detail=None, code=None):
+        if detail is not None:
+            self.detail = {"error": detail}
+        else:
+            self.detail = {"error": self.default_detail}
+        if code is not None:
+            self.status_code = code
 
 # i don't have friends yet so i will get all the users of the website i will update it soon
 
@@ -156,7 +172,64 @@ def friends_list(request):
     return Response(friends_data, status=status.HTTP_200_OK)
 
 
+@csrf_exempt
+@api_view(['GET'])
+def isTournamentReady(request, tournament_id):
+    """check if tournament ready to start"""
+    try:
+        # print(tournament_id)
+        if not tournament_id:
+            raise CustomAPIException("Tournament ID is required")
+
+        user            = get_user(11)
+        tournament      = get_tournament(tournament_id, user)
+        total_players   = check_participants(tournament)
+
+        # print(total_players," ", tournament, user , "-------------------------------")
+
+        return Response(
+            {
+                "success": True,
+                "message": f"Tournament is valid with {total_players} participants (including the creator).",
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    except CustomAPIException as custom_error:
+        return Response(custom_error.detail, status=custom_error.status_code)
+    except Exception as e:
+        return Response(
+            {"error": "An unexpected error occurred: " + str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
+def get_user(user_id):
+    try:
+        # print("--?", id)
+        return User.objects.get(id=user_id)
+    except Http404:
+        raise CustomAPIException("User not found")
 
-        # selected_players    = json.loads(invited_players) if isinstance(invited_players, str) else invited_players
+def get_tournament(tournament_id, user):
+    try:
+        # print("--?", tournament_id)
+        return get_object_or_404(Tournament, id=tournament_id, creator=user)
+    except Http404:
+        raise CustomAPIException("you can't start the tournament, you are not the creator")
+
+def check_participants(tournament):
+    accepted_players = PlayerTournament.objects.filter(
+        tournament  = tournament,
+        status      = "accepted"
+    ).count()
+
+    total_players   = accepted_players
+    # print( " ====> ", total_players, " - " , accepted_players)
+    needed_players  = 4 - total_players
+
+    if total_players != 4:
+        raise CustomAPIException(
+            f"Not enough participants. {needed_players} more participants are needed."
+        )
+    return total_players

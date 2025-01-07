@@ -64,34 +64,40 @@ export const LocalTournament = defineComponent({
         }
     },
 
-    fetchTournaments() {
-        console.log("Fetching tournaments through WebSocket...");
-
-        const socket = new WebSocket('ws://localhost:8000/ws/local/');
+    async fetchTournaments() {
+        console.log("Fetching tournaments through HTTP request...");
     
-        socket.onopen = () => {
-            console.log('WebSocket connection established');
-        };
+        try {
+            const csrftoken = await this.fetchcsrftoken();
+            
+            const response = await fetch("http://localhost:8000/local/api/tournaments/", {
+                method: 'GET',
+                headers: { 
+                    'X-CSRFToken'   : csrftoken,
+                    'Content-Type'  : 'application/json'
+                },
+                credentials: 'include'
+            });
     
-        socket.onmessage = (event) => {
-            const tournamentData = JSON.parse(event.data);
-
-            console.log("tournament data >>>> ", tournamentData);
+            if (!response.ok) {
+                const errorText = await response.json();
+                console.error("Error response:", errorText.errors);
+                throw new Error(errorText.errors);
+            }
+    
+            const tournamentData = await response.json();
+            console.log("Tournament data >>>> ", tournamentData);
+    
             if (tournamentData && tournamentData.tournaments) {
                 const tournamentsArray = Object.values(tournamentData.tournaments);
                 this.updateState({ tournaments: tournamentsArray });
             } else {
                 console.error('Tournaments data is undefined or missing:', tournamentData);
             }
-        };
-
-        socket.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
     
-        socket.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
+        } catch (error) {
+            console.error('Error fetching tournaments:', error);
+        }
     },
 
     resetImagePreviews() {
@@ -116,13 +122,16 @@ export const LocalTournament = defineComponent({
         try {
             const csrftoken = await this.fetchcsrftoken();
 
-            const response = await fetch(`http://localhost:8000/local/api/tournaments/${id}/`, {
-                method: 'DELETE',
-                headers: { 
-                    'X-CSRFToken': csrftoken,
-                    'Content-Type': 'application/json' 
+            const response = await fetch(`http://localhost:8000/local/api/tournaments/`, {
+                method              : 'DELETE',
+                body                : JSON.stringify({
+                    tournamentId    : id
+                }),
+                headers             : { 
+                    'X-CSRFToken'   : csrftoken,
+                    'Content-Type'  : 'application/json' 
                 },
-                credentials: 'include'
+                credentials         : 'include'
             });
 
             if (response.ok) {
@@ -159,10 +168,9 @@ export const LocalTournament = defineComponent({
                                                 click: () => {
                                                     const tournamentId = tournament.id;
                                                     
-                                                    this.appContext.router.navigateTo(`/tournament/local/hierachy/${tournamentId}`);
-                                                    
+                                                    this.appContext.router.navigateTo(`/tournament/local/local_hierachy/${tournamentId}`);
                                                 }}
-                                            }, ["tournament.name"]),
+                                            }, [tournament.name]),
                                         h('i', {
                                             class   : 'fa-regular fa-circle-xmark icon',
                                             style   : { color : '#D44444' },

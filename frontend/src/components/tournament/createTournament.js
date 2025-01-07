@@ -5,16 +5,17 @@ import { showErrorNotification, highlightInvalidInput } from '../../pages/utils/
 export const CreateTournament = defineComponent({
     state(){
         return {
-            friendsList: [],
-            players: [],
+            friendsList : [],
+            players     : [],
         }
     },
 
     async fetchcsrftoken() {
         console.log("after");
-        const response = await fetch('http://localhost:8000/online/api/csrf-token/');
 
-        const data = await response.json();
+        const response = await fetch('http://localhost:8000/online/api/csrf-token/');
+        const data     = await response.json();
+
         return data.csrftoken;
     },
 
@@ -50,16 +51,8 @@ export const CreateTournament = defineComponent({
 
             this.resetImagePreviews();
             this.updateState ({ players: [] })
-            this.emit("backToParent")
 
         } catch (error) {
-            // const jsonString            = error.replace('Error response: ', '');
-            // const jsonStringFormatted   = jsonString.replace(/'/g, '"');
-            // const parsedResponse        = JSON.parse(jsonStringFormatted);
-
-            // const errorName = parsedResponse.name[0].string;
-
-            // console.log(errorName);
             showErrorNotification(error);
             console.log(error);
         }
@@ -76,14 +69,15 @@ export const CreateTournament = defineComponent({
         event.preventDefault();
     
         try {
-            const searchQuery = event.target.value;
-            const csrftoken = await this.fetchcsrftoken();
+            const csrftoken     = await this.fetchcsrftoken();
+            const searchQuery   = event.target.value;
             const playersLength = this.state.players.length;
             
-            const response = await fetch(`http://localhost:8000/online/api/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`, {
-                method: 'GET',
-                headers: { 'X-CSRFToken': csrftoken },
-                credentials: 'include',
+            const response      = await fetch(`http://localhost:8000/online/api/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`,
+            {
+                method      : 'GET',
+                headers     : { 'X-CSRFToken': csrftoken },
+                credentials : 'include',
             });
     
             if (!response.ok) {
@@ -93,11 +87,13 @@ export const CreateTournament = defineComponent({
             }
     
             const friendsList = await response.json();
-            // console.log("Friends List: ", friendsList);
+
             this.updateState ({ friendsList: friendsList })
         } catch (error) {
+
             showErrorNotification(error);
             highlightInvalidInput(formElement)
+
             console.error("Error fetching friends list:", error);
         }
     },    
@@ -122,14 +118,15 @@ export const CreateTournament = defineComponent({
                         }
                     }, [
                         h('input', {
-                            type: 'file',
-                            id: 'file-upload',
-                            name: 'creator_Avatar',
-                            accept: 'image/*',
-                            on: { change: (event) => {
+                            type    : 'file',
+                            id      : 'file-upload',
+                            name    : 'creator_Avatar',
+                            accept  : 'image/*',
+                            on      : { change: (event) => {
                                 const file = event.target.files[0];
                                 if (file) {
-                                    const reader = new FileReader();
+                                    
+                                    const reader  = new FileReader();
                                     reader.onload = (e) => {
                                         document.querySelector(`.creator_avatar`).src = e.target.result;
                                     };

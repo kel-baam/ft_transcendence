@@ -8,14 +8,12 @@ import { JoinedTournaments } from '../../../components/tournament/JoinedTourname
 import { AvailableTournaments } from '../../../components/tournament/AvailableTournaments.js'
 import { showErrorNotification, highlightInvalidInput } from '../../utils/errorNotification.js';
 
-// const socket = new WebSocket('ws://localhost:8000/ws/online/');
-
-
 export const OnlineTournament = defineComponent({
     state() {
         return {
+            socket  : null,
             data    : {
-                joinedTournaments: [],
+                joinedTournaments   : [],
                 availableTournaments: [],
             },
             isBlur  : false,
@@ -28,52 +26,60 @@ export const OnlineTournament = defineComponent({
     },
 
     initWebSocket() {
-        // if (socket) {
-        //     console.log('WebSocket is already open.');
-        //     return;
-        // }
+        if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
 
-        const socket = new WebSocket('ws://localhost:8000/ws/online/');
+            this.state.socket = new WebSocket('ws://localhost:8000/ws/online/');
+    
+            this.state.socket.onopen = () => {
+                console.log('WebSocket connection established');
+    
+                this.state.socket.send(JSON.stringify({ action: 'get_joined_tournaments' }));
+                this.state.socket.send(JSON.stringify({ action: 'get_available_tournaments' }));
+            };
+    
+            this.state.socket.onmessage = (event) => {
 
-        socket.onopen = () => {
-            console.log('WebSocket connection established');
-            socket.send(JSON.stringify({ action: 'get_joined_tournaments' }));
-            socket.send(JSON.stringify({ action: 'get_available_tournaments' }));
-        };
+                console.log('Message received:');
 
-        socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('WebSocket Data:', data);
+                const data = JSON.parse(event.data);
+                
+                console.log('Parsed WebSocket Data:', data);
+    
+                if (data.joined_tournaments) {
+                    this.updateState({ joinedTournaments: data.joined_tournaments });
+                }
+                
+                if (data.available_tournaments) {
+                    this.updateState({ availableTournaments: data.available_tournaments });
+                }
 
-            if (data.joined_tournaments) {
-                this.updateState({ joinedTournaments: data.joined_tournaments });
-            }
-
-            if (data.available_tournaments) {
-                this.updateState({ availableTournaments: data.available_tournaments });
-            }
-        };
-
-        socket.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
-        // socket.onclose = () => {
-        //  console.log('WebSocket connection closed');
-        //  socket = null;
-        // };
+                if (data.message) {
+                    console.log(data.message);
+                }
+            };
+    
+            this.state.socket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+    
+            this.state.socket.onclose = () => {
+                console.log('WebSocket connection closed');
+            };
+        }
     },
-
+    
     async fetchcsrftoken() {
-        const response = await fetch('http://localhost:8000/online/api/csrf-token/');
-        const data = await response.json();
+        const response  = await fetch('http://localhost:8000/online/api/csrf-token/');
+        const data      = await response.json();
+
         return data.csrftoken;
     },
 
     async submitForm(event){
         event.preventDefault();
-        const formElement = event.target;
-        const formData = new FormData(formElement);
+
+        const formElement   = event.target;
+        const formData      = new FormData(formElement);
         
         formData.append('tournament_id', JSON.stringify(this.state.id));
         formData.append('status', 'accepted');
@@ -81,7 +87,8 @@ export const OnlineTournament = defineComponent({
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
-
+        
+        console.log("-----> " , formData)
         try {
             const csrftoken = await this.fetchcsrftoken();
             const response = await fetch("http://localhost:8000/online/api/tournaments/", {
@@ -98,19 +105,18 @@ export const OnlineTournament = defineComponent({
             }
 
             const successData = await response.json();
+            
             console.log("player added :", successData.message);
+
             this.updateState({
                 isBlur: false
             })
-            this.initWebSocket();
 
         } catch (error) {
             showErrorNotification(error);
             console.log(error);
         }
     },
-
-
 
     render()
     {
@@ -133,14 +139,12 @@ export const OnlineTournament = defineComponent({
                     h('div', {}, [h(JoinedTournaments, {
                         tournaments : this.state.joinedTournaments,
                         on          : {
-                            backToParent:()=>{ this.initWebSocket() }
+                            start_the_tournament:(id)=>{
+                                this.appContext.router.navigateTo(`/tournament/online/online_hierachy/${id}`);
+                            }
                         }
                     })]),
-                    h('div', {}, [h(CreateTournament, {
-                        on          : {
-                            backToParent:()=>{ this.initWebSocket() }
-                        } 
-                    })]),
+                    h('div', {}, [h(CreateTournament, {})]),
                 ]),
                 this.state.isBlur ? 
                 h('div', { class: 'join-player-form' }, [
@@ -204,6 +208,5 @@ export const OnlineTournament = defineComponent({
             ]) 
         ])
     },
-
 })
 

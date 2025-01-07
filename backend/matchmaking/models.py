@@ -52,4 +52,20 @@ class Player(models.Model):
 
     def __str__(self):
         return self.user.username
-    
+
+
+class Match(models.Model):
+    player1         = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
+    player2         = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+    created_at      = models.DateTimeField(auto_now_add=True)
+    status_choices  = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('exited', 'exited')]
+    status          = models.CharField(max_length=10, choices=status_choices, default='pending')
+
+    def __str__(self):
+        return f"Match between {self.player1.nickname} and {self.player2.nickname}"
+
+
+

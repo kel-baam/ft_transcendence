@@ -20,8 +20,8 @@ def joined_tournaments(user_id):
     all_tournaments         = created_tournaments.union(joined_tournaments)
     serialized_tournaments  = TournamentSerializer(all_tournaments, many=True)
 
-    print("------------all_tournaments--------------")
-    print(serialized_tournaments.data)
+    # print("------------all_tournaments--------------")
+    # print(serialized_tournaments.data)
 
     return serialized_tournaments.data
 
@@ -42,12 +42,12 @@ def available_tournaments(user_id):
         num_participants__lt = 4
     ).distinct()
 
-    for tournament in available_tournaments:
-        print(f"Tournament ID: {tournament.id}, Num Participants: {tournament.num_participants}")
+    # for tournament in available_tournaments:
+    #     print(f"Tournament ID: {tournament.id}, Num Participants: {tournament.num_participants}")
 
     serialized_tournaments = TournamentSerializer(available_tournaments, many=True)
 
-    print("--------------available------------")
-    print(available_tournaments)
+    # print("--------------available------------")
+    # print(available_tournaments)
     
     return serialized_tournaments.data

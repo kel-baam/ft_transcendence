@@ -1,72 +1,98 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync               import sync_to_async
-
-from .models                    import User, Tournament, PlayerTournament, Player
-from .display_tournaments       import available_tournaments, joined_tournaments
+from asgiref.sync import sync_to_async
+from .models import User, Tournament, PlayerTournament, Player
+from django.db.models import Q, Count, F
+from .serializers import TournamentSerializer
 
 class Tournaments(AsyncWebsocketConsumer):
     async def connect(self):
-        print("--------> opened")
-        self.user_id = 11
-        # self.room_group_name    = f"user_{self.user_id}_tournaments"
+        print("--------> WebSocket connection opened")
 
-        # await self.channel_layer.group_add(
-        #     self.room_group_name,
-        #     self.channel_name
-        # )
+        self.user_id    = 11 
 
-        await self.accept()
+        self.group_name = "all_tournaments_group"
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
 
-        joined_tournaments_data     = await joined_tournaments(self.user_id)
-        available_tournaments_data  = await available_tournaments(self.user_id)
-
-        print("joined_tournaments-> : ", joined_tournaments_data)
-        print("available_tournaments-> : ", available_tournaments_data)
-
-        await self.send(text_data=json.dumps({
-            'joined_tournaments'    : joined_tournaments_data,
-            'available_tournaments' : available_tournaments_data
-        }))
+        await self.accept() 
+        await self.send_updated_tournaments()
 
     async def disconnect(self, close_code):
-        pass
-    #     await self.channel_layer.group_discard(
-    #         self.room_group_name,
-    #         self.channel_name
-    # )
-        
+        print("--------> WebSocket connection closed")
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
+
     async def receive(self, text_data):
-        data = json.loads(text_data)
-        action = data.get('action')
-        # tournament_id = data.get("tournamentId)
+        data    = json.loads(text_data)
+        action  = data.get('action')
 
-        print("action -----> ", action)
-        # print("tournament_id -----> ", tournament_id)
+        print(f"Received action: {action}")
 
-        if action == 'get_joined_tournaments' or action == 'get_available_tournaments':
-            joined_tournaments_data     = await joined_tournaments(self.user_id)
-            available_tournaments_data  = await available_tournaments(self.user_id)
+        if action in ['get_joined_tournaments', 'get_available_tournaments']:
+            await self.send_updated_tournaments()
 
-            print("joined_tournaments-> : ", joined_tournaments_data)
-            print("available_tournaments-> : ", available_tournaments_data)
+        if action == 'update' :
+            await self.send_updated_tournaments()
 
-            await self.send(text_data=json.dumps({
-                'joined_tournaments'    : joined_tournaments_data,
-                'available_tournaments' : available_tournaments_data
-            }))
+    async def send_updated_tournaments(self):
+        joined_tournaments_data     = await self.joined_tournaments(self.user_id)
+        available_tournaments_data  = await self.available_tournaments(self.user_id)
 
-        # if action == 'leave':
-        #     tournament = await sync_to_async(Tournament.objects.get)(id=tournament_id)
+        # print("----> ", joined_tournaments_data)
+        # print("jjjjjjjjjjjjjjjjj")
+        await self.send(text_data=json.dumps({
+            'joined_tournaments'    : joined_tournaments_data,
+            'available_tournaments' : available_tournaments_data,
+        }))
 
-        #     if tournament.creator_id == 11:
-        #         await sync_to_async(tournament.delete)()
-        #         await self.send(text_data=json.dumps({
-        #             "message": "Tournament deleted successfully"
-        #         }))
-        #     else:
-        #         await sync_to_async(PlayerTournament.objects.filter(user=11, tournament=tournament).delete)()
-        #         await sync_to_async(Player.objects.filter(user=11, tournament=tournament).delete)()
-        #         await self.send(text_data=json.dumps({
-        #             "message": "You have left the tournament"
-        #         }))
+    async def send_updated_tournaments_from_signal(self, event):
+        """This method is triggered from the signal."""
+        # print("hna")
+        await self.send_updated_tournaments()
+
+
+    @sync_to_async
+    def joined_tournaments(self, user_id):
+        try:
+            user = User.objects.get(id=11)
+        except User.DoesNotExist:
+            return {"error": "User not found"}
+        
+        created_tournaments = Tournament.objects.filter(creator=user)
+
+        joined_tournaments = Tournament.objects.filter(
+            participants__player__user_id=user_id,
+            participants__status='accepted'
+        )
+
+        all_tournaments         = created_tournaments.union(joined_tournaments)
+        serialized_tournaments  = TournamentSerializer(all_tournaments, many=True)
+
+
+        return serialized_tournaments.data
+
+    @sync_to_async
+    def available_tournaments(self, user_id):
+        user = User.objects.get(id=11)
+        
+        available_tournaments = Tournament.objects.filter(
+            type='public'
+        ).exclude(
+            Q(creator = user) | Q(participants__player__user = user)
+        ).annotate(
+            num_participants=Count(
+                'participants',
+                filter = Q(participants__status='accepted')
+            )
+        ).filter(
+            num_participants__lt = 4
+        ).distinct()
+
+        serialized_tournaments = TournamentSerializer(available_tournaments, many=True)
+        
+        return serialized_tournaments.data

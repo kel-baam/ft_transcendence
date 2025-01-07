@@ -6,7 +6,9 @@
     font-family: myFont;
 }
 
-
+html {
+    scroll-behavior: smooth;
+}
 @font-face {
     font-family: myFont;
     src: url(../fonts/Season\ Prime.otf);

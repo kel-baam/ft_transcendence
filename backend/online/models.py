@@ -26,14 +26,21 @@ class User(AbstractUser):
         app_label = 'online'
 
 class Tournament(models.Model):
-    creator      = models.ForeignKey(User, on_delete = models.CASCADE)
-    name         = models.CharField(max_length = 50, unique = True, validators=[MinLengthValidator(3)], null=True, blank=True)
-    type_choices = [
+    creator         = models.ForeignKey(User, on_delete = models.CASCADE)
+    name            = models.CharField(max_length = 50, unique = True, validators=[MinLengthValidator(3)], null=True, blank=True)
+    type_choices    = [
         ('public', 'Public'),
         ('private', 'Private')
     ]
-    type         = models.CharField(max_length=50, choices=type_choices, default='private') # i remove this ", default='private'"
-    created_at   = models.DateTimeField(auto_now_add=True)
+    type            = models.CharField(max_length=50, choices=type_choices, default='private') # i remove this ", default='private'"
+    created_at      = models.DateTimeField(auto_now_add=True)
+    STATUS_CHOICES  = [
+            ('pending', 'Pending'),
+            ('matchmaking', 'Matchmaking Done'),
+            ('started', 'Started'),
+            ('finished', 'Finished'),
+        ]
+    status          = models.CharField(max_length = 20, choices = STATUS_CHOICES, default = 'pending')
 
     def get_creator_image(self):
         try:
@@ -83,9 +90,12 @@ class Match(models.Model):
     player2         = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
     tournament      = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
     created_at      = models.DateTimeField(auto_now_add=True)
-    status_choices  = [('pending', 'Pending'), ('completed', 'Completed')]
+    status_choices  = [('pending', 'Pending'), ('completed', 'Completed'), ('exited', 'exited')]
     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
-    score           = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f"Match between {self.player1.nickname} and {self.player2.nickname} in {self.tournament.name}"
+        # Accessing the related PlayerTournament to get the nickname of players
+        player1_tournament = PlayerTournament.objects.get(player=self.player1, tournament=self.tournament)
+        player2_tournament = PlayerTournament.objects.get(player=self.player2, tournament=self.tournament)
+        
+        return f"Match between {player1_tournament.nickname} and {player2_tournament.nickname} in {self.tournament.name}"

@@ -2,14 +2,14 @@ import { Tournament } from './pages/tournaments/tournament.js';
 import { HashRouter,   RouterOutlet,h,createApp,defineComponent} from './package/index.js';
 import { LocalTournament } from './pages/tournaments/local/LocalTournament.js'
 import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js';
-import { Hierarchy } from './pages/tournaments/local/Hierarchy.js';
+import { LocalHierarchy } from './pages/tournaments/local/LocalHierarchy.js';
 import { Game } from './pages/game.js';
 import { NotFound } from './pages/utils/404.js';
 import { Home } from './pages/home.js';
 import { Profile } from './pages/profile.js';
 import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
 import { OnlinePvp } from './pages/pvp/online.js';
-
+import {OnlineHierarchy} from './pages/tournaments/online/OnlineHierarchy.js'
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
 
@@ -63,7 +63,7 @@ const router = new HashRouter([
         // }
     },
     { path:'/game', component: Game},
-    { path:'/tournament/local/hierachy/:id', component:  Hierarchy,
+    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy,
       // beforeEnter: (from) =>{
 
       //   // console.log("------------------------------------> this.params", to.appContext)
@@ -73,6 +73,7 @@ const router = new HashRouter([
       // }
     },
     { path:'/tournament/online', component: OnlineTournament},
+    { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy},
     
     { path: '/playerVSplayer', component: PlayerVsPlayer},
     { path: '/pvp_online', component: OnlinePvp},

@@ -1,6 +1,8 @@
 
 /* --------------------game-Content------------------ */
-
+html {
+    scroll-behavior: smooth;
+}
 .game-content{
     /* padding: 8px; */
     background-color: rgba(217, 217, 217, 0.05);

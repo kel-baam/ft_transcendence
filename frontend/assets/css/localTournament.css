@@ -4,7 +4,9 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
-
+html {
+    scroll-behavior: smooth;
+}
 .local-tournament{
     padding: 80px;
     background-color: rgba(217, 217, 217, 0.05);
