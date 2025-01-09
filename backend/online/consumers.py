@@ -19,7 +19,7 @@ class Tournaments(AsyncWebsocketConsumer):
 
         await self.accept() 
         await self.send_updated_tournaments()
-
+ 
     async def disconnect(self, close_code):
         print("--------> WebSocket connection closed")
         await self.channel_layer.group_discard(
@@ -43,8 +43,6 @@ class Tournaments(AsyncWebsocketConsumer):
         joined_tournaments_data     = await self.joined_tournaments(self.user_id)
         available_tournaments_data  = await self.available_tournaments(self.user_id)
 
-        # print("----> ", joined_tournaments_data)
-        # print("jjjjjjjjjjjjjjjjj")
         await self.send(text_data=json.dumps({
             'joined_tournaments'    : joined_tournaments_data,
             'available_tournaments' : available_tournaments_data,
@@ -52,7 +50,6 @@ class Tournaments(AsyncWebsocketConsumer):
 
     async def send_updated_tournaments_from_signal(self, event):
         """This method is triggered from the signal."""
-        # print("hna")
         await self.send_updated_tournaments()
 
 

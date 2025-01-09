@@ -65,11 +65,11 @@ class PlayerTournament(models.Model):
     tournament      = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='participants')
     player          = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True, related_name='tournament_entries')
     
-    status_choices  = [('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')]
-    status          = models.CharField(max_length=10, choices=status_choices, default='pending')
-    
     role_choices    = [('creator', 'Creator'), ('participant', 'Participant')]
     role            = models.CharField(max_length=11, choices=role_choices, default='participant')
+
+    status_choices  = [('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')]
+    status          = models.CharField(max_length=10, choices=status_choices, default='pending')
     
     nickname        = models.CharField(max_length=50, null=True, blank=True)
     avatar          = models.ImageField(upload_to='player_images/', null=True, blank=True)
@@ -92,7 +92,7 @@ class Match(models.Model):
     created_at      = models.DateTimeField(auto_now_add=True)
     status_choices  = [('pending', 'Pending'), ('completed', 'Completed'), ('exited', 'exited')]
     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
-
+    
     def __str__(self):
         # Accessing the related PlayerTournament to get the nickname of players
         player1_tournament = PlayerTournament.objects.get(player=self.player1, tournament=self.tournament)

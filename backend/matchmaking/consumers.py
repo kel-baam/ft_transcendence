@@ -79,6 +79,7 @@ class Matchmaking(AsyncWebsocketConsumer):
 
             await self.channel_layer.group_add(room_name, self.channel_name)
             await self.channel_layer.group_add(room_name, matched_player['websocket'].channel_name)
+            
             await self.channel_layer.group_send(
                 room_name,
                 {

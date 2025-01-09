@@ -2,12 +2,14 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from .models import PlayerTournament
 
-@receiver([post_save, post_delete])
+@receiver([post_save, post_delete], sender = PlayerTournament)
 def tournament_saved(sender, instance, created=None, **kwargs):
-    # If it's a post_delete signal, 'created' will be None, so we don't need it.
-    channel_layer = get_channel_layer()
-    group_name = "all_tournaments_group"  # Send to all users' group
+    
+    channel_layer   = get_channel_layer()
+    group_name      = "all_tournaments_group"
+
     async_to_sync(channel_layer.group_send)(
         group_name,
         {

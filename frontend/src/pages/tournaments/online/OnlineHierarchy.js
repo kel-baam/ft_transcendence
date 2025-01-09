@@ -30,7 +30,6 @@ export const OnlineHierarchy = defineComponent({
                 }));
             };
 
-
             this.state.socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
             
