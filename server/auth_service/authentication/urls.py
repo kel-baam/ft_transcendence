@@ -5,7 +5,7 @@ from . import consumers
 from . import jwt
 
 
-from .views import verify_code,activate_two_Factor,validate_qrcode,tmpData,desactive2FA
+from .views import verify_code,activate_two_Factor,validate_qrcode,desactive2FA
 from .auth import intra_callback,password_reset_confirm,password_reset_request,callback_google,intra_login,login,verify_email,registerForm,logout
 from .oauthUtils import csrf_token_view
 from .jwt import token_required, generate_new_token
@@ -35,7 +35,7 @@ urlpatterns = [
     path("auth/twoFactor/activate/",views.activate_two_Factor,name='active2FA'),
     path("auth/twoFactor/desactivate/",views.desactive2FA,name='active2FA'),
     path("auth/twoFactor/validateQrCode/",views.validate_qrcode,name='validateQrCode'),
-
+    path("auth/twoFactor/state/",views.twoFactoreState),
     path('get-csrf-token/',csrf_token_view, name='csrf_token'),
 
 ]

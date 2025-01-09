@@ -17,7 +17,6 @@ export async function customFetch(url,options={})
 
     return  await fetch(url,mergedOptions).then(async (response)=>
             {
-                console.log("daatta",response.status)
                 if(!response.ok)
                 {
                     if(response.status == 401)
@@ -25,16 +24,12 @@ export async function customFetch(url,options={})
                         const refreshAccessToken = await fetch('http://localhost:3000/auth/refreshToken',{
                             method:'GET',
                             credentials: 'include',})
-                            console.log("custome feeetch")
-                            console.log("ref data=>",refreshAccessToken)
-                        
                             if(!refreshAccessToken.ok)           
                                 return refreshAccessToken;
                         
                         return  customFetch(url,options)
                         }
                 }
-                console.log("finaaaaaly result=>",response)
                 return response
         })
 }

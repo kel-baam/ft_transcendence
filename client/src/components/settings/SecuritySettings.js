@@ -1,6 +1,7 @@
+import { customFetch } from '../../package/fetch.js'
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString,RouterOutlet} from '../../package/index.js'
-import { EnableTwoFactor } from '../2FA/enable2FA.js'
+import { EnableTwoFactor } from './enable2FA.js'
 
 export const SecuritySettings = defineComponent(
     {
@@ -8,14 +9,48 @@ export const SecuritySettings = defineComponent(
         {
             return {
                 isQrCodeVisible : false,
-                isEnabled : false
+                isEnabled : false,
+                isLoading : true,
 
             }
         },
+        disable2FA(event)
+        {
+            event.preventDefault()    
+            customFetch('http://localhost:3000/auth/twoFactor/desactivate/',{}).then(async(result)=>{
+                if(!result.ok)
+                {
+                    if(result.status = 401)
+                        this.appContext.router.navigateTo('/login')
+                }
+                // to check else
+            })
+        },
+        onMounted()
+        {
+            customFetch("http://localhost:3000/auth/twoFactor/state/",{}).then(async(result)=>{
+                if(!result.ok)
+                {
+                    const data = await result.json()
+                    if(data.status = 401)
+                        this.appContext.router.navigateTo('/login')
+                }
+                else
+                {
+                    const data = await result.json()
+                    if(data.active2FA == true)
+                        this.updateState({isQrCodeVisible : false, isEnabled : true, isLoading : false})
+                }
+                    
+            })
+        },
         render()
         {
+            const {isQrCodeVisible, isEnabled , isLoading} = this.state
+            if (isLoading)
+               return h('div', {class : 'security-settings-ctn'},["is loading .........."])
             return h('div', {class : 'security-settings-ctn'},[
-                    h('div', {class : 'secure-auth-card'},!this.state.isQrCodeVisible ?  [
+                    h('div', {class : 'secure-auth-card'},!isQrCodeVisible ?  [
                         h('span', {style :{color : '#224A88', fontSize: '24px'}}, ['Two-factor authentication 2FA:']),
                         h('div', {style : {
                             color : '#224A88',
@@ -35,32 +70,24 @@ export const SecuritySettings = defineComponent(
                             border: 'none'
                             },
                             on : {
-                                click : () =>
+                                click : (event) =>
                                 {
-                                    if (!this.state.isEnabled)
+                                    if (!isEnabled)
                                         this.updateState({isQrCodeVisible : true})
                                     else
+                                    {
+                                        this.disable2FA(event)
                                         this.updateState({isEnabled : false})
+                                    }
                                 }
                             }
-                        },   [!this.state.isEnabled ?  'Enable' : 'Disable'])
+                        },   [!isEnabled ?  'Enable' : 'Disable'])
                     ] : [
-                        h(EnableTwoFactor,{}), 
-                        // h('button', {style:{
-                        //     'background-color': '#D44444',
-                        //     color: '#FFEEBF',
-                        //     width: '120px',
-                        //     height: '40px',
-                        //     'border-radius': '12px',
-                        //     border: 'none'
-                        //     },
-                        //     on : {
-                        //         click : () =>
-                        //         {
-                        //             this.updateState({isQrCodeVisible : false, isEnabled : true})
-                        //         }
-                        //     }
-                        // },   ['Verify'])
+                        h(EnableTwoFactor,{on : {
+                            '2faVerified' : ()=>{
+                                this.updateState({isQrCodeVisible : false, isEnabled : true})
+                            }
+                        }}), 
                     ]) , 
                     h('div', {class : 'auth-password-card'}, [
                         h('span', {style :{color : '#224A88', fontSize: '24px'}}, ['Password:']),

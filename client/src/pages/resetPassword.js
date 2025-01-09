@@ -28,11 +28,9 @@ export const ResetPassword = defineComponent({
             body: JSON.stringify(data),
             
         }).then(async (res)=>{
-            console.log(res)
             if(!res.ok)
             {
                 const  errors = await res.json()
-                console.log("errrrors",errors)
                 showErrorNotification(errors['password'])
             }
             else
@@ -52,7 +50,6 @@ export const ResetPassword = defineComponent({
             method:'POST',
             body:new FormData(document.querySelector(".formSendEmail")),
         }).then(async (res)=>{
-            console.log(res)
             if(!res.ok)
             {
                 const error = await res.json();

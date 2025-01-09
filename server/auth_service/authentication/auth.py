@@ -172,7 +172,9 @@ def handle_state(state, user, user_info):
     domain = config('DOMAIN')
     if state == 'login':
         if not user:
-            return redirect(f"{domain}/#/register")               
+            return redirect(f"{domain}/#/register")
+        if user.enabled_twoFactor:
+                return   redirect(f"{domain}/#/2FA")      
     elif state == 'register':
         if user:
             return redirect(f"{domain}/#/login")
@@ -193,6 +195,7 @@ def intra_callback(request):
                         # TODO i should here check user_info status code later
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_state(state,user,user_info)
+
                         #  TODO maybe before setting coookie i should check access id is exist if note set it if yes decode it if i snot valid set new one
                         if(request.COOKIES.get("access_token","default") == "default" and 
                         ((state == 'login' and user) or (state == 'register' and not user)))  :         

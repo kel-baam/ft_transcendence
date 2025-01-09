@@ -38,7 +38,6 @@ export function showErrorNotification(message) {
 
 export function highlightInvalidInput(formElement){
     const inputs = document.body.querySelectorAll('input','placeholder');
-    console.log("ooojk,",inputs)
     inputs.forEach(input =>
     {
         input.style.borderColor = '';

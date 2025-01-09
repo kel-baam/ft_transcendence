@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from channels.db import database_sync_to_async
 
+
 class User(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=50)
@@ -11,19 +12,15 @@ class User(AbstractBaseUser):
     # picture = models.BinaryField()
     # picture = models.ImageField(upload_to='user_pics/', blank=True, null=True)
     gender = models.CharField(max_length=255, null=True)
-    nationality = models.CharField(max_length=255, null=True) 
+    nationality = models.CharField(max_length=255, null=True)
     status = models.BooleanField(null=True)
-    # enabled_twoFactor = models.BooleanField(default=False)
+    
     is_verify = models.BooleanField(default=False)
-    ok =  models.CharField(max_length=255,null=True)
     verify_token =  models.CharField(max_length=255,null=True)
-    test =  models.CharField(max_length=255,null=True)
-
-    # refresh_token= models.CharField(max_length=255,null=True) 
-    # picture = models.URLField(max_length=500, blank=True)
-    # picture = models.CharField(max_length=1000, blank=True, null=True)
-
-
+    enabled_twoFactor = models.BooleanField(default=False)
+    refresh_token= models.CharField(max_length=255,null=True)
+    secret =  models.CharField(max_length=255,null=True)
+    tmp_secret =  models.CharField(max_length=255,null=True)
 
 
     def __str__(self):

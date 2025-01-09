@@ -366,7 +366,7 @@ label
 }
 .auth-password-card input {
 
-    width: 250px;
+        width: 250px;
         height: 40px;
         border-radius: 12px;
         border: none;
