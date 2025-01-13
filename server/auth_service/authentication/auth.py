@@ -1,4 +1,3 @@
-
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import JsonResponse
@@ -15,7 +14,7 @@ from rest_framework import serializers
 from .models import User
 from .decorators import refreshTokenRequired
 from django.views.decorators.csrf import csrf_exempt
-from .jwt import generateToken
+from .jwt import generateToken,generateAccessToken
 from .oauthUtils import exchange_code_with_token,get_user_info
 from urllib.parse import urlencode, urlparse, parse_qs, urlunparse
 import urllib.parse
@@ -28,25 +27,51 @@ from django.core import signing
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 import logging
-import jwt
 from .serializers import  UserSerializer 
 import json
 import random
 
+from jwt import decode , ExpiredSignatureError, InvalidTokenError
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-def set_tokens_in_cookies(email,response):
-
-        user = User.objects.filter(email=email).first()
-        token = generateToken(user,1)
-        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
-        refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
-        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
-        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)  
-        return response
+def set_tokens_in_cookies(request,email,response):
+        try:
+                domain = config('DOMAIN')
+                user = User.objects.filter(email=email).first()
+                payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
+                if(user.enabled_twoFactor and payload['login_level'] == 1):
+                        response = redirect(f"{domain}/#/2FA")  
+                if(email != payload.get("email")):
+                        token = generateToken(user,1)
+                        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+                        refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
+                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                return response
+        except (ExpiredSignatureError, InvalidTokenError):
+                try:
+                        payload = decode(request.COOKIES.get("refresh_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
+                        if(email!= payload.get("email")):
+                                raise InvalidTokenError("Custom error message")
+                        if(user.enabled_twoFactor and payload['login_level'] == 1):
+                                response = redirect(f"{domain}/#/2FA")
+                        newAccessToken = generateAccessToken(user,payload["login_level"])
+                        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+                        response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime)
+                        return response
+                except (ExpiredSignatureError, InvalidTokenError) as e:
+                        if(user.enabled_twoFactor):
+                                response = redirect(f"{domain}/#/2FA")
+                        token = generateToken(user,1)
+                        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+                        refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
+                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                        return response
+        
 # ----------------------------------------------------------------------------------------google login and register-----------------------------------
 def google_login(request):
         query_type =  request.GET.get('type')
@@ -78,13 +103,11 @@ def storeGoogleData(data):
                         },
                 }
                 response = requests.post('http://user-service:8001/api/user', json=data)
-                logger.debug("response from souad =============>",response)
                 if response.status_code == 200:
                         return redirect(f"{domain}/#/home") 
                 else:
                         return redirect(f"{domain}/#/login") 
         except requests.RequestException as e:
-                logger.debug("exeption",e)
                 return redirect(f"{domain}/#/login") 
 
 
@@ -113,8 +136,7 @@ def callback_google(request):
                         user_info = get_user_info(validateCode['accessToken'],config('GOOGLE_API'))
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_google_state(state,user,user_info)
-                        if(request.COOKIES.get("access_token","default") == "default" and 
-                        ((state == 'login' and user) or (state == 'register' and not user))) :                    
+                        if((state == 'login' and user) or (state == 'register' and not user)) :                    
                                 response = set_tokens_in_cookies(user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
@@ -138,7 +160,6 @@ def storeIntraData(intraData):
                 login = intraData.get('login')
                 user = User.objects.filter(username=login).first()
                 while(user) :
-                        logger.debug('login',login)
                         login = f"{intraData.get('login')}{random.randint(0, 9000)}"
                         user = User.objects.filter(username=login).first()
                  
@@ -158,7 +179,6 @@ def storeIntraData(intraData):
                         # 'picture':intraData.get('image').get('link')
                 }
                 response = requests.post('http://user-service:8001/api/user', json=data)
-                logger.debug("response from souad =============>",response,"||data",data)
                 if response.status_code == 200:
                         return redirect(f"{domain}/#/home?type=register") 
                 else:
@@ -172,9 +192,7 @@ def handle_state(state, user, user_info):
     domain = config('DOMAIN')
     if state == 'login':
         if not user:
-            return redirect(f"{domain}/#/register")
-        if user.enabled_twoFactor:
-                return   redirect(f"{domain}/#/2FA")      
+            return redirect(f"{domain}/#/register")    
     elif state == 'register':
         if user:
             return redirect(f"{domain}/#/login")
@@ -195,11 +213,10 @@ def intra_callback(request):
                         # TODO i should here check user_info status code later
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_state(state,user,user_info)
-
                         #  TODO maybe before setting coookie i should check access id is exist if note set it if yes decode it if i snot valid set new one
-                        if(request.COOKIES.get("access_token","default") == "default" and 
-                        ((state == 'login' and user) or (state == 'register' and not user)))  :         
-                                response = set_tokens_in_cookies(user_info.get("email"),response)
+                        
+                        if((state == 'login' and user) or (state == 'register' and not user))  :         
+                                response = set_tokens_in_cookies(request,user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
 
@@ -218,7 +235,9 @@ def login(request):
         if not check_password(password,user.password):
                 return Response({'password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)      
-        return set_tokens_in_cookies(user.email,response)
+        if(((state == 'login' and user) or (state == 'register' and not user)))  :         
+                        response = set_tokens_in_cookies(user.email,response)
+        return response
        
 
 def generate_verification_token(username):
@@ -253,7 +272,7 @@ def  registerForm(request):
                         }
                 }
                 response = requests.post('http://user-service:8001/api/user',json=data)
-                logger.debug('>>>>>>>>>>>>>> response from souad : %s', response)
+                # logger.debug('>>>>>>>>>>>>>> response from souad : %s', response)
                 if(response.status_code == 200):
                         uid = urlsafe_base64_encode(username.encode())
                         verification_link = f'http://localhost:3000/auth/verify/{uid}/{token}/'
@@ -293,9 +312,11 @@ def verify_email(request, uidb64, token):
         if(user):
                 if(user.verify_token == token):
                         user.is_verify = True
+                        user.verify_token = "None"
+                        user.save()
                         response = redirect("http://localhost:3000/#/home")
-                        return  set_tokens_in_cookies(user.email,response)
-        return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
+                        return  set_tokens_in_cookies(request,user.email,response)
+        return redirect("http://localhost:3000/#/login")
     except Exception as e:
                 return redirect("http://localhost:3000/#/login")
 
@@ -340,6 +361,7 @@ def password_reset_confirm(request):
                         if  token == user.verify_token:
                                 if newPassword == confirmPassword:
                                         user.password =  make_password(str(newPassword))
+                                        user.verify_token = "None"
                                         # delete cookies for make person logout
                                         user.save()
                                         return Response({'password':"user added succssefylly"},status=200)

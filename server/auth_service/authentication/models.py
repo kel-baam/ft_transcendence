@@ -142,8 +142,6 @@
 
 
 
-
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from channels.db import database_sync_to_async
@@ -167,7 +165,7 @@ class User(AbstractBaseUser):
     refresh_token= models.CharField(max_length=255,null=True)
     secret =  models.CharField(max_length=255,null=True)
     tmp_secret =  models.CharField(max_length=255,null=True)
-
+    
 
     def __str__(self):
         return self.username

@@ -19,9 +19,9 @@ export const TwoFactor =  defineComponent({
         }).then((result)=>{
             if(!result.ok)
             {
-                const data = result.json()
-                if(result.status = 401)
+                if(result.status == 401)
                     this.appContext.router.navigateTo('/login')
+                
             }
             else
                 this.appContext.router.navigateTo('/home')

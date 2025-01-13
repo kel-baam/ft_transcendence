@@ -40,6 +40,18 @@ const NotFound = defineComponent({
       }
 })
 
+async function isAuthenticated()
+{
+      const result = await customFetch("http://localhost:3000/isAuthenticated",{})
+      if(result)
+      {
+        if(!result.ok)
+          { 
+            if(result.status == 401)
+              return '/login'
+          }
+      }    
+}
 
 
 const router = new HashRouter([
@@ -47,11 +59,15 @@ const router = new HashRouter([
     { path: '/', component: LandingPage },
     { path: '/2FA', component: TwoFactor },
     { path: '/login', component: Login },
-    { path:'/home', component: Home},
+    { path:'/home', component: Home,
+      beforeEnter:isAuthenticated
+    },
+    {path:'/profile', component: Profile,
+      beforeEnter:isAuthenticated
+    },
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
     {path : '/settings', component: settings},
-    {path:'/profile', component: Profile},
     { path: '/password/reset',  component: ResetPassword },
     {path:'/chat', component: Chat}
 

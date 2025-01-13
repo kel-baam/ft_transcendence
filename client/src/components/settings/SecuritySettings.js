@@ -20,7 +20,7 @@ export const SecuritySettings = defineComponent(
             customFetch('http://localhost:3000/auth/twoFactor/desactivate/',{}).then(async(result)=>{
                 if(!result.ok)
                 {
-                    if(result.status = 401)
+                    if(result.status == 401)
                         this.appContext.router.navigateTo('/login')
                 }
                 // to check else
@@ -31,12 +31,12 @@ export const SecuritySettings = defineComponent(
             customFetch("http://localhost:3000/auth/twoFactor/state/",{}).then(async(result)=>{
                 if(!result.ok)
                 {
-                    const data = await result.json()
-                    if(data.status = 401)
+                    if(result.status == 401)
                         this.appContext.router.navigateTo('/login')
                 }
                 else
                 {
+                    this.updateState({isLoading : false})
                     const data = await result.json()
                     if(data.active2FA == true)
                         this.updateState({isQrCodeVisible : false, isEnabled : true, isLoading : false})
