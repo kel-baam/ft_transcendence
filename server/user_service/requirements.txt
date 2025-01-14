@@ -1,0 +1,11 @@
+Django<5.0,>=4.2
+djangorestframework
+channels
+daphne
+psycopg2
+django-cors-headers
+requests 
+Pillow
+olefile
+libmagic
+python-magic

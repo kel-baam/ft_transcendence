@@ -1,0 +1,107 @@
+import{createApp, defineComponent, DOM_TYPES, h,
+    hFragment, hSlot, hString} from '../../package/index.js'
+import { showErrorNotification, highlightInvalidInput } from '../../pages/utils/errorNotification.js';
+import { customFetch } from '../../package/fetch.js';
+
+
+export const JoinedTournaments = defineComponent({
+    state() {
+        return {
+        };
+    },
+
+
+    async startTournament(id)
+    {
+        try
+        {
+            const response  = await customFetch(`http://localhost:3000/tournament/online/api/tournaments/${id}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                const errorText = await response.json();
+
+                if(errorText = 401)
+                    this.appContext.router.navigateTo('/login')
+
+                console.error("Error response:", errorText.error);
+                
+                throw new Error(errorText.error);   
+            }
+
+            const successData = await response.json();
+            
+            console.log("start Tournament:", successData.message);
+
+            this.emit("start_the_tournament", id)
+            
+        }
+        catch (error)
+        {
+            showErrorNotification(error);
+            console.log('Error while starting tournament:', error);
+        }
+    },
+
+    async delete_tournament(id)
+    {
+        console.log("id ----> ", id)
+
+        try {
+            const response = await customFetch(`http://localhost:3000/tournament/online/api/tournaments/`, {
+                method              : 'DELETE',
+                body                : JSON.stringify({
+                    tournamentId    : id
+                }),
+                headers             : {
+                    'Content-Type'  : 'application/json' 
+                },
+                credentials         : 'include'
+            });
+            console.log("kdlslljflskd")
+            if (!response.ok)
+            {
+                const errorText = await response.json();
+
+                if(response.status === 401)
+                    this.appContext.router.navigateTo('/login')
+
+                console.error('Failed to delete tournament');
+            }
+            console.log('Tournament deleted successfully!');
+
+        } catch (error) {
+            console.log('Error while deleting tournament:', error);
+        }
+    },
+
+    render() {
+        return h('div', { class: 'joinedTournament' }, [
+            h('div', { class: 'title' }, [h('h1', {}, ['Joined Tournaments'])]),
+            h('div', { class: 'tournaments' },
+                (this.props.tournaments !== undefined && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
+                    h('div', { class: 'available' }, [
+                        h('img', { src:  `http://localhost:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
+                        h('a', {
+                            on      : {
+                                click : () => this.startTournament(tournament.id)
+                            }
+                        }, [tournament.name]),
+                        h('i', {
+                            class   : "fa-regular fa-circle-xmark icon", 
+                            style   : { color:'#D44444' },
+                            on      : {
+                                click : () => this.delete_tournament(tournament.id)
+                            }
+                        })
+                    ])
+                ) : [h('p', {}, ['No joined tournaments'])]
+            )
+        ]);
+    }
+});

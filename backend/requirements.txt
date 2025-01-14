@@ -1,9 +1,0 @@
-Django<5.0,>=4.2
-djangorestframework
-channels
-channels_redis
-daphne
-psycopg2-binary
-django-cors-headers
-asgiref >= 3.6.0
-faker

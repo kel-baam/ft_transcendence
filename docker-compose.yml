@@ -1,65 +1,156 @@
-services:
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: niboukha
-      POSTGRES_PASSWORD: 1234
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - django_network
 
-  backend:
-    build: ./backend
-    command: ["daphne", "-b", "0.0.0.0", "-p", "8000", "transcendence.asgi:application"]
+services:
+  db :
+    build: ./db
+    container_name: db-service
+    env_file:
+    - .env
     volumes:
-      - ./backend:/usr/src/app
+      - dataBase:/var/lib/postgresql/13/main
     ports:
-      - "8000:8000"
-    environment:
-      - DEBUG=1
-      - DATABASE_URL=postgres://niboukha:1234@db:5432/mydatabase
-      - REDIS_URL=redis://redis:6379/1
-      - DJANGO_SETTINGS_MODULE=transcendence.settings
-    depends_on:
-      - db
-      - redis
+      - 5432:5432
     networks:
-      - django_network
+      - app_network
+      
+  # redis :
+  #   build: ./redis
+  #   container_name: redis-service
+  #   env_file:
+  #   - .env
+  #   # volumes:
+  #   #   - dataBase:/var/lib/postgresql/13/main
+  #   ports:
+  #     - "6378:6378"
+  #   networks:
+  #     - app_network
 
   redis:
     image: redis:alpine
-    container_name: redis
+    container_name: redis-service
     ports:
       - "6380:6379"
     networks:
-      - django_network
+      - app_network
 
-  frontend:
-    build: ./frontend
+
+    # redis-client :
+    #   build: ./redis-client
+    #   container_name: redis-service
+    #   env_file:
+    #   - .env
+      # volumes:
+      #   - dataBase:/var/lib/postgresql/13/main
+      # ports:
+      #   - 6379:6379
+      # networks:
+      #   - app_network
+
+  client-service:
+    build: ./client
+    container_name: client-service
     volumes:
-      - ./frontend:/usr/share/nginx/html
+      - client_volume:/usr/share/nginx/html
     ports:
-      - "8080:80"
+      - "3000:3000"
+    depends_on:
+      - auth-service
+      - db
     networks:
-      - django_network
+      - app_network
+      
+  auth-service:
+    build: ./server/auth_service
+    container_name: auth-service
+    ports:
+      - "8000:8000"
+    networks:
+      - app_network
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - auth_volume:/usr/src/app
+
+  user-service:
+      build: ./server/user_service
+      container_name: user-service
+      env_file:
+        - .env
+      ports:
+        - "8001:8001"
+      networks:
+        - app_network
+      depends_on:
+        - db
+      volumes:
+        - user_volume:/app
+  
+  tournament-service:
+      build: ./server/tournament_service
+      container_name: tournament-service
+      env_file:
+        - .env
+      ports:
+        - "8002:8002"
+      networks:
+        - app_network
+      depends_on:
+        - db
+      volumes:
+        - tournament_volume:/usr/src/app
 
   pgadmin:
-    image: dpage/pgadmin4:6.3
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
     environment:
-      - PGADMIN_DEFAULT_EMAIL=niboukha@gmail.com
-      - PGADMIN_DEFAULT_PASSWORD=1234
-      - PGADMIN_CONFIG_SERVER_MODE=False
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "5050:80"
+      - "8081:80"
     depends_on:
       - db
     networks:
-      - django_network
-
+      - app_network
+    # volumes:
+    #   - pgadmin_data:/var/lib/pgadmin
+    restart: always
 volumes:
-  postgres_data:
+  dataBase:
+    driver: local
+    driver_opts:
+      type: none
+      device: ~/data/db/
+      o: bind
+    
+  auth_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/auth_service
+        o: bind
+
+  user_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/user_service
+        o: bind
+
+  tournament_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/tournament_service
+        o: bind
+
+  client_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./client
+        o: bind
 
 networks:
-  django_network:
+  app_network:
+    driver: bridge
