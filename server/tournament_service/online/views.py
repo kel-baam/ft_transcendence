@@ -35,9 +35,10 @@ class TournamentAPIView(APIView):
             print("hehehhehhehehhehehehehhehehehehhehe")
 
             participants_data   = []
+            creator_player      = Player.objects.get(user_id=creator.id)
             creator_data        = {
                 'tournament': tournament.id,
-                'player'    : creator.id,
+                'player'    : creator_player.id,
                 'status'    : 'accepted',
                 'role'      : 'creator',
                 'nickname'  : request.data.get('nickname'),
@@ -51,11 +52,13 @@ class TournamentAPIView(APIView):
             print("invited players : ", selected_players)
             
             for player in selected_players:
-                player_instance     = Player.objects.get(id=player.get('id'))
+                print("heere")
+                player_instance     = Player.objects.get(user_id=player.get('id'))
+                print(player_instance, " ", player_instance.id)
                 player_data         = {
                     'tournament'    : tournament.id,
                     'player'        : player_instance.id,
-                    'status'        : 'pending',
+                    'status'        : 'invited',
                     'role'          : 'participant',
                 }
                 participants_data.append(player_data)
@@ -122,19 +125,21 @@ class TournamentAPIView(APIView):
         
     def delete(self, request):
         try:
-            print("dsfh")
+            # print("dsfh")
             username        = request.META.get('HTTP_X_AUTHENTICATED_USER')
             user            = User.objects.get(username=username)
-            print("-0----------------------> ", user)
-            tournament_id   = request.data.get('tournamentId')
+
+            # print("-0----------------------> ", user)
+            
+            tournament_id   = request.query_params.get('tournamentId', None)
             tournament      = get_object_or_404(Tournament, id = tournament_id)
 
-            print("tournament.creator_id============", tournament.creator_id, user)
-            if tournament.creator_id == user:
+            # print("tournament.creator_id============", tournament.creator_id, user.id)
+            if tournament.creator_id == user.id:
                 tournament.delete()
                 return Response({'message': 'Tournament deleted successfully'}, status=201)
             else:
-                PlayerTournament.objects.filter(player__user__id = user, tournament=tournament).delete()
+                PlayerTournament.objects.filter(player__user__id = user.id, tournament=tournament).delete()
                 return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
         except Tournament.DoesNotExist:
             return Response({"error": "Tournament not found"}, status=status.HTTP_400_BAD_REQUEST)
@@ -168,7 +173,7 @@ def friends_list(request):
         return Response({ "error": "You can only have up to 3 players. Remove a player to add another." },
             status=status.HTTP_400_BAD_REQUEST)
     if search_query:
-        friends = User.objects.filter(username__icontains=search_query).exclude(id=user)[:5]
+        friends = User.objects.filter(username__icontains=search_query).exclude(id=user.id)[:5]
     else:
         friends = []
 

@@ -68,7 +68,7 @@ export const CreateTournament = defineComponent({
             const searchQuery   = event.target.value;
             const playersLength = this.state.players.length;
             
-            const response      = await customFetch(`http://localhost:3000/tournament/online/api/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`,
+            const response      = await customFetch(`http://localhost:3000/tournament/api/online/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`,
             {
                 method      : 'GET',
                 credentials : 'include',

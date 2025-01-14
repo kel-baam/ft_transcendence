@@ -120,16 +120,20 @@ class Tournaments(AsyncWebsocketConsumer):
         available_tournaments = Tournament.objects.filter(
             type='public'
         ).exclude(
-            Q(creator = user) | Q(participants__player__user = user)
+            Q(creator=user) | Q(participants__player__user=user)
         ).annotate(
-            num_participants=Count(
+            num_accepted_participants=Count(
                 'participants',
-                filter = Q(participants__status='accepted')
-            )
+                filter=Q(participants__status='accepted')
+            ),
+            num_invited_participants=Count(
+                'participants',
+                filter=Q(participants__status='invited')
+            ),
+            num_participants=Count('participants')
         ).filter(
-            num_participants__lt = 4
+            num_participants__lt=4
         ).distinct()
-
         serialized_tournaments = TournamentSerializer(available_tournaments, many=True)
         
         return serialized_tournaments.data
