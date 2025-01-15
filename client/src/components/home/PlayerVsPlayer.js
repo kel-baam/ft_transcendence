@@ -24,9 +24,10 @@ export const PlayerVsPlayer = defineComponent({
                     ])
                 ])
             ]),
-            h('a', { href: '/playerVSplayer' }, [
-                h('button', { type: 'button', class: 'btn', onclick: this.handleButtonClick }, ['PLAY'])
-            ])
+            h('button', {
+                type: 'button', class: 'btn',
+                on : { click:()=>{ this.appContext.router.navigateTo('/playerVSplayer') }}
+            }, ['PLAY'])
         ]);
         
         

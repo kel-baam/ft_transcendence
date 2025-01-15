@@ -195,7 +195,6 @@ export class HashRouter {
 
   async #canChangeRoute(from, to) {
     const guard = to.beforeEnter
-    console.log("tehhhhsguardt",guard)
     
     if (typeof guard !== 'function') {
       return {
@@ -206,7 +205,6 @@ export class HashRouter {
     }
 
     const result = await guard()
-    console.log("tehhhhst",result)
 
     if (result === false) {
 
@@ -219,7 +217,6 @@ export class HashRouter {
     }
 
     if (typeof result === 'string') {
-      console.log("test")
       return {
         shouldRedirect: true,
         shouldNavigate: false,

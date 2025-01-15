@@ -46,7 +46,8 @@ export const TournamentSection = defineComponent({
             h('button', {
                 type: 'button',
                 class: 'btn',
-                on :{ click:()=>{ this.appContext.router.navigateTo('/tournament') } } }, ['PLAY'])
+                on :{ click:()=>{ this.appContext.router.navigateTo('/tournament') } }
+            }, ['PLAY'])
         ]);        
     }
 })

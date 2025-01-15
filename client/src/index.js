@@ -13,6 +13,16 @@ import { Profile } from './pages/profile.js';
 import { Chat } from './pages/chat.js';
 import { ResetPassword } from './pages/resetPassword.js';
 
+import { Tournament } from './pages/tournaments/tournament.js';
+import { LocalTournament } from './pages/tournaments/local/LocalTournament.js'
+import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js';
+import { LocalHierarchy } from './pages/tournaments/local/LocalHierarchy.js';
+import { Game } from './pages/game.js';
+// import { NotFound } from './pages/utils/404.js';
+import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
+import { OnlinePvp } from './pages/pvp/online.js';
+import {OnlineHierarchy} from './pages/tournaments/online/OnlineHierarchy.js'
+
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
 
@@ -40,6 +50,7 @@ const NotFound = defineComponent({
       }
 })
 
+
 async function isAuthenticated()
 {
       const result = await customFetch("http://localhost:3000/isAuthenticated",{})
@@ -53,23 +64,36 @@ async function isAuthenticated()
       }    
 }
 
-
 const router = new HashRouter([
 
     { path: '/', component: LandingPage },
     { path: '/2FA', component: TwoFactor },
     { path: '/login', component: Login },
-    { path:'/home', component: Home,
-      beforeEnter:isAuthenticated
-    },
-    {path:'/profile', component: Profile,
-      beforeEnter:isAuthenticated
-    },
+    { path:'/home', component: Home, 
+      beforeEnter:isAuthenticated},
+      {path:'/profile', component: Profile,
+        beforeEnter:isAuthenticated
+      },
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
-    {path : '/settings', component: settings},
+    {path : '/settings', component: settings
+    },
     { path: '/password/reset',  component: ResetPassword },
-    {path:'/chat', component: Chat}
+    {path:'/chat', component: Chat},
+
+    {path:'/tournament',component: Tournament},
+    {path:'/tournament/local', component: LocalTournament},
+    { path:'/game', component: Game},
+    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy},
+    { path:'/tournament/online', component: OnlineTournament,
+      beforeEnter:isAuthenticated
+
+    },
+    { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy},
+    { path: '/playerVSplayer', component: PlayerVsPlayer},
+    { path: '/pvp_online', component: OnlinePvp},
+    
+    { path: '*',  component: NotFound },
 
   ])
 

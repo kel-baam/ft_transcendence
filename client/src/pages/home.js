@@ -17,39 +17,39 @@ export const Home = defineComponent({
             isFilled:true,
             }
     },
-    // test()
-    // {
-    //     // onmessagee and onerror and onclose are event handler
-    //     const socket = new WebSocket(`ws://localhost:3000/socket/`);
+    test()
+    {
+        // onmessagee and onerror and onclose are event handler
+        const socket = new WebSocket(`ws://localhost:3000/socket/`);
         
-    //     socket.onopen = () => {
-    //     console.log("WebSocket is connected. from the client and the handshare complete");
-    //     socket.send(JSON.stringify({ message: "Hello WebSocket client!" }));
-    //     };
+        socket.onopen = () => {
+        console.log("WebSocket is connected. from the client and the handshare complete");
+        socket.send(JSON.stringify({ message: "Hello WebSocket client!" }));
+        };
         
-    //     socket.onmessage = async (event) => {
-    //         const data = JSON.parse(event.data);
-    //         if(data.error === "token expired")
-    //         {
-    //             socket.onclose()
-    //             const refreshAccessToken = await fetch('http://localhost:3000/auth/refreshToken',{
-    //                 method:'GET',
-    //                 credentials: 'include',})
-    //                 console.log("custome feeetch")
-    //                 console.log("ref data=>",refreshAccessToken)
+        socket.onmessage = async (event) => {
+            const data = JSON.parse(event.data);
+            if(data.error === "token expired")
+            {
+                socket.onclose()
+                const refreshAccessToken = await fetch('http://localhost:3000/auth/refresh/token/',{
+                    method:'GET',
+                    credentials: 'include',})
+                    console.log("custome feeetch")
+                    console.log("ref data=>",refreshAccessToken)
                 
-    //                 if(!refreshAccessToken.ok)           
-    //                     return refreshAccessToken;
+                    if(!refreshAccessToken.ok)           
+                        return refreshAccessToken;
                 
-    //             console.log("yeeeeeeeeeeeeeeeeeeees message client",data.error)
-    //             this.test()
-    //         }
-    //     };
-    //     socket.onclose = (event) => {
-    //         console.log("onclose client", event);
-    //       };
+                console.log("yeeeeeeeeeeeeeeeeeeees message client",data.error)
+                this.test()
+            }
+        };
+        socket.onclose = (event) => {
+            console.log("onclose client", event);
+          };
 
-    // },
+    },
     render()
     {
         // this.test()

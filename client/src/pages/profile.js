@@ -25,8 +25,41 @@ export const Profile = defineComponent({
             }
             }
     },
- 
+    // test()
+    // {
+    //     // onmessagee and onerror and onclose are event handler
+    //     console.log("etst")
+    //     const socket = new WebSocket(`wss://localhost:3000//ws/some_path/`);
+        
+    //     socket.onopen = () => {
+    //     console.log("WebSocket is connected. from the client and the handshare complete");
+    //     socket.send(JSON.stringify({ message: "Hello WebSocket client!" }));
+    //     };
+        
+    //     socket.onmessage = async (event) => {
+    //         const data = JSON.parse(event.data);
+    //         console.log("on message client",data.error)
+    //     // if(data.error == "token expired")
+    //     // {
+    //     //     const refreshAccessToken= await fetch('https://legendary-bassoon-jpvw6597q7jcq7rp-8000.app.github.dev/api/refresh/token/',{
+    //     //         method:'GET',
+    //     //         credentials: 'include',});
+    //     //     console.log("thiiiiis the sulotion",refreshAccessToken)
+    //     // }
+    //     // else if (data.error)
+    //     // {
+    //     //     console.log("err client:", data.error);
+    //     //     socket.onclose()
+    //     // }
+    //     };
+    //     socket.onclose = (event) => {
+    //         console.log("onclose client", event);
+    //         console.log("dcode",event.code)
+    //       };
+
+    // },
     render(){
+      // this.test()
         return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
             [h(sidebarLeft, {}), h('div', {class:'global-content'
               

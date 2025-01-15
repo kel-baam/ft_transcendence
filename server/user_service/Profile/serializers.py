@@ -18,11 +18,11 @@ logger = logging.getLogger(__name__)
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta():
         model = Player
-        fields = ['score', 'level', 'Rank']
+        fields = ['score', 'level', 'rank']
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)
-    rank = serializers.IntegerField(source='player.Rank', read_only = False,required=False)
+    rank = serializers.IntegerField(source='player.rank', read_only = False,required=False)
     level = serializers.FloatField(source='player.level', read_only = False,required=False)
 
     old_password = serializers.CharField(write_only=True, required=False)
@@ -91,7 +91,7 @@ class UserSerializer(serializers.ModelSerializer):
         player = getattr(instance, 'player', None)
         if player:
             player.score = player_data.get('score', player.score)
-            player.Rank = player_data.get('Rank', player.Rank)
+            player.rank = player_data.get('rank', player.rank)
             player.level = player_data.get('level', player.level)
             player.save()
         return instance

@@ -12,17 +12,26 @@ services:
     networks:
       - app_network
       
-  redis :
-    build: ./redis
+  # redis :
+  #   build: ./redis
+  #   container_name: redis-service
+  #   env_file:
+  #   - .env
+  #   # volumes:
+  #   #   - dataBase:/var/lib/postgresql/13/main
+  #   ports:
+  #     - "6378:6378"
+  #   networks:
+  #     - app_network
+
+  redis:
+    image: redis:alpine
     container_name: redis-service
-    env_file:
-    - .env
-    # volumes:
-    #   - dataBase:/var/lib/postgresql/13/main
     ports:
-      - "6378:6378"
+      - "6380:6379"
     networks:
       - app_network
+
 
     # redis-client :
     #   build: ./redis-client
@@ -76,6 +85,20 @@ services:
         - db
       volumes:
         - user_volume:/app
+  
+  tournament-service:
+      build: ./server/tournament_service
+      container_name: tournament-service
+      env_file:
+        - .env
+      ports:
+        - "8002:8002"
+      networks:
+        - app_network
+      depends_on:
+        - db
+      volumes:
+        - tournament_volume:/usr/src/app
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -112,6 +135,13 @@ volumes:
     driver_opts:
         type: none
         device: ./server/user_service
+        o: bind
+
+  tournament_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/tournament_service
         o: bind
 
   client_volume:

@@ -8,4 +8,4 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Player)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'score', 'Rank', 'level')
+    list_display = ('user', 'score', 'rank', 'level')

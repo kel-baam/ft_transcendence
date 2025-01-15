@@ -107,7 +107,7 @@ RUN sed -i "s/ssl = on/ssl = off/" /etc/postgresql/13/main/postgresql.conf
 # Copy your pg_hba.conf configuration
 COPY ./pg_hba.conf /etc/postgresql/13/main/pg_hba.conf
 
-RUN chmod 777 /var/lib/postgresql/13/main
+RUN chmod 750 /var/lib/postgresql/13/main
 # Change permissions on the script
 RUN chmod 777 /usr/bin/script.sh
 

@@ -110,7 +110,7 @@ def storeGoogleData(data):
         except requests.RequestException as e:
                 return redirect(f"{domain}/#/login") 
 
-
+                
 def handle_google_state(state, user, user_info):
 
     domain = config('DOMAIN')
