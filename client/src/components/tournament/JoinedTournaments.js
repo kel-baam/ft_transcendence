@@ -10,7 +10,6 @@ export const JoinedTournaments = defineComponent({
         };
     },
 
-
     async startTournament(id)
     {
         try
@@ -88,7 +87,7 @@ export const JoinedTournaments = defineComponent({
         return h('div', { class: 'joinedTournament' }, [
             h('div', { class: 'title' }, [h('h1', {}, ['Joined Tournaments'])]),
             h('div', { class: 'tournaments' },
-                (this.props.tournaments !== undefined && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
+                (this.props.tournaments && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
                     h('div', { class: 'available' }, [
                         h('img', { src:  `http://localhost:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
                         h('a', {

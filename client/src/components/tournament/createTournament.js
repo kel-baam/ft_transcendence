@@ -3,6 +3,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
 import { showErrorNotification, highlightInvalidInput } from '../../pages/utils/errorNotification.js';
 import { customFetch } from '../../package/fetch.js';
 
+
 export const CreateTournament = defineComponent({
     state(){
         return {
@@ -31,12 +32,13 @@ export const CreateTournament = defineComponent({
             console.log("hsdkjfhaskdhasjkdhksjadhuaks-------------------------------")
             
             if (!response.ok) {
-                const data = await response.json();
+                const errorText = await response.json();
                 
                 if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
-                console.error("Error response:", data);
-                throw new Error(data);
+                console.error("Error response:", errorText);
+                const firstError = Object.values(errorText)[0];
+                throw new Error(firstError);
             }
             
             const data = await response.json();

@@ -39,7 +39,7 @@ class Tournament(models.Model):
         ('public', 'Public'),
         ('private', 'Private')
     ]
-    type            = models.CharField(max_length=50, choices=type_choices, default='private') # i remove this ", default='private'"
+    type            = models.CharField(max_length=50, choices=type_choices) # i remove this ", default='private'"
     created_at      = models.DateTimeField(auto_now_add=True)
     STATUS_CHOICES  = [
             ('pending', 'Pending'),

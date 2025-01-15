@@ -86,7 +86,6 @@ class Tournaments(AsyncWebsocketConsumer):
         """This method is triggered from the signal."""
         await self.send_updated_tournaments()
 
-
     @sync_to_async
     def joined_tournaments(self, user_id):
         if not user_id:

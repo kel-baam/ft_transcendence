@@ -108,7 +108,8 @@ export const OnlineTournament = defineComponent({
                 
                 console.error("Error response:", errorText);
 
-                throw new Error(errorText.error);
+                const firstError = Object.values(errorText)[0];
+                throw new Error(firstError);
             }
 
             const successData = await response.json();
