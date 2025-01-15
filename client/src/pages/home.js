@@ -32,7 +32,7 @@ export const Home = defineComponent({
             if(data.error === "token expired")
             {
                 socket.onclose()
-                const refreshAccessToken = await fetch('http://localhost:3000/auth/refreshToken',{
+                const refreshAccessToken = await fetch('http://localhost:3000/auth/refresh/token/',{
                     method:'GET',
                     credentials: 'include',})
                     console.log("custome feeetch")

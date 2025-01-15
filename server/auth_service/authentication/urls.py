@@ -25,7 +25,7 @@ urlpatterns = [
     path('auth/logout/',auth.logout,name='logout'),
 
 
-    path("api/refresh/token/",jwt.generate_new_token,name='refreshToken'),
+    path("auth/refresh/token/",jwt.generate_new_token,name='refreshToken'),
 
     path('auth/password/reset/',auth.password_reset_request,name='password_reset_request'),
     path('auth/password/reset/confirm/',auth.password_reset_confirm,name='password_reset_confirm'),

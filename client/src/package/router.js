@@ -142,7 +142,7 @@ export class HashRouter {
     const { shouldRedirect ,shouldNavigate,  redirectPath } = await this.#canChangeRoute(from, to)
 
     if (shouldRedirect) {
-      return this.nav(redirectPath)
+      return this.navigateTo(redirectPath)
     }
     
     if (shouldNavigate) {
@@ -195,7 +195,7 @@ export class HashRouter {
 
   async #canChangeRoute(from, to) {
     const guard = to.beforeEnter
-
+    
     if (typeof guard !== 'function') {
       return {
         shouldRedirect: false,
@@ -204,8 +204,10 @@ export class HashRouter {
       }
     }
 
-    const result = await guard(from?.path, to?.path)
+    const result = await guard()
+
     if (result === false) {
+
       return {
 
         shouldRedirect: false,

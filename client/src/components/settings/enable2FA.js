@@ -18,7 +18,7 @@ export const EnableTwoFactor =  defineComponent({
         const data = await result.json()
         if(!result.ok)
         {
-            if(result.status = 401)
+            if(result.status == 401)
                 this.appContext.router.navigateTo('/login')
         }
         else
@@ -38,9 +38,9 @@ export const EnableTwoFactor =  defineComponent({
             if(!result.ok)
             {   
                 const data = await result.json()
-                if(data.status = 400)
+                if(result.status == 400)
                     this.updateState({error :  data})            
-                else if(data.status == 401)
+                else if(result.status == 401)
                     this.appContext.router.navigateTo('/login')
             }
             else

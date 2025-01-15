@@ -51,17 +51,33 @@ const NotFound = defineComponent({
 })
 
 
+async function isAuthenticated()
+{
+      const result = await customFetch("http://localhost:3000/isAuthenticated",{})
+      if(result)
+      {
+        if(!result.ok)
+          { 
+            if(result.status == 401)
+              return '/login'
+          }
+      }    
+}
 
 const router = new HashRouter([
 
     { path: '/', component: LandingPage },
     { path: '/2FA', component: TwoFactor },
     { path: '/login', component: Login },
-    { path:'/home', component: Home},
+    { path:'/home', component: Home, 
+      beforeEnter:isAuthenticated},
+      {path:'/profile', component: Profile,
+        beforeEnter:isAuthenticated
+      },
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
-    {path : '/settings', component: settings},
-    {path:'/profile', component: Profile},
+    {path : '/settings', component: settings
+    },
     { path: '/password/reset',  component: ResetPassword },
     {path:'/chat', component: Chat},
 
@@ -69,7 +85,10 @@ const router = new HashRouter([
     {path:'/tournament/local', component: LocalTournament},
     { path:'/game', component: Game},
     { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy},
-    { path:'/tournament/online', component: OnlineTournament},
+    { path:'/tournament/online', component: OnlineTournament,
+      beforeEnter:isAuthenticated
+
+    },
     { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy},
     { path: '/playerVSplayer', component: PlayerVsPlayer},
     { path: '/pvp_online', component: OnlinePvp},

@@ -48,7 +48,7 @@ def activate_two_Factor(request):
         
 
 # @accessTokenRequired 
-#@csrf_exempt
+@csrf_exempt
 def validate_qrcode(request):
         if(request.method == 'POST'):
                 username = request.META.get('HTTP_X_AUTHENTICATED_USER')
@@ -73,7 +73,7 @@ def desactive2FA(request):
         return  JsonResponse({'active2FA':user.enabled_twoFactor},status=200)
 
 # @accessTokenRequired
-#@csrf_exempt
+@csrf_exempt
 def verify_code(request):
         if(request.method =='POST'):
                 username = request.META.get('HTTP_X_AUTHENTICATED_USER')
@@ -81,14 +81,14 @@ def verify_code(request):
                 code = request.POST.get('code', 'none')
                 totp = pyotp.TOTP(user.secret, interval=30)
                 if(totp.verify(code)):
-                        # newAccessToken = generateToken(request.user,2)
+                        newAccessToken = generateToken(user,2)
                         response = JsonResponse({'message':'the code valid'},status=200)
-                        # accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
-                        # refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
-                        # response.set_cookie('access_token',newAccessToken.get("access"), httponly=True, max_age=accessTokenLifeTime)
-                        # response.set_cookie('refresh_token',newAccessToken.get("refresh"), httponly=True, max_age=refreshTokenLifeTime)
+                        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+                        refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
+                        response.set_cookie('access_token',newAccessToken.get("access"), httponly=True, max_age=accessTokenLifeTime)
+                        response.set_cookie('refresh_token',newAccessToken.get("refresh"), httponly=True, max_age=refreshTokenLifeTime)
                         return response
-        return JsonResponse({'status_code':'401','message':'the code invalid'},status=400)
+        return JsonResponse({'message':'the code invalid'},status=400)
 
 
 # @accessTokenRequired
