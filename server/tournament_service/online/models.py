@@ -39,7 +39,7 @@ class Tournament(models.Model):
         ('public', 'Public'),
         ('private', 'Private')
     ]
-    type            = models.CharField(max_length=50, choices=type_choices, default='private') # i remove this ", default='private'"
+    type            = models.CharField(max_length=50, choices=type_choices) # i remove this ", default='private'"
     created_at      = models.DateTimeField(auto_now_add=True)
     STATUS_CHOICES  = [
             ('pending', 'Pending'),
@@ -78,7 +78,7 @@ class PlayerTournament(models.Model):
     role_choices    = [('creator', 'Creator'), ('participant', 'Participant')]
     role            = models.CharField(max_length=11, choices=role_choices, default='participant')
 
-    status_choices  = [('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')]
+    status_choices  = [('pending', 'Pending'), ('invited', 'invited'), ('accepted', 'Accepted'), ('declined', 'Declined')]
     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
     
     nickname        = models.CharField(max_length=50, null=True, blank=True)

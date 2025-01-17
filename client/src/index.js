@@ -53,7 +53,7 @@ const NotFound = defineComponent({
 
 async function isAuthenticated()
 {
-      const result = await customFetch("http://localhost:3000/isAuthenticated",{})
+      const result = await customFetch("http://localhost:3000/auth/islogged/",{})
       if(result)
       {
         if(!result.ok)
@@ -76,15 +76,24 @@ const router = new HashRouter([
       },
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
-    {path : '/settings', component: settings
+    {path : '/settings', component: settings,
+      beforeEnter:isAuthenticated
     },
     { path: '/password/reset',  component: ResetPassword },
-    {path:'/chat', component: Chat},
+    {path:'/chat', component: Chat,
+      beforeEnter:isAuthenticated
+    },
 
-    {path:'/tournament',component: Tournament},
-    {path:'/tournament/local', component: LocalTournament},
+    {path:'/tournament',component: Tournament,
+      beforeEnter:isAuthenticated
+    },
+    {path:'/tournament/local', component: LocalTournament,
+      beforeEnter:isAuthenticated
+    },
     { path:'/game', component: Game},
-    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy},
+    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy,
+      beforeEnter:isAuthenticated
+    },
     { path:'/tournament/online', component: OnlineTournament,
       beforeEnter:isAuthenticated
 

@@ -3,6 +3,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
 import { showErrorNotification, highlightInvalidInput } from '../../pages/utils/errorNotification.js';
 import { customFetch } from '../../package/fetch.js';
 
+
 export const CreateTournament = defineComponent({
     state(){
         return {
@@ -31,12 +32,13 @@ export const CreateTournament = defineComponent({
             console.log("hsdkjfhaskdhasjkdhksjadhuaks-------------------------------")
             
             if (!response.ok) {
-                const data = await response.json();
+                const errorText = await response.json();
                 
                 if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
-                console.error("Error response:", data);
-                throw new Error(data);
+                console.error("Error response:", errorText);
+                const firstError = Object.values(errorText)[0];
+                throw new Error(firstError);
             }
             
             const data = await response.json();
@@ -68,7 +70,7 @@ export const CreateTournament = defineComponent({
             const searchQuery   = event.target.value;
             const playersLength = this.state.players.length;
             
-            const response      = await customFetch(`http://localhost:3000/tournament/online/api/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`,
+            const response      = await customFetch(`http://localhost:3000/tournament/api/online/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`,
             {
                 method      : 'GET',
                 credentials : 'include',
@@ -77,7 +79,7 @@ export const CreateTournament = defineComponent({
             if (!response.ok) {
                 const errorText = await response.json();
 
-                if(response.status == 401)
+                if(errorText = 401)
                     this.appContext.router.navigateTo('/login')
 
                 console.error("Error response:", errorText.error);

@@ -121,14 +121,20 @@
     box-shadow: 1px 1px 1px rgba(57, 71, 153, 0.96);
     
 }
+.login-page-content .down .login h2{
+    font-size: 20px;
+    padding-top: 20px;
+    /* border: 1px solid #161C40; */
+    color: #4CAF50 ;
+}
 .login-page-content .down .login .loginForm
 {
-    /* border: 1px solid red; */
+
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    margin-top:14%;
+    margin-top:10%;
     
 }
 .login-page-content .down .login  .inputSec

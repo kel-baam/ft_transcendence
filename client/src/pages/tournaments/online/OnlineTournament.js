@@ -47,7 +47,7 @@ export const OnlineTournament = defineComponent({
                 console.log('Parsed WebSocket Data:', data);
                 if(data.error == "token expired")
                 {
-                    const refreshAccessToken= await fetch('http://localhost:3000/auth/refresh/token/',{
+                    const refreshAccessToken= await fetch('http://localhost:3000/auth/refreshToken',{
                         method:'GET',
                         credentials: 'include',});
                     
@@ -108,7 +108,8 @@ export const OnlineTournament = defineComponent({
                 
                 console.error("Error response:", errorText);
 
-                throw new Error(errorText.error);
+                const firstError = Object.values(errorText)[0];
+                throw new Error(firstError);
             }
 
             const successData = await response.json();

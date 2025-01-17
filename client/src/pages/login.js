@@ -36,6 +36,8 @@ export const Login = defineComponent({
         if(!response.ok)
         {   
             const errors = await response.json();
+            console.log("err",errors)
+            // showErrorNotification(errors)
             this.updateState({errors: errors });
         }
         else
@@ -43,6 +45,7 @@ export const Login = defineComponent({
     },
     
     render(){
+        console.log("ver",this.getErrorMessage('verification'))
         return h ('div',{id:"global"},[
             h('div',{class:"login-page-content"},[
                 h('div',{class:'top'},[
@@ -62,51 +65,51 @@ export const Login = defineComponent({
                         [
                             h('div',{class:'title'},[
                                 h('h1',{},['Step Into Your World'])]),
+                            h('div',{class:'login'},[
+                                this.getErrorMessage('verification') ? h('h2',{class:'verification'},["please check your email to verify account"]): undefined,
+                                h('form',{class :'loginForm',  on :{submit: ( event) => this.loginForm(event)}},[
+                                    h('div',{class:'inputSec', id:this.getErrorMessage('username')},[
 
-                    h('div',{class:'login'},[
-                        h('form',{class :'loginForm',  on :{submit: ( event) => this.loginForm(event)}},[
-                            h('div',{class:'inputSec', id:this.getErrorMessage('username')},[
+                                        h('i',{class:'fa-solid fa-user'}),
+                                        h('input',{class:'input',type:'text',name:'username',placeholder:'Username...'}),
+                                    ]),
+                                    h('div',{class:'inputSec',id:this.getErrorMessage('password')},[
 
-                                h('i',{class:'fa-solid fa-user'}),
-                                h('input',{class:'input',type:'text',name:'username',placeholder:'Username...'}),
-                            ]),
-                            h('div',{class:'inputSec',id:this.getErrorMessage('password')},[
-
-                                h('i',{class:'fa-solid fa-lock'}),
-                                h('input',{class:'input',type:'password',name:'password',placeholder:'Password...'}),
-                            ]),
-                            h('div',{class:'resetPassword'},[
+                                        h('i',{class:'fa-solid fa-lock'}),
+                                        h('input',{class:'input',type:'password',name:'password',placeholder:'Password...'}),
+                                    ]),
+                                    h('div',{class:'resetPassword'},[
+                                        h('a',{onclick:(e)=>{
+                                            e.preventDefault()
+                                            this.appContext.router.navigateTo('/password/reset?type=reset')
+                
+                                        }},['Forget Password']),
+                                    ]),
+                                    h('button',{class:'btn'},['Login'])
+                                ]),
+                                h('div',{class:'separater'},[
+                                    h('hr',{class:'line'}),
+                                    h('h1',{},['Or continue With']),
+                                    h('hr',{class:'line'}),
+                                ]),
+                                h('div',{class:'Oauth_section'},[
+                                    h('button',{ onclick:this.intraEvent , class:'wrapLogo'},[
+                                        h('img',{alt:"42" ,src:"./images/42_Logo.png"}),
+                                    ]),
+                                    h('button',{onclick:this.googleEvent , class:'wrapLogo'},[
+                                        h('img',{alt:"42" ,src:"./images/google.png"}),
+                                    ])
+                                ]),
+                            h('p',{},[
+                                'Dont have an account?',
                                 h('a',{onclick:(e)=>{
                                     e.preventDefault()
-                                    this.appContext.router.navigateTo('/password/reset?type=reset')
-        
-                                }},['Forget Password']),
-                            ]),
-                            h('button',{class:'btn'},['Login'])
-                        ]),
-                        h('div',{class:'separater'},[
-                            h('hr',{class:'line'}),
-                            h('h1',{},['Or continue With']),
-                            h('hr',{class:'line'}),
-                        ]),
-                        h('div',{class:'Oauth_section'},[
-                            h('button',{ onclick:this.intraEvent , class:'wrapLogo'},[
-                                h('img',{alt:"42" ,src:"./images/42_Logo.png"}),
-                            ]),
-                            h('button',{onclick:this.googleEvent , class:'wrapLogo'},[
-                                h('img',{alt:"42" ,src:"./images/google.png"}),
-                            ])
-                        ]),
-                       h('p',{},[
-                        'Dont have an account?',
-                        h('a',{onclick:(e)=>{
-                            e.preventDefault()
-                            this.appContext.router.navigateTo('/register')
+                                    this.appContext.router.navigateTo('/register')
 
-                        }},["Sign Up here"])
-                       ])
-                    ])
-                ]),
+                                }},["Sign Up here"])
+                            ])
+                            ])
+                    ]),
             ])
         ])
     ])

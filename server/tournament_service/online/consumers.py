@@ -18,6 +18,7 @@ class Tournaments(AsyncWebsocketConsumer):
             self.channel_name
         )
 
+        await self.accept() 
         # -----
         self.user_id = None 
         for header_name, header_value in self.scope["headers"]:
@@ -33,7 +34,6 @@ class Tournaments(AsyncWebsocketConsumer):
                     self.access_token = cookies.get("access_token")
                     user = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
                     if user:
-                        await self.accept() 
                         print("done",user.id)
                         self.scope['user_id']  = user
                         self.user_id    = user.id
@@ -86,7 +86,6 @@ class Tournaments(AsyncWebsocketConsumer):
         """This method is triggered from the signal."""
         await self.send_updated_tournaments()
 
-
     @sync_to_async
     def joined_tournaments(self, user_id):
         if not user_id:
@@ -120,16 +119,20 @@ class Tournaments(AsyncWebsocketConsumer):
         available_tournaments = Tournament.objects.filter(
             type='public'
         ).exclude(
-            Q(creator = user) | Q(participants__player__user = user)
+            Q(creator=user) | Q(participants__player__user=user)
         ).annotate(
-            num_participants=Count(
+            num_accepted_participants=Count(
                 'participants',
-                filter = Q(participants__status='accepted')
-            )
+                filter=Q(participants__status='accepted')
+            ),
+            num_invited_participants=Count(
+                'participants',
+                filter=Q(participants__status='invited')
+            ),
+            num_participants=Count('participants')
         ).filter(
-            num_participants__lt = 4
+            num_participants__lt=4
         ).distinct()
-
         serialized_tournaments = TournamentSerializer(available_tournaments, many=True)
         
         return serialized_tournaments.data

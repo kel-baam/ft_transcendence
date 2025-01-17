@@ -36,3 +36,10 @@ class TournamentSerializer(serializers.ModelSerializer):
         if not value:
             raise ValidationError('Tournament name cannot be empty.')
         return value
+
+    def validate_type(self, value):
+        """Custom validation for type"""
+        print("validate_type----------------> ", value)
+        if not value:
+            raise serializers.ValidationError('You must select a type.')
+        return value
