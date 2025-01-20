@@ -1,0 +1,363 @@
+
+.hierarchy-global-content{
+    padding: 16px;
+    padding-bottom: 100px;
+    background-color: rgba(217, 217, 217, 0.05);
+    border-radius: 56px;
+    display: grid;
+    grid-template-rows: 15% 75%;
+    height: 97%;
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+    /* padding-top: 100px; */
+}
+
+.hierarchy-global-content h1{
+    font-family: myFont;
+    font-size: 50px;
+    color: #FFEEBF;
+    letter-spacing: 5px;
+}
+
+.hierarchy-global-content .rounds{
+    height: 128%;
+    display: grid;
+    
+    grid-template-columns: 23% 10% 13.6% 10% 13.6% 19%;
+
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round1{
+    display: grid;
+    grid-template-rows: 50% 50%;
+
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round1 .match1,
+.hierarchy-global-content .rounds .round1 .match2{
+    display: grid;
+    grid-template-rows: 40% 20% 40%;
+
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player1,
+.hierarchy-global-content .rounds .round1 .match2 .player1
+{
+    display: flex; 
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player2,
+.hierarchy-global-content .rounds .round1 .match2 .player2{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player1 img,
+.hierarchy-global-content .rounds .round1 .match2 .player1 img
+{
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+ 
+    position: absolute;
+    top: 50px;
+    right: 10px;
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player2 img,
+.hierarchy-global-content .rounds .round1 .match2 .player2 img{
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+
+    position: absolute;
+    right: 10px;
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player1 h2,
+.hierarchy-global-content .rounds .round1 .match2 .player1 h2
+{
+    font-family: myFont;
+    font-size: 15px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    right: 1px;
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .player2 h2,
+.hierarchy-global-content .rounds .round1 .match2 .player2 h2{
+    font-family: myFont;
+    font-size: 15px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    top: 70px;
+    right: 1px;
+    
+
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .vs,
+.hierarchy-global-content .rounds .round1 .match2 .vs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.hierarchy-global-content .rounds .round1 .match1 .vs img,
+.hierarchy-global-content .rounds .round1 .match2 .vs img{
+    width: 40px;
+    height: 40px;
+
+    position: absolute;
+    right: 28px;
+}
+
+.hierarchy-global-content .rounds .btn_1
+{
+    display: grid;
+    grid-template-rows:50% 50%;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.hierarchy-global-content .rounds .btn_1 button
+{
+    display: inline-block;
+    width: 85px;
+    height: 40px;
+    font-size: 16px;
+    font-family: myFont;
+    color: #FFEEBF;
+    background: #DE4C4E;
+    /* color: #DE4C4E; */
+    /* background: rgba(217, 217, 217, 0.15); */
+    /* padding: 15px; */
+    text-align: center;
+    text-decoration: none;
+    border-radius: 100px;
+    border: none;
+    letter-spacing: 3px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+}
+
+.hierarchy-global-content .rounds .btn_2 button
+{
+    display: inline-block;
+    width: 100px;
+    height: 60px;
+    font-size: 20px;
+    font-family: myFont;
+    color: #FFEEBF;
+    background: #DE4C4E;
+    /* color: #DE4C4E; */
+    /* background: rgba(217, 217, 217, 0.15); */
+    /* padding: 15px; */
+    text-align: center;
+    text-decoration: none;
+    border-radius: 100px;
+    border: none;
+    letter-spacing: 3px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
+}
+
+.hierarchy-global-content .rounds button:hover,
+.hierarchy-global-content .rounds button:focus,
+.hierarchy-global-content .rounds button:active{
+    /* box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.795); */
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+ 
+
+
+.hierarchy-global-content .rounds .btn_1 .first
+{
+    position: absolute;
+    right: 10%;
+    bottom: 22%;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+
+}
+
+.hierarchy-global-content .rounds .btn_1 .second .btn
+{
+    position: absolute;
+    right: 10%;
+    top: 23%;
+    
+}
+
+.hierarchy-global-content .rounds .btn_2
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hierarchy-global-content .rounds .round2
+{
+    display: grid;
+    grid-template-rows: 40% 20% 40%;
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.hierarchy-global-content .rounds .round2 .player1{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.hierarchy-global-content .rounds .round2 .player2{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.hierarchy-global-content .rounds .round2 .player1 img{
+    width: 130px;
+    height: 130px;
+    border-radius: 100%;
+    position: absolute;
+    top: 110px;
+    /* right: 90px; */
+}
+
+.hierarchy-global-content .rounds .round2 .player2 img{
+    width: 130px;
+    height: 130px;
+    border-radius: 100%;
+    position: absolute;
+    top: 30px;
+    /* right: 100px; */
+}
+
+.hierarchy-global-content .rounds .round2 .player2 h2{
+    font-family: myFont;
+    font-size: 20px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    bottom: 95px;
+    /* right: 110px; */
+}
+
+.hierarchy-global-content .rounds .round2 .player1 h2{
+    font-family: myFont;
+    font-size: 20px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+
+    position: absolute;
+    bottom: 13px;
+    /* right: 110px; */
+
+}
+
+
+.hierarchy-global-content .rounds .round2 .vs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.hierarchy-global-content .rounds .round2 .vs img{
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    /* right: 120px; */
+}
+
+.hierarchy-global-content .rounds .round3
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(234, 1, 255); */
+    position: relative;
+}
+
+.hierarchy-global-content .rounds .round3 img{
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    position: absolute;
+    bottom: 290px;
+    /* left: 70px; */
+}
+
+.hierarchy-global-content .rounds .round3 h2
+{
+    font-family: myFont;
+    font-size: 24px;
+    color: #FFEEBF;
+    letter-spacing: 3px;
+    position: absolute;
+    bottom: 250px;
+    /* bottom: 7px; */
+    /* left: 85px; */
+    /* right: 100px; */
+}
+
+.hierarchy-global-content .rounds .trophy
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(234, 1, 255); */
+
+}
+
+.hierarchy-global-content .rounds .trophy img
+{
+    width: 250px;
+    height: 250px;
+    position: absolute;
+    /* right: 250px; */
+}
+
+
