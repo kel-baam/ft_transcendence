@@ -92,6 +92,8 @@ color: #A1AEC6;
     width: 278px;
     display:flex;
     column-gap: 10px;
+    color: white;
+    font-family: 'Josefin Sans';
 }
 
 .register .registerForm .firstRow input{
@@ -102,6 +104,9 @@ color: #A1AEC6;
     background-color: rgba(255, 238, 191,0.21);
     box-shadow: 5px 4px 10px rgba(0, 0, 0,0.4);
     padding: 15px;
+    /* color: white;
+    font-family: 'Josefin Sans'; */
+
 }
 
 .register .registerForm .inputInfo
@@ -114,7 +119,20 @@ color: #A1AEC6;
     box-shadow: 5px 4px 10px rgba(0, 0, 0,0.4);
     margin: 1px;
     padding: 15px;
+    /* color: white;
+    font-family: 'Josefin Sans'; */
+
     
+}
+.register .registerForm #first_name,
+.register .registerForm #last_name,
+.register .registerForm #username,
+.register .registerForm #email,
+.register .registerForm #password
+
+{
+    background-color: rgba(255, 0, 0, 0.2);
+    border-color: red;
 }
 .register .registerForm input::placeholder {
     font-size: 15px;

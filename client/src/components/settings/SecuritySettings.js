@@ -1,5 +1,6 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString,RouterOutlet} from '../../package/index.js'
+import { EnableTwoFactor } from '../2FA/enable2FA.js'
 
 export const SecuritySettings = defineComponent(
     {
@@ -43,23 +44,24 @@ export const SecuritySettings = defineComponent(
                                 }
                             }
                         },   [!this.state.isEnabled ?  'Enable' : 'Disable'])
-                    ] : [h('div', {}, ['qr two factor', 
-                        h('button', {style:{
-                            'background-color': '#D44444',
-                            color: '#FFEEBF',
-                            width: '120px',
-                            height: '40px',
-                            'border-radius': '12px',
-                            border: 'none'
-                            },
-                            on : {
-                                click : () =>
-                                {
-                                    this.updateState({isQrCodeVisible : false, isEnabled : true})
-                                }
-                            }
-                        },   ['Verify'])
-                    ])]) , 
+                    ] : [
+                        h(EnableTwoFactor,{}), 
+                        // h('button', {style:{
+                        //     'background-color': '#D44444',
+                        //     color: '#FFEEBF',
+                        //     width: '120px',
+                        //     height: '40px',
+                        //     'border-radius': '12px',
+                        //     border: 'none'
+                        //     },
+                        //     on : {
+                        //         click : () =>
+                        //         {
+                        //             this.updateState({isQrCodeVisible : false, isEnabled : true})
+                        //         }
+                        //     }
+                        // },   ['Verify'])
+                    ]) , 
                     h('div', {class : 'auth-password-card'}, [
                         h('span', {style :{color : '#224A88', fontSize: '24px'}}, ['Password:']),
                         h('input', { type: 'password', placeholder: 'Current password',}),

@@ -1,8 +1,9 @@
 from django.conf import settings
 import requests
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 
 import logging
-# import jwt
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -17,14 +18,11 @@ def exchange_code_with_token(code,token_url,client_id,client_secret,redirect_uri
                 'client_id': client_id,
                 'client_secret': client_secret,
         }
-        # print(data)
+        access_token = "none"
         response = requests.post(token_url,data=data)
-        print(response)
         if(response.status_code == 200):
                 token_data = response.json()
-                access_token= token_data.get('access_token')
-        else:
-                access_token = "none"
+                access_token = token_data.get('access_token')
 
         return {'status_code':response.status_code,'accessToken':access_token}
 
@@ -40,11 +38,7 @@ def get_user_info(token,api):
         return {'status_code':response.status_code}
 
 
-# views.py
-from django.http import JsonResponse
-from django.middleware.csrf import get_token
 
 def csrf_token_view(request):
     csrf_token = get_token(request)
-#     logger.debug("oooooooooooooooooooooooooooooooooooooooooooooooook",csrf_token)
     return JsonResponse({'csrf_token': csrf_token})

@@ -4,3 +4,8 @@ channels
 daphne
 psycopg2
 django-cors-headers
+requests 
+Pillow
+olefile
+libmagic
+python-magic

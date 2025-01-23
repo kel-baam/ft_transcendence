@@ -6,13 +6,14 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install system dependencies for PostgreSQL and build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     gcc \
     && apt-get clean \
+    && apt-get  -y install libmagic1\
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements.txt to the working directory

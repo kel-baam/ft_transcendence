@@ -133,11 +133,11 @@
 
 }
 
-.fa-camera
+/* .fa-camera
 {
     position: relative;
     bottom: 4%;
-}
+} */
 .settings-container > div:nth-child(2) > form > div:nth-child(2) 
 {
     display: flex;
@@ -184,6 +184,10 @@
     padding: 0px 0px 0px 10px;
     color: #9c9a9a;
     background-color: #e9e6e6; 
+}
+.settings-container form  small
+{
+    width: 250px;
 }
 
 .settings-container > div:nth-child(2) > form > div:nth-child(3) > button

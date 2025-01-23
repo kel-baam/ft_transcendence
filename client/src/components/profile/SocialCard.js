@@ -1,106 +1,80 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js' 
+import { customFetch } from '../../package/fetch.js'
 
 export const SocialCard = defineComponent({
     state()
     {
         return {
-          activateSection : 'friends',
-          viewAll:false,
+          activateSection : null,
+          // viewAll:false,
+          isLoading:true,
+          // isExpanded:false,
           data:[
-            {
-              id:'1',
-              user :{username: 'kjarmoum', image: {src : './images/kjarmoum.png'},
-              FirstName: 'karima', LastName: 'jarmoumi'}
-            },
-            {
-              id:'2',
-              user :{username: 'niboukha', image: {src : './images/kjarmoum.png'},
-              FirstName: 'karima', LastName: 'jarmoumi'}
-            },
-            {
-              id:'3',
-              user :{username: 'shicham', image: {src : './images/kjarmoum.png'},
-              FirstName: 'karima', LastName: 'jarmoumi'}
-            },
-            {
-              id:'4',
-              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
-              FirstName: 'karima', LastName: 'jarmoumi'}
-            },
-            {
-              id:'4',
-              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
-              FirstName: 'karima', LastName: 'jarmoumi'}
-            },
-            {
-              id:'4',
-              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
-              FirstName: 'karima', LastName: 'jarmoumi'}
-            },
-            {
-              id:'4',
-              user :{username: 'kel-baam', image: {src : './images/kjarmoum.png'},
-              FirstName: 'karima', LastName: 'jarmoumi'}
-            },
-            // {
-            //   id:'4',
-            //   user :{username: 'kel-baam', image: {src : 'images/kjarmoum.png'},
-            //   FirstName: 'karima', LastName: 'jarmoumi'}
-            // },
-            // {
-            //   id:'4',
-            //   user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
-            //   FirstName: 'karima', LastName: 'jarmoumi'}
-            // },
-            // {
-            //   id:'4',
-            //   user :{username: 'kel-baam', image: {src : '../assets/images/kjarmoum.png'},
-            //   FirstName: 'karima', LastName: 'jarmoumi'}
-            // },
-            
-          ]
+           
+          ],
+          isOwn : true
         }
     },
     render()
     {
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>+++++++++>>> curent section : ", this.state.activateSection)
-      // console.log(">>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<>>>>>>. props : ", this.props.activateSection)
-        if(this.props.viewAll && this.props.activateSection)
-        {
-          // console.log(">>>>>>>>>>>>>>>>>>>>>>>> here  view all true")
-          this.state.viewAll = this.props.viewAll
+        const {isExpanded} = this.props
+        // console.log(">>>>>>>>>>>>>>>>>> this params ====> : ", this.appContext.router.params)
+        if (!this.state.activateSection)
           this.state.activateSection = this.props.activateSection
-        }
+        // if (JSON.stringify(this.appContext.router.params) !== '{}')
+        // {
+        //   console.log(">>>>>>>>>>>>>>>> here in false ")
+        //   this.state.isOwn = false
+        // }
+        const {activateSection, isLoading, isOwn} = this.state
+        // console.log(">>>>>>>>>>>>>>>>>>>> here activate section : ", activateSection)
+        console.log(">>>>>>>>>>>>>>>>> isOwn ? ", isOwn)
         return h('div', { class: 'friends-and-requetes-container',
-          style : this.state.viewAll ? {position :  'absolute', top : '17%', left: '30%',
+          style : isExpanded ? {
+            position :  'absolute', top : '17%', left: '30%',
             backgroundColor: '#161C40', width:'800px', height : '700px',
             'grid-template-rows' : '18% 76% '
           } : {}
          }, [
           
           h('div', { class: 'friends-and-req-buttons', 
-            style : this.state.viewAll ? {display :'flex', justifyContent:'center'} : {} }, 
-            !this.state.viewAll ? [
+            style : isExpanded || !isOwn ? {display :'flex', justifyContent:'center'} : {} }, 
+            !isExpanded ? [
+
             h('div', {}, [
               h('button', { class: 'friends-button', style: {backgroundColor:  
-                this.state.activateSection === 'friends' ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
-              on : {click : () => this.updateState({activateSection:'friends'})} }, [
+                activateSection === 'friends' && isOwn ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
+              on : { click : () => 
+                this.fetch('http://localhost:3000/api/user/friendships?status=accepted','friends')
+              } }, [
                 h('h1', {}, ['Friends'])
               ])
             ]),
-            h('div', {}, [
+
+            h('div', { style : !isOwn ? {display : 'none'}:{}}, [
               h('button', { class: 'request-button', style: {backgroundColor:  
-                this.state.activateSection === 'requests' ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
-                on : {click : () => this.updateState({activateSection:'requests'})} }, [
+                activateSection === 'requests' ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
+                on : {
+                  click : () => {
+                    this.fetch('http://localhost:3000/api/user/friendships?status=recieved','requests' )
+                    }
+              } }, [
                 h('h1', {}, ['Requests'])
               ])
             ]),
-            h('div', {}, [
-              h('button', { class: 'pending-button' , style: {backgroundColor:  
-                this.state.activateSection === 'pending' ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
-                on : {click : ()=> this.updateState({activateSection:'pending'})}}, [
-                h('h1', {}, ['Pending'])
+
+            h('div', { style : !isOwn ? {display : 'none'}:{}}, [
+              h('button', { class: 'pending-button' , style: {
+                backgroundColor:
+                activateSection === 'pending' ?'rgba(95, 114, 125, 0.08)' : 'transparent'
+                },
+                on : {
+                  click : ()=> 
+                  {
+                    this.fetch('http://localhost:3000/api/user/friendships?status=sent','pending' )
+                  }
+                }}, [h('h1', {}, ['Pending'])
               ])
             ])
           ] : [h('div', { class: 'header'}, [
@@ -108,103 +82,179 @@ export const SocialCard = defineComponent({
                 h('a', { href: '#' }, [
                     h('i', { class: 'fa-solid fa-magnifying-glass icon' })
                 ]),
-                h('input', { type: 'text', placeholder: 'Search...', on :{input : (target) => {
+                h('input', { type: 'text', placeholder: 'Search...', on :{
+                  input : (target) => {
                   console.log("********************> target : ", target)
                 }} }), 
             ]),
             h('div', { class: 'close-icon' }, [
-                // h('a', { href: '#', class: 'close-click' }, [
-                //     h('i', { class: 'fa-sharp fa-solid fa-rectangle-xmark' })
-                // ])
                 h('i', { 
                   class: 'fa fa-close', 
                   style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px', marginLeft:'410px'},
-                  on : { click : () => this.emit('removeBlurProfile', {SocialCard:false})}
+                  on : { click : () => 
+                    {
+                      this.emit('removeBlurProfile', {activateSection : activateSection, 
+                        isBlured:false, Expanded:null})
+                    }
+                  }
                 })
             ])
         ])])
           ,
-          (this.state.activateSection === 'friends' && h(FriendsItems, {data:this.state.data, viewAll:this.state.viewAll})) ||
-          (this.state.activateSection === 'requests' && h(RequestsItems, {data:this.state.data,viewAll:this.state.viewAll,
+          (activateSection === 'friends' && h(FriendsItems, {data: this.state.data, isExpanded: isExpanded})) ||
+          (activateSection === 'requests' && h(RequestsItems, {data: this.state.data, isExpanded: isExpanded,
             on : {
               remove : this.removeRequest,
               accept : this.acceptRequest
             },
-            viewAll:this.state.viewAll
-          }))||
-          (this.state.activateSection === 'pending' && h(PendingItems, {data:this.state.data,
+          })) ||
+          (this.state.activateSection === 'pending' && h(PendingItems, {data: this.state.data, isExpanded: isExpanded,
             on : {
               remove : this.removeRequest
             },
-            viewAll:this.state.viewAll
           })),
 
           h('div', { class: 'view-all-link-fr', style : {color : '#14397C'} },
-            this.state.data.length >= 4  && !this.state.viewAll ? 
+            this.state.data.length >= 4  && !isExpanded ? 
             [
-              h('a', { on : {click : () => this.emit('blurProfile', {SocialCard:true, 
-                activateSection:this.state.activateSection})}}, ['View all'])
+              h('a', { on : {
+                  click : () => 
+                  {
+                    this.emit('blurProfile', {activateSection : activateSection, 
+                      isBlured:true, Expanded:'socialCard'})
+                    // this.updateState({isExpanded:true, activateSection : activateSection})
+                  }
+              }}, ['View all'])
             ]: [])
-        //   h('div', { class: 'view-all-link-fr', style : {color : '#14397C'}, 
-
-        //     on : {click : ()=> this.emit('blurProfile', {SocialCard:true})} }, this.state.data.length >= 4 ? ['View all']: [])
         ])
     },
     removeRequest({id, i})
     {
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> here ", id, "|", i)
-      const newData = [...this.state.data]
+        customFetch(`http://localhost:3000/api/user/friendships/?id=${id}`, {
+          method : 'DELETE'
+        }).then((res)=>
+        {
+          // console.log(">>>>>>>>>>>>>>>>>> after cancel the pending request  : ", res)
+          if (res.status == 204)
+          {
+            const newData = [...this.state.data]
             newData.splice(i, 1)
-            // console.log(">>>>>>>>>>>>> here new Data : ", newData)
-      this.updateState({data:newData})
+            this.updateState({data : newData})
+          }
+        })
     },
     acceptRequest({id, i})
     {
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> here ", id, "|", i)
-      const newData = [...this.state.data]
-            newData.splice(i, 1)
-            // console.log(">>>>>>>>>>>>> here new Data : ", newData)
-      this.updateState({data:newData})
+      customFetch(`http://localhost:3000/api/user/friendships/`, {
+        method : 'PUT',
+        headers: {
+          'Content-Type': 'application/json', // Explicitly set content type
+        },
+        body : JSON.stringify({
+            id : id,
+            status : 'accepted'
+      })
+      }).then((res)=>
+      {
+        // console.log(">>>>>>>>>>>>>>>>>> after cancel the pending request  : ", res)
+        if (res.status == 200)
+        {
+          const newData = [...this.state.data]
+          // console.log(">>>>>>>>>>>>>>>>>>>------------------------------------------->>>> newData : ", newData)
+          newData.splice(i, 1)
+          this.updateState({data : newData})
+        }
+      })
     },
-    updateActivateSection({test}){
-      // console.log("-----------> test")
-      // this.emit('changeActivateState', targetSection)
-      // console.log(">>>>>>>>>>>>>>>>>>>>> here target section : ", targetSection)
-      this.updateState({activateSection : 'requests'})
-      // console.log("")
+    onMounted()
+    {
+      // console.log(">>>>>>>>>>>>> here on onmouted social card ")
+      var  endPoint  = 'http://localhost:3000/api/user/friendships?status=accepted'
+      if(JSON.stringify(this.appContext.router.params) !== '{}')
+      {
+        endPoint = `http://localhost:3000/api/user/friendships?username=${this.appContext.router.params.username}&status=accepted`
+        // console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed , ', endPoint)
+      }
+      customFetch(endPoint)
+        .then(result =>{
+
+            if (!result.ok)
+            {
+                // console.log("res isn't okey ," , " | ", this)
+                
+                this.appContext.router.navigateTo('/login')
+            }
+
+            return result.json()
+        })
+        .then(res => {
+            // console.log(">>>>>>>>>>>>>>> in social card heeeeeeeeeeeeeeeeeeeeeeeeeere res : ", res,"|")
+            // console.log("res is okey")
+            this.updateState({
+                    isLoading: false,  
+                    data : res,
+                    error: null   
+            });
+
+        })
+        .catch(error => {
+            // console.log(">>>>>>>>>>>> error in win  : ", error)
+        })
+    },
+    
+    fetch(endPoint, activateSection)
+    {
+      // if(JSON.stringify(this.appContext.router.params) !== '{}')
+      //     endPoint = endPoint + '&username=' +`${this.appContext.router.params.username}`
+      // console.log("---------------------------------------============================> endpoint : ", endPoint)
+      customFetch(endPoint)
+        .then(result =>{
+
+            if (!result.ok)
+            {
+                // console.log("res isn't okey ," , " | ", this)
+                
+                this.appContext.router.navigateTo('/login')
+            }
+
+            return result.json()
+        })
+        .then(res => {
+            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> in social card  res : ", res,"|", res.status)
+            // console.log("res is okey")
+            this.updateState({
+                    isLoading: false,  
+                    data: res,   
+                    error: null ,
+                    activateSection: activateSection
+            });
+
+        })
+        .catch(error => {
+            // console.log(">>>>>>>>>>>> error in win  : ", error)
+        })
     }
-    // removePendingRequest({id, i})
-    // {
-
-    // },
-    // onMounted()
-    // {
-
-    // }
 })
 
 const FriendsItems = defineComponent({
-  state()
-  {
-    return{
-      viewAll:false
-      // data : []
-    }
-  },
+  // state()
+  // {
+  //   return{
+  //   }
+  // },
   render()
   {
-    if (this.props.viewAll)
-      this.state.viewAll = this.props.viewAll
-    // console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
-    const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
-    // console.log("-----------------------> here friends items ")
+
+    const {isExpanded} = this.props
+    // console.log('>>>>>>>>>>>>>>> this state of friends : ', this.state)
+    const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
     return h('div', {class : 'friends-scope-item',
-        style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
+        style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
           ,justifyContent : 'center'} : {}
       }, data.map((userFriend) =>
         h(FriendItem, {
-          friend : userFriend,
-          viewAll:this.state.viewAll
+          user : userFriend.user,
+          isExpanded : isExpanded
         })
       )
   )
@@ -213,30 +263,27 @@ const FriendsItems = defineComponent({
 })
 
 const FriendItem = defineComponent({
-  state()
-  {
-    return {
-      viewAll : false,
-    }
-  },
+  // state()
+  // {
+  //   return {
+  //   }
+  // },
   render()
   {
-    const {user} = this.props.friend
-    if (this.props.viewAll)
-      this.state.viewAll = this.props.viewAll
-    return  h('div', { class: 'friend-item', style : this.state.viewAll ? 
+    const {user, isExpanded} = this.props
+    return  h('div', { class: 'friend-item', style : isExpanded ? 
       {backgroundColor : '#CBCBCB', 'border-radius' : '15px',
         width:'700px', height:'65px'
       } : {} },
       [
         h('div', { class: 'picture-item' },
           [
-            h('img', { src: user.image.src, alt:'profile picture', class: 'picture-item' })
+            h('img', { src: 'images/kel-baam.png', alt:'profile picture', class: 'picture-item' })
           ]
         ),
         h('div', { class: 'data-user' },
           [
-            h('span', {}, [user.FirstName + ' ' + user.LastName]),
+            h('span', {}, [user.first_name + ' ' + user.last_name]),
             h('span', { style: { color: '#A7A4A4'} }, ['@' + user.username])
           ]
         ),
@@ -251,104 +298,90 @@ const FriendItem = defineComponent({
 })
 
 const RequestsItems = defineComponent({
-  state()
-  {
-    return{
-      viewAll:false
-    }
-  },
-  render()
-  {
-    if (this.props.viewAll)
-      this.state.viewAll = this.props.viewAll
-    // console.log(">>>>>>>>>>>>>>>>>>>>> this.state.viewAll : ", this.state.viewAll)
-    const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
-    // console.log("-----------------------> data : ", userRequests)
-    // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> state data : ", this.state.data)
-    return h('div', {class : 'requestes-items', 
-      style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
-    }, data.map((userRequest, i) =>
-      // console.log(">>>>>>>>>> here  ", userRequest)
-      h(RequestItem, {
-        viewAll : this.state.viewAll,
-        id : userRequest.id,
-        user : userRequest.user,
-        i,
-        on : { remove: (id) => this.emit('remove', {id, i }),
-                accept : (id)  => this.emit('accept', {id, i})
-      }
-      })
-    ))
-  }
-
-})
-
-const RequestItem =  defineComponent({
-  state()
-  {
-    return {
-      viewAll:false
-    }
-  },
-  render()
-  {
-    if (this.props.viewAll)
-    {
-      this.state.viewAll = this.props.viewAll
-    }
-    // console.log("===========================> ", this.props)
-    const {id, user} = this.props
-    // console.log(">>>>>>>>>>>>>>>>>>> id , user ", id , "| ", user)
-    return h('div', { class: 'request-item',
-        style : this.state.viewAll ? 
-        { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
-          width:'700px', height:'65px'
-        } : {}
-      }, [
-        h('div', { class: 'picture-item' }, [
-          h('img', { src: user.image.src, alt: 'profile picture', class: 'picture-item' })
-        ]),
-        h('div', { class: 'data-user' }, [
-          h('span', {}, [user.FirstName + ' ' + user.LastName]),
-          h('span', { style: {color: '#A7A4A4'} }, ['@' + user.username])
-        ]),
-        h('div', { class: 'accept-and-refuse-icons' }, [
-          
-            h('i', { 
-              class: 'fa fa-close', 
-              style: {fontSize:'24px', color:'#D44444'},
-              on : { click : () => this.emit('remove', id)}
-            })
-          ,
-            h('i', { 
-              class: 'fa-solid fa-check',
-              style: { fontSize:'24px', color: '#0AA989'},
-              on : {click : () => this.emit('accept', id)} })
-          
-        ])
-      ])
-  },
-  
-
-})
-
-const PendingItems = defineComponent({
     state()
     {
-      return {
-        viewAll:false
+      return{
       }
     },
     render()
     {
-        if (this.props.viewAll)
-          this.state.viewAll = this.props.viewAll
-        const data = this.state.viewAll ? this.props.data : this.props.data.slice(0,4)
+      const {isExpanded} = this.props
+      const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
+      return h('div', {class : 'requestes-items', 
+        style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
+      }, data.map((userRequest, i) =>
+        h(RequestItem, {
+          isExpanded : isExpanded,
+          id : userRequest.id,
+          user : userRequest.user,
+          i,
+          on : { remove: (id) => this.emit('remove', {id, i }),
+                  accept : (id)  => this.emit('accept', {id, i})
+        }
+        })
+      ))
+    }
+
+})
+
+const RequestItem =  defineComponent({
+    state()
+    {
+      return {
+      }
+    },
+    render()
+    {
+        const {id, user, isExpanded} = this.props
+
+        return h('div', { class: 'request-item',
+            style : isExpanded ? 
+            { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
+              width:'700px', height:'65px'
+            } : {}
+            }, [
+            h('div', { class: 'picture-item' }, [
+              h('img', { src: 'images/kel-baam.png', alt: 'profile picture', class: 'picture-item' })
+            ]),
+            h('div', { class: 'data-user' }, [
+              h('span', {}, [user.first_name + ' ' + user.last_name]),
+              h('span', { style: {color: '#A7A4A4'} }, ['@' + user.username])
+            ]),
+            h('div', { class: 'accept-and-refuse-icons' }, [
+              
+                h('i', { 
+                  class: 'fa fa-close', 
+                  style: {fontSize:'24px', color:'#D44444'},
+                  on : { click : () => this.emit('remove', id)}
+                })
+              ,
+                h('i', { 
+                  class: 'fa-solid fa-check',
+                  style: { fontSize:'24px', color: '#0AA989'},
+                  on : {click : () => this.emit('accept', id)} })
+              
+            ])
+          ])
+    },
+    
+
+})
+
+const PendingItems = defineComponent({
+    // state()
+    // {
+    //   return {
+    //   }
+    // },
+    render()
+    {
+        const {isExpanded} = this.props
+        const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
         return h('div', {class : 'pending-friends-items',
-            style: this.state.viewAll ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
+            style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
             }, data.map((userPendingrequest, i)=>
             h(PendingItem, {
-              viewAll : this.state.viewAll,
+              isExpanded : isExpanded,
               id : userPendingrequest.id,
               user : userPendingrequest.user,
               i,
@@ -359,31 +392,26 @@ const PendingItems = defineComponent({
 })
 
 const PendingItem = defineComponent({
-    state()
-    {
-      return {
-        viewAll:false
-      }
-    },
+    // state()
+    // {
+    //   return {
+    //   }
+    // },
     render()
     {
-      if (this.props.viewAll)
-        {
-          this.state.viewAll = this.props.viewAll
-        }
-      const {id, user} = this.props 
-      // console.log("----------------> id : ", id , " | user : ", user)
+     
+      const {id, user, isExpanded} = this.props 
       return h('div', { class: 'pending-friend-item' , 
-          style : this.state.viewAll ? 
+          style : isExpanded ? 
           { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
             width:'700px', height:'65px'
           } : {}
           }, [
             h('div', { class: 'picture-item' }, [
-              h('img', { src: user.image.src, alt: 'profile picture', class : 'picture-item' })
+              h('img', { src: 'images/kel-baam.png', alt: 'profile picture', class : 'picture-item' })
             ]),
             h('div', { class: 'data-user' }, [
-              h('span', {}, [user.FirstName + ' ' + user.LastName]),
+              h('span', {}, [user.first_name + ' ' + user.last_name]),
               h('span', { style:{ color: '#A7A4A4'} }, ['@' + user.username])
             ]),
             h('div', { class: 'cancel-icon' }, [

@@ -9,8 +9,10 @@ import { Register } from './pages/register.js';
 import { Home } from './pages/home.js';
 
 import { settings } from './pages/settings.js';
-import { Profile } from './pages/profile.js';
+import { ProfileSelf,ProfileViewer } from './pages/profile.js';
 import { Chat } from './pages/chat.js';
+import { ResetPassword } from './pages/resetPassword.js';
+// import { ProfileX,ProfileViewer } from './pages/profileX.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -41,42 +43,42 @@ const NotFound = defineComponent({
 
 
 
-const test = defineComponent({
+// const test = defineComponent({
 
    
-    state(){
-      return {
-          isLoading : false,
-          data:{}
+//     state(){
+//       return {
+//           isLoading : false,
+//           data:{}
 
-  }
-  },
+//   }
+//   },
 
-  onMounted(){
-      console.log("-----------> here update state ")
-      this.updateState({ isLoading: true })
-      console.log("onmouunted-------------->",this.state.isLoading)
-      customFetch('http://localhost:3000/home/',{})
-      .then((data)=>{
-        console.log("data fetcheed",data)
-        if(!data.ok)
-        {
-          this.appContext.router.navigateTo('/401')
+//   onMounted(){
+//       console.log("-----------> here update state ")
+//       this.updateState({ isLoading: true })
+//       console.log("onmouunted-------------->",this.state.isLoading)
+//       customFetch('http://localhost:3000/home/',{})
+//       .then((data)=>{
+//         console.log("data fetcheed",data)
+//         if(!data.ok)
+//         {
+//           this.appContext.router.navigateTo('/401')
 
-        }
-      })
+//         }
+//       })
   
-    },
+//     },
 
    
-  render() {
-    return h('div',{},[
-      h('div',{},["heeeeelo in ur hooome"]),
+//   render() {
+//     return h('div',{},[
+//       h('div',{},["heeeeelo in ur hooome"]),
 
-    ]) 
-  },
+//     ]) 
+//   },
   
-})
+// })
 
 const router = new HashRouter([
 
@@ -86,12 +88,16 @@ const router = new HashRouter([
     { path: '/login', component: Login },
     { path:'/home', component: Home},
 
-    { path:'/home', component: test},
-    { path: '/test',component: Home},
+    // { path:'/home', component: test},
+    // { path: '/test',component: Home},
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
     {path : '/settings', component: settings},
-    {path:'/profile', component: Profile},
+    {path:'/profile' , redirect: '/user'},
+    {path:'/user', component: ProfileSelf},
+    {path:'/user/:username', component: ProfileViewer},
+
+    { path: '/password/reset',  component: ResetPassword },
     {path:'/chat', component: Chat}
 
 

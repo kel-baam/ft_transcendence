@@ -1,6 +1,6 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString,RouterOutlet} from '../package/index.js'
+import{defineComponent,h} from '../package/index.js'
 import { RegisterForm } from '../components/login/registerForm.js'
+
 export const Register = defineComponent({
     state(){
         return {
@@ -13,7 +13,7 @@ export const Register = defineComponent({
     },
     googleEvent(){
         
-        window.location.href = "http://localhost:8000/auth/google/"
+        window.location.href = `http://localhost:8000/auth/google/?type=${encodeURIComponent('register')}`
     },
 
 
@@ -36,7 +36,7 @@ export const Register = defineComponent({
                     h('div',{class:'info'},
                         [
                             h('div',{class:'title'},[
-                                h('h1',{},['Creat an Account'])]),
+                                h('h1',{},['Create an Account'])]),
 
                     h('div',{class:'register'},[
                        h('p',{},[

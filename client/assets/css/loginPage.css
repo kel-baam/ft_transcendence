@@ -162,6 +162,10 @@
     color:  rgba(255, 255, 255, 0.63);
     
 }
+.login-page-content .down .login .resetPassword a{
+    
+    cursor: pointer;
+}
 
 .login-page-content .down .login .input{
     
@@ -170,7 +174,7 @@
     height: 44px;
     display: flex;
     justify-content: center;
-
+    
     width: 200px;
     border: none;
     border-radius: 10px;
@@ -179,7 +183,6 @@
     align-items: center;
     /* color:#FFEEBF; */
     /* box-shadow: 5px 4px 10px rgba(0, 0, 0,0.4); */
-
     /* content: '\f023'; */
 }    
 
@@ -295,6 +298,14 @@
     text-decoration: none;
     font-family: 'Josefin Sans';
 }
+.login-page-content .down .login #username,
+.login-page-content .down .login #password
+
+{
+    background-color: rgba(255, 0, 0, 0.2);
+    border-color: red;
+}
+
 
 /* .login-page-content .down .login span{
     font-family: Josefin Sans;

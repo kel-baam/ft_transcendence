@@ -14,7 +14,6 @@ export async function customFetch(url,options={})
         ...defaultOptions,
         ...options,
     }
-
     return  await fetch(url,mergedOptions).then(async (response)=>
             {
                 console.log("daatta",response.status)

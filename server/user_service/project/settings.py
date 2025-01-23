@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Profile',
+    'user_service',
     'rest_framework',
     'corsheaders',
     'channels',
@@ -171,34 +172,39 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',  # Capture DEBUG level and above
-            'class': 'logging.StreamHandler',  # Send logs to the console
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for django logger
-            'propagate': False,  # Do not propagate to the root logger
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level for request logs
-            'propagate': False,  # Prevents duplication in logs
-        },
-        '': {  # This is the root logger
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',  # Capture DEBUG level and above
+#             'class': 'logging.StreamHandler',  # Send logs to the console
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for django logger
+#             'propagate': False,  # Do not propagate to the root logger
+#         },
+#         'django.request': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level for request logs
+#             'propagate': False,  # Prevents duplication in logs
+#         },
+#         '': {  # This is the root logger
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
+#             'propagate': False,
+#         },
+#     },
+# }
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['*']
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 

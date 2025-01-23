@@ -22,29 +22,37 @@ def generateAccessToken(user,level):
         return access
 
 def generateToken(user,level):
-        refresh = RefreshToken.for_user(user)
-        refresh['email'] = user.email
-        refresh['login_level'] = level
-        user.refresh_token = make_password(str(refresh))
-        user.save()
-        access = generateAccessToken(user,level)
-        return ({"access":access,
-                 "refresh":refresh})
+        try:
+                refresh = RefreshToken.for_user(user)
+                refresh['email'] = user.email
+                refresh['login_level'] = level
+                user.refresh_token = make_password(str(refresh))
+                user.save()
+                access = generateAccessToken(user,level)
+                return ({"access":access,
+                        "refresh":refresh})
+        except Exception as e:
+                logger.debug("cexpeption loged",e)
+                return JsonResponse({'message': 'Invalid token'},status = 400)
+
 
 def token_required(request):
-        access_token = request.COOKIES.get("access_token","default")
         try:
+                access_token = request.COOKIES.get("access_token","default")
+                logger.debug("check if is looged",access_token)
                 payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
 
                 user = (User.objects.filter(email=payload["email"]).first)()
                 if user:
                         response = JsonResponse({'message':'valid token'})
-                        response['X-Authenticated-User'] = payload['email']
+                        response['X-Authenticated-User'] = payload['username']
+                        request.user = payload['username']
                         logger.debug("user done=>",user)
                         return response
                 else:
                         return JsonResponse({'message': 'Invalid user'},status =401)
         except Exception as e:
+                logger.debug("cexpeption loged",e,"access",access_token)
                 return JsonResponse({'message': 'Invalid token'},status = 401)
 
 
