@@ -5,8 +5,8 @@ from .models import Tournament, PlayerTournament, Player
 from local.models import User
 from django.db.models import Q, Count, F
 from .serializers import TournamentSerializer
-import jwt
 from django.conf import settings
+import jwt
 
 class Tournaments(AsyncWebsocketConsumer):
     async def connect(self):
@@ -18,30 +18,34 @@ class Tournaments(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        await self.accept() 
-        # -----
         self.user_id = None 
         for header_name, header_value in self.scope["headers"]:
             if header_name == b'cookie':
+
                 cookies_str = header_value.decode("utf-8")
-                cookies = {}
+                cookies     = {}
                 for cookie in cookies_str.split("; "):
-                    key, value = cookie.split("=", 1)  
+                    key, value   = cookie.split("=", 1)  
                     cookies[key] = value          
                 try:
+
                     print("accccc=>",cookies.get("access_token").encode("utf-8"))
-                    payload = jwt.decode(cookies.get("access_token").encode("utf-8"), settings.SECRET_KEY, algorithms=["HS256"])
+
+                    payload           = jwt.decode(cookies.get("access_token").encode("utf-8"), settings.SECRET_KEY, algorithms=["HS256"])
                     self.access_token = cookies.get("access_token")
-                    user = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
+                    user              = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
                     if user:
+
                         print("done",user.id)
-                        self.scope['user_id']  = user
-                        self.user_id    = user.id
-                        self.scope['email']  = payload["email"]
-                        # add what ever you want
+
+                        self.scope['user_id'] = user
+                        self.user_id          = user.id
+                        self.scope['email']   = payload["email"]
+
+                        await self.accept() 
                         await self.send_updated_tournaments()
                     else:
-                        print("user nor")
+                        print("user not")
                         await self.send(text_data=json.dumps({"error": "user doesn't exist"}))
                 except Exception as e:
                         print("errrr nor",e)
@@ -68,6 +72,7 @@ class Tournaments(AsyncWebsocketConsumer):
             await self.send_updated_tournaments()
 
     async def send_updated_tournaments(self):
+        
         if not self.user_id:
             await self.send(text_data=json.dumps({
                 "error": "User is not authenticated"
@@ -96,11 +101,12 @@ class Tournaments(AsyncWebsocketConsumer):
         except User.DoesNotExist:
             return {"error": "User not found"}
         
-        created_tournaments = Tournament.objects.filter(creator=user)
-
-        joined_tournaments = Tournament.objects.filter(
-            participants__player__user_id=user_id,
-            participants__status='accepted'
+        created_tournaments = Tournament.objects.filter(
+            creator = user
+        )
+        joined_tournaments  = Tournament.objects.filter(
+            participants__player__user_id = user_id,
+            participants__status          = 'accepted'
         )
 
         all_tournaments         = created_tournaments.union(joined_tournaments)

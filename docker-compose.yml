@@ -32,7 +32,6 @@ services:
     networks:
       - app_network
 
-
     # redis-client :
     #   build: ./redis-client
     #   container_name: redis-service
@@ -83,6 +82,7 @@ services:
         - app_network
       depends_on:
         - db
+        - redis
       volumes:
         - user_volume:/app
   
@@ -97,6 +97,7 @@ services:
         - app_network
       depends_on:
         - db
+        - redis
       volumes:
         - tournament_volume:/usr/src/app
 

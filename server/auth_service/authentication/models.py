@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from channels.db import database_sync_to_async
 from django.core.validators     import MinLengthValidator
+from django.utils import timezone 
 
 
 class User(AbstractBaseUser):
@@ -155,18 +156,27 @@ class Notification(models.Model):
     NOTIF_CHOICES = [
         ('tournament', 'Tournament'),
         ('request', 'Request'),
+        ('invitation', 'Invitation'),
         ('accepted', 'Accepted'),
     ]
     
-    sender =  models.ForeignKey(User, on_delete=models.CASCADE, related_name='notif_from')
-    reciever = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notif_to')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
     type = models.CharField(max_length=10, choices=NOTIF_CHOICES)
-    time = models.TimeField()
-    def __str__(self):
-        return f"Notification from {self.sender} to {self.reciever} - Type: {self.type}"
-    class Meta:
-        db_table= 'Notification'
+    message = models.TextField()  # A field for the actual notification message
+    time = models.DateTimeField(auto_now_add=True)  # Store both date and time of notification creation
+    read_at = models.DateTimeField(null=True, blank=True)  # Track when the notification was read
+    
+    def mark_as_read(self):
+        self.read_at = timezone.now()
+        self.save()
 
+    def __str__(self):
+        return f"Notification from {self.sender} to {self.receiver} - Type: {self.type}"
+
+    class Meta:
+        db_table = 'Notification'
+        
 # class Tournament(models.Model):
 #     creator         = models.ForeignKey(User, on_delete=models.CASCADE)
 #     name            = models.CharField(max_length=100, validators=[MinLengthValidator(3)])

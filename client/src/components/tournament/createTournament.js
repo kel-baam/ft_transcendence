@@ -14,8 +14,10 @@ export const CreateTournament = defineComponent({
 
     async submitForm(event){
         event.preventDefault();
+
         const formElement = event.target;
-        const formData = new FormData(formElement);
+        const formData    = new FormData(formElement);
+        
         formData.append('invited-players', JSON.stringify(this.state.players));
 
         for (let [key, value] of formData.entries()) {
@@ -29,7 +31,6 @@ export const CreateTournament = defineComponent({
                 credentials : 'include'
             });
             
-            console.log("hsdkjfhaskdhasjkdhksjadhuaks-------------------------------")
             
             if (!response.ok) {
                 const errorText = await response.json();

@@ -32,17 +32,13 @@ def generateToken(user,level):
                 return ({"access":access,
                         "refresh":refresh})
         except Exception as e:
-                # logger.debug("cexpeption loged",e)
                 return JsonResponse({'message': 'Invalid token'},status = 400)
-
 
 
 def token_required(request):
         try:
                 access_token = request.COOKIES.get("access_token","default")
-                logger.debug("check if is looged",request.META.get('HTTP_REFERER', ''))
                 payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
-
                 user = (User.objects.filter(email=payload["email"]).first)()
                 if user:
                         # if (user.enabled_twoFactor == False or (user.enabled_twoFactor and payload['login_level'] == 2)):

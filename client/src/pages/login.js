@@ -7,7 +7,9 @@ import {showErrorNotification} from '../package/utils.js'
 export const Login = defineComponent({
     state(){
         return {
+            socket : null,
             errors :{}
+
     }
     },
 
@@ -41,7 +43,7 @@ export const Login = defineComponent({
         else
             this.appContext.router.navigateTo('/home')
     },
-    
+
     render(){
         return h ('div',{id:"global"},[
             h('div',{class:"login-page-content"},[

@@ -137,7 +137,7 @@ def callback_google(request):
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_google_state(state,user,user_info)
                         if((state == 'login' and user) or (state == 'register' and not user)) :                    
-                                response = set_tokens_in_cookies(user_info.get("email"),response)
+                                response = set_tokens_in_cookies(request,user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
 
@@ -234,9 +234,10 @@ def login(request):
                 return Response({'username':'invalid username','password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         if not check_password(password,user.password):
                 return Response({'password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
+        if (user.is_verify == False):
+                return Response({'verification':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)      
-        if(((state == 'login' and user) or (state == 'register' and not user)))  :         
-                        response = set_tokens_in_cookies(user.email,response)
+        response = set_tokens_in_cookies(request,user.email,response)
         return response
        
 
@@ -328,11 +329,11 @@ def password_reset_request(request):
         user = User.objects.filter(email=email).first()
         if not user:
             return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
-        
-        # token = default_token_generator.make_token(user.username)
+        if user.is_verify == False:
+            return Response({'email':"please verify email"},status=status.HTTP_400_BAD_REQUEST)
         token = generate_verification_token(user.username)
         uid = urlsafe_base64_encode(str(user.username).encode())
-        user.verify_token =token
+        user.verify_token = token
         user.save()
         verification_link = f'http://localhost:3000/#/password/reset?type=change&uid={uid}&token={token}'
         email_body = f'Hi {user.first_name},\nWe received a request to reset the password for your account. If you didn’t make this request, you can safely ignore this email.\nTo reset your password, please click the link below:\n\n{verification_link}'
@@ -351,6 +352,8 @@ def password_reset_request(request):
 def password_reset_confirm(request):
         try:
                 data = json.loads(request.body)
+                if( not data.get('token')  or not data.get('token') ):
+                        return Response({'password':"error in identify your credentials"},status=status.HTTP_400_BAD_REQUEST)
                 uid = urlsafe_base64_decode(data.get('uid')).decode()
                 user = User.objects.filter(username=uid).first()
                 token = data.get('token')

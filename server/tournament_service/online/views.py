@@ -3,17 +3,21 @@ from rest_framework.decorators      import api_view
 from rest_framework.response        import Response
 from django.shortcuts               import get_object_or_404
 from rest_framework.views           import APIView
-from .models                        import Player, Tournament, PlayerTournament
+from .models                        import Player, Tournament, PlayerTournament, Notification
 from local.models import User
-from .serializers                   import TournamentSerializer , PlayerTournamentSerializer
+from .serializers                   import TournamentSerializer , PlayerTournamentSerializer, NotificationSerializers
 from django.core.exceptions         import ValidationError
 from rest_framework                 import serializers
 from rest_framework.exceptions      import APIException
 from django.http                    import Http404
 import json
+from channels.layers                import get_channel_layer
+from asgiref.sync                   import async_to_sync
+from django.utils                   import timezone 
 
 class TournamentAPIView(APIView):
     def post(self, request):
+
         username    = request.META.get('HTTP_X_AUTHENTICATED_USER')
         creator     = User.objects.get(username=username)
         tournament  = None
@@ -30,6 +34,7 @@ class TournamentAPIView(APIView):
                 tournament = serializer.save()
 
             participants_data   = []
+            notification_data   = []
             creator_player      = Player.objects.get(user_id=creator.id)
             creator_data        = {
                 'tournament': tournament.id,
@@ -55,17 +60,34 @@ class TournamentAPIView(APIView):
                     'role'          : 'participant',
                 }
                 participants_data.append(player_data)
+                notif_data = {
+                    'sender'    : creator.id,
+                    'receiver'  : player['id'],
+                    'type'      : 'tournament',
+                    'message'   : f'You have been invited to join tournament {tournament.name}.',
+                }
+                notification_data.append(notif_data)
 
             serializer = PlayerTournamentSerializer(data=participants_data, many=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-
+            
             if tournament.type == 'private':
                 existing_participants = PlayerTournament.objects.filter(tournament=tournament, role='participant')
                 if existing_participants.count() != 3:
                     tournament.delete()
                     return Response({'error': 'A private tournament have 3 participants excluding the creator.'}, status=status.HTTP_400_BAD_REQUEST)
-            
+
+
+            serializer = NotificationSerializers(data=notification_data, many=True)
+
+            print("------> ", serializer)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+            for notif in serializer.instance:
+                self.broadcast_notification(notif)
+
             return Response(
                     {"message": "Tournament created successfully"},
                     status=status.HTTP_201_CREATED
@@ -94,6 +116,26 @@ class TournamentAPIView(APIView):
             if tournament:
                 tournament.delete()
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+        
+    def broadcast_notification(self, notification):
+        channel_layer = get_channel_layer()
+        group_name    = f'user_{notification.receiver.id}'
+
+        print("------------- ", f'user_{notification.receiver.id}')
+        
+        async_to_sync(channel_layer.group_send)(
+            group_name,
+            {
+                'type'          : 'send_notification',
+                'notification'  : {
+                    'id'        : notification.id,
+                    'message'   : notification.message,
+                    'type'      : notification.type,
+                    'created_at': notification.time.isoformat(),
+                    'read_at'   : notification.read_at,
+                }
+            }
+        )
 
     def put(self, request):
         try:
@@ -154,7 +196,6 @@ class TournamentAPIView(APIView):
                 return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
         except Tournament.DoesNotExist:
             return Response({"error": "Tournament not found"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class CustomAPIException(APIException):
     status_code     = status.HTTP_400_BAD_REQUEST

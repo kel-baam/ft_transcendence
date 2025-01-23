@@ -26,6 +26,13 @@ export const OnlineTournament = defineComponent({
         this.initWebSocket();
     },
 
+    onUnmounted(){
+        if (this.state.socket) {
+            console.log('WebSocket connection closed');
+            this.state.socket.close();
+        }
+    },
+
     initWebSocket() {
         if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
 
@@ -67,15 +74,18 @@ export const OnlineTournament = defineComponent({
                 if (data.message) {
                     console.log(data.message);
                 }
+
+                if (data.type === 'player.invited') {
+                    console.log(`You have been invited to join tournament ${data.tournament_id}`);
+                    // Trigger your UI update for the invite
+                }
             };
     
             this.state.socket.onerror = (error) => {
                 console.error('WebSocket error:', error);
             };
     
-            this.state.socket.onclose = () => {
-                console.log('WebSocket connection closed');
-            };
+
         }
     },
 
@@ -128,6 +138,7 @@ export const OnlineTournament = defineComponent({
 
     render()
     {
+        
         return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
             [h(sidebarLeft, {}), h('div', { 
                 class   : 'online-tournament',
