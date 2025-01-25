@@ -50,7 +50,7 @@ export const Form = defineComponent({
         const {data , isLoading, erros} = this.state
         const formData = new FormData();
         if (isLoading)
-            h('div', {}, [" is loading .........."])
+            return h('div', {})
         return h('div',
                     {},
                     [h('form',{ on  : {
@@ -107,11 +107,9 @@ export const Form = defineComponent({
                     
                             })
                             .catch(error => {
-                            //     this.updateState({
-                            //         isLoading: false,  
-                            //         data: data,   
-                            //         error: error  
-                            // });
+                                    // console.log('>>>>>>>>>>>>>>>> error : ', error)
+                                    // if(error == 401)
+                                    //     this.appContext.router.navigateTo('/login')
                             })
                         }
                     }
@@ -152,7 +150,7 @@ export const Form = defineComponent({
                                                 reader.onload = (e) =>
                                                 document.getElementById('profile-pic').src = e.target.result
                                                 reader.readAsDataURL(file);
-                                                formData.append(event.target.name, file)
+                                                formData.set(event.target.name, file)
                                             }
                                         }
                                 }
@@ -165,7 +163,7 @@ export const Form = defineComponent({
                                             h('small', {class : 'error', id : "first_name_error"}),
                                             h('input', { type: 'text', id: 'fname', name: 'first_name', value: `${data.first_name}`,
                                                 on : {
-                                                        change : (event)=>  formData.append(event.target.name, event.target.value)       
+                                                        change : (event)=>  formData.set(event.target.name, event.target.value)       
                                                 }
                                             }),
                                             h('br'),
@@ -173,7 +171,7 @@ export const Form = defineComponent({
                                             h('small', {class : 'error', id : "username_error"}),
                                             h('input', { type: 'text', id: 'username', name: 'username', value: `${data.username}` ,
                                                 on : {
-                                                    change : (event)=>  formData.append(event.target.name, event.target.value)
+                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
                                                 } 
                                             }),
                                             h('br'),
@@ -181,7 +179,7 @@ export const Form = defineComponent({
                                             h('small', {class : 'error', id : "phone_number_error"}),
                                             h('input', { type: 'text', id: 'pnumber', name: 'phone_number', value: `${data.phone_number}`,
                                                 on : {
-                                                    change : (event)=>  formData.append(event.target.name, event.target.value)
+                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
                                                 } 
                                             }),
                                             h('br'),
@@ -189,7 +187,7 @@ export const Form = defineComponent({
                                             h('small', {class : 'error', id : "email_error"}),
                                             h('input', { type: 'text', id: 'email', name: 'email', value: `${data.email}` ,
                                                 on : {
-                                                    change : (event)=>  formData.append(event.target.name, event.target.value)
+                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
                                                 } 
                                             }),                                  
                                             h('br')
@@ -201,7 +199,7 @@ export const Form = defineComponent({
                                             h('small', {class : 'error', id : "last_name_error"}),
                                             h('input', { type: 'text', id: 'last_name', name: 'last_name', value: `${data.last_name}` ,
                                                 on : {
-                                                    change : (event)=>  formData.append(event.target.name, event.target.value)
+                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
                                                 } 
                                             }),
                                             h('br'),
@@ -209,7 +207,7 @@ export const Form = defineComponent({
                                             h('small', {class : 'error', id : "age_error", }),
                                             h('input', { type: 'text', id: 'age', name: 'age', value: `${data.age}`,
                                                 on : {
-                                                    change : (event)=>  formData.append(event.target.name, event.target.value)
+                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
                                                 } 
                                             }),
                                             h('br'),
@@ -218,7 +216,7 @@ export const Form = defineComponent({
                                             h('select',
                                                 { name: 'nationality', id: 'nationality', value : `${data.nationality}` ,
                                                 on : {
-                                                    change : (event)=>  formData.append(event.target.name, event.target.value)
+                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
                                                 }     
                                             },
                                                 nationalities.map((nat) =>
@@ -231,7 +229,7 @@ export const Form = defineComponent({
                                             h('select',
                                                 { name: 'gender', id: 'gender', value:`${data.gender}` ,
                                                 on : {
-                                                    change : (event)=>  formData.append(event.target.name, event.target.value)
+                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
                                                 } 
                                             },
                                             [

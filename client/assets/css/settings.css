@@ -354,7 +354,7 @@ label
     flex-direction: column;
 }
 
-.auth-password-card
+.auth-password-card form
 {
     width:600px;
     height:260px;

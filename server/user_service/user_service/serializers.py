@@ -26,9 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
     rank = serializers.IntegerField(source='player.Rank', read_only = False,required=False)
     level = serializers.FloatField(source='player.level', read_only = False,required=False)
 
-    old_password = serializers.CharField(write_only=True, required=False)
-    new_password = serializers.CharField(write_only=True, required=False)
-    confirm_password = serializers.CharField(write_only=True, required=False)
+    Current_password = serializers.CharField(write_only=True, required=False)
+    New_password = serializers.CharField(write_only=True, required=False)
+    Confirm_password = serializers.CharField(write_only=True, required=False)
     player = PlayerSerializer()
 
     picture = serializers.ImageField(max_length=None, required=False, allow_null=True)
@@ -58,24 +58,30 @@ class UserSerializer(serializers.ModelSerializer):
         #     if picture.closed:
         #         raise ValidationError({"picture": "The file is closed, cannot read."})
         if self.instance is not None:
-            old_password = attrs.get('old_password')
-            new_password = attrs.get('new_password')
-            confirm_password = attrs.get('confirm_password')
-            if old_password or new_password or confirm_password:
+            print(">>>>>>>>>>>>>>>>>>>>>> here in validate data ")
+            print(">>>>>>>>>>>> attrs : ", attrs )
+            old_password = attrs.get('Current_password')
+            new_password = attrs.get('New_password')
+            confirm_password = attrs.get('Confirm_password')
+            print(">>>>>>>>>>>>> old_password : ", old_password)
+            print("----------------> new_password : ", new_password)
+            print("*******************> confirm_password : ", confirm_password)
+            if old_password is not None or new_password is not None or confirm_password is not None:
+                print('>>>>>>>>>>>>>> here old_password exist :  ', old_password)
                 if not old_password:
-                    raise serializers.ValidationError({"old_password" : "This field  is required"})
+                    raise serializers.ValidationError({"Current_password" : "This field  is required"})
                 if not new_password:
-                    raise serializers.ValidationError({"new_password" : "This field is required"})
+                    raise serializers.ValidationError({"New_password" : "This field is required"})
                 if not confirm_password:
-                    raise serializers.ValidationError({"confirm_password" : "This field is required"})
+                    raise serializers.ValidationError({"Confirm_password" : "This field is required"})
                 if not check_password(old_password, self.instance.password):
-                    raise serializers.ValidationError({"old_password": "Incorrect old password."})
+                    raise serializers.ValidationError({"Current_password": "Incorrect old password."})
                 if new_password != confirm_password:
-                    raise serializers.ValidationError({"confirm_password": "New password and confirmation do not match."})
+                    raise serializers.ValidationError({"Confirm_password": "New password and confirmation do not match."})
                 attrs['password'] = new_password
-                attrs.pop('old_password')
-                attrs.pop('new_password')
-                attrs.pop('confirm_password')
+                attrs.pop('Current_password')
+                attrs.pop('New_password')
+                attrs.pop('Confirm_password')
         
         if 'password' in attrs:
             password = attrs.get('password')
@@ -83,7 +89,7 @@ class UserSerializer(serializers.ModelSerializer):
                 validate_password(password)
                 attrs['password']=make_password(attrs['password'])
             except ValidationError as e:
-                raise serializers.ValidationError({"password": e.messages[0]})
+                raise serializers.ValidationError({"New_password": e.messages[0]})
        
 
         # if 'first_name'in attrs and len(attrs.get('first_name')) < 2 :

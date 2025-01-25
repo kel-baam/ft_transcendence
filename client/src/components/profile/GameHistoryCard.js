@@ -9,113 +9,6 @@ export const GameHistoryCard = defineComponent({
         isLoading : true,
         shownOnviewAll : false,
         data : [
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          // ,
-          // {
-          //   player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-          //   player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-          //   player1_points:'1',
-          //   player2_points:'2',
-          //   date : '10-11-2024'
-          // },
-          
         ]
       }
     },
@@ -123,7 +16,7 @@ export const GameHistoryCard = defineComponent({
     {
       const {data, isLoading} = this.state
       if (isLoading)
-        return  h('div', { class: 'match-history-container'} ,['is loading.....'])
+        return  h('div', { class: 'match-history-container'})
       if (this.props.viewAll)
       {
         // console.log(">>>>>>>>>>>>>>>>>> this.props.viewAll ", this.props.viewAll)
@@ -149,10 +42,10 @@ export const GameHistoryCard = defineComponent({
               }): null
             ]
           ),
-          h(GameHistoryItems, {data : this.state.data, shownOnviewAll : this.state.shownOnviewAll ? true : false})
+          h(GameHistoryItems, {data : data, shownOnviewAll : this.state.shownOnviewAll ? true : false})
           ,
             h('div', { class: 'view-all-match' },
-            this.state.data.length >= 4  && !this.state.shownOnviewAll ? 
+            data.length >= 4  && !this.state.shownOnviewAll ? 
             [
               h('a', { on : {click : () => this.emit('blurProfile', {MatchHistory:true})}}, ['View all'])
             ]: []

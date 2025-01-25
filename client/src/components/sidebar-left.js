@@ -6,7 +6,7 @@ export const sidebarLeft = defineComponent({render()
         return h('div', { class: 'side-bar' },
             [h('i', {
                 class: 'fa-regular fa-circle-user icon',
-                on :{ click:()=>{ this.appContext.router.navigateTo('/profile')}
+                on :{ click:()=>{ this.appContext.router.navigateTo('/user')}
             }}),
             h('i', {
                 class: 'fa-regular fa-message icon',

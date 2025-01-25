@@ -17,12 +17,11 @@ export const UserCard = defineComponent({
     render(){
 
         const {data, isLoading} = this.state
-        if (isLoading) {
-            return h('div', { class: 'infos-user-container' }, ["Loading user informations..."]);
-        }
+        if (isLoading) 
+            return h('div', { class: 'infos-user-container' });
         return  h('div', { class: 'infos-user-container' },
             [h('div', {},
-            [ h('img', { src: `http://localhost:8001${data.picture}`, alt :"profile picture" , style : {'object-fit': 'cover'}}),
+            [ h('img', { src: `http://localhost:3000${data.picture}`, alt :"profile picture" , style : {'object-fit': 'cover'}}),
 
                 h('i', { class: 'fa-solid fa-camera', 
                         style: {

@@ -1,34 +1,28 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js' 
 import { customFetch } from '../../package/fetch.js'
+import { FriendsItems } from './FriendsItems.js'
+import { RequestsItems } from './RequestsItems.js'
+import { PendingItems } from './PendingItems.js'
 
 export const SocialCard = defineComponent({
     state()
     {
         return {
           activateSection : null,
-          // viewAll:false,
           isLoading:true,
-          // isExpanded:false,
-          data:[
-           
-          ],
+          data:[],
           isOwn : true
         }
     },
     render()
     {
         const {isExpanded} = this.props
-        // console.log(">>>>>>>>>>>>>>>>>> this params ====> : ", this.appContext.router.params)
+
         if (!this.state.activateSection)
           this.state.activateSection = this.props.activateSection
-        // if (JSON.stringify(this.appContext.router.params) !== '{}')
-        // {
-        //   console.log(">>>>>>>>>>>>>>>> here in false ")
-        //   this.state.isOwn = false
-        // }
+       
         const {activateSection, isLoading, isOwn} = this.state
-        // console.log(">>>>>>>>>>>>>>>>>>>> here activate section : ", activateSection)
         console.log(">>>>>>>>>>>>>>>>> isOwn ? ", isOwn)
         return h('div', { class: 'friends-and-requetes-container',
           style : isExpanded ? {
@@ -236,188 +230,4 @@ export const SocialCard = defineComponent({
     }
 })
 
-const FriendsItems = defineComponent({
-  // state()
-  // {
-  //   return{
-  //   }
-  // },
-  render()
-  {
 
-    const {isExpanded} = this.props
-    // console.log('>>>>>>>>>>>>>>> this state of friends : ', this.state)
-    const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
-    return h('div', {class : 'friends-scope-item',
-        style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
-          ,justifyContent : 'center'} : {}
-      }, data.map((userFriend) =>
-        h(FriendItem, {
-          user : userFriend.user,
-          isExpanded : isExpanded
-        })
-      )
-  )
-  }
-
-})
-
-const FriendItem = defineComponent({
-  // state()
-  // {
-  //   return {
-  //   }
-  // },
-  render()
-  {
-    const {user, isExpanded} = this.props
-    return  h('div', { class: 'friend-item', style : isExpanded ? 
-      {backgroundColor : '#CBCBCB', 'border-radius' : '15px',
-        width:'700px', height:'65px'
-      } : {} },
-      [
-        h('div', { class: 'picture-item' },
-          [
-            h('img', { src: 'images/kel-baam.png', alt:'profile picture', class: 'picture-item' })
-          ]
-        ),
-        h('div', { class: 'data-user' },
-          [
-            h('span', {}, [user.first_name + ' ' + user.last_name]),
-            h('span', { style: { color: '#A7A4A4'} }, ['@' + user.username])
-          ]
-        ),
-        h('div', { class: 'chat-icon' },
-          [
-            h('img', { src: 'images/tabler_message (1).png', alt: 'chat icon' })
-          ]
-        )
-      ]
-    )
-  }
-})
-
-const RequestsItems = defineComponent({
-    state()
-    {
-      return{
-      }
-    },
-    render()
-    {
-      const {isExpanded} = this.props
-      const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
-      return h('div', {class : 'requestes-items', 
-        style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
-      }, data.map((userRequest, i) =>
-        h(RequestItem, {
-          isExpanded : isExpanded,
-          id : userRequest.id,
-          user : userRequest.user,
-          i,
-          on : { remove: (id) => this.emit('remove', {id, i }),
-                  accept : (id)  => this.emit('accept', {id, i})
-        }
-        })
-      ))
-    }
-
-})
-
-const RequestItem =  defineComponent({
-    state()
-    {
-      return {
-      }
-    },
-    render()
-    {
-        const {id, user, isExpanded} = this.props
-
-        return h('div', { class: 'request-item',
-            style : isExpanded ? 
-            { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
-              width:'700px', height:'65px'
-            } : {}
-            }, [
-            h('div', { class: 'picture-item' }, [
-              h('img', { src: 'images/kel-baam.png', alt: 'profile picture', class: 'picture-item' })
-            ]),
-            h('div', { class: 'data-user' }, [
-              h('span', {}, [user.first_name + ' ' + user.last_name]),
-              h('span', { style: {color: '#A7A4A4'} }, ['@' + user.username])
-            ]),
-            h('div', { class: 'accept-and-refuse-icons' }, [
-              
-                h('i', { 
-                  class: 'fa fa-close', 
-                  style: {fontSize:'24px', color:'#D44444'},
-                  on : { click : () => this.emit('remove', id)}
-                })
-              ,
-                h('i', { 
-                  class: 'fa-solid fa-check',
-                  style: { fontSize:'24px', color: '#0AA989'},
-                  on : {click : () => this.emit('accept', id)} })
-              
-            ])
-          ])
-    },
-    
-
-})
-
-const PendingItems = defineComponent({
-    // state()
-    // {
-    //   return {
-    //   }
-    // },
-    render()
-    {
-        const {isExpanded} = this.props
-        const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
-        return h('div', {class : 'pending-friends-items',
-            style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
-            }, data.map((userPendingrequest, i)=>
-            h(PendingItem, {
-              isExpanded : isExpanded,
-              id : userPendingrequest.id,
-              user : userPendingrequest.user,
-              i,
-              on : {remove : (id) => this.emit('remove', {id, i})}
-            })
-            ))
-    }
-})
-
-const PendingItem = defineComponent({
-    // state()
-    // {
-    //   return {
-    //   }
-    // },
-    render()
-    {
-     
-      const {id, user, isExpanded} = this.props 
-      return h('div', { class: 'pending-friend-item' , 
-          style : isExpanded ? 
-          { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
-            width:'700px', height:'65px'
-          } : {}
-          }, [
-            h('div', { class: 'picture-item' }, [
-              h('img', { src: 'images/kel-baam.png', alt: 'profile picture', class : 'picture-item' })
-            ]),
-            h('div', { class: 'data-user' }, [
-              h('span', {}, [user.first_name + ' ' + user.last_name]),
-              h('span', { style:{ color: '#A7A4A4'} }, ['@' + user.username])
-            ]),
-            h('div', { class: 'cancel-icon' }, [
-                h('i', { class: 'fa fa-close', style: { fontSize: '24px', color: '#D44444'} ,
-                on : {click : () => this.emit('remove', id)}})
-            ])
-          ])
-    }
-})

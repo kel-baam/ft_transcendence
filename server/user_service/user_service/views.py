@@ -75,7 +75,7 @@ class UserInfoView(APIView):
             print(">>>>>>>>>>>> incoming data : ", data)
             if 'picture' in request.FILES:
                 data['picture'] = request.FILES.get('picture', None)
-    
+            print(">>>>>>>>>>>>>>>> data is here : ", data)
             userSerializer = UserSerializer(user_instatnce, data=data, partial=True)
             if userSerializer.is_valid(raise_exception=True):
                 userSerializer.save()
@@ -83,7 +83,7 @@ class UserInfoView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except serializers.ValidationError:
-            print('>>>>>>>>>>>>>>>>>>> here the isssue : ', {key: value[0] for key, value in userSerializer.errors.items()})
+            # print('>>>>>>>>>>>>>>>>>>> here the isssue : ', {key: value[0] for key, value in userSerializer.errors.items()})
             return Response({key: value[0] for key, value in userSerializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print('>>>>>>>>>>>>>>>>>>>> here the issue internal server : ', e)

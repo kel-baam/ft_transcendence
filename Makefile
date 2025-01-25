@@ -1,5 +1,5 @@
 up :
-	docker compose up --build 
+	docker compose up 
 
 Down : 
 		docker ps -a -q | xargs -r docker rm -f && \

@@ -62,6 +62,15 @@ services:
       - .env
     volumes:
       - auth_volume:/usr/src/app
+    entrypoint: >
+          bash -c "
+            echo 'Waiting for PostgreSQL to be ready...';
+            until pg_isready -h db-service -U postgres -p 5432; do
+              sleep 2;
+            done;
+            echo 'PostgreSQL is up and running!';
+            exec python manage.py runserver 0.0.0.0:8000;
+          "
 
   user-service:
       build: ./server/user_service
@@ -76,6 +85,15 @@ services:
         - db
       volumes:
         - user_volume:/app
+      entrypoint: >
+          bash -c "
+            echo 'Waiting for PostgreSQL to be ready...';
+            until pg_isready -h db-service -U postgres -p 5432; do
+              sleep 2;
+            done;
+            echo 'PostgreSQL is up and running!';
+            exec python manage.py runserver 0.0.0.0:8001;
+          "
 
   pgadmin:
     image: dpage/pgadmin4:latest

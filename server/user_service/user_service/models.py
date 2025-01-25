@@ -23,7 +23,7 @@ class User(AbstractBaseUser):
         ],
         blank=True
     )
-    picture = models.ImageField(upload_to='user_pics/', default= 'user_pics/default.png', null=True, blank=True)
+    picture = models.ImageField(upload_to='users_pics/', default= 'users_pics/default.png', null=True, blank=True)
     gender = models.CharField(max_length=255, blank=True)
     nationality = models.CharField(max_length=255, blank=True) 
     status = models.BooleanField(null=True)

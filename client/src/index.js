@@ -93,7 +93,7 @@ const router = new HashRouter([
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
     {path : '/settings', component: settings},
-    {path:'/profile' , redirect: '/user'},
+    // {path:'/profile' , redirect: '/user'},
     {path:'/user', component: ProfileSelf},
     {path:'/user/:username', component: ProfileViewer},
 

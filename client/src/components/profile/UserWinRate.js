@@ -18,7 +18,7 @@ export const UserWinRate =  defineComponent({
       const {data, isLoading} = this.state
       // console.log(">>>>>>>>>>>>>>>>>>>>>>>> data and isloading ", data , "  |  ", isLoading)
         if (isLoading) {
-            return h('div', { class: 'wining-rate-container' }, ['Loading user stats...']);
+            return h('div', { class: 'wining-rate-container' });
         }
 
         return h('div', { class: 'wining-rate-container' }, [
