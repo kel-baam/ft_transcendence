@@ -20,7 +20,6 @@ export const UserWinRate =  defineComponent({
         if (isLoading) {
             return h('div', { class: 'wining-rate-container' });
         }
-
         return h('div', { class: 'wining-rate-container' }, [
             h('div', { class: 'title' }, [
               h('span', {}, [
@@ -43,28 +42,28 @@ export const UserWinRate =  defineComponent({
                           (data.losses / data.total_matches)* 100)}` + '%'])])])
                 ,
               h('div', { class: 'buttons' }, [
-                h('button', { class: 'win-button', style : {color:' #0AA989', 
-                  backgroundColor : this.state.activateSection === 'win'? '#ddd':'#CBCBCB'}, 
-                on : {
-                  click : () => {
-                      this.updateState({activateSection:'win'})
-                }}}, [
-                  'Win',
-                  h('br'),
-                  `${data.wins}` + '/' + `${data.total_matches}`
-                ]),
-                h('button', { class: 'lose-button', style: {color: '#D44444',
-                  backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
-                } ,
-                on : {
-                  click : ()=> {
-                    this.updateState({activateSection:'lose'})
-                }}
-                }, [
-                  'Loss',
-                  h('br'),
-                  `${data.losses}` + '/' + `${data.total_matches}`
-                ])
+                  h('button', { class: 'win-button', style : {color:' #0AA989', 
+                    backgroundColor : this.state.activateSection === 'win'? '#ddd':'#CBCBCB'}, 
+                  on : {
+                    click : () => {
+                        this.updateState({activateSection:'win'})
+                  }}}, [
+                    'Win',
+                    h('br'),
+                    `${data.wins}` + '/' + `${data.total_matches}`
+                  ]),
+                  h('button', { class: 'lose-button', style: {color: '#D44444',
+                    backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
+                  } ,
+                  on : {
+                    click : ()=> {
+                      this.updateState({activateSection:'lose'})
+                  }}
+                  }, [
+                    'Loss',
+                    h('br'),
+                    `${data.losses}` + '/' + `${data.total_matches}`
+                  ])
               ])
             ])
           ])

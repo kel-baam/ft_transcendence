@@ -90,8 +90,8 @@ class UserSerializer(serializers.ModelSerializer):
                 attrs['password']=make_password(attrs['password'])
             except ValidationError as e:
                 raise serializers.ValidationError({"New_password": e.messages[0]})
-       
-
+        # else:
+        #     password = None
         # if 'first_name'in attrs and len(attrs.get('first_name')) < 2 :
         #     raise serializers.ValidationError({"first_name": "First name must be longer than 2 characters."})
         # if 'last_name' in attrs and len(attrs.get('last_name')) < 2:
@@ -117,6 +117,7 @@ class UserSerializer(serializers.ModelSerializer):
         print(">>>>>>>>>>>>>> here in create fucntion ")
         player_data = validated_data.pop('player', {})
         user = User(**validated_data)
+        # user.set_unusable_password()
         user.save()
         if player_data:
             Player.objects.create(user=user,**player_data)
@@ -155,7 +156,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
         extra_kwargs = {
-            'password': {'write_only': True}
+                'password': {'write_only': True}
         }
 
 

@@ -124,7 +124,7 @@ export const SocialCard = defineComponent({
     },
     removeRequest({id, i})
     {
-        customFetch(`http://localhost:3000/api/user/friendships/?id=${id}`, {
+        customFetch(`http://localhost:3000/api/user/friendships?id=${id}`, {
           method : 'DELETE'
         }).then((res)=>
         {
@@ -139,7 +139,7 @@ export const SocialCard = defineComponent({
     },
     acceptRequest({id, i})
     {
-      customFetch(`http://localhost:3000/api/user/friendships/`, {
+      customFetch(`http://localhost:3000/api/user/friendships`, {
         method : 'PUT',
         headers: {
           'Content-Type': 'application/json', // Explicitly set content type
@@ -167,6 +167,7 @@ export const SocialCard = defineComponent({
       if(JSON.stringify(this.appContext.router.params) !== '{}')
       {
         endPoint = `http://localhost:3000/api/user/friendships?username=${this.appContext.router.params.username}&status=accepted`
+        this.state.isOwn = false
         // console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed , ', endPoint)
       }
       customFetch(endPoint)
@@ -224,9 +225,9 @@ export const SocialCard = defineComponent({
             });
 
         })
-        .catch(error => {
-            // console.log(">>>>>>>>>>>> error in win  : ", error)
-        })
+        // .catch(error => {
+        //     // console.log(">>>>>>>>>>>> error in win  : ", error)
+        // })
     }
 })
 

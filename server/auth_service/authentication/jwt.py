@@ -32,7 +32,7 @@ def generateToken(user,level):
                 return ({"access":access,
                         "refresh":refresh})
         except Exception as e:
-                logger.debug("cexpeption loged",e)
+                print("jwt debugger",e,user)
                 return JsonResponse({'message': 'Invalid token'},status = 400)
 
 
@@ -52,7 +52,7 @@ def token_required(request):
                 else:
                         return JsonResponse({'message': 'Invalid user'},status =401)
         except Exception as e:
-                logger.debug("cexpeption loged",e,"access",access_token)
+                print("token required debugger",e,"access",access_token)
                 return JsonResponse({'message': 'Invalid token'},status = 401)
 
 

@@ -44,7 +44,9 @@ import{createApp, defineComponent, DOM_TYPES, h,
         [
           h('div', { class: 'picture-item' },
             [
-              h('img', { src: 'images/kel-baam.png', alt:'profile picture', class: 'picture-item' })
+              h('img', { src: `http://localhost:3000${user.picture}`, alt:'profile picture', class: 'picture-item',
+                style : {'object-fit': 'cover'}
+              })
             ]
           ),
           h('div', { class: 'data-user' },

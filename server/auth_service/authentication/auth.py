@@ -158,7 +158,7 @@ def storeIntraData(intraData):
                         },
                         'picture':intraData.get('image').get('link')
                 }
-                response = requests.post('http://user-service:8001/api/user/', json=data)
+                response = requests.post('http://user-service:8001/api/user', json=data)
                 # logger.debug("response from souad =============>",response,"||data",data)
                 print(">>>>>>>>>>>>>>>>>>> response from souad : ", response)
                 if response.status_code == 200:
@@ -166,6 +166,7 @@ def storeIntraData(intraData):
                 else:
                         return redirect(f"{domain}/#/login") 
         except requests.RequestException as e:
+                print(">>>>>>>>>>>>>>>>>>> exeption from souad : ", response,e)
                 return redirect(f"{domain}/#/login") 
 
 
@@ -252,7 +253,7 @@ def  registerForm(request):
                         }
                 }
                 response = requests.post('http://user-service:8001/api/user/',json=data)
-                logger.debug('>>>>>>>>>>>>>> response from souad : %s', response)
+                print('>>>>>>>>>>>>>> response from souad : %s', response)
                 if(response.status_code == 200):
                         uid = urlsafe_base64_encode(username.encode())
                         verification_link = f'http://localhost:3000/auth/verify/{uid}/{token}/'

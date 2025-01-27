@@ -22,19 +22,19 @@ from io import BytesIO
 
 # logging.basicConfig(level=logging.DEBUG)
 # logger = logging.getLogger(__name__)
-class UserAuthenticationView(APIView):
-    def get(self, request, username):
-        try:
-            user = User.objects.get(username=username)
-            Userserializer =UserSerializer(user, 
-            fields=['username', 'password']).data
-            return Response(Userserializer, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except serializers.ValidationError:
-            return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
+# class UserAuthenticationView(APIView):
+#     def get(self, request, username):
+#         try:
+#             user = User.objects.get(username=username)
+#             Userserializer =UserSerializer(user, 
+#             fields=['username', 'password']).data
+#             return Response(Userserializer, status=status.HTTP_200_OK)
+#         except User.DoesNotExist:
+#             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+#         except Exception as e:
+#             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#         except serializers.ValidationError:
+#             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserInfoView(APIView):
@@ -43,6 +43,11 @@ class UserInfoView(APIView):
     def get(self, request):
         try:
             # print(">>>>>>>>>>>>>>>>>>> username of the searched user : ", request.query_params.get('username', None))
+            fields ={}
+            if request.query_params.get('fields', None):
+                print(">>>>>>>> here fields exist : ", request.query_params.get('fields', None))
+                fields = set(request.query_params.get('fields', None).split(','))
+                print('>>>>>>>>>>>>> fields extracted ', fields)
             if request.query_params.get('username', None) :
                 other_user = User.objects.get(username=request.query_params.get('username'))
                 logged_in_user = User.objects.get(username=request.META.get('HTTP_X_AUTHENTICATED_USER'))
@@ -51,8 +56,8 @@ class UserInfoView(APIView):
                 print(">>>>>>>>>>>>>>>>>> here else ")
                 username = request.META.get('HTTP_X_AUTHENTICATED_USER')
                 user = User.objects.get(username=username)
-                Userserializer =UserSerializer(user, exclude = ['password'], context = {'logged_in_user' : user}).data
-            print('>>>>>>>>>>>>>>>>>>>> the data got it  : ', Userserializer)
+                Userserializer =UserSerializer(user, exclude = ['password'], context = {'logged_in_user' : user}, fields=fields).data
+            # print('>>>>>>>>>>>>>>>>>>>> the data got it  : ', Userserializer)
             return Response(Userserializer , status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -371,5 +376,21 @@ class FriendshipView(APIView):
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         
+class UserRankingView:
+    def get(self, request):
+        # Get the 'top' query parameter
+        top = request.GET.get('top', None)
 
-    
+        # Fetch all players, or only the top X players if 'top' is provided
+        players=[]
+        if top is not None and top.isdigit():
+            limit = int(top)
+            players = list(Player.objects.order_by('rank')[:limit].values('username', 'rank'))
+        else:
+            players = list(Player.objects.order_by('rank').values('username', 'rank'))
+
+        # Prepare the response
+        # response = {
+        #     "players": players
+        # }
+        return Response(players, status=status.HTTP_200_OK)

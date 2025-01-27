@@ -110,7 +110,7 @@ export const ProfileViewer = defineComponent({
     const {isBlured, Expanded, activateSection, isLoading, isOwn} = this.state
     const username = this.appContext.router.params.username; 
     if (isLoading)
-      return h('div', {id:'global'}, ["is loading............"])
+      return h('div', {id:'global'})
     // if (JSON.stringify(this.appContext.router.params) !== '{}')
     //   this.updateState({isLoading:true})
       return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 

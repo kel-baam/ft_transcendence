@@ -17,6 +17,7 @@ export const UserCard = defineComponent({
     render(){
 
         const {data, isLoading} = this.state
+        const {isOwn} = this.props
         if (isLoading) 
             return h('div', { class: 'infos-user-container' });
         return  h('div', { class: 'infos-user-container' },
@@ -80,7 +81,7 @@ export const UserCard = defineComponent({
                                 on : {
                                     click : ()=>
                                     {
-                                        customFetch('http://localhost:3000/api/user/friendships/', {
+                                        customFetch('http://localhost:3000/api/user/friendships', {
                                             method : 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json',
@@ -153,23 +154,28 @@ export const UserCard = defineComponent({
 
    onMounted()
     {
-        var  endPoint  = 'http://localhost:3000/api/user/'
+        var  endPoint  = 'http://localhost:3000/api/user?fields=first_name,last_name,username,picture,score,rank'
         if(JSON.stringify(this.appContext.router.params) !== '{}')
         {
             console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
             this.state.isOwn  = false
-            endPoint = `http://localhost:3000/api/user?username=${this.appContext.router.params.username}`
+            endPoint = `http://localhost:3000/api/user?username=${this.appContext.router.params.username}&
+            fields=first_name,last_name,username,picture,score,rank`
         }
         customFetch(endPoint)
         .then(result =>{
-
-            if (!result.ok)
-            {
-                // console.log("res isn't okey ," , " | ", this)
-                
-                this.appContext.router.navigateTo('/login')
-            }
-
+                console.log(">>>>>>>>>>>>> result.status: ", result.status)
+                switch(result.status)
+                {
+                    case 401:
+                        console.log(">>>>>>>>>>>>> here ")
+                        this.appContext.router.navigateTo('/login')
+                        break;
+                    // case 404:
+                    //     console.log(">>>>>>>----------- 404 >>>>>> here ")
+                    //     h('h1', {}, ['404 not found'])
+                    //     break;
+                }
             return result.json()
         })
         .then(res =>{
@@ -178,13 +184,13 @@ export const UserCard = defineComponent({
             this.updateState({
                     isLoading: false,  
                     data: res,   
-                    error: null   
+                    // error: null  
             });
 
         })
-        .catch(error => {
-            // console.log(">>>>>>>>>>>> error : ", error)
-        })
+        // .catch(error => {
+        //     console.log(">>>>>>>>>>>> error : ", error)
+        // })
       
     },
     handleFileChange(event)
@@ -193,20 +199,30 @@ export const UserCard = defineComponent({
         const formData = new FormData();
         formData.append('picture', file);
         console.log(">>>>>>>>>>>>>>-------------------------------> file : ", file)
-        customFetch('http://localhost:3000/api/user/', {
+        customFetch('http://localhost:3000/api/user', {
             method : 'PUT',
             body : formData
         }
        )
         .then(result =>{
 
-            if (!result.ok)
-            {
-                // console.log("res isn't okey ," , " | ", this)
+            // if (!result.ok)
+            // {
+            //     // console.log("res isn't okey ," , " | ", this)
                 
-                this.appContext.router.navigateTo('/login')
+            //     this.appContext.router.navigateTo('/login')
+            // }
+            switch(result.status)
+            {
+                case 401:
+                    console.log(">>>>>>>>>>>>> here ")
+                    this.appContext.router.navigateTo('/login')
+                    break;
+                // case 404:
+                //     console.log(">>>>>>>----------- 404 >>>>>> here ")
+                //     h('h1', {}, ['404 not found'])
+                //     break;
             }
-
             return result.json()
         })
         .then(res =>{
@@ -220,9 +236,9 @@ export const UserCard = defineComponent({
             console.log(">>>>>>>>>>>>>>>>>>> state here after change the image : ", this.state)
 
         })
-        .catch(error => {
-            // console.log(">>>>>>>>>>>> error : ", error)
-        })
+        // .catch(error => {
+        //     // console.log(">>>>>>>>>>>> error : ", error)
+        // })
 
     }
 })

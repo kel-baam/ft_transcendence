@@ -7,11 +7,16 @@ from django.core.validators import RegexValidator, MinLengthValidator
 class User(AbstractBaseUser):
     
     username = models.CharField(max_length=50, unique=True, validators=[MinLengthValidator(3),
-                RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetic characters are allowed.')])
+                RegexValidator(r'^[a-zA-Z0-9!@#$%^&*()_+=\-\[\]{};:\'",.<>?/|\\`~ \t\n\r]*$',
+        'Only alphabetic, numeric, special characters, and whitespace are allowed.')])
     first_name = models.CharField(max_length=50, validators=[MinLengthValidator(3), 
-                RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetic characters are allowed.')])
+                RegexValidator(r'^[a-zA-Z_\-\r ]*$',
+    'Only alphabetic characters, underscores, hyphens, carriage returns, and spaces are allowed.')]
+)
     last_name = models.CharField(max_length=50, validators=[MinLengthValidator(3),
-                 RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetic characters are allowed.')                                           ])
+                RegexValidator(r'^[a-zA-Z_\-\r ]*$',
+    'Only alphabetic characters, underscores, hyphens, carriage returns, and spaces are allowed.'
+)                                           ])
     email = models.EmailField(max_length=50, unique=True)
     phone_number = models.CharField(
         max_length=15,  # Enough to store international numbers
