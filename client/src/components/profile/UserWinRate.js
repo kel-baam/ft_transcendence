@@ -68,31 +68,31 @@ export const UserWinRate =  defineComponent({
   },
   onMounted()
   {
-      fetch('http://localhost:3000/api/user/stats')
-      .then(result =>{
+      // fetch('http://localhost:3000/api/user/stats')
+      // .then(result =>{
 
-          // console.log("----------------------> data fetched ", result)
-          return result.json()
-      })
-      .then(res =>{
-        // console.log('>>>>>>>>>>>>>>>>>> here : ', res)
-          console.log(">>>>>>>>>>>>>>>>>>>>>> here ")
-        this.updateState({
-          isLoading: false,  
-          // data: res,
-          data : {
-            total_matches: '0',
-            losses: '0',
-            wins : '0',
-          }  , 
-          error: null   
-        });
-        console.log("----------------------> win states ", `${Math.round(isNaN(this.state.data.wins / this.state.data.total_matches) ? 0 :
-           (this.state.data.wins / this.state.data.total_matches) * 100)}`)
-        // console.log(">>>>>> res : ", res)
-      })
-      .catch(error=>{
-          console.log(">>>>>>>>>>>> error : ", error)
-      })
+      //     // console.log("----------------------> data fetched ", result)
+      //     return result.json()
+      // })
+      // .then(res =>{
+      //   // console.log('>>>>>>>>>>>>>>>>>> here : ', res)
+      //     console.log(">>>>>>>>>>>>>>>>>>>>>> here ")
+      //   this.updateState({
+      //     isLoading: false,  
+      //     // data: res,
+      //     data : {
+      //       total_matches: '0',
+      //       losses: '0',
+      //       wins : '0',
+      //     }  , 
+      //     error: null   
+      //   });
+      //   console.log("----------------------> win states ", `${Math.round(isNaN(this.state.data.wins / this.state.data.total_matches) ? 0 :
+      //      (this.state.data.wins / this.state.data.total_matches) * 100)}`)
+      //   // console.log(">>>>>> res : ", res)
+      // })
+      // .catch(error=>{
+      //     console.log(">>>>>>>>>>>> error : ", error)
+      // })
   }
 })

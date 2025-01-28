@@ -46,7 +46,7 @@ export function patchDOM(oldVdom, newVdom, parentEl, hostComponent = null) {
         break
         }
 }
-
+https://profile.intra.42.fr/
 patchChildren(oldVdom, newVdom, hostComponent)
 
 return newVdom

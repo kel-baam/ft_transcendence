@@ -13,7 +13,8 @@ urlpatterns = [
     path('api/user', UserInfoView.as_view()),
     path('api/user/stats', UserStatsView.as_view()),
     path('api/user/matches/', MatchHistoryView.as_view()),
-    path('api/user/friendships/', MatchHistoryView.as_view())
+    path('api/user/friendships/', MatchHistoryView.as_view()),
+    path('api/user/notifications/', NotificationsView.as_view())
 
 ]
 

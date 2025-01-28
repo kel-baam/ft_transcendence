@@ -34,7 +34,7 @@ export const RouterOutlet = defineComponent({
         this.handleRouteChange(to)
       })
   
-      this.updateState({ subscription , isLoading:false })
+      // this.updateState({ subscription , isLoading:false })
     },
   
     onUnmounted() {
@@ -44,17 +44,17 @@ export const RouterOutlet = defineComponent({
     },
   
     handleRouteChange(matchedRoute) {
-      this.updateState({ matchedRoute})
+      // console.log(">>>>>>>>>>>>>>>>> HERE CHANGE ROUTE")
+      this.updateState({ matchedRoute, isLoading:false })
 
     },
   
     render() {
       if (this.state.isLoading)
-        return h('h1', {}, ['is loading..........'])
+        return h('div', { id: 'global' }, 
+          ['is loading..........']
+        )
       const { matchedRoute } = this.state
-    
-      return h('div', { id: 'global' }, [
-        matchedRoute ? h(matchedRoute.component) : null,
-      ])
+      return h( matchedRoute.component )
     },
   })

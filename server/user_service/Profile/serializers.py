@@ -223,3 +223,10 @@ class RequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Request
         fields = '__all__'
+
+
+class NotificationSerializers(serializers.ModelSerializer):
+    class Meta:
+        model   = Notification
+        fields  = '__all__'
+        

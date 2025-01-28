@@ -13,8 +13,13 @@ export const sidebarLeft = defineComponent({render()
                 on :{ click:()=>{ this.appContext.router.navigateTo('/chat')} }
             }),
             h('i', {
-                class: 'fa-sharp fa-solid fa-house-chimney icon',
-                on :{ click:()=>{ this.appContext.router.navigateTo('/home')} }
+                class: `fa-sharp fa-solid fa-house-chimney icon`,
+                on :{
+                    click:()=>
+                    {
+                        this.appContext.router.navigateTo('/home')
+                    },
+                }
             }),
             h('i', {
                 class: 'fa-solid fa-ranking-star icon', 

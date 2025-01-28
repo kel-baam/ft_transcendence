@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from channels.db import database_sync_to_async
 from django.core.validators     import MinLengthValidator
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils import timezone 
 
 class User(AbstractBaseUser):
@@ -153,21 +154,26 @@ class Achievement(models.Model):
         db_table= 'Achievement'
 
 
+
 class Notification(models.Model):
     NOTIF_CHOICES = [
         ('tournament', 'Tournament'),
+        ('information', 'information'),
         ('request', 'Request'),
         ('invitation', 'Invitation'),
         ('accepted', 'Accepted'),
     ]
-    
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
-    type = models.CharField(max_length=10, choices=NOTIF_CHOICES)
+    type = models.CharField(max_length=100, choices=NOTIF_CHOICES)
     message = models.TextField()  # A field for the actual notification message
     time = models.DateTimeField(auto_now_add=True)  # Store both date and time of notification creation
     read_at = models.DateTimeField(null=True, blank=True)  # Track when the notification was read
-    
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id    = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
     def mark_as_read(self):
         self.read_at = timezone.now()
         self.save()

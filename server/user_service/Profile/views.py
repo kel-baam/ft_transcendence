@@ -225,6 +225,7 @@ class FriendshipView(APIView):
             # else :
             #     username = request.user
             # Get the 'status' parameter from the query string (default to 'friend' if not provided)
+            
             status_filter = request.query_params.get('status', None)
             # print("****************> status ", status_filter)
             user= User.objects.get(username=username)
@@ -330,3 +331,21 @@ class FriendshipView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
+class NotificationsView(APIView):
+    def get(self, request):
+        try:
+            username    = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            user     = User.objects.get(username=username)
+
+            print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", username)
+            
+            notif = NotificationSerializers(Notification.objects.filter(receiver=user), many=True)
+
+            print(">>>>>>>>>>>>>>>>>> notifs : ", notif.data)
+            return Response(notif.data, status=status.HTTP_200_OK)
+        
+        except serializers.ValidationError:
+             return  Response({key: value[0] for key, value in serializers.ValidationError.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -13,17 +13,21 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
         model   = PlayerTournament
         fields  = '__all__'
 
-    def validate_nickname(self, value):
-        """ Custom validation for nickname """
-        if not value:
-            raise ValidationError('Nickname cannot be empty.')
-        return value
+    def validate(self, data):
+        """Override the default validation to handle custom checks"""
 
-    def validate_avatar(self, value):
-        """ Custom validation for avatar """
-        if not value:
-            raise ValidationError('Avatar cannot be empty.')
-        return value
+        print("<<<<<<<<<<<< ", data)
+        status = data.get('status')
+
+        nickname = data.get('nickname')
+        if status == 'accepted' and not nickname:
+            raise ValidationError({'nickname': 'Nickname cannot be empty.'})
+        avatar = data.get('avatar')
+        if status == 'accepted' and not avatar:
+            raise ValidationError({'avatar': 'Avatar cannot be empty.'})
+        
+        return data
+
 
 class TournamentSerializer(serializers.ModelSerializer):
     participants = PlayerTournamentSerializer(many=True, required=False)
@@ -31,19 +35,19 @@ class TournamentSerializer(serializers.ModelSerializer):
         model   = Tournament
         fields  = '__all__'
 
-    def validate_name(self, value):
-        """ Custom validation for name """
-        if not value:
-            raise ValidationError('Tournament name cannot be empty.')
-        return value
 
-    def validate_type(self, value):
-        """Custom validation for type"""
-        print("validate_type----------------> ", value)
-        if not value:
-            raise serializers.ValidationError('You must select a type.')
-        return value
+    def validate(self, data):
+        """Override the default validation to handle custom checks"""
+        print(">>>>>> ", data)
 
+        name = data.get('name')
+        if not name:
+            raise ValidationError({'name': 'Tournament name cannot be empty.'})
+        type = data.get('type')
+        if not type:
+            raise ValidationError({'type': 'You must select a type.'})
+
+        return data
 
 class NotificationSerializers(serializers.ModelSerializer):
     class Meta:

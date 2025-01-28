@@ -7,73 +7,141 @@ import { WelcomingSection } from '../components/home/WelcomingSection.js'
 import { TrainingBoot } from '../components/home/TrainingBoot.js'
 import { TournamentSection } from '../components/home/TournamentSection.js'
 import { PlayerVsPlayer } from '../components/home/PlayerVsPlayer.js'
+import { customFetch } from '../package/fetch.js'
+import { showErrorNotification } from './utils/errorNotification.js'
 
 export const Home = defineComponent({
     state(){
         return {
-            socket  : null,
-            isFilled:true,
             notificationActive: false,
+            isBlur:false,
+            notification_data: null,
+            homeActive :false
         }
     },
 
-    // onMounted() {
-    //     this.initWebSocket();
-    // },
+    async submitForm(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        formData.append('tournament_id', JSON.stringify(this.state.id));
+        formData.append('status', 'accepted');
 
-    // initWebSocket() {
-    //     if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
+        try {
+            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+                method: 'PUT',
+                body: formData,
+                credentials: 'include',
+            });
 
-    //         this.state.socket = new WebSocket('ws://localhost:8001/ws/notification/');
-    
-    //         this.state.socket.onopen = () => {
-    //             console.log('WebSocket connection established');
-    
-    //         };
-    
-    //         this.state.socket.onmessage = async (event) => {
+            if (!response.ok) {
+                if (response.status === 401) this.appContext.router.navigateTo('/login');
+                const errorText = await response.json();
+                throw new Error(Object.values(errorText)[0]);
+            }
 
-    //             console.log('Message received in notif : ');
-                
-    //             const data = JSON.parse(event.data);
-    //             this.updateState({
-    //                 notificationActive : true,
-    //             })
-    //             console.log("--------------> ", data)
-    //         };
-    
-    //         this.state.socket.onerror = (error) => {
-    //             console.error('WebSocket error:', error);
-    //         };
-    
-    //         this.state.socket.onclose = () => {
-    //             console.log('WebSocket connection closed');
-    //         };
-    //     }
-    // },
+            const successData = await response.json();
+            console.log("Player added:", successData.message);
+            this.updateState({ isBlur: false });
+        } catch (error) {
+            showErrorNotification(error);
+        }
+    },
+
 
     render()
     {
         return h('div', {id:'global'}, [h(header, {
-            icon_notif: this.state.notificationActive,
-            on          : {
-                iconClick :()=>{
-                    this.updateState({ notificationActive: !this.state.notificationActive }); 
+                icon_notif: this.state.notificationActive,
+                on          : {
+                    iconClick :()=>{
+                        this.updateState({ notificationActive: !this.state.notificationActive }); 
+                    },
+                    blur :(notification_data)=> {
+                        this.updateState({
+                            isBlur            : !this.state.isBlur,
+                            notification_data : notification_data
+                        })
+                    },
                 }
-            }
-        }),h('div', {class:'content'}, 
-            [
-                h(sidebarLeft, {}), h('div', {class:'home-content' ,style:{  filter: !this.state.isFilled?'blur(3px)':undefined }},
-                [
-                    h('div', { class: 'home-top' },
-                        [h(LeaderboardHome, {}), h(WelcomingSection, {})]
-                    ),
-                    h('div', { class: 'home-down'},
-                        [h(TrainingBoot, {}), h(TournamentSection, {}), h(PlayerVsPlayer, {}) ]
-                    )
-                ]),
-            !this.state.isFilled ? h(InformationsForm,{}):undefined,
-        ]) 
+            }),
+            h('div', {class:'content'},[
+                h(sidebarLeft, {}), h('div', 
+                    {
+                        class :'home-content' ,
+                        style : this.state.isBlur ? { filter : 'blur(4px)'} : {}
+                    },
+                    [
+                        h('div', { class: 'home-top' },
+                            [h(LeaderboardHome, {}), h(WelcomingSection, {})]
+                        ),
+                        h('div', { class: 'home-down'},
+                            [h(TrainingBoot, {}), h(TournamentSection, {}), h(PlayerVsPlayer, {}) ]
+                        )
+                    ]),
+            ]),
+            this.state.isBlur ? 
+            h('div', { class: 'join-player-form' }, [
+                h('i', {
+                    class   : 'fa-regular fa-circle-xmark icon',
+                    on      : {
+                        click : () => {
+                            this.updateState({
+                                isBlur: false,
+                            })
+                        }
+                    }
+                }),
+                h('form', {
+                    class   : 'form1',
+                    on      : {submit: this.submitForm.bind(this) }
+                }, [
+                    h('div', { class: 'avatar' }, [
+                        h('img', { 
+                            class   : 'createAvatar', 
+                            src     : './images/people_14024721.png', 
+                            alt     : 'Avatar' 
+                        }),
+                        h('div', { 
+                            class   : 'editIcon', 
+                            on      : {
+                                click: () => { document.getElementById(`file-upload1`).click(); }
+                            }
+                        }, [
+                            h('input', {
+                                type    : 'file',
+                                id      : 'file-upload1',
+                                name    : 'player_avatar',
+                                accept  : 'image/*',
+                                style   :{
+                                    display         : 'none',
+                                    pointerEvents   : 'none'
+                                },
+                                on      : { change: (event) => {
+                                    const file = event.target.files[0];
+                                    if (file) {
+                                        const reader    = new FileReader();
+                                        reader.onload   = (e) => {
+                                            document.querySelector(`.createAvatar`).src = e.target.result;
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                            }),
+                            h('i', { class: 'fas fa-edit icon' })
+                        ])
+                    ]),
+                    h('div', { class: 'createInput' }, [
+                        h('label', { htmlFor: 'playerNickname' }, ['Nickname:']),
+                        h('br'),
+                        h('input', { 
+                            type        : 'text', 
+                            name        : 'nickname', 
+                            placeholder : 'Enter Nickname...' 
+                        })
+                    ]),
+                    h('button', { type: 'submit' }, ['Submit'])
+                ])
+            ]) : null
         ])
     }                    
 })

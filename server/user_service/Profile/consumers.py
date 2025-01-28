@@ -10,7 +10,7 @@ class Notification(AsyncWebsocketConsumer):
     async def connect(self):
         print("--------> WebSocket connection opened")
 
-        self.user_id = None
+        self.user_id    = None
         self.group_name = None
 
         for header_name, header_value in self.scope["headers"]:

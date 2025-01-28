@@ -87,8 +87,8 @@ export const UserCard = defineComponent({
             return result.json()
         })
         .then(res =>{
-            console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
-            console.log("res is okey")
+            // console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
+            // console.log("res is okey")
             this.updateState({
                     isLoading: false,  
                     data: res,   

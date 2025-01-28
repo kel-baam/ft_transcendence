@@ -14,6 +14,8 @@ import json
 from channels.layers                import get_channel_layer
 from asgiref.sync                   import async_to_sync
 from django.utils                   import timezone 
+from django.contrib.contenttypes.models import ContentType
+
 
 class TournamentAPIView(APIView):
     def post(self, request):
@@ -50,43 +52,54 @@ class TournamentAPIView(APIView):
             selected_players    = json.loads(invited_players) if isinstance(invited_players, str) else invited_players
 
             print("invited players : ", selected_players)
-            
-            for player in selected_players:
-                player_instance     = Player.objects.get(user_id=player.get('id'))
-                player_data         = {
-                    'tournament'    : tournament.id,
-                    'player'        : player_instance.id,
-                    'status'        : 'invited',
-                    'role'          : 'participant',
-                }
-                participants_data.append(player_data)
-                notif_data = {
-                    'sender'    : creator.id,
-                    'receiver'  : player['id'],
-                    'type'      : 'tournament',
-                    'message'   : f'You have been invited to join tournament {tournament.name}.',
-                }
-                notification_data.append(notif_data)
+            if invited_players:
+                for player in selected_players:
+                    print("fgfdgfdgd")
+                    player_instance     = Player.objects.get(user_id=player['id'])
+                    player_data         = {
+                        'tournament'    : tournament.id,
+                        'player'        : player_instance.id,
+                        'status'        : 'invited',
+                        'role'          : 'participant',
+                    }
+                    participants_data.append(player_data)
+                    content_type = ContentType.objects.get_for_model(tournament)
+                    notif_data = {
+                        'sender': creator.id,
+                        'receiver': player['id'],
+                        'type': 'tournament',
+                        'content_type': content_type.id,
+                        'object_id': tournament.id,
+                        'message': f'{creator.username} invited you to join a tournament name is {tournament.name}.',
+                    }
+                    notification_data.append(notif_data)
+                    
+            print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", participants_data)
 
-            serializer = PlayerTournamentSerializer(data=participants_data, many=True)
+            if invited_players:
+                serializer = PlayerTournamentSerializer(data=participants_data, many=True)
+            else:
+                serializer = PlayerTournamentSerializer(data=participants_data)
+                
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-            
             if tournament.type == 'private':
                 existing_participants = PlayerTournament.objects.filter(tournament=tournament, role='participant')
                 if existing_participants.count() != 3:
                     tournament.delete()
                     return Response({'error': 'A private tournament have 3 participants excluding the creator.'}, status=status.HTTP_400_BAD_REQUEST)
+          
+            print("+++++++++++++--------------------------+++++++++++++++")
+    
+            if notification_data :
+                serializer = NotificationSerializers(data=notification_data, many=True)
 
+                print("------> ", serializer)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
 
-            serializer = NotificationSerializers(data=notification_data, many=True)
-
-            print("------> ", serializer)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-
-            for notif in serializer.instance:
-                self.broadcast_notification(notif)
+                for notif in serializer.instance:
+                    self.broadcast_notification(notif)
 
             return Response(
                     {"message": "Tournament created successfully"},
@@ -111,14 +124,17 @@ class TournamentAPIView(APIView):
         
         except Exception as e:
             
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", e)
 
             if tournament:
                 tournament.delete()
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         
+# -----------------------------------notif---------------------------------------------------------------
+
     def broadcast_notification(self, notification):
         channel_layer = get_channel_layer()
+        print(">>>>>>>>>>>>>> : ", notification)
         group_name    = f'user_{notification.receiver.id}'
 
         print("------------- ", f'user_{notification.receiver.id}')
@@ -136,50 +152,109 @@ class TournamentAPIView(APIView):
                 }
             }
         )
+            
+# -----------------------------------put---------------------------------------------------------------
+
 
     def put(self, request):
         try:
-            username        = request.META.get('HTTP_X_AUTHENTICATED_USER')
-            user            = User.objects.get(username=username)
-            player          = Player.objects.get(user=user)
+            username = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            user     = User.objects.get(username=username)
+            player   = Player.objects.get(user=user)
 
-            tournament_id   = request.data.get("tournament_id")
-            avatar          = request.FILES.get("player_avatar")
-            nickname        = request.data.get("nickname")
-            status_value    = request.data.get("status")
-            
-            player_data     = {
-                'tournament' : tournament_id,
-                'player'     : player.id,
-                'status'     : status_value,
-                'nickname'   : nickname,
-                'avatar'     : avatar
+            tournament_id = request.data.get("tournament_id")
+            avatar        = request.FILES.get("player_avatar", None)
+            nickname      = request.data.get("nickname", None)
+            status_value  = request.data.get("status")
+
+            try:
+                tournament = Tournament.objects.get(id=tournament_id)
+            except Tournament.DoesNotExist:
+                return Response(
+                    {"error": "Tournament doesn't exist."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            player_tournament, created = PlayerTournament.objects.get_or_create(
+                tournament_id = tournament_id,
+                player        = player,
+                defaults      = {
+                    'nickname': nickname,
+                    'avatar'  : avatar,
+                    'status'  : status_value,
+                }
+            )
+
+            if not created:
+                if player_tournament.status == 'declined':
+                    return Response(
+                        {"error": "You have already declined the invitation."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                elif player_tournament.status == 'accepted':
+                    return Response(
+                        {"error": "You have already accepte the invitation."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                player_tournament.nickname = nickname
+                player_tournament.avatar   = avatar
+                player_tournament.status   = status_value
+                player_tournament.save()
+
+            serializer = PlayerTournamentSerializer(player_tournament)
+
+            creator_id   = tournament.creator.id
+            content_type = ContentType.objects.get_for_model(tournament)
+            message      = ''
+
+            if status_value == 'declined':
+                message = f'{user.username} declined your invitation for the tournament: {tournament.name}.'
+            elif status_value == 'accepted':
+                message = f'{user.username} joined your tournament: {tournament.name}.'
+
+            notif_data = {
+                'sender'      : user.id,
+                'receiver'    : creator_id,
+                'type'        : 'information',
+                'content_type': content_type.id,
+                'object_id'   : tournament.id,
+                'message'     : message,
             }
 
-            serializer = PlayerTournamentSerializer(data=player_data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
+            notif_serializer = NotificationSerializers(data=notif_data)
+            if notif_serializer.is_valid(raise_exception=True):
+                notif_serializer.save()
+                self.broadcast_notification(notif_serializer.instance)
 
             return Response(
-                {"message": "Player added successfully to the tournament."}
-                , status=status.HTTP_200_OK
+                {"message": "Tournament updated successfully."},
+                status=status.HTTP_200_OK
             )
-        except serializers.ValidationError:
 
+        except serializers.ValidationError:
             print("put ++++++++++++++++++++++++++++++++++++", serializer.errors)
-            
+
             if isinstance(serializer.errors, list):
-                errors = {key: value[0] if isinstance(value, list) and value else value
-                        for error in serializer.errors for key, value in error.items()}
+                errors = {
+                    key: value[0] if isinstance(value, list) and value else value
+                    for error in serializer.errors for key, value in error.items()
+                }
             elif isinstance(serializer.errors, dict):
-                errors = {key: value[0] if isinstance(value, list) and value else value
-                        for key, value in serializer.errors.items()}
+                errors = {
+                    key: value[0] if isinstance(value, list) and value else value
+                    for key, value in serializer.errors.items()
+                }
             else:
                 errors = str(serializer.errors)
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+# -----------------------------------delete---------------------------------------------------------------
+
     def delete(self, request):
         try:
             username        = request.META.get('HTTP_X_AUTHENTICATED_USER')
@@ -189,6 +264,8 @@ class TournamentAPIView(APIView):
             tournament      = get_object_or_404(Tournament, id = tournament_id)
 
             if tournament.creator_id == user.id:
+                # print("===> on Delete : ", ContentType.objects.get_for_model(Tournament))
+                # Notification.objects.filter(content_type=ContentType.objects.get_for_model(Tournament), object_id=tournament.id).delete()
                 tournament.delete()
                 return Response({'message': 'Tournament deleted successfully'}, status=201)
             else:
@@ -196,6 +273,11 @@ class TournamentAPIView(APIView):
                 return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
         except Tournament.DoesNotExist:
             return Response({"error": "Tournament not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# i don't have friends yet so i will get all the users of the website i will update it soon
+
+# -----------------------------------GET---------------------------------------------------------------
 
 class CustomAPIException(APIException):
     status_code     = status.HTTP_400_BAD_REQUEST
@@ -210,7 +292,6 @@ class CustomAPIException(APIException):
         if code is not None:
             self.status_code = code
 
-# i don't have friends yet so i will get all the users of the website i will update it soon
 
 @api_view(['GET'])
 def friends_list(request):
@@ -263,13 +344,6 @@ def isTournamentReady(request, tournament_id):
             {"error": "An unexpected error occurred: " + str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
-
-# def get_user(user_id):
-#     try:
-#         return User.objects.get(id=user_id)
-#     except Http404:
-#         raise CustomAPIException("User not found")
 
 def get_tournament(tournament_id, user):
     try:

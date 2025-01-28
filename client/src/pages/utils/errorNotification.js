@@ -5,7 +5,7 @@ export function showErrorNotification(message) {
     
     notification.style.position = 'fixed';
     notification.style.top = '50px';
-    notification.style.left = '86%';
+    notification.style.left = '77.5%';
     notification.style.width = '500px';
     notification.style.height = '100px'; 
     notification.style.transform = 'translateX(-50%)';

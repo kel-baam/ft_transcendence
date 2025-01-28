@@ -34,7 +34,7 @@ export const MessageList = defineComponent(
                             // console.log('data===',msgData.sender, "   ", roomName)
                             // console.log("------------------> typeof roomname : ", typeof(roomName))
                             const result = msgData.roomName.split("_")
-                            console.log(">>>>>>>>>>>>>>>>> result : ", result)
+                            // console.log(">>>>>>>>>>>>>>>>> result : ", result)
                             if (result[1] === msgData.sender.username)
                                 return  h(Sender, {msgData})
                             else
