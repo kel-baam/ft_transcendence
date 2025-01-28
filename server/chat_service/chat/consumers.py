@@ -40,7 +40,7 @@ class ChatConsumer(WebsocketConsumer):
             receiverUser = User.objects.get(username=receiver)
         except User.DoesNotExist:
             # Gérer le cas où l'utilisateur n'existe pas
-            self.send(text_data=json.dumps({"error": "User not found"}))
+            self.send(text_data=json.dumps({"error": "User not found", "status_code" : "404"}))
             return
 
         PrivateMessage.objects.create(
@@ -67,4 +67,4 @@ class ChatConsumer(WebsocketConsumer):
         print("content : "+ content, sender, receiver)
 
         # Send message to WebSocket
-        self.send(text_data=json.dumps({"content": content, "room": room, "sender" : sender, "receiver" : receiver}))
+        self.send(text_data=json.dumps({"content": content, "room": room, "sender" : sender, "receiver" : receiver, "status_code" : ""}))

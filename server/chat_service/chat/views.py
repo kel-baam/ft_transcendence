@@ -11,7 +11,7 @@ from django.db.models import OuterRef, Subquery, Max, Q
 
 class chatListItems(APIView):
     def get(self, request):
-        user = "walkerbarbara"  # should be the user logged dynamique
+        user = "shicham" # should be the user logged dynamique
         print("the user logged: " + str(user))
 
         if user:

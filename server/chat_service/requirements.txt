@@ -11,3 +11,6 @@ daphne
 
     #install channels:
 channels
+
+Pillow
+channels_redis

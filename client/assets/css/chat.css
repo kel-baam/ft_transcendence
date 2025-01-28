@@ -205,9 +205,9 @@
    
 } 
 
-/*----------------------sender-------------------------*/
+/*----------------------receiver-------------------------*/
 
-.message-list .msg-list-content .sender{
+.message-list .msg-list-content .receiver{
     padding: 15px;
     width: 50%;
     grid-template-columns: 11.5% 88%;
@@ -217,14 +217,14 @@
 
 }
 
-.message-list .msg-list-content .sender .sender-avatar{
+.message-list .msg-list-content .receiver .receiver-avatar{
     width: 55px;
     height: 55px;
     border-radius: 50px;
     background-color: #E8E9EC;
 }
 
-.message-list .msg-list-content .sender .msg{
+.message-list .msg-list-content .receiver .msg{
     border-radius: 70px 50px 50px 0px;
     background: rgba(255, 255, 255, 0.5);
     width: 90%;
@@ -235,7 +235,7 @@
     display: grid;
 }
 
-.message-list .msg-list-content .sender .msg .msg-content{
+.message-list .msg-list-content .receiver .msg .msg-content{
     color: #0A466E;
     padding: 16px;
     font-size:medium;
@@ -243,7 +243,7 @@
     
 }
 
-.message-list .msg-list-content .sender .msg .msg-time{
+.message-list .msg-list-content .receiver .msg .msg-time{
     color: #9E9E9E;
     display: flex;
     justify-content: center;
@@ -251,9 +251,9 @@
     font-size: 14px;
 }
 
-/*----------------------receiver-------------------------*/
+/*----------------------sender-------------------------*/
 
-.message-list .msg-list-content .receiver{
+.message-list .msg-list-content .sender{
     padding: 15px;
     /* padding-left: 20px; */
     /* height: 80px; */
@@ -268,7 +268,7 @@
     clear: both;
 }
 
-.message-list .msg-list-content .receiver .msg{
+.message-list .msg-list-content .sender .msg{
     border-radius: 50px 70px 0px 50px;
     background: rgba(255, 255, 255, 0.5);
     width: 90%;
@@ -279,7 +279,7 @@
 }
 
 
-.message-list .msg-list-content .receiver .receiver-avatar{
+.message-list .msg-list-content .sender .sender-avatar{
     margin-left: 10px;
     width: 55px;
     height: 55px;
@@ -288,7 +288,7 @@
     justify-self: end;
     margin-right: 15px;    
 }
-.message-list .msg-list-content .receiver .msg .msg-content{
+.message-list .msg-list-content .sender .msg .msg-content{
     color: #0A466E;
     padding: 16px;
     font-size:medium;
@@ -296,7 +296,7 @@
     
 }
 
-.message-list .msg-list-content .receiver .msg .msg-time{
+.message-list .msg-list-content .sender .msg .msg-time{
     color: #9E9E9E;
     display: flex;
     justify-content: center;

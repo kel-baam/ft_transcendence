@@ -53,6 +53,13 @@ class User(AbstractBaseUser):
         ])
     verify_token =  models.CharField(max_length=255,null=True)
     
+    class Meta:
+        db_table = 'User'
+
+
+    def __str__(self):
+        return self.username
+    
 class PrivateMessage(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
@@ -63,6 +70,7 @@ class PrivateMessage(models.Model):
 
     class Meta:
         ordering = ['timestamp']  # Trier les messages par date d'envoi
+        db_table='PrivateMessage'
 
     def __str__(self):
         return f"De {self.sender.username} à {self.receiver.username}: {self.content[:20]}"

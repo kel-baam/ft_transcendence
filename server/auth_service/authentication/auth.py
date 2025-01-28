@@ -78,7 +78,7 @@ def storeGoogleData(data):
                                 'score':'0',
                         },
                 }
-                response = requests.post('http://user-service:8001/api/user/', json=data)
+                response = requests.post('http://user-service:8001/api/user', json=data)
                 # logger.debug("response from souad =============>",response)
                 print(">>>>>>>>>>>>>>>> response from souad : ", response)
                 if response.status_code == 200:

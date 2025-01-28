@@ -9,3 +9,7 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Player)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('user', 'score', 'Rank', 'level')
+
+# @admin.register(django_migrations)
+# class UserAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'app','name')
