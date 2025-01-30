@@ -208,8 +208,8 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=70),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -234,7 +234,17 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5500',
     'http://localhost:3000',
+    "http://10.14.3.5:3000",
     "ws://localhost:8000",
+    "http://10.14.3.5:8000",
+    "http://10.14.3.1:8000",
+    "http://10.14.3.1:3000",
+    "http://10.14.3.3:3000",
+    "http://10.14.3.3:8000",
+
+
+
+
 
 ]
 CSRF_COOKIE_NAME ='koki'
@@ -245,33 +255,33 @@ ASGI_APPLICATION = "auth.asgi.application"
 ALLOWED_HOSTS = ['*']
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',  # Capture DEBUG level and above
-            'class': 'logging.StreamHandler',  # Send logs to the console
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for django logger
-            'propagate': False,  # Do not propagate to the root logger
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level for request logs
-            'propagate': False,  # Prevents duplication in logs
-        },
-        '': {  # This is the root logger
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',  # Capture DEBUG level and above
+#             'class': 'logging.StreamHandler',  # Send logs to the console
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for django logger
+#             'propagate': False,  # Do not propagate to the root logger
+#         },
+#         'django.request': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level for request logs
+#             'propagate': False,  # Prevents duplication in logs
+#         },
+#         '': {  # This is the root logger
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
+#             'propagate': False,
+#         },
+#     },
+# }
 
 
 APPEND_SLASH=False

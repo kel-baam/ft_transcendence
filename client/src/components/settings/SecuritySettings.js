@@ -17,7 +17,7 @@ export const SecuritySettings = defineComponent(
         disable2FA(event)
         {
             event.preventDefault()    
-            customFetch('http://localhost:3000/auth/twoFactor/desactivate/',{}).then(async(result)=>{
+            customFetch('http://10.14.3.3:3000/auth/twoFactor/desactivate/',{}).then(async(result)=>{
                 if(!result.ok)
                 {
                     if(result.status == 401)
@@ -28,7 +28,7 @@ export const SecuritySettings = defineComponent(
         },
         onMounted()
         {
-            customFetch("http://localhost:3000/auth/twoFactor/state/",{}).then(async(result)=>{
+            customFetch("http://10.14.3.3:3000/auth/twoFactor/state/",{}).then(async(result)=>{
                 if(!result.ok)
                 {
                     if(result.status == 401)

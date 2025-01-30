@@ -26,10 +26,17 @@ export const OnlineTournament = defineComponent({
         this.initWebSocket();
     },
 
+    onUnmounted(){
+        if (this.state.socket) {
+            console.log('WebSocket connection closed');
+            this.state.socket.close();
+        }
+    },
+
     initWebSocket() {
         if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
 
-            this.state.socket = new WebSocket('ws://localhost:8002/ws/online/');
+            this.state.socket = new WebSocket('ws://10.14.3.3:8002/ws/online/');
     
             this.state.socket.onopen = () => {
                 console.log('WebSocket connection established');
@@ -47,7 +54,7 @@ export const OnlineTournament = defineComponent({
                 console.log('Parsed WebSocket Data:', data);
                 if(data.error == "token expired")
                 {
-                    const refreshAccessToken= await fetch('http://localhost:3000/auth/refreshToken',{
+                    const refreshAccessToken= await fetch('http://10.14.3.3:3000/auth/refreshToken',{
                         method:'GET',
                         credentials: 'include',});
                     
@@ -67,15 +74,18 @@ export const OnlineTournament = defineComponent({
                 if (data.message) {
                     console.log(data.message);
                 }
+
+                if (data.type === 'player.invited') {
+                    console.log(`You have been invited to join tournament ${data.tournament_id}`);
+                    // Trigger your UI update for the invite
+                }
             };
     
             this.state.socket.onerror = (error) => {
                 console.error('WebSocket error:', error);
             };
     
-            this.state.socket.onclose = () => {
-                console.log('WebSocket connection closed');
-            };
+
         }
     },
 
@@ -94,7 +104,7 @@ export const OnlineTournament = defineComponent({
         
         console.log("-----> " , formData)
         try {
-            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+            const response = await customFetch("http://10.14.3.3:3000/tournament/api/online/tournaments/", {
                 method      : 'PUT',
                 body        : formData,
                 credentials : 'include'
@@ -128,6 +138,7 @@ export const OnlineTournament = defineComponent({
 
     render()
     {
+        
         return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
             [h(sidebarLeft, {}), h('div', { 
                 class   : 'online-tournament',

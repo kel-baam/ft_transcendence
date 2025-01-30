@@ -74,7 +74,7 @@ export const UserCard = defineComponent({
    onMounted()
     {
         
-        customFetch('http://localhost:3000/api/user')
+        customFetch('http://10.14.3.3:3000/api/user')
         .then(result =>{
 
             if (!result.ok)

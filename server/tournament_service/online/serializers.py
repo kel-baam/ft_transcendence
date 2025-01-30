@@ -1,7 +1,7 @@
 from rest_framework             import serializers
 from django.core.exceptions     import ValidationError
 
-from .models            import Player, PlayerTournament, Tournament
+from .models            import Player, PlayerTournament, Tournament, Notification
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,3 +43,9 @@ class TournamentSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError('You must select a type.')
         return value
+
+
+class NotificationSerializers(serializers.ModelSerializer):
+    class Meta:
+        model   = Notification
+        fields  = '__all__'

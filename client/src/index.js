@@ -51,49 +51,48 @@ const NotFound = defineComponent({
 })
 
 
-async function isAuthenticated()
+async function isAuthenticated(currentLocation)
 {
-      const result = await customFetch("http://localhost:3000/auth/islogged/",{})
+      let query = false
+      if(currentLocation == '/2FA')
+        query = true
+      const result = await customFetch(`http://10.14.3.3:3000/isAuthenticated?2fa=${query}`)
+      console.log("test=>",result)
       if(result)
       {
         if(!result.ok)
           { 
+
             if(result.status == 401)
-              return '/login'
+                return '/login'
           }
-      }    
+      }
+      // console.log("location",document.location.hash)10.14.3.3
 }
 
 const router = new HashRouter([
-
     { path: '/', component: LandingPage },
-    { path: '/2FA', component: TwoFactor },
+    { path: '/2FA', component: TwoFactor ,
+      beforeEnter:isAuthenticated
+    },
     { path: '/login', component: Login },
     { path:'/home', component: Home, 
-      beforeEnter:isAuthenticated},
-      {path:'/profile', component: Profile,
+      beforeEnter:isAuthenticated
+    },
+    {path:'/profile', component: Profile,
         beforeEnter:isAuthenticated
-      },
+    },
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
-    {path : '/settings', component: settings,
-      beforeEnter:isAuthenticated
+    {path : '/settings', component: settings
     },
     { path: '/password/reset',  component: ResetPassword },
-    {path:'/chat', component: Chat,
-      beforeEnter:isAuthenticated
-    },
+    {path:'/chat', component: Chat},
 
-    {path:'/tournament',component: Tournament,
-      beforeEnter:isAuthenticated
-    },
-    {path:'/tournament/local', component: LocalTournament,
-      beforeEnter:isAuthenticated
-    },
+    {path:'/tournament',component: Tournament},
+    {path:'/tournament/local', component: LocalTournament},
     { path:'/game', component: Game},
-    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy,
-      beforeEnter:isAuthenticated
-    },
+    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy},
     { path:'/tournament/online', component: OnlineTournament,
       beforeEnter:isAuthenticated
 

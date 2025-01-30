@@ -46,7 +46,10 @@ export class HashRouter {
 
   #onPopState = (event) => {
 
-  this.#test()}
+
+  this.#test()
+}
+
 
   constructor(routes = []) {
     assert(Array.isArray(routes), 'Routes must be an array')
@@ -102,17 +105,17 @@ export class HashRouter {
     const from = this.#matchedRoute
     const to = matcher.route
     const { shouldNavigate, shouldRedirect, redirectPath } =
-      await this.#canChangeRoute(from, to)
+      await this.#canChangeRoute(matcher, to)
 
     if (shouldRedirect) {
       return this.nav(redirectPath)
     }
-
     if (shouldNavigate) {
       this.#matchedRoute = matcher.route
       this.#params = matcher.extractParams(path)
-
-
+      console.log("heeere",path)
+      // if(flag == 2)
+        // this.#pushState(path)
       this.#query = matcher.extractQuery(path)
       this.#dispatcher.dispatch(ROUTER_EVENT, {from, to, router: this })
     }
@@ -139,7 +142,7 @@ export class HashRouter {
 
     const from = this.#matchedRoute
     const to = matcher.route
-    const { shouldRedirect ,shouldNavigate,  redirectPath } = await this.#canChangeRoute(from, to)
+    const { shouldRedirect ,shouldNavigate,  redirectPath } = await this.#canChangeRoute(matcher, to)
 
     if (shouldRedirect) {
       return this.navigateTo(redirectPath)
@@ -150,7 +153,7 @@ export class HashRouter {
       this.#params = matcher.extractParams(path)
 
       this.#query = matcher.extractQuery(path)
-
+      console.log("heeeDDDDDDDDDre",path)
       this.#pushState(path)
       this.#dispatcher.dispatch(ROUTER_EVENT, {from, to, router: this })
     }
@@ -185,15 +188,17 @@ export class HashRouter {
   #pushState(path) {
     window.history.pushState({}, '', `#${path}`)
   }
+
   #test()
   {
     return this.nav(this.#currentRouteHash)
   }
+
   #matchCurrentRoute() {
     return this.navigateTo(this.#currentRouteHash)
   }
 
-  async #canChangeRoute(from, to) {
+  async #canChangeRoute(currentLocation, to) {
     const guard = to.beforeEnter
     
     if (typeof guard !== 'function') {
@@ -204,7 +209,8 @@ export class HashRouter {
       }
     }
 
-    const result = await guard()
+    
+    const result = await guard(currentLocation.route.path)
 
     if (result === false) {
 

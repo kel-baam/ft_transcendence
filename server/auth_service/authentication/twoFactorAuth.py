@@ -31,9 +31,9 @@ def activate_two_Factor(request):
         if user:
                 totp_secret = generate_otp()
                 user.tmp_secret = totp_secret.secret
-                logger.debug("before=>",totp_secret.secret)
+                # logger.debug("before=>",totp_secret.secret)
                 user.save()
-                logger.debug("after saving=>",user.tmp_secret)
+                # logger.debug("after saving=>",user.tmp_secret)
 
                 totp =  pyotp.TOTP(user.tmp_secret,interval=30)
                 uri = totp.provisioning_uri(name=user.email, issuer_name='ping pong')
@@ -78,6 +78,12 @@ def verify_code(request):
         if(request.method =='POST'):
                 username = request.META.get('HTTP_X_AUTHENTICATED_USER')
                 user = User.objects.filter(username=username).first()
+
+
+                print("yeeeeeeeeeeeeeeeeee=>++++++++++++++++++++++++++++++++++",request.META.get('HTTP_X_AUTHENTICATED_USER'),user)
+                if not user:  # Check if user is None
+                        return JsonResponse({'message': username}, status=400)
+
                 code = request.POST.get('code', 'none')
                 totp = pyotp.TOTP(user.secret, interval=30)
                 if(totp.verify(code)):

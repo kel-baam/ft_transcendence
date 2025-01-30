@@ -1,56 +1,62 @@
-# import json
-# from channels.generic.websocket import AsyncWebsocketConsumer
-# from .models import *
-# from django.shortcuts import render, get_object_or_404
-# from asgiref.sync import sync_to_async
-# # import asyncio
-# # from concurrent.futures import ThreadPoolExecutor
+import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import sync_to_async
+from .models import User
+from django.conf import settings
+import jwt
 
-# class RequestUpdateConsumer(AsyncWebsocketConsumer):
-#     async def connect(self):
-#         print("------------------------------> here connected")
-#         # print("---------__> hello the client is connected , "+ self.scope)
-#         # self.req_status = self.scope['url_route']['kwargs']['status']
-#         # self.req_id = self.scope['url_route']['kwargs']['id']
-#         # print(">>>>>>>>>>>>>>>>>>> self.req_status " + self.req_status + "   self.req_id" + self.req_id)
-#         await self.accept()
+# Notification container's WebSocket consumer
+class Notification(AsyncWebsocketConsumer):
+    async def connect(self):
+        print("--------> WebSocket connection opened")
 
-#     # async def disconnect(self, close_code):
-#         # await self.channel_layer.group_discard(
-#         #     self.room_group_name,
-#         #     self.channel_name
-#         # )
-#     async def disconnect(self, close_code):
-#         pass
+        self.user_id = None
+        self.group_name = None
 
-#     # async def delete_request(request_id):
-#     # # Use sync_to_async to perform the delete operation
-#     #     await sync_to_async(Request.objects.filter)(id=request_id).delete()
-    
-#     async def receive(self, text_data):
-#         # await self.receive(text_data=message["text"])
-#         # self.req_id = self.scope['url_route']['kwargs']['status']
-#         # self.req_id = self.scope['url_route']['kwargs']['id']
-#         text_data_json = json.loads(text_data)
-#         print("---------> data recieved : ", text_data_json)
-#         message = text_data_json['message']
-#         # targetRequest =  
-#         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> id : ", text_data_json['id'])
-#         # id = 
-#         request = await sync_to_async(lambda: Request.objects.get(id=text_data_json['id']))()      
-#         # request = await sync_to_async(Request.objects.get)(id=text_data_json['id'])
-#         # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> request : ", request)
-#         # await sync_to_async(request.delete)()        
-#         # sender = await get_sender(request)
-#         # reciever = await get_reciever(request)
-#         # print(">>>>>>>>>>>>>>>>>>>>> target req : ", result)
-#         # result.delete()
-#         # print("-----------------------> recieved data ", message)
-#         # Send message to room group
-#         # await self.channel_layer.group_send(
-#         #     self.room_group_name,
-#         #     {
-#         #         'type': 'chat_message',
-#         #         'message': message
-#         #     }
-#         # )
+        for header_name, header_value in self.scope["headers"]:
+            if header_name == b'cookie':
+                cookies_str = header_value.decode("utf-8")
+                cookies = {}
+                for cookie in cookies_str.split("; "):
+                    key, value = cookie.split("=", 1)
+                    cookies[key] = value
+
+                try:
+                    access_token = cookies.get("access_token")
+                    if not access_token:
+                        raise ValueError("Access token not provided")
+                    
+                    # Decode token and get user info
+                    payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+                    self.access_token = access_token
+                    user = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
+
+                    if user:
+                        self.scope['user_id'] = user
+                        self.user_id = user.id
+                        self.scope['email'] = payload["email"]
+
+                        self.group_name = f'user_{self.user_id}'
+                        print("++++++++++++++++++++> ", self.group_name)
+                        await self.channel_layer.group_add(self.group_name, self.channel_name)
+                        await self.accept()
+                    else:
+                        await self.send(text_data=json.dumps({"error": "User doesn't exist"}))
+
+                except Exception as e:
+                    print(f"Error: {e}")
+                    await self.send(text_data=json.dumps({"error": "Token expired or invalid"}))
+
+    async def disconnect(self, close_code):
+        if self.group_name:
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def receive(self, text_data):
+        pass  # Handle any incoming data if needed
+
+    async def send_notification(self, event):
+        # Handle sending notification data to WebSocket
+        print("send notif : ", event)
+        await self.send(text_data=json.dumps({
+            'notification': event['notification']
+        }))

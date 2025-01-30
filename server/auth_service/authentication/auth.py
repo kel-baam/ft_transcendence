@@ -64,7 +64,7 @@ def set_tokens_in_cookies(request,email,response):
                         return response
                 except (ExpiredSignatureError, InvalidTokenError) as e:
                         if(user.enabled_twoFactor):
-                                response = redirect(f"{domain}/#/2FA")
+                                response = redirect("http://10.14.3.3:3000/#/2FA")
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
@@ -217,6 +217,7 @@ def intra_callback(request):
                         
                         if((state == 'login' and user) or (state == 'register' and not user))  :         
                                 response = set_tokens_in_cookies(request,user_info.get("email"),response)
+                                print("intra callbacl resp",response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
 
@@ -226,6 +227,7 @@ def intra_callback(request):
 @csrf_exempt
 @api_view(['POST'])                 
 def login(request):
+
         username = request.data.get('username')
         password = request.data.get('password')
         domain = config('DOMAIN')

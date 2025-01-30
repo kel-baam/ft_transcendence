@@ -22,7 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0+9=y=k@_rpy39wp6177h7hh8jdv3irye=(&y&q(2j=ej(-*hh'
+# SECRET_KEY = 'django-insecure-0+9=y=k@_rpy39wp6177h7hh8jdv3irye=(&y&q(2j=ej(-*hh'
+SECRET_KEY = 'django-insecure-1mpj)ud(wiuuvgy6dpm42h@o27ztef$ag%k!k33#r%97jrtflp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,9 +50,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Profile',
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'channels',
 ]
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis-service', 6379)],
+        },
+    },
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,8 +94,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
-ASGI_APPLICATION = 'myproject.asgi.application'
+# WSGI_APPLICATION = 'project.wsgi.application'
+ASGI_APPLICATION = 'project.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -145,11 +157,16 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
-    "https://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
-    "wss://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5500',
+    'http://localhost:3000',
+    "http://10.14.3.5:3000",
+    "ws://localhost:8000",
+    "http://10.14.3.5:8000",
+    "http://10.14.3.1:8000",
+    "http://10.14.3.1:3000",
+    "http://10.14.3.3:3000",
+    "http://10.14.3.3:8000",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
