@@ -43,8 +43,9 @@ def token_required(request):
                 payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
 
                 user = (User.objects.filter(email=payload["email"]).first)()
+                
+
                 if user:
-                        
                         if (user.enabled_twoFactor  and payload.get('login_level') == 1 and request.query_params.get('2fa') == "false"):
                                 return JsonResponse({'message': 'Invalid user'},status = 401)
                         response = JsonResponse({'message':'valid token'})

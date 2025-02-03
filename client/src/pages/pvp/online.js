@@ -9,7 +9,7 @@ export const OnlinePvp = defineComponent({
     state(){
         return {
                 player_data : {},
-                socket      : new WebSocket('ws://10.14.3.3:8002/ws/matchmaking/')
+                socket      : new WebSocket('ws://localhost:8002/ws/matchmaking/')
             }
     },
     

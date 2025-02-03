@@ -23,7 +23,7 @@ export const header = defineComponent({
       console.log(!this.state.socket);
       if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
 
-          this.state.socket = new WebSocket('ws://10.14.3.3:8001/ws/notification/');
+          this.state.socket = new WebSocket('ws://localhost:8001/ws/notification/');
           console.log(!this.state.socket);
   
           this.state.socket.onopen = () => {
@@ -87,7 +87,7 @@ export const header = defineComponent({
                             on: {
                                 click: async (event) => {
                                     event.preventDefault();
-                                    fetch("http://10.14.3.3:3000/auth/logout/", {
+                                    fetch("http://localhost:3000/auth/logout/", {
                                         method: 'POST',
                                         credentials: 'include',
                                     }).then(async (res) => {

@@ -68,7 +68,7 @@ export const UserWinRate =  defineComponent({
   },
   onMounted()
   {
-      fetch('http://10.14.3.3:3000/api/user/stats')
+      fetch('http://localhost:3000/api/user/stats')
       .then(result =>{
 
           // console.log("----------------------> data fetched ", result)

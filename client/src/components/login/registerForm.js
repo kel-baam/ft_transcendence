@@ -15,7 +15,7 @@ export const RegisterForm = defineComponent({
     {
         event.preventDefault()      
         const form = new FormData(document.querySelector(".registerForm"))
-        fetch('http://10.14.3.3:3000/auth/register/',{
+        fetch('http://localhost:3000/auth/register/',{
             method: 'POST' ,
             body:form,
             credentials: 'include', 
@@ -51,3 +51,6 @@ export const RegisterForm = defineComponent({
         ])
     }
     })
+
+
+    

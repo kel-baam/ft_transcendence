@@ -15,12 +15,12 @@ export const Login = defineComponent({
 
     intraEvent()
     {
-                window.location.href = `http://10.14.3.3:3000/auth/intra/?type=${encodeURIComponent('login')}`
+                window.location.href = `http://localhost:3000/auth/intra/?type=${encodeURIComponent('login')}`
     },
 
     googleEvent(){
     
-                    window.location.href = `http://10.14.3.3:3000/auth/google/?type=${encodeURIComponent('login')}`
+                    window.location.href = `http://localhost:3000/auth/google/?type=${encodeURIComponent('login')}`
     },
 
     getErrorMessage(id){
@@ -31,7 +31,7 @@ export const Login = defineComponent({
     async loginForm(event)
     {
         event.preventDefault()
-        const response = await fetch('http://10.14.3.3:3000/auth/login/',{
+        const response = await fetch('http://localhost:3000/auth/login/',{
             method:'POST',
             body:new FormData(document.querySelector(".loginForm")),
         })

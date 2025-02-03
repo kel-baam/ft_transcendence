@@ -14,7 +14,7 @@ export const JoinedTournaments = defineComponent({
     {
         try
         {
-            const response  = await customFetch(`http://10.14.3.3:3000/tournament/online/api/tournaments/${id}/`, {
+            const response  = await customFetch(`http://localhost:3000/tournament/online/api/tournaments/${id}/`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export const JoinedTournaments = defineComponent({
         console.log("id ----> ", id);
     
         try {
-            const response = await customFetch(`http://10.14.3.3:3000/tournament/api/online/tournaments/?tournamentId=${id}`, {
+            const response = await customFetch(`http://localhost:3000/tournament/api/online/tournaments/?tournamentId=${id}`, {
                 method: 'DELETE',
             });
     
@@ -89,7 +89,7 @@ export const JoinedTournaments = defineComponent({
             h('div', { class: 'tournaments' },
                 (this.props.tournaments && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
                     h('div', { class: 'available' }, [
-                        h('img', { src:  `http://10.14.3.3:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
+                        h('img', { src:  `http://localhost:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
                         h('a', {
                             on      : {
                                 click : () => this.startTournament(tournament.id)

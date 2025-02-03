@@ -31,6 +31,7 @@ from .serializers import  UserSerializer
 import json
 import random
 
+
 from jwt import decode , ExpiredSignatureError, InvalidTokenError
 
 logging.basicConfig(level=logging.DEBUG)
@@ -40,6 +41,7 @@ logger = logging.getLogger(__name__)
 def set_tokens_in_cookies(request,email,response):
         try:
                 domain = config('DOMAIN')
+
                 user = User.objects.filter(email=email).first()
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
@@ -63,8 +65,9 @@ def set_tokens_in_cookies(request,email,response):
                         response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime)
                         return response
                 except (ExpiredSignatureError, InvalidTokenError) as e:
+
                         if(user.enabled_twoFactor):
-                                response = redirect("http://10.14.3.3:3000/#/2FA")
+                                response = redirect("http://localhost:3000/#/2FA")
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
@@ -102,10 +105,12 @@ def storeGoogleData(data):
                                 'score':'0',
                         },
                 }
+                print("data=>",data)
                 response = requests.post('http://user-service:8001/api/user', json=data)
                 if response.status_code == 200:
                         return redirect(f"{domain}/#/home") 
                 else:
+                        print("reee",response)
                         return redirect(f"{domain}/#/login") 
         except requests.RequestException as e:
                 return redirect(f"{domain}/#/login") 
@@ -238,10 +243,11 @@ def login(request):
                 return Response({'password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         if (user.is_verify == False):
                 return Response({'verification':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
-        response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)      
+        response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)
         response = set_tokens_in_cookies(request,user.email,response)
         return response
-       
+
+
 
 def generate_verification_token(username):
     payload = {
@@ -275,7 +281,7 @@ def  registerForm(request):
                         }
                 }
                 response = requests.post('http://user-service:8001/api/user',json=data)
-                # logger.debug('>>>>>>>>>>>>>> response from souad : %s', response)
+                logger.debug('>>>>>>>>>>>>>> response from souad : %s', response)
                 if(response.status_code == 200):
                         uid = urlsafe_base64_encode(username.encode())
                         verification_link = f'http://localhost:3000/auth/verify/{uid}/{token}/'
@@ -312,13 +318,14 @@ def verify_email(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.filter(username=uid).first()
+        logger.debug("user",user,user.verify_token,token)
         if(user):
                 if(user.verify_token == token):
                         user.is_verify = True
                         user.verify_token = "None"
                         user.save()
-                        response = redirect("http://localhost:3000/#/home")
-                        return  set_tokens_in_cookies(request,user.email,response)
+
+                        return redirect("http://localhost:3000/#/login")
         return redirect("http://localhost:3000/#/login")
     except Exception as e:
                 return redirect("http://localhost:3000/#/login")
@@ -354,6 +361,7 @@ def password_reset_request(request):
 def password_reset_confirm(request):
         try:
                 data = json.loads(request.body)
+
                 if( not data.get('token')  or not data.get('token') ):
                         return Response({'password':"error in identify your credentials"},status=status.HTTP_400_BAD_REQUEST)
                 uid = urlsafe_base64_decode(data.get('uid')).decode()
@@ -361,16 +369,28 @@ def password_reset_confirm(request):
                 token = data.get('token')
                 newPassword = data.get('newPassword')
                 confirmPassword = data.get('confirmPassword')
-               
+
+                data ={
+                        'new_password':newPassword,
+                        'confirm_password':confirmPassword
+
+                }
                 if(user):
                         if  token == user.verify_token:
-                                if newPassword == confirmPassword:
-                                        user.password =  make_password(str(newPassword))
-                                        user.verify_token = "None"
-                                        # delete cookies for make person logout
-                                        user.save()
-                                        return Response({'password':"user added succssefylly"},status=200)
-                        return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
+                                serialize = UserSerializer(user,data=data,partial=True)
+                                if serialize.is_valid(raise_exception=True):
+                                        # user.password =  make_password(str(newPassword))
+                                        # user.verify_token = "None"
+                                        serialize.save()
+                                        return Response({'password':"password reset succssefylly"},status=200)
+                                # else:
+                                #         return Response({'password':"please verify both passwords"},status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'password':"something wrong"},status=status.HTTP_400_BAD_REQUEST)
+        # except serializers.ValidationError as e:
+        #         print(">>>>>>>>>>> here validation error %s",e)
+        #         return Response({key: value[0] for key, value in serialize.errors.items()},  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
         except Exception as e:
-            return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+
+                print("exxxsssssssssx====>",e)
+                return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
    

@@ -16,7 +16,7 @@ export const OnlineHierarchy = defineComponent({
     {
         if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
             
-            this.state.socket   = new WebSocket('ws://10.14.3.3:8002/ws/matchmaking/');
+            this.state.socket   = new WebSocket('ws://localhost:8002/ws/matchmaking/');
             const tournamentId  = this.appContext.router.params.id;
         
             console.log("---> : ", tournamentId)
@@ -80,7 +80,7 @@ export const OnlineHierarchy = defineComponent({
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
-                                            src: match.avatar1 ? `http://10.14.3.3:8002${match.avatar1}` : './images/people_14024721.png'
+                                            src: match.avatar1 ? `http://localhost:8002${match.avatar1}` : './images/people_14024721.png'
                                         }),
                                         h('h2', {}, [match.player1])
                                     ]),
@@ -89,7 +89,7 @@ export const OnlineHierarchy = defineComponent({
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
-                                            src: match.avatar2 ? `http://10.14.3.3:8002${match.avatar2}` : './images/people_14024721.png'
+                                            src: match.avatar2 ? `http://localhost:8002${match.avatar2}` : './images/people_14024721.png'
                                         }),
                                         h('h2', {}, [match.player2])
                                     ])

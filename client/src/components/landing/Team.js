@@ -7,7 +7,9 @@ import{defineComponent,h} from '../../package/index.js'
         name:String,
         githubLink:String,
         linkdenLink:String,
-        emailLink:String
+        emailLink:String,
+        picture:String
+
     },
     state(){
         return {
@@ -18,7 +20,7 @@ import{defineComponent,h} from '../../package/index.js'
     {
         return h('div',{className:"card"},[
             h('div',{className:"pic"},[
-                h('img',{src:"./images/pic.jpg"}),
+                h('img',{src:this.props.picture}),
        
             h('div',{className:"content-card"},[
                 h('div',{className:"contentBx"},[
@@ -77,11 +79,12 @@ import{defineComponent,h} from '../../package/index.js'
                 ])
             ]
             ),
+             
             h('div',{className:"team-pics"},[
-                h(TeamCards,{name:'KAOUTAR EL BAAMRANI',githubLink:"https://github.com/kel-baam",linkdenLink:"",emailLink:"kaoutarelbaamrani@gmail.com"}),
-                h(TeamCards,{name:'KARIMA JARMOUMI',githubLink:"https://github.com/karimajarmoumi",linkdenLink:"",emailLink:""}),
-                h(TeamCards,{name:'NISIN BOUKHARI',githubLink:"https://github.com/niboukha",linkdenLink:"",emailLink:"nisrinboukhari19@gmail.com"}),
-                h(TeamCards,{name:'SOUAD HICHAM',githubLink:"https://github.com/s-hicham",linkdenLink:"",emailLink:""})
+                h(TeamCards,{name:'KAOUTAR EL BAAMRANI',githubLink:"https://github.com/kel-baam",linkdenLink:"",emailLink:"kaoutarelbaamrani@gmail.com",picture:"./images/kel-baam.png"}),
+                h(TeamCards,{name:'NISIN BOUKHARI',githubLink:"https://github.com/niboukha",linkdenLink:"",emailLink:"nisrinboukhari19@gmail.com",picture:"./images/niboukha.jpeg"}),
+                h(TeamCards,{name:'SOUAD HICHAM',githubLink:"https://github.com/s-hicham",linkdenLink:"",emailLink:"",picture:"./images/shicham.jpeg"}),
+                h(TeamCards,{name:'KARIMA JARMOUMI',githubLink:"https://github.com/karimajarmoumi",linkdenLink:"",emailLink:"",picture:"./images/kjarmoum.jpg"}),
             ]),
         ])
     }

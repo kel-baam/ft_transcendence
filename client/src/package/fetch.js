@@ -24,7 +24,7 @@ export async function customFetch(url,options={})
                     if(response.status == 401)
                     {
                         console.log(response.message)
-                        const refreshAccessToken = await fetch('http://10.14.3.3:3000/auth/refresh/token/',{
+                        const refreshAccessToken = await fetch('http://localhost:3000/auth/refresh/token/',{
                             method:'GET',
                             credentials: 'include',})
                             if(!refreshAccessToken.ok)

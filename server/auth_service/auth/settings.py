@@ -225,26 +225,19 @@ SIMPLE_JWT = {
 }
 
 # CORS_ALLOWED_ORIGINS = 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 # pip install python-decouple
 # pip install pyjwt
 # CSRF_COOKIE_SAMESITE = 'None'
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5500',
     'http://localhost:3000',
-    "http://10.14.3.5:3000",
+    "http://localhost:8000",
     "ws://localhost:8000",
     "http://10.14.3.5:8000",
-    "http://10.14.3.1:8000",
-    "http://10.14.3.1:3000",
-    "http://10.14.3.3:3000",
-    "http://10.14.3.3:8000",
-
-
-
-
+    "http://localhost:3000",
+    "http://localhost:8000",
 
 ]
 CSRF_COOKIE_NAME ='koki'
@@ -309,3 +302,26 @@ CACHES = {
         },
     }
 }
+
+
+
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+

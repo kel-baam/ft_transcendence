@@ -36,7 +36,7 @@ export const OnlineTournament = defineComponent({
     initWebSocket() {
         if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
 
-            this.state.socket = new WebSocket('ws://10.14.3.3:8002/ws/online/');
+            this.state.socket = new WebSocket('ws://localhost:8002/ws/online/');
     
             this.state.socket.onopen = () => {
                 console.log('WebSocket connection established');
@@ -54,7 +54,7 @@ export const OnlineTournament = defineComponent({
                 console.log('Parsed WebSocket Data:', data);
                 if(data.error == "token expired")
                 {
-                    const refreshAccessToken= await fetch('http://10.14.3.3:3000/auth/refreshToken',{
+                    const refreshAccessToken= await fetch('http://localhost:3000/auth/refreshToken',{
                         method:'GET',
                         credentials: 'include',});
                     
@@ -104,7 +104,7 @@ export const OnlineTournament = defineComponent({
         
         console.log("-----> " , formData)
         try {
-            const response = await customFetch("http://10.14.3.3:3000/tournament/api/online/tournaments/", {
+            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
                 method      : 'PUT',
                 body        : formData,
                 credentials : 'include'

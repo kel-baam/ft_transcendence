@@ -23,7 +23,7 @@ export const ResetPassword = defineComponent({
             newPassword: newPassword,
             confirmPassword: confirmPassword,
         };
-        fetch('http://10.14.3.3:3000/auth/password/reset/confirm/',{
+        fetch('http://localhost:3000/auth/password/reset/confirm/',{
             method:'POST',
             body: JSON.stringify(data),
             
@@ -31,6 +31,7 @@ export const ResetPassword = defineComponent({
             if(!res.ok)
             {
                 const  errors = await res.json()
+                console.group("error=>",errors,"||",res)
                 showErrorNotification(errors['password'])
             }
             else
@@ -46,7 +47,7 @@ export const ResetPassword = defineComponent({
     async sendEmail(event)
     {
         event.preventDefault()
-        fetch('http://10.14.3.3:3000/auth/password/reset/',{
+        fetch('http://localhost:3000/auth/password/reset/',{
             method:'POST',
             body:new FormData(document.querySelector(".formSendEmail")),
         }).then(async (res)=>{
@@ -63,8 +64,7 @@ export const ResetPassword = defineComponent({
                 document.querySelector('.email').value = '';
                 this.updateState({errors:""});
             }
-        }
-        )
+        })
     },
     getErrorMessage(id){
         const error = this.state.errors[id];

@@ -19,7 +19,7 @@ export const LocalHierarchy = defineComponent({
     {
         if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
 
-            this.state.socket   = new WebSocket('ws://10.14.3.3:8002/ws/matchmaking/');
+            this.state.socket   = new WebSocket('ws://localhost:8002/ws/matchmaking/');
             const tournamentId  = this.appContext.router.params.id;
 
             console.log("---> : ", tournamentId)
@@ -118,7 +118,7 @@ export const LocalHierarchy = defineComponent({
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
-                                            src: match.avatar1 ? `http://10.14.3.3:8002${match.avatar1}` : './default-avatar.png' 
+                                            src: match.avatar1 ? `http://localhost:8002${match.avatar1}` : './default-avatar.png' 
                                         }),
                                         h('h2', {}, [match.player1])
                                     ]),
@@ -127,7 +127,7 @@ export const LocalHierarchy = defineComponent({
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
-                                            src: match.avatar2 ? `http://10.14.3.3:8002${match.avatar2}` : './default-avatar.png' 
+                                            src: match.avatar2 ? `http://localhost:8002${match.avatar2}` : './default-avatar.png' 
                                         }),
                                         h('h2', {}, [match.player2])
                                     ])
@@ -159,7 +159,7 @@ export const LocalHierarchy = defineComponent({
                 ]) : h('div', { class: 'game-content' },
                     [
                         h('div', { class: 'user-profile' }, [
-                            h('img', { src: `http://10.14.3.3:8002${this.state.currentMatch.avatar1}` }),
+                            h('img', { src: `http://localhost:8002${this.state.currentMatch.avatar1}` }),
                             h('h3', {}, [this.state.currentMatch.player1])
                         ]),
                         h('div', { class: 'vs' }, [
@@ -168,7 +168,7 @@ export const LocalHierarchy = defineComponent({
                         
                         h('div', { class: 'invited' },
                             [
-                                h('img', { src: `http://10.14.3.3:8002${this.state.currentMatch.avatar1}` }),
+                                h('img', { src: `http://localhost:8002${this.state.currentMatch.avatar1}` }),
                                 h('h3', {}, [this.state.currentMatch.player2])
                             ]
                         )

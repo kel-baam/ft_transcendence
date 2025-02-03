@@ -30,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False)
     player = PlayerSerializer()
 
+    
     picture = serializers.ImageField(max_length=None, required=False)
 
 

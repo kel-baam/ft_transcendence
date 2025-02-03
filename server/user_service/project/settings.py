@@ -78,6 +78,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'project.urls'
 
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -165,8 +167,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://10.14.3.5:8000",
     "http://10.14.3.1:8000",
     "http://10.14.3.1:3000",
-    "http://10.14.3.3:3000",
-    "http://10.14.3.3:8000",
+    "http://localhost:3000",
+    "http://localhost:8000",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

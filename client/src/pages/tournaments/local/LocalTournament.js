@@ -44,7 +44,7 @@ export const LocalTournament = defineComponent({
 
         try
         {
-            const response  = await customFetch("http://10.14.3.3:3000/tournament/api/local/tournaments/", {
+            const response  = await customFetch("http://localhost:3000/tournament/api/local/tournaments/", {
                 method      : 'POST',
                 body        : dataFormData,
                 credentials : 'include'
@@ -91,7 +91,7 @@ export const LocalTournament = defineComponent({
     
         try
         {
-            const response = await customFetch("http://10.14.3.3:3000/tournament/api/local/tournaments/", {
+            const response = await customFetch("http://localhost:3000/tournament/api/local/tournaments/", {
                 method      : 'GET',
                 headers     : {
                     'Content-Type' : 'application/json'
@@ -147,7 +147,7 @@ export const LocalTournament = defineComponent({
     {
         try
         {
-            const response = await customFetch(`http://10.14.3.3:3000/tournament/api/local/tournaments/`, {
+            const response = await customFetch(`http://localhost:3000/tournament/api/local/tournaments/`, {
                 method              : 'DELETE',
                 body                : JSON.stringify({
                     tournamentId    : id

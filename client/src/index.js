@@ -22,6 +22,7 @@ import { Game } from './pages/game.js';
 import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
 import { OnlinePvp } from './pages/pvp/online.js';
 import {OnlineHierarchy} from './pages/tournaments/online/OnlineHierarchy.js'
+import { Leaderboard } from './pages/leaderboard.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -56,7 +57,7 @@ async function isAuthenticated(currentLocation)
       let query = false
       if(currentLocation == '/2FA')
         query = true
-      const result = await customFetch(`http://10.14.3.3:3000/isAuthenticated?2fa=${query}`)
+      const result = await customFetch(`http://localhost:3000/isAuthenticated?2fa=${query}`)
       console.log("test=>",result)
       if(result)
       {
@@ -67,7 +68,6 @@ async function isAuthenticated(currentLocation)
                 return '/login'
           }
       }
-      // console.log("location",document.location.hash)10.14.3.3
 }
 
 const router = new HashRouter([
@@ -82,6 +82,9 @@ const router = new HashRouter([
     {path:'/profile', component: Profile,
         beforeEnter:isAuthenticated
     },
+    {path:'/leaderboard', component: Leaderboard,
+      // beforeEnter:isAuthenticated
+  },
     { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
     {path : '/settings', component: settings
