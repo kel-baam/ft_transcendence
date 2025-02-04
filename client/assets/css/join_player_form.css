@@ -59,6 +59,10 @@ html {
     position: relative;
     left: 108px;
     top: 40px;
+    /* border: 1px solid rgb(255, 1, 1); */
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
 }
 
 .join-player-form .createInput label {
@@ -69,6 +73,7 @@ html {
     transition: 0.3s;
     line-height: 2em;
     pointer-events: none;
+    /* border: 1px solid rgb(255, 1, 1); */
 }
 
 .join-player-form .createInput input {
@@ -85,6 +90,7 @@ html {
     box-sizing: border-box;
     margin-bottom: 20px;
 }
+
 
 /* Submit Button */
 .join-player-form button {

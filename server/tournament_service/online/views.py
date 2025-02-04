@@ -155,7 +155,6 @@ class TournamentAPIView(APIView):
             
 # -----------------------------------put---------------------------------------------------------------
 
-
     def put(self, request):
         try:
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
@@ -270,9 +269,87 @@ class TournamentAPIView(APIView):
                 return Response({'message': 'Tournament deleted successfully'}, status=201)
             else:
                 PlayerTournament.objects.filter(player__user__id = user.id, tournament=tournament).delete()
+
+                creator_id   = tournament.creator.id
+                content_type = ContentType.objects.get_for_model(tournament)
+                notif_data = {
+                    'sender'      : user.id,
+                    'receiver'    : creator_id,
+                    'type'        : 'information',
+                    'content_type': content_type.id,
+                    'object_id'   : tournament.id,
+                    'message'     : f'{user.username} exit your tournament: {tournament.name}.'
+                }
+
+                notif_serializer = NotificationSerializers(data=notif_data)
+                if notif_serializer.is_valid(raise_exception=True):
+                    notif_serializer.save()
+                    self.broadcast_notification(notif_serializer.instance)
+
+
                 return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
         except Tournament.DoesNotExist:
             return Response({"error": "Tournament not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+# -----------------------------GET-------------------------------------------------------------------
+
+    def get(self, request):
+        """Check if tournament is ready to start"""
+        try:
+            tournament_id = request.query_params.get('tournamentId', None)
+            
+            if not tournament_id:
+                return Response(
+                    {"error": "Tournament ID is required"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            
+            username = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            user = User.objects.get(username=username)
+
+            tournament    = self.get_tournament(tournament_id, user)
+            total_players = self.check_participants(tournament)
+
+            return Response(
+                {
+                    "success": True,
+                    "message": f"Tournament is valid with {total_players} participants (including the creator).",
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            # Send error to the frontend
+            return Response(
+                {"error": f"{str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def get_tournament(self, tournament_id, user):
+        try:
+            return get_object_or_404(Tournament, id=tournament_id, creator=user)
+        except Http404:
+            raise Exception("You can't start the tournament, you are not the creator.")
+
+
+    def check_participants(self, tournament):
+        try:
+            accepted_players = PlayerTournament.objects.filter(
+                tournament=tournament,
+                status="accepted"
+            ).count()
+
+            total_players = accepted_players
+            needed_players = 4 - total_players
+
+            if total_players != 4:
+                raise Exception(f"Not enough participants. {needed_players} more participants are needed.")
+            
+            return total_players
+        except Exception as e:
+            raise Exception(f"{str(e)}")
+
+
 
 
 # i don't have friends yet so i will get all the users of the website i will update it soon
@@ -315,54 +392,33 @@ def friends_list(request):
     return Response(friends_data, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-def isTournamentReady(request, tournament_id):
-    """check if tournament ready to start"""
-    try:
-        # print(tournament_id)
-        if not tournament_id:
-            raise CustomAPIException("Tournament ID is required")
-        username        = request.META.get('HTTP_X_AUTHENTICATED_USER')
-        user            = User.objects.get(username=username)
-        tournament      = get_tournament(tournament_id, user)
-        total_players   = check_participants(tournament)
+# @api_view(['GET'])
+# def isTournamentReady(request, tournament_id):
+    # """check if tournament ready to start"""
+    # try:
+    #     print("-----------------------------------------", tournament_id)
+    #     if not tournament_id:
+    #         raise CustomAPIException("Tournament ID is required")
+    #     username        = request.META.get('HTTP_X_AUTHENTICATED_USER')
+    #     user            = User.objects.get(username=username)
+    #     tournament      = get_tournament(tournament_id, user)
+    #     total_players   = check_participants(tournament)
 
-        # print(total_players," ", tournament, user , "-------------------------------")
+    #     # print(total_players," ", tournament, user , "-------------------------------")
 
-        return Response(
-            {
-                "success": True,
-                "message": f"Tournament is valid with {total_players} participants (including the creator).",
-            },
-            status=status.HTTP_200_OK,
-        )
+    #     return Response(
+    #         {
+    #             "success": True,
+    #             "message": f"Tournament is valid with {total_players} participants (including the creator).",
+    #         },
+    #         status=status.HTTP_200_OK,
+    #     )
 
-    except CustomAPIException as custom_error:
-        return Response(custom_error.detail, status=custom_error.status_code)
-    except Exception as e:
-        return Response(
-            {"error": "An unexpected error occurred: " + str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    # except CustomAPIException as custom_error:
+    #     return Response(custom_error.detail, status=custom_error.status_code)
+    # except Exception as e:
+    #     return Response(
+    #         {"error": "An unexpected error occurred: " + str(e)},
+    #         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #     )
 
-def get_tournament(tournament_id, user):
-    try:
-        return get_object_or_404(Tournament, id=tournament_id, creator=user)
-    except Http404:
-        raise CustomAPIException("you can't start the tournament, you are not the creator")
-
-def check_participants(tournament):
-    accepted_players = PlayerTournament.objects.filter(
-        tournament  = tournament,
-        status      = "accepted"
-    ).count()
-
-    total_players   = accepted_players
-    # print( " ====> ", total_players, " - " , accepted_players)
-    needed_players  = 4 - total_players
-
-    if total_players != 4:
-        raise CustomAPIException(
-            f"Not enough participants. {needed_players} more participants are needed."
-        )
-    return total_players

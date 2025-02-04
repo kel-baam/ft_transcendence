@@ -23,9 +23,9 @@ export const Home = defineComponent({
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        formData.append('tournament_id', JSON.stringify(this.state.id));
+        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
-
+        
         try {
             const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
                 method: 'PUT',
@@ -68,7 +68,7 @@ export const Home = defineComponent({
                 h(sidebarLeft, {}), h('div', 
                     {
                         class :'home-content' ,
-                        style : this.state.isBlur ? { filter : 'blur(4px)'} : {}
+                        style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
                     },
                     [
                         h('div', { class: 'home-top' },

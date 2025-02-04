@@ -94,25 +94,28 @@ class PlayerTournament(models.Model):
     class Meta:
         db_table    = 'PlayerTournament'
 
-
 class Match(models.Model):
-    # STATUS_CHOICES = [
-    #     ('active', 'Active'),
-    #     ('completed', 'Completed')
-    # ]
-    player1 = models.ForeignKey(Player, on_delete=models.CASCADE,related_name='player1')            
-    player2 = models.ForeignKey(Player,on_delete=models.CASCADE,related_name='player2')
-    date = models.DateField()
-    player1_points = models.PositiveIntegerField()  
-    player2_points = models.PositiveIntegerField()
-    # status =  models.CharField(max_length=255, choices=STATUS_CHOICES)
-    class Meta:
-        verbose_name = "Match"
-        verbose_name_plural = "Matches"         
+    tournament  = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
+    player1     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
+    player2     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+    room_name   = models.CharField(max_length=50)  # Store the match room name
+    created_at  = models.DateTimeField(auto_now_add=True)
+    
+    status_choices = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('exited', 'Exited')
+    ]
+    status = models.CharField(max_length=10, choices=status_choices, default='pending')
+
     def __str__(self):
-        return f"Match on {self.date} - Player {self.player1} vs Player {self.player2}"
+        tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
+        return f"Match: {self.player1.user.username} vs {self.player2.user.username} ({tournament_info})"
+    
     class Meta:
-        db_table= 'Match'
+        db_table = 'Match'
+
+
 
 class Request(models.Model):
     STATUS_CHOICES = [

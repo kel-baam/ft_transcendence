@@ -27,7 +27,7 @@ export const sidebarLeft = defineComponent({render()
             }),
             h('i', {
                 class: 'fa-solid fa-network-wired fa-rotate-90 icon',
-                on :{ click:()=>{ this.appContext.router.navigateTo('/pvp')} }
+                on :{ click:()=>{ this.appContext.router.navigateTo('/playerVSplayer')} }
             }),
             h('i', {
                 class: 'fa-solid fa-trophy icon',

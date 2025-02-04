@@ -7,20 +7,5 @@ class OnlineConfig(AppConfig):
     name = 'online'
 
     def ready(self):
-        # Connect the run_fake_data_generation function to the post_migrate signal
-        # post_migrate.connect(run_fake_data_generation, sender=self)
-        
         import online.signals
 
-
-# def run_fake_data_generation(sender, **kwargs):
-#     from django.conf import settings
-#     logger = logging.getLogger(__name__)
-    # if settings.DEBUG:  # Only run in development mode
-    #     logger.info("Starting fake data generation...")
-    #     from .fake_data import generate_fake_data
-    #     try:
-    #         generate_fake_data()
-    #         logger.info("Fake data generation completed successfully.")
-    #     except Exception as e:
-    #         logger.error(f"Error during fake data generation: {e}")

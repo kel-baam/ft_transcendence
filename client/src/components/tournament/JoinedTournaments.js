@@ -14,7 +14,7 @@ export const JoinedTournaments = defineComponent({
     {
         try
         {
-            const response  = await customFetch(`http://localhost:3000/tournament/online/api/tournaments/${id}/`, {
+            const response  = await customFetch(`http://localhost:3000/tournament/api/online/tournaments/?tournamentId=${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const JoinedTournaments = defineComponent({
             if (!response.ok) {
                 const errorText = await response.json();
 
-                if(errorText = 401)
+                if(errorText === 401)
                     this.appContext.router.navigateTo('/login')
 
                 console.error("Error response:", errorText.error);
@@ -38,12 +38,11 @@ export const JoinedTournaments = defineComponent({
             console.log("start Tournament:", successData.message);
 
             this.emit("start_the_tournament", id)
-            
         }
         catch (error)
         {
             showErrorNotification(error);
-            console.log('Error while starting tournament:', error);
+            console.log(error);
         }
     },
 

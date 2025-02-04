@@ -80,14 +80,21 @@ export const OnlineTournament = defineComponent({
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        formData.append('tournament_id', JSON.stringify(this.state.id));
-        formData.append('status', 'accepted');
 
+        // console.log(this.state.notification_data.object_id ,this.state.id)
+
+        if (this.state.notification_data)
+            formData.append( 'tournament_id',  JSON.stringify(this.state.notification_data.object_id))
+        else
+            formData.append( 'tournament_id',  JSON.stringify(this.state.id))
+
+        formData.append('status', 'accepted');
+        
         try {
             const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
+                method      : 'PUT',
+                body        : formData,
+                credentials : 'include',
             });
 
             if (!response.ok) {
@@ -98,7 +105,12 @@ export const OnlineTournament = defineComponent({
 
             const successData = await response.json();
             console.log("Player added:", successData.message);
-            this.updateState({ isBlur: false, notif_blur: false });
+            this.updateState({
+                notif_blur: false,
+                isBlur: false,
+                notification_data:null,
+                id:null
+            });
         } catch (error) {
             showErrorNotification(error);
         }
@@ -109,7 +121,10 @@ export const OnlineTournament = defineComponent({
             h('div', { class: 'join-player-form' }, [
                 h('i', {
                     class: 'fa-regular fa-circle-xmark icon',
-                    on: { click: () => this.updateState({ [isBlur ? 'isBlur' : 'notif_blur']: false }) }
+                    on: { click: () => this.updateState({
+                        notif_blur: false,
+                        isBlur: false,
+                    }) }
                 }),
                 h('form', {
                     class: 'form1',
@@ -158,7 +173,7 @@ export const OnlineTournament = defineComponent({
                     iconClick: () => this.updateState({ notificationActive: !this.state.notificationActive }),
                     blur: (notification_data) => this.updateState({
                         notif_blur: true,
-                        notification_data,
+                        notification_data : notification_data,
                     })
                 }
             }),
@@ -166,7 +181,7 @@ export const OnlineTournament = defineComponent({
                 h(sidebarLeft),
                 h('div', {
                     class: 'online-tournament',
-                    style: this.state.isBlur || this.state.notif_blur ? { filter: 'blur(4px)' } : {}
+                    style: this.state.isBlur || this.state.notif_blur ? { filter: 'blur(4px)', pointerEvents: 'none' } : {}
                 }, [
                     h(AvailableTournaments, {
                         tournaments: this.state.availableTournaments,

@@ -100,6 +100,21 @@ services:
         - redis
       volumes:
         - tournament_volume:/usr/src/app
+    
+  matchmaking-service:
+    build: ./server/matchmaking_service
+    container_name: matchmaking-service
+    env_file:
+      - .env
+    ports:
+      - "8003:8003"
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - matchmaking_volume:/usr/src/app
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -144,6 +159,15 @@ volumes:
         type: none
         device: ./server/tournament_service
         o: bind
+
+  matchmaking_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/matchmaking_service
+        o: bind
+
+
 
   client_volume:
     driver: local

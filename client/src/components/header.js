@@ -15,6 +15,7 @@ export const header = defineComponent({
         return {
             notif       : false,
             notification: null,
+            icon_notif : false
         };
     },
 
@@ -32,7 +33,7 @@ export const header = defineComponent({
                 
                 const data = JSON.parse(event.data);
                 this.updateState({
-                    notificationActive : true,
+                    icon_notif : true,
                 })
             };
     
@@ -65,7 +66,8 @@ export const header = defineComponent({
 
             this.updateState({
                 notif        : !this.state.notif,
-                notification :  notifications,
+                notification : notifications,
+                icon_notif   : false,
             }),
             
             this.emit("iconClick")
@@ -131,7 +133,7 @@ export const header = defineComponent({
                                             this.updateState({
                                                 notif: false,
                                             });
-                                            this.emit('blur', this.state.notification);
+                                            this.emit('blur', notification);
                                         },
                                     }, },
                                     ["[Accept]"]),
@@ -171,7 +173,7 @@ export const header = defineComponent({
                     h('div', { class: 'left-side' }, [
                         h('a', {}, [
                             h('i', {
-                                className: `fa-regular fa-bell ${this.props.icon_notif ? 'icon_notif' : 'icon'}`,
+                                className: `fa-regular fa-bell ${this.props.icon_notif || this.state.icon_notif ? 'icon_notif' : 'icon'}`,
                                 on: {
                                     click:()=> this.get_notifications(),
                                 }
@@ -180,11 +182,6 @@ export const header = defineComponent({
                         h('a', { href: '#/settings' }, [
                             h('i', {
                                 class: `fa-solid fa-sliders icon`,
-                                on: {
-                                    click:()=> {
-                                        this.emit("settingsIconClick")
-                                    },
-                                }
                             })
                         ]),
                         h('a', {

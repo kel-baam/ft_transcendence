@@ -76,7 +76,7 @@ export const Chat = defineComponent(
                 h('div', { class : 'global-content' }, [
                     h('div', { class : 'chat-content',
                         style: {'grid-template-columns':'25% 74%'},
-                        style : this.state.isBlur ? { filter : 'blur(4px)'} : {}
+                        style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
                     }, [
                         h(ChatList, 
                             { 

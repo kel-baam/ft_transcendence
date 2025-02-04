@@ -3,34 +3,34 @@ import{createApp, defineComponent, DOM_TYPES, h,
 import { header } from '../../../components/header.js'
 import { sidebarLeft } from '../../../components/sidebar-left.js'
 
+let socket = null
 export const OnlineHierarchy = defineComponent({
 
     state(){
         return {
             matcheRounds    : [],
-            socket          : null,
         }
     },
 
     matchmake_players()
     {
-        if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
             
-            this.state.socket   = new WebSocket('ws://localhost:8002/ws/matchmaking/');
+            socket   = new WebSocket('ws://localhost:8003/ws/matchmaking/');
             const tournamentId  = this.appContext.router.params.id;
         
             console.log("---> : ", tournamentId)
             
-            this.state.socket.onopen = () => {
+            socket.onopen = () => {
                 console.log('WebSocket connection established');
 
-                this.state.socket.send(JSON.stringify({
+                socket.send(JSON.stringify({
                     action          : 'online_tournament',
                     tournamentId    : tournamentId
                 }));
             };
 
-            this.state.socket.onmessage = (event) => {
+            socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
             
                 console.log('WebSocket Data:', data);
@@ -45,7 +45,7 @@ export const OnlineHierarchy = defineComponent({
                 }
             };
 
-            this.state.socket.onerror = (error) => {
+            socket.onerror = (error) => {
                 console.error('WebSocket error:', error);
             };
         }
@@ -57,9 +57,9 @@ export const OnlineHierarchy = defineComponent({
     },
 
     onUnmounted() {
-        if (this.state.socket) {
+        if (socket) {
             console.log('WebSocket connection closed');
-            this.state.socket.close();
+            socket.close();
         }
     },
 

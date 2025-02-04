@@ -67,7 +67,8 @@ export const settings = defineComponent({
         }),h('div', {class:'content'}, 
             [h(sidebarLeft, {}), h('div', {
                 class:'global-content',
-                style : this.state.isBlur ? { filter : 'blur(4px)'} : {}
+                style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
+
             },
                 [h('div', { class: 'settings-container' },
                     [ h( 'div',  { class: 'section-headings' },

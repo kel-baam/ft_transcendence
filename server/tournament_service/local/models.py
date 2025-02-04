@@ -5,6 +5,7 @@ from django.core.validators     import MinLengthValidator
 from online.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+
 # class User(AbstractBaseUser):
 #     username = models.CharField(max_length=50, unique=True)
 #     first_name = models.CharField(max_length=50)
