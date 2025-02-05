@@ -15,12 +15,13 @@ export const RegisterForm = defineComponent({
     {
         event.preventDefault()      
         const form = new FormData(document.querySelector(".registerForm"))
-        fetch('http://localhost:3000/auth/register/',{
+        fetch(`${window.env.DOMAIN}/auth/register/`,{
             method: 'POST' ,
             body:form,
             credentials: 'include', 
         }).then((async (res)=>{
             if (!res.ok) {
+                
                 const errors = await res.json();
                 this.updateState({errors:errors})
             }
@@ -30,6 +31,7 @@ export const RegisterForm = defineComponent({
                 inputFields.forEach(input => {
                     input.value='';
                     });
+                console.log("wwiiiik=>",res)
                 showSuccessNotification("Almost there! 🎉\n\nPlease check your inbox to verify your email.")  
                 this.updateState({errors: ''});
             }
@@ -51,3 +53,6 @@ export const RegisterForm = defineComponent({
         ])
     }
     })
+
+
+    

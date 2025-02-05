@@ -19,7 +19,6 @@ export const GameHistoryCard = defineComponent({
         return  h('div', { class: 'match-history-container'})
       if (this.props.viewAll)
       {
-        // console.log(">>>>>>>>>>>>>>>>>> this.props.viewAll ", this.props.viewAll)
         this.state.shownOnviewAll = this.props.viewAll
       }
       return h('div', { class: 'match-history-container' , 
@@ -55,12 +54,15 @@ export const GameHistoryCard = defineComponent({
     },
     onMounted()
     {
-      var  endPoint  = 'http://localhost:3000/api/user/matches'
-      if(JSON.stringify(this.appContext.router.params) !== '{}')
-      {
-          console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
-          endPoint = `http://localhost:3000/api/user/matches?username=${this.appContext.router.params.username}`
-      }
+      // var  endPoint  = `${window.env.DOMAIN}/api/user/matches`
+      // if(JSON.stringify(this.appContext.router.params) !== '{}')
+      // {
+      //     console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
+      //     endPoint = `${window.env.DOMAIN}/api/user/matches?username=${this.appContext.router.params.username}`
+      // }
+      const {key} = this.props
+      const endPoint = !key ?  `${window.env.DOMAIN}/api/user/matches` :
+      `${window.env.DOMAIN}/api/user/matches?username=${key}`
         customFetch(endPoint)
           .then(result =>{
   
@@ -74,7 +76,6 @@ export const GameHistoryCard = defineComponent({
               return result.json()
           })
           .then(res => {
-              // console.log(">>>>>>>>>>>>>>> in matches  history  res : ", res,"|",res.status)
               console.log("res is okey")
               this.updateState({
                       isLoading: false,  
@@ -83,9 +84,9 @@ export const GameHistoryCard = defineComponent({
               });
   
           })
-          .catch(error => {
-              // console.log(">>>>>>>>>>>> error in win  : ", error)
-          })
+          // .catch(error => {
+          //     // console.log(">>>>>>>>>>>> error in win  : ", error)
+          // })
     }
   })
   const GameHistoryItems = defineComponent({
@@ -97,10 +98,8 @@ export const GameHistoryCard = defineComponent({
     },
     render()
     {
-      // console.log( "----------------------------------> data in game history : ", this.props.data)
       this.state.shownOnviewAll = this.props.shownOnviewAll
       const data = this.state.shownOnviewAll ? this.props.data : this.props.data.slice(0,4)
-      // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.state.shownOnviewAll  : ', this.state.shownOnviewAll )
       return h('div', {class:'center-div', 
         style : this.state.shownOnviewAll ?  {'row-gap' :'0%', 'grid-auto-rows': '16.7%'} : {}},
         data.map((item)=> h('div', { class: 'match-result-item',

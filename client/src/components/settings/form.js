@@ -61,7 +61,7 @@ export const Form = defineComponent({
                             for (let [key, value] of formData.entries()) {
                                 console.log(`${key}:`, value);
                             }
-                            customFetch('http://localhost:3000/api/user/', {
+                            customFetch(`${window.env.DOMAIN}/api/user`, {
                                 method : 'PUT',
                                 body : formData
                             }
@@ -119,7 +119,7 @@ export const Form = defineComponent({
                                 position: 'relative',
                                 width: '100%',       
                                 height: '100%'}},[
-                            h('img', { src: `http://localhost:8001${data.picture}` , alt: 'profile picture', class: 'profile-pic',
+                            h('img', { src: `${window.env.DOMAIN}${data.picture}` , alt: 'profile picture', class: 'profile-pic',
                                 id : 'profile-pic',
                                 style : {
                                     'object-fit': 'cover'  
@@ -212,7 +212,7 @@ export const Form = defineComponent({
                                             }),
                                             h('br'),
                                             h('label', { for: 'nationality' }, ['Nationality:']),
-                                            // h('small', {class : 'error', id : "nationality_error"}),
+                                            h('small', {class : 'error', id : "nationality_error"}),
                                             h('select',
                                                 { name: 'nationality', id: 'nationality', value : `${data.nationality}` ,
                                                 on : {
@@ -225,7 +225,7 @@ export const Form = defineComponent({
                                             ),
                                             h('br'),
                                             h('label', { for: 'gender' }, ['Gender:']),
-                                            // h('small', {class : 'error', id : "gender_error"}),
+                                            h('small', {class : 'error', id : "gender_error"}),
                                             h('select',
                                                 { name: 'gender', id: 'gender', value:`${data.gender}` ,
                                                 on : {
@@ -254,7 +254,7 @@ export const Form = defineComponent({
     onMounted()
     {
         
-        customFetch('http://localhost:3000/api/user')
+        customFetch(`${window.env.DOMAIN}/api/user`)
         .then(result =>{
 
             if (!result.status == 401)

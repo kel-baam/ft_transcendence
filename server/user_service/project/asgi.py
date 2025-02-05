@@ -15,7 +15,7 @@ import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
-from Profile.urls import websocket_urlpatterns  # Adjust according to your app name
+from user_service.urls import websocket_urlpatterns  # Adjust according to your app name
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),  # Handle traditional HTTP requests

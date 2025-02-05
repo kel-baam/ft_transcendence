@@ -1,6 +1,6 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString,RouterOutlet} from '../../package/index.js'
-import { EnableTwoFactor } from '../2FA/enable2FA.js'
+import { EnableTwoFactor } from './enable2FA.js'
 import { customFetch } from '../../package/fetch.js'
 
 
@@ -10,14 +10,48 @@ export const SecuritySettings = defineComponent(
         {
             return {
                 isQrCodeVisible : false,
-                isEnabled : false
+                isEnabled : false,
+                isLoading : true,
+
 
             }
+        },
+        disable2FA(event)
+        {
+            event.preventDefault()    
+            customFetch(`${window.env.DOMAIN}/auth/twoFactor/desactivate/`,{}).then(async(result)=>{
+                if(!result.ok)
+                {
+                    if(result.status == 401)
+                        this.appContext.router.navigateTo('/login')
+                }
+                // to check else
+            })
+        },
+        onMounted()
+        {
+            customFetch(`${window.env.DOMAIN}/auth/twoFactor/state/`,{}).then(async(result)=>{
+                if(!result.ok)
+                {
+                    if(result.status == 401)
+                        this.appContext.router.navigateTo('/login')
+                }
+                else
+                {
+                    this.updateState({isLoading : false})
+                    const data = await result.json()
+                    if(data.active2FA == true)
+                        this.updateState({isQrCodeVisible : false, isEnabled : true, isLoading : false})
+                }
+                    
+            })
         },
         render()
         {
             const formData = new FormData();
-
+            const {isQrCodeVisible, isEnabled , isLoading} = this.state
+            if (isLoading)
+                return h('div', {class : 'security-settings-ctn'})
             return h('div', {class : 'security-settings-ctn'},[
                     h('div', {class : 'secure-auth-card'},!this.state.isQrCodeVisible ?  [
                         h('span', {style :{color : '#224A88', fontSize: '24px'}}, ['Two-factor authentication 2FA:']),
@@ -39,17 +73,24 @@ export const SecuritySettings = defineComponent(
                             border: 'none'
                             },
                             on : {
-                                click : () =>
+                                click : (event) =>
                                 {
-                                    if (!this.state.isEnabled)
+                                    if (!isEnabled)
                                         this.updateState({isQrCodeVisible : true})
                                     else
+                                    {
+                                        this.disable2FA(event)
                                         this.updateState({isEnabled : false})
+                                    }
                                 }
                             }
-                        },   [!this.state.isEnabled ?  'Enable' : 'Disable'])
+                        },   [!isEnabled ?  'Enable' : 'Disable'])
                     ] : [
-                        h(EnableTwoFactor,{}), 
+                        h(EnableTwoFactor,{on : {
+                            '2faVerified' : ()=>{
+                                this.updateState({isQrCodeVisible : false, isEnabled : true})
+                            }
+                        }}), 
                         // h('button', {style:{
                         //     'background-color': '#D44444',
                         //     color: '#FFEEBF',
@@ -79,7 +120,7 @@ export const SecuritySettings = defineComponent(
                                 for (let [key, value] of formData.entries()) {
                                     console.log(`${key}:`, value);
                                 }
-                                customFetch('http://localhost:3000/api/user/', {
+                                customFetch(`${window.env.DOMAIN}/api/user/`, {
                                     method : 'PUT',
                                     headers: {
                                         'Content-Type': 'application/json', // Explicitly set content type
@@ -116,7 +157,7 @@ export const SecuritySettings = defineComponent(
                                     console.log("res is okey")
                                     console.log(">>>>>>>>>>>>>>>>>>>>> res here : ", res)
                                     document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
-                                    fetch("http://localhost:3000/auth/logout/",{
+                                    fetch(`${window.env.DOMAIN}/auth/logout/`,{
                                         method:'POST',
                                         credentials: 'include',
                                     }).then(async (res)=>{

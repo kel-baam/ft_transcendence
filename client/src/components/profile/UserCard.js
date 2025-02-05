@@ -1,6 +1,7 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js'
 import { customFetch } from '../../package/fetch.js'
+// import { config } from '../../config.js'
 
 export const UserCard = defineComponent({
     state(){
@@ -17,12 +18,12 @@ export const UserCard = defineComponent({
     render(){
 
         const {data, isLoading} = this.state
-        const {isOwn} = this.props
+        const {key} = this.props
         if (isLoading) 
             return h('div', { class: 'infos-user-container' });
         return  h('div', { class: 'infos-user-container' },
             [h('div', {},
-            [ h('img', { src: `http://localhost:3000${data.picture}`, alt :"profile picture" , style : {'object-fit': 'cover'}}),
+            [ h('img', { src: `${window.env.DOMAIN}${data.picture}`, alt :"profile picture" , style : {'object-fit': 'cover'}}),
 
                 h('i', { class: 'fa-solid fa-camera', 
                         style: {
@@ -49,7 +50,7 @@ export const UserCard = defineComponent({
             [ h('div', {},
                     [h('span', {},
                     [ 
-                        h('h1', {}, [`${data.first_name}` + ' '+ `${data.last_name}`])]
+                        h('h2', {}, [`${data.first_name}` + ' '+ `${data.last_name}`])]
                     ),
                     // h('span', {}, ['here add user'])
                     ]
@@ -81,7 +82,7 @@ export const UserCard = defineComponent({
                                 on : {
                                     click : ()=>
                                     {
-                                        customFetch('http://localhost:3000/api/user/friendships', {
+                                        customFetch(`${window.env.DOMAIN}/api/user/friendships`, {
                                             method : 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json',
@@ -111,17 +112,49 @@ export const UserCard = defineComponent({
                                     style : {'font-size' : '20px', color : '#5293CB' , 
                                         position : 'absolute', left : '85%'},
                                         'data-text': 'Block User',
+                                        on : {
+                                            click : ()=>
+                                            {
+                                                customFetch(`${window.env.DOMAIN}/api/user/friendships`, {
+                                                    method : 'PUT',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                      },
+                                                    body : JSON.stringify({
+                                                        target: data.username,
+                                                        status : 'blocked'
+                                                    })
+                                                }).then((res)=>
+                                                {
+                                                    if (res.status == 200)
+                                                    {
+                                                        console.log(">>>>>>>>>>>>> here blocked nisrin ")
+                                                        this.updateState({
+                                                            data : {
+                                                                ...this.state.data,
+                                                                relationship_status : 'blocked'
+                                                            }
+                                                    })
+
+                                                    }
+                                                })
+                                            }
+                                        }
                                         }): null
                         ] )]
                 
                 ),
                 h('div', {},
                     [h('div', {},
-                        [h('span', {},[ `${data.level}` + 'Xps']),
+                        [
+                            // h('span', {},[ `${data.level}` + 'Xps']),
+                            h('span', {},[ '8.88' + 'Xps']),
+
                         h('div', {},
                             [
                                 h('span', {}, ['level']),
-                                h('progress', { max: '100', value: `${data.level}`, style: {width: '593px' }, id: 'progress-level' })]
+                                // h('progress', { max: '100', value: `${data.level}`, style: {width: '593px' }, id: 'progress-level' })]
+                                h('progress', { max: '100', value: '8', style: {width: '593px' }, id: 'progress-level' })]
                         )]
                     ),
                     h('div', {},
@@ -154,21 +187,16 @@ export const UserCard = defineComponent({
 
    onMounted()
     {
-        var  endPoint  = 'http://localhost:3000/api/user?fields=first_name,last_name,username,picture,score,rank'
-        if(JSON.stringify(this.appContext.router.params) !== '{}')
-        {
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
-            this.state.isOwn  = false
-            endPoint = `http://localhost:3000/api/user?username=${this.appContext.router.params.username}&
+        const {key} = this.props
+        const  endPoint  = !key ? `${window.env.DOMAIN}/api/user?fields=first_name,last_name,username,picture,score,rank`:
+        `${window.env.DOMAIN}/api/user?username=${key}&
             fields=first_name,last_name,username,picture,score,rank`
-        }
+       
         customFetch(endPoint)
         .then(result =>{
-                console.log(">>>>>>>>>>>>> result.status: ", result.status)
                 switch(result.status)
                 {
                     case 401:
-                        console.log(">>>>>>>>>>>>> here ")
                         this.appContext.router.navigateTo('/login')
                         break;
                     // case 404:
@@ -179,8 +207,6 @@ export const UserCard = defineComponent({
             return result.json()
         })
         .then(res =>{
-            console.log("res is okey")
-            console.log(">>>>>>>>>>>>>>>> here the data comes from backend : ", res)
             this.updateState({
                     isLoading: false,  
                     data: res,   
@@ -199,7 +225,7 @@ export const UserCard = defineComponent({
         const formData = new FormData();
         formData.append('picture', file);
         console.log(">>>>>>>>>>>>>>-------------------------------> file : ", file)
-        customFetch('http://localhost:3000/api/user', {
+        customFetch(`${window.env.DOMAIN}/api/user`, {
             method : 'PUT',
             body : formData
         }
@@ -215,7 +241,6 @@ export const UserCard = defineComponent({
             switch(result.status)
             {
                 case 401:
-                    console.log(">>>>>>>>>>>>> here ")
                     this.appContext.router.navigateTo('/login')
                     break;
                 // case 404:
@@ -226,14 +251,11 @@ export const UserCard = defineComponent({
             return result.json()
         })
         .then(res =>{
-            console.log("res is okey")
-            console.log(">>>>>>>>>>>>>>>> here the data comes from backend in change image : ", res)
             this.updateState({
                     isLoading: false,  
                     data: res,   
                     error: null   
             });
-            console.log(">>>>>>>>>>>>>>>>>>> state here after change the image : ", this.state)
 
         })
         // .catch(error => {

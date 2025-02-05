@@ -2,22 +2,25 @@ import {RouterOutlet,h,createApp,defineComponent,HashRouter} from './package/ind
 // import { Profile } from './components/profile.js'
 import { Login } from './pages/login.js'
 import { LandingPage } from './pages/landingPage.js'
-// import { TwoFactor } from './components/twoFactor.js';
+import { TwoFactor } from './components/login/twoFactor.js';
 import { customFetch } from './package/fetch.js';
-// import { InformationsForm } from './components/login/form.js';
 import { Register } from './pages/register.js';
 import { Home } from './pages/home.js';
-
+import { Leaderboard } from './pages/leaderboard.js';
 import { settings } from './pages/settings.js';
-import { ProfileSelf,ProfileViewer } from './pages/profile.js';
+import { Profile } from './pages/profile.js';
 import { Chat } from './pages/chat.js';
 import { ResetPassword } from './pages/resetPassword.js';
-// import { ProfileX,ProfileViewer } from './pages/profileX.js';
+
+
+window.env = {
+  DOMAIN: "http://10.13.3.1:3000",
+}
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
-
-  links.forEach(link => {
+  console.log("------------------> Domain:",  window.ENV);
+    links.forEach(link => {
       link.addEventListener('click', function(event) {
           event.preventDefault();
 
@@ -43,59 +46,56 @@ const NotFound = defineComponent({
 
 
 
-// const test = defineComponent({
 
-   
-//     state(){
-//       return {
-//           isLoading : false,
-//           data:{}
+async function isAuthenticated(currentLocation)
+{
+      let query = false
+      if(currentLocation == '/2FA')
+        query = true
+      const result = await customFetch(`${window.env.DOMAIN}/isAuthenticated?2fa=${query}`)
+      // console.log("res===>",result,query)
+      if(result)
+      {
+        if(!result.ok)
+          { 
 
-//   }
-//   },
-
-//   onMounted(){
-//       console.log("-----------> here update state ")
-//       this.updateState({ isLoading: true })
-//       console.log("onmouunted-------------->",this.state.isLoading)
-//       customFetch('http://localhost:3000/home/',{})
-//       .then((data)=>{
-//         console.log("data fetcheed",data)
-//         if(!data.ok)
-//         {
-//           this.appContext.router.navigateTo('/401')
-
-//         }
-//       })
-  
-//     },
-
-   
-//   render() {
-//     return h('div',{},[
-//       h('div',{},["heeeeelo in ur hooome"]),
-
-//     ]) 
-//   },
-  
-// })
+            if(result.status == 401)
+                return '/login'
+          }
+      }
+}
 
 const router = new HashRouter([
 
-    { path: '/', component: LandingPage },
-    // { path: '/form', component: InformationsForm },
-    // { path: '/2FA', component: TwoFactor },
+    { path: '/', component: LandingPage 
+    },
     { path: '/login', component: Login },
-    { path:'/home', component: Home},
-
-    // { path:'/home', component: test},
-    // { path: '/test',component: Home},
-    { path: '/401',  component: NotFound },
     { path: '/register',  component: Register },
-    {path : '/settings', component: settings},
-    // {path:'/profile' , redirect: '/user'},
-    {path:'/user', component: ProfileSelf},
-    {path:'/user/:username', component: ProfileViewer},
+    { path:'/home', component: Home},
+    
+    // { path:'/home', component: test},
+    { path: '/2FA', component: TwoFactor,
+      beforeEnter:isAuthenticated
+
+    },
+    { path: '/leaderboard',component: Leaderboard,
+      beforeEnter:isAuthenticated
+
+    },
+
+    { path: '/401',  component: NotFound },
+    {path : '/settings', component: settings,
+      beforeEnter:isAuthenticated
+
+    },
+    {path:'/user', component: Profile,
+      beforeEnter:isAuthenticated
+
+    },
+    {path:'/user/:username', component: Profile,
+      beforeEnter:isAuthenticated
+
+    },
 
     { path: '/password/reset',  component: ResetPassword },
     {path:'/chat', component: Chat}

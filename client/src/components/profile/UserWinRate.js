@@ -7,18 +7,20 @@ export const UserWinRate =  defineComponent({
       return {
         isLoading: true,
         data : {
-          // total_matches: '150',
-          // losses: '22',
-          // wins : '40',
-        },
+         },
         activateSection : 'win'
       }
     },
     render(){
       const {data, isLoading} = this.state
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>> data and isloading ", data , "  |  ", isLoading)
         if (isLoading) {
-            return h('div', { class: 'wining-rate-container' });
+            return h('div', { class: 'wining-rate-container' },[
+              h('div', { class: 'title' }, [
+                h('span', {}, [
+                  h('h2', {}, ['Wining rate'])
+                ])
+              ]),
+            ]);
         }
         return h('div', { class: 'wining-rate-container' }, [
             h('div', { class: 'title' }, [
@@ -71,13 +73,9 @@ export const UserWinRate =  defineComponent({
   },
   onMounted()
   {
-      // var endPoint = 
-      var  endPoint  = 'http://localhost:3000/api/user/stats'
-        if(JSON.stringify(this.appContext.router.params) !== '{}')
-        {
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
-            endPoint = `http://localhost:3000/api/user/stats?username=${this.appContext.router.params.username}`
-        }
+      const {key} = this.props
+      const endPoint = !key ?  `${window.env.DOMAIN}/api/user/stats` :
+      `${window.env.DOMAIN}/api/user/stats?username=${key}`
       customFetch(endPoint)
         .then(result =>{
 
@@ -91,7 +89,7 @@ export const UserWinRate =  defineComponent({
             return result.json()
         })
         .then(res => {
-            console.log(">>>>>>>>>>>>>>> in win  res : ", res,"|",res.status)
+            // console.log(">>>>>>>>>>>>>>> in win  res : ", res,"|",res.status)
             // console.log("res is okey")
             this.updateState({
                     isLoading: false,  

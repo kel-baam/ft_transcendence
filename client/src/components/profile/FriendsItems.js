@@ -44,7 +44,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
         [
           h('div', { class: 'picture-item' },
             [
-              h('img', { src: `http://localhost:3000${user.picture}`, alt:'profile picture', class: 'picture-item',
+              h('img', { src: `${window.env.DOMAIN}${user.picture}`, alt:'profile picture', class: 'picture-item',
                 style : {'object-fit': 'cover'}
               })
             ]

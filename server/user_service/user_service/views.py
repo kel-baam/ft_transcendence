@@ -10,50 +10,26 @@ from django.conf import settings
 # from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
+from django.db.models import OuterRef, Exists, Q
 
-# from rest_framework.parsers import MultiPartParser, FormParser
-# import logging
-# from PIL import Image
-# import io
-# import magic
-
-
-
-
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(__name__)
-# class UserAuthenticationView(APIView):
-#     def get(self, request, username):
-#         try:
-#             user = User.objects.get(username=username)
-#             Userserializer =UserSerializer(user, 
-#             fields=['username', 'password']).data
-#             return Response(Userserializer, status=status.HTTP_200_OK)
-#         except User.DoesNotExist:
-#             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-#         except Exception as e:
-#             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         except serializers.ValidationError:
-#             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserInfoView(APIView):
 
-    # parser_classes = (MultiPartParser, FormParser)
     def get(self, request):
         try:
             # print(">>>>>>>>>>>>>>>>>>> username of the searched user : ", request.query_params.get('username', None))
             fields ={}
             if request.query_params.get('fields', None):
-                print(">>>>>>>> here fields exist : ", request.query_params.get('fields', None))
+                # print(">>>>>>>> here fields exist : ", request.query_params.get('fields', None))
                 fields = set(request.query_params.get('fields', None).split(','))
-                print('>>>>>>>>>>>>> fields extracted ', fields)
+                # print('>>>>>>>>>>>>> fields extracted ', fields)
             if request.query_params.get('username', None) :
                 other_user = User.objects.get(username=request.query_params.get('username'))
                 logged_in_user = User.objects.get(username=request.META.get('HTTP_X_AUTHENTICATED_USER'))
                 Userserializer = UserSerializer(other_user, exclude = ['password'], context = {'logged_in_user' : logged_in_user}).data
             else :
-                print(">>>>>>>>>>>>>>>>>> here else ")
+                # print(">>>>>>>>>>>>>>>>>> here else ")
                 username = request.META.get('HTTP_X_AUTHENTICATED_USER')
                 user = User.objects.get(username=username)
                 Userserializer =UserSerializer(user, exclude = ['password'], context = {'logged_in_user' : user}, fields=fields).data
@@ -62,7 +38,7 @@ class UserInfoView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(">>>>>>>>>>>>>>>> here the problem : ", str(e))
+            # print(">>>>>>>>>>>>>>>> here the problem : ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -70,17 +46,17 @@ class UserInfoView(APIView):
         
 
     def put(self, request):
-        print('<<<<<<<<<<<<< here in put method ')
+        # print('<<<<<<<<<<<<< here in put method ')
         try:
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
-            print(">>>>>>>>>e>>>>>>>>>>>>>>>>>>>>>>>> username ", username)
-            print("Raw request body:", request.body)
+            # print(">>>>>>>>>e>>>>>>>>>>>>>>>>>>>>>>>> username ", username)
+            # print("Raw request body:", request.body)
             user_instatnce = User.objects.get(username=username)
             data = request.data.copy()
-            print(">>>>>>>>>>>> incoming data : ", data)
+            # print(">>>>>>>>>>>> incoming data : ", data)
             if 'picture' in request.FILES:
                 data['picture'] = request.FILES.get('picture', None)
-            print(">>>>>>>>>>>>>>>> data is here : ", data)
+            # print(">>>>>>>>>>>>>>>> data is here : ", data)
             userSerializer = UserSerializer(user_instatnce, data=data, partial=True)
             if userSerializer.is_valid(raise_exception=True):
                 userSerializer.save()
@@ -91,7 +67,7 @@ class UserInfoView(APIView):
             # print('>>>>>>>>>>>>>>>>>>> here the isssue : ', {key: value[0] for key, value in userSerializer.errors.items()})
             return Response({key: value[0] for key, value in userSerializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print('>>>>>>>>>>>>>>>>>>>> here the issue internal server : ', e)
+            # print('>>>>>>>>>>>>>>>>>>>> here the issue internal server : ', e)
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
    
 
@@ -121,16 +97,16 @@ class UserInfoView(APIView):
             # print(">>>>>>>>>>>>>> here : ")
             if Userserializer.is_valid(raise_exception=True):
                 # print(">>>>>>>>>>> user : ", Userserializer.data)
-                print(">>>>>>>>>>> here here the serializer valide ")
+                # print(">>>>>>>>>>> here here the serializer valide ")
                 Userserializer.save()
                 return Response({"message " : "the user added successfully"}, status=status.HTTP_200_OK)
         except serializers.ValidationError as e:
             # logger.debug(">>>>>>>>>>> here validation error %s",e)
-            print(">>>>>>>>>>>>>>>the error is here : ", Userserializer.errors)
+            # print(">>>>>>>>>>>>>>>the error is here : ", Userserializer.errors)
             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             # logger.debug(">>>>>>>>> here internal server %s",e)
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> the hhhhh error is here : ", e)
+            # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> the hhhhh error is here : ", e)
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
@@ -260,10 +236,9 @@ class FriendshipView(APIView):
                 # Userserializer = UserSerializer(other_user, exclude = ['password'], context = {'logged_in_user' : logged_in_user}).data
             else :
                 # print(">>>>>>>>>>>>>>>>>> here else ")
-                username = request.META.get('HTTP_X_AUTHENTICATED_USER')
-                user = User.objects.get(username=username)
+                user = User.objects.get(username=request.META.get('HTTP_X_AUTHENTICATED_USER'))
             status_filter = request.query_params.get('status', None)
-            print("************************************> status ", status_filter , " and user in Friendship : ", user)
+            # print("************************************> status ", status_filter , " and user in Friendship : ", user)
             # user= User.objects.get(username=username)
             data = []
             if status_filter == 'accepted':
@@ -277,6 +252,19 @@ class FriendshipView(APIView):
                 RequestSerializer(requests_user_as_sender, many=True, fields= ['id','user'], context={'user_type': 'receiver'})
 
                 data = serializer_requests_user_as_reciever.data + serializer_requests_user_as_sender.data
+                # print(">>>>>>>>>>>>>>>>>>>>>> here user ", user)
+                # requests_user = Request.objects.filter(
+                #     Q(sender=user) | Q(reciever=user),
+                #     status=status_filter
+                # ).values('id', 'sender', 'reciever','status')
+                # print(">>>>>>>>>>>>>>>>>>>>    here all the requests accepted ", requests_user)
+                # context = {
+                #     'sender': 'reciever',
+                #     'reciever': 'sender'
+                # }
+
+                # serializer = RequestSerializer(requests_user, many=True, context={'user_type': context.get('sender', 'reciever')})
+                # data = serializer.data
 
             elif status_filter == 'recieved':
                 requests_user_as_reciever = Request.objects.filter(reciever=user, status='pending')
@@ -284,7 +272,7 @@ class FriendshipView(APIView):
                 serializer_requests_user_as_reciever = \
                 RequestSerializer(requests_user_as_reciever, many=True, fields= ['id','user'], context={'user_type': 'sender'})
                 data = serializer_requests_user_as_reciever.data
-                print('>>>>>>>>>>>>>>>>>>>>>>>>> data for req : ', data)
+                # print('>>>>>>>>>>>>>>>>>>>>>>>>> data for req : ', data)
 
             elif status_filter == 'sent':
                 requests_user_as_sender = Request.objects.filter(sender=user, status='pending')
@@ -293,18 +281,18 @@ class FriendshipView(APIView):
                 RequestSerializer(requests_user_as_sender, many=True, fields= ['id','user'], context={'user_type': 'receiver'})
                 data = serializer_requests_user_as_sender.data
 
-            # elif status_filter == 'blocked':
-            #     requests_user_as_sender = Request.objects.filter(sender=user, status=status_filter)
-            #     print(">>>>>>>>>>> requests_user_as_sender : ", requests_user_as_sender)
-            #     serializer_requests_user_as_sender = \
-            #     RequestSerializer(requests_user_as_sender, many=True, fields= ['id','user'], context={'user_type': 'receiver'})
-            #     data = serializer_requests_user_as_sender.data
+            elif status_filter == 'blocked':
+                requests_user_as_sender = Request.objects.filter(sender=user, status=status_filter)
+                # print(">>>>>>>>>>> requests_user_as_sender : ", requests_user_as_sender)
+                serializer_requests_user_as_sender = \
+                RequestSerializer(requests_user_as_sender, many=True, fields= ['id','user'], context={'user_type': 'receiver'})
+                data = serializer_requests_user_as_sender.data
 
             return Response(data, status=status.HTTP_200_OK)
         except serializers.ValidationError:
              return  Response({key: value[0] for key, value in serializers.ValidationError.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(">>>>>>>>>>>>>>>>>>>>> here ")
+            # print(">>>>>>>>>>>>>>>>>>>>> here internal server error ", str(e))
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     #-----------------delete method----------------#
@@ -316,12 +304,12 @@ class FriendshipView(APIView):
             # if request_instance.user != request.user:
             #     return Response({"error": "You do not have permission to delete this request"}, status=status.HTTP_403_FORBIDDEN)
             request_instance = Request.objects.get(id=request.query_params.get('id', None))
-            print(">>>>>>>>>>>>>> request_instance : ", request_instance)
+            # print(">>>>>>>>>>>>>> request_instance : ", request_instance)
             # serializer = RequestSerializer(request_instance, data= request.data, partial=True, context={'user_type' : 'both'})
             
             # if serializer.is_valid(raise_exception=True):
             #     serializer.save()
-            #     print(">>>>>>>>>>>>>> serializer ", serializer.data)
+            # print(">>>>>>>>>>>>>> serializer ", serializer.data)
             request_instance.delete()
             return Response({"message": "Request deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except Request.DoesNotExist:
@@ -329,7 +317,7 @@ class FriendshipView(APIView):
         # except serializers.ValidationError:
         #     return  Response({key: value[0] for key, value in serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(">>>>>>>>>>> here internal server error")
+            # print(">>>>>>>>>>> here internal server error")
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     #-----------------put method----------------#
@@ -337,10 +325,23 @@ class FriendshipView(APIView):
     def put(self, request):
         try:
             # if request_instance.reciever != request.user:
-            print(">>>>>>>>>>>>>>>>>>>>>>>> here where the user wanna accept the invitation ")
+            # print(">>>>>>>>>>>>>>>>>>>>>>>> here where the user wanna accept the invitation ")
             #     return Response({"error": "You are not authorized to accept this request"}, status=status.HTTP_403_FORBIDDEN)
-            request_instance = Request.objects.get(id=request.data['id'])
-            serializer = RequestSerializer(request_instance, data=request.data, partial=True,
+            data = request.data
+            # print(">>>>>>>>>>>>>>>>> data comming for updating request is here : ", data)
+            user = User.objects.get(username=request.META.get('HTTP_X_AUTHENTICATED_USER'))
+            if data['status'] == 'blocked':
+                targetUser = User.objects.get(username=data['target'])
+                # print(">>>>>>>>>>>>> before ")
+                request_instance = Request.objects.get(
+                Q(sender=user, reciever=targetUser) | Q(sender=targetUser, reciever=user)
+                )
+                # print(">>>>>>>>>>>>> after ")
+                if request_instance.sender != user:
+                    request_instance.sender, request_instance.reciever = request_instance.reciever, request_instance.sender
+            else:
+                request_instance = Request.objects.get(id=data['id'])
+            serializer = RequestSerializer(request_instance, data=data, partial=True,
              context={'user_type': 'both'}, fields=['id', 'sender', 'reciever', 'status'])
             if serializer.is_valid(raise_exception=True):
                 serializer.save() 
@@ -350,25 +351,26 @@ class FriendshipView(APIView):
         except serializers.ValidationError:
             return  Response({key: value[0] for key, value in serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~> internal server error ", str(e))
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     #------------------ post method--------------#
 
     def post(self, request):
         try:
-            print(">>>>>>>>>>>>>>>>>> i wanna post data here  :", request.data)
+            # print(">>>>>>>>>>>>>>>>>> i wanna post data here  :", request.data)
             data = request.data.copy()
             # data['sender'] = request.user.id  # Automatically set the sender to the authenticated user
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
             data['sender'] = User.objects.get(username=username).id
             if data['sender'] == data['reciever']:
                 return Response({"message" : "loopback invitation "}, status=status.HTTP_400_BAD_REQUEST)
-            print(">>>>>>>>>>>>>>>>>> data : ", data)
-            print(">>>>>>>>>>>>>>>>>>>>>>>> sender : ", data['sender'])
+            # print(">>>>>>>>>>>>>>>>>> data : ", data)
+            # print(">>>>>>>>>>>>>>>>>>>>>>>> sender : ", data['sender'])
             serializer = RequestSerializer(data=data, context={'user_type': 'both'})
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                print("---------------------> data serializer : ", serializer.data)
+                # print("---------------------> data serializer : ", serializer.data)
                 return Response({"message" : "Request created successfully"}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError:
             return  Response({key: value[0] for key, value in serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -376,21 +378,69 @@ class FriendshipView(APIView):
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         
-class UserRankingView:
+class UserRankingView(APIView):
     def get(self, request):
-        # Get the 'top' query parameter
-        top = request.GET.get('top', None)
-
-        # Fetch all players, or only the top X players if 'top' is provided
-        players=[]
+        top = request.query_params.get('top', None)
         if top is not None and top.isdigit():
             limit = int(top)
             players = list(Player.objects.order_by('rank')[:limit].values('username', 'rank'))
         else:
             players = list(Player.objects.order_by('rank').values('username', 'rank'))
+        results = [
+            UserSerializer(player, fields={'id', 'username'}).data
+            for player in players
+        ]
 
-        # Prepare the response
-        # response = {
-        #     "players": players
-        # }
-        return Response(players, status=status.HTTP_200_OK)
+        return Response(results, status=status.HTTP_200_OK)
+
+    
+class SearchUsersView(APIView):
+    def get(self, request):
+        try:
+            query = request.query_params.get('q', None)
+            users = User.objects.filter(username__istartswith=query)[:5]
+            results = [
+                UserSerializer(user, fields= {'id', 'username', 'picture'}).data
+                for user in users
+                ]
+            return Response(results, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class UserBadgesView(APIView):
+    def get(self, request):
+        # print(">>>>>>>>>>>>>>>>>>>>...here user badges ")
+        try:
+            user = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            # print(">>>>>>>>>>>>>>>>>>>> here before search ")
+            userBadges = UserBadge.objects.filter(user=User.objects.get(username=user), badge=OuterRef('pk'))
+            # print(">>>>>>>>>>>>>>>>>>  userBadges : ", userBadges)
+            # Annotate each badge with "unlocked" status
+            badges = Badge.objects.annotate(
+                unlocked=Exists(userBadges)
+            ).values('id', 'name', 'icon', 'unlocked')
+            # print(">>>>>>>>>>>>>>>>>>>>> here the badges : ", badges )
+            UserBadges = [
+                BadgeSerializer(badge).data
+                for badge in badges 
+            ]
+            # print(">>>>>>>>>>>>>>>>>>>>> userBadges : ", UserBadges)
+            # badgesSerializer = BadgeSerializer(badges)
+            # print(">>>>>>>>>>>>>> here badges after serializer : ", badgesSerializer.data)
+            return Response(UserBadges, status=status.HTTP_200_OK)
+        except Exception as e:
+                # print(">>>>>>>>>>>>>>>>>>>> e : ", str(e))
+                return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def post(self, request):
+        try:
+            # user = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            # print(">>>>>>>>>>>>>>>>>>>> here in post locked badge ---------------")
+            # print(">>>>>>>>>>>>>>>>>> the data came from the locked bage ",request.data )
+            user_badges_serializer  = UserBadgeSerializer(data=request.data)
+            if(user_badges_serializer.is_valid(raise_exception=True)):
+                user_badges_serializer.save()
+            return Response({"message":"the badge was locked"}, status=status.HTTP_201_CREATED)
+        except serializers.ValidationError:
+            return  Response({key: value[0] for key, value in user_badges_serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)

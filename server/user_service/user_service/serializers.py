@@ -19,11 +19,11 @@ from django.core.files.base import ContentFile
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta():
         model = Player
-        fields = ['score', 'level', 'Rank']
+        fields = ['score', 'level', 'rank']
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)
-    rank = serializers.IntegerField(source='player.Rank', read_only = False,required=False)
+    rank = serializers.IntegerField(source='player.rank', read_only = False,required=False)
     level = serializers.FloatField(source='player.level', read_only = False,required=False)
 
     Current_password = serializers.CharField(write_only=True, required=False)
@@ -108,7 +108,7 @@ class UserSerializer(serializers.ModelSerializer):
         player = getattr(instance, 'player', None)
         if player:
             player.score = player_data.get('score', player.score)
-            player.Rank = player_data.get('Rank', player.Rank)
+            player.rank = player_data.get('rank', player.rank)
             player.level = player_data.get('level', player.level)
             player.save()
         return instance
@@ -204,13 +204,13 @@ class RequestSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         user_type = self.context.get('user_type', None)
         if user_type == "sender":
-            return UserSerializer(obj.sender,fields=['username', 'first_name', 'last_name', 'picture']).data
+            return UserSerializer(obj.sender,fields=['username', 'first_name', 'last_name', 'picture', 'status']).data
         elif user_type == "receiver":
-            return UserSerializer(obj.reciever,fields=['username', 'first_name', 'last_name', 'picture']).data
+            return UserSerializer(obj.reciever,fields=['username', 'first_name', 'last_name', 'picture', 'status']).data
         elif user_type == "both":
             return {
-                "sender": UserSerializer(obj.sender,fields=['username', 'first_name', 'last_name', 'picture']).data,
-                "receiver": UserSerializer(obj.reciever,fields=['username', 'first_name', 'last_name', 'picture']).data,
+                "sender": UserSerializer(obj.sender,fields=['username', 'first_name', 'last_name', 'picture', 'status']).data,
+                "receiver": UserSerializer(obj.reciever,fields=['username', 'first_name', 'last_name', 'picture', 'status']).data,
             }
         return None
     
@@ -220,4 +220,15 @@ class RequestSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Request
+        fields = '__all__'
+
+
+class BadgeSerializer(serializers.ModelSerializer):
+    unlocked = serializers.BooleanField()
+    class Meta:
+        model = Badge
+        fields = ['id', 'name', 'icon', 'unlocked']
+
+class UserBadgeSerializer(serializers.ModelSerializer):
+    class Meta:
         fields = '__all__'

@@ -28,3 +28,7 @@ RUN apt-get update && apt-get install -y build-essential libpq-dev && \
     pip install -r requirements.txt
 
 COPY . .
+
+RUN chmod +x /app/script.sh
+
+CMD [ "sh", "/app/script.sh" ]

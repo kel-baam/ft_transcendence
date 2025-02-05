@@ -1,17 +1,20 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js'
-
 export const ChatList = defineComponent(
     {
         state()
         {
             return {
                 chatItems: [],
-                isLoading: false,
+                isLoading: true, 
             }
         },
         render()
         {
+            console.log("ChatList==>")
+            const {isLoading} = this.state
+            if (isLoading)
+                return h('div', { class : 'chat-list-container' })
             return h('div', { class : 'chat-list-container' }, [
                 h('div', { class : 'chat-list-header' }, [
                     h('h1', {}, ['Chat']),
@@ -21,7 +24,8 @@ export const ChatList = defineComponent(
                 h(ChatListItems, {
                     on : {
                         showMessages: (data) => {
-                            // console.log(">>>>>>>>>>>> rooom : ", data)
+                            console.log("data catched on ChatListItems by emit: ", JSON.stringify(data, null, 2))  // roomName + UserData
+                            
                             this.emit('showMessages', data)
                         }
                     }
@@ -31,22 +35,15 @@ export const ChatList = defineComponent(
                     // ChatListData: this.ChatListData
                 })
             ])
-            
-            // createElement('div', { className: 'chat-list-container'},  
-            //     createElement('div', { className: 'chat-list-header'},
-            //         createElement('h1',{},'Chat'),
-            //         createElement('i', { className: 'fa-brands fa-rocketchat'})
-            //     ),
-            //     createElement('div',{ className: 'separator'}),
-            //     createElement(ChatListItems, {
-            //                 socket: this.socket,
-            //                 room : this.room,
-            //                 ChatListData : this.ChatListData
-            //             }),)
+        },
+        onMounted()
+        {
+            this.updateState({isLoading:false})
         }
     }
 )
- const ChatListItems = defineComponent(
+
+const ChatListItems = defineComponent(
     {
         state()
         {
@@ -55,7 +52,7 @@ export const ChatList = defineComponent(
                 data : [
                     {
                         user : {username : 'shicham', picture : {src : './images/kjarmoum.png'}, level : '7.77'},
-                        roomName: "walkerbarbara_joshuabrown",
+                        roomName: "shicham_kjarmoum",
                         content: "salut",
                         read: false,
                         timestamp: "2024-12-30T11:02:49.536257Z"
@@ -93,8 +90,7 @@ export const ChatList = defineComponent(
         },
         render()
         {
-            
-            // console.log('>>>>>>>>>>>>>>>>>>>> here in ')
+            // console.log("ChatListItems==>")
             const  { data , isLoading} = this.state
             // console.log(">>>>>>>>>>>>>>>>>>> data : ", data)
             // if (isLoading)
@@ -102,10 +98,13 @@ export const ChatList = defineComponent(
             //      )
             return h('div', { class: 'chat-list-items' }, data.map((itemData)=>
                 // console.log(">>>>>>>>>>>>>>>>>> itemD")
-               h(ChatItem, {itemData, on : {
-                showMessages: (roomName) => {//roomName passed by chat item by emit
-                    // console.log(">>>>-------------------------------------> rooom : ", roomName, "   ", itemData.user)
-                    this.emit('showMessages', {roomName, UserTarget: itemData.user})
+               h(ChatItem, {itemData, 
+                on : {
+                showMessages: (data) => {//roomName passed by chat item by emit
+                   
+                    console.log("data catched on ChatItem by emit: ", JSON.stringify(data, null, 2)) // roomName  of room clicked  
+
+                    this.emit('showMessages', {roomName: data.roomName, UserTarget: itemData.user}) // roomName + dataOfUser clicked
                 }
             }
         })
@@ -130,13 +129,18 @@ const ChatItem =  defineComponent(
         render()
         {
             // console.log('>>>>>>>>>>>>>>>>>>>>>>>> props ', this.props)
+            // console.log("ChatItem==>")
             const {user, roomName, content, timestamp, read} = this.props.itemData
             const {isClicked} = this.state
             return h('div', {
                 class : 'chat-item',
                 on : {
                     click : () => {
+                        // console.log("befooooooooore emit on ChatItem")
                         this.updateState({isClicked:true})
+
+                        // console.log("data  emited by ChatItem: ", JSON.stringify(roomName, null, 2))
+
                         this.emit('showMessages', {roomName})
                     }
                 },
@@ -166,4 +170,3 @@ const ChatItem =  defineComponent(
         }
     }
 )
-

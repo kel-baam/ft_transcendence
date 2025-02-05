@@ -1,7 +1,8 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../package/index.js'
 
-export const sidebarLeft = defineComponent({render()
+export const sidebarLeft = defineComponent({
+    render()
     {
         return h('div', { class: 'side-bar' },
             [h('i', {

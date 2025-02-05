@@ -1,37 +1,24 @@
+import { customFetch } from '../../package/fetch.js'
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString,RouterOutlet} from '../../package/index.js'
 
+let allUsers;
  export const listBlockedFriends = defineComponent({
     state()
     {
         return { 
-        data : [
-            {
-                first_name : 'nisrin',
-                last_name : 'boukhari',
-                username : 'niboukha',
-                picture : {src : 'images/kel-baam.png'}
-            },
-            {
-                first_name : 'kaoutar',
-                last_name : 'elbaamrani',
-                username : 'kel-baam',
-                picture : {src : 'images/kel-baam.png'}
-            },
-            {
-                first_name : 'souad',
-                last_name : 'hicham',
-                username : 'shicham',
-                picture : {src : 'images/kel-baam.png'}
-            }
-        ]
+        data : [],
+        isLoadnig: true
+        
     }
     },
 
     render()
     {
         // console.log(">>>>>>>>>>>>>>>> here ")
-
+        const {isLoading, data} = this.state
+        if(isLoading)
+            return h('div',{ class: 'blocked-friends-container' })
         return h('div',
             { class: 'blocked-friends-container' },
             [
@@ -54,46 +41,45 @@ import{createApp, defineComponent, DOM_TYPES, h,
                             on : {
                                 input : (event) =>
                                 {
-                                    // console.log(">>>>>>>>>>>>> value : ", event.target.value)
-                                    
                                     if (event.target.value)
                                     {
-                                        const filtredData =   this.state.data.filter((item) =>
-                                            item.first_name.toLowerCase().includes(event.target.value.toLowerCase()) ||
-                                            item.last_name.toLowerCase().includes(event.target.value.toLowerCase()) ||
-                                            item.username.toLowerCase().includes(event.target.value.toLowerCase())
+                                        const filtredData =   data.filter((item) =>
+                                            item.user.username.toLowerCase().startsWith(event.target.value.toLowerCase())
                                         )
-                                        this.updateState({data: filtredData})
+                                        this.updateState({data: filtredData, isLoading:false})
 
                                     }
                                     else
-                                    {
-                                        // console.log(">>>>>>>>>>>>>here value is vide ")
-                                        this.updateState()
-
-                                    }
-                                    
-                                    
+                                        this.updateState({data : [...allUsers], isLoading:false})
                                 }
                             }
                         }),
                     ]
                 ),
-                ...this.state.data.map((item, i ) => {
+                ...data.map((item, i ) => {
                     
                     return h('div',{ class: 'profile-item' },
                             [
                                 h('div', {},
                                     [
-                                        h('img', {src: `${item.picture.src}`,alt: 'profile picture', class: 'user-profile-pic'}),
+                                        h('img', {src: `${window.env.DOMAIN}${item.user.picture}`, class: 'user-profile-pic',  
+                                        style : {
+                                            'object-fit': 'cover'  
+                                        },
+                                        // on : {error: (event) => {
+                                        //     event.target.src = '/media/users_pics/default.png'; // Replace with your placeholder image
+                                        // }}
+                                    }),
                                     ]
                                 ) ,
-                                h('div',{},
+                                h('div',{on : {
+                                    click : ()=> this.appContext.router.navigateTo(`/user/${item.user.username}`)
+                                }},
                                             [
                                                 h('h1', {style : {'width': '250px','max-width' : '250px',
                                                     'white-space': 'nowrap','overflow': 'hidden','text-overflow':' ellipsis'}}, 
-                                                    [`${item.first_name}` + ' ' + `${item.last_name}`]),
-                                                h('h2', {}, ['@'+ `${item.username}`]),
+                                                    [`${item.user.first_name}` + ' ' + `${item.user.last_name}`]),
+                                                h('h2', {}, ['@'+ `${item.user.username}`]),
                                             ]
                                     ),
                                 h('div',{},
@@ -101,9 +87,27 @@ import{createApp, defineComponent, DOM_TYPES, h,
                                             h('i', {class: 'fa-solid fa-unlock', style: {'color': '#14397C'}, on : {
                                                 click : () =>
                                                 {
-                                                    this.state.data.splice(i, 1)
-                                                    this.updateState()
-                                                    console.log(">>>>>>>>>>>>>>>>>> new data  => ")
+                                                    customFetch(`${window.env.DOMAIN}/api/user/friendships?id=${item.id}`, 
+                                                        {
+                                                            method : 'DELETE'
+                                                        }
+                                                    )
+                                                    .then(result =>{
+
+                                                        if (!result.status == 401)
+                                                        {
+                                                            console.log("res isn't okey ," , " | ", this)
+                                                            this.appContext.router.navigateTo('/login')
+                                                        }
+                                                        if (result.status == 204)
+                                                            data.splice(i, 1)
+                                                        console.log("res is okey")
+                                                        this.updateState({
+                                                            isLoading: false,  
+                                                            data: data,   
+                                                        });
+                                                        allUsers = data
+                                                    })
                                                 }
                                             }})
                                         ]
@@ -114,5 +118,31 @@ import{createApp, defineComponent, DOM_TYPES, h,
                 
             ]
         )
+    },
+    onMounted()
+    {
+        customFetch(`${window.env.DOMAIN}/api/user/friendships?status=blocked`)
+        .then(result =>{
+
+            if (!result.status == 401)
+            {
+                console.log("res isn't okey ," , " | ", this)
+                
+                this.appContext.router.navigateTo('/login')
+            }
+
+            return result.json()
+        })
+        .then(res =>{
+            console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
+            console.log("res is okey")
+            this.updateState({
+                isLoading: false,  
+                data: res,   
+            });
+            allUsers = res;
+        })
+
+    
     }
  })

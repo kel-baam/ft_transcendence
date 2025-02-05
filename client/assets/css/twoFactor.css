@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
 
-*{
+/* *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -16,20 +16,159 @@
     justify-content: center;
     align-items: center;
     
-}
+  } */
 .twoFactor{
+    /* background-color:#161C40; */
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid #721c24; */
+}
+ 
+
+.twoFactorForm
+{
+    /* border: 1px solid #FFEEBF; */
+
+    width: 100%;
+    /* height: 100%; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;           
+    /* padding: 50px;      */
+}
+
+.twoFactor .title{
+  padding: 10px;
+  color: #0A377E;
+  font-size: 17px;
+  font-family: myFont;
+
+  
+}
+.twoFactor #qrCode{
+  padding: 15px;
+  width:100%;
+  height: 50%;
+  justify-content: center;
+  /* border: 1px solid #D44444; */
+}
+.twoFactor #qrCode img{
+  padding: 15px;
+  width: 200px;
+  height:auto;
+
+}
+.twoFactorForm input
+{
+  /* border: 1px solid #721c24; */
+  margin-bottom: 30px;
+  width: 250px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  padding: 0px 0px 0px 10px;
+  background-color: #e9e6e6; 
+  color: #9c9a9a;
+
+}
+.twoFactorForm #code{
+  background-color: rgba(255, 0, 0, 0.2);
+  border-color: red;
+}
+.twoFactorForm input:focus
+{
+   margin-bottom: 30px;
+   border: none;
+
+}
+
+
+.twoFactor form   #active
+{
+    width: 120px;
+    height: 40px;
+    border-radius: 12px;
+    border: none;
+    font-family: myFont;
+    background-color: #FFEEBF;
+    color: #FFEEBF;
+    background-color: #D44444;
+}
+
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: auto;
+  }
+  
+.error-notification {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slide-in 0.3s ease-out;
+  }
+  
+.error-message {
+    flex-grow: 1;
+
+  }
+
+
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+
+
+  /* CSSS FOR INPUT 2FA CODE  */
+
+#twoFactor
+{
+    padding: 0;
+    background-color:#161C40;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+#twoFactor .twoFactorCard{
     text-align: center;
     width: 600px;
     height: 400px;
 
-   
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
     border-radius: 30px;
     border: none;
+   
 }
  
-.twoFactor .title
+#twoFactor .twoFactorCard .title
 {
     color: #FFEEBF;
     font-family: 'Lemon',serif;
@@ -38,28 +177,26 @@
     margin-top: 25px;
     padding-bottom: 50px;
 }
-/* .inputCode h4{
-    background-color: #161C40;
-    color: white;
-    font-size: 15px;
-    text-indent: 0;
-    /* margin-left: 20px; */
-/* }  */
-.twoFactorForm
+
+#twoFactor .twoFactorCard form
 {
     width: 100%;
     height: auto;           
     padding: 50px;     
 }
 
-.twoFactorForm input
+#twoFactor .twoFactorCard #input
 {
-   margin-bottom: 30px;
-   
+   /* margin-bottom: 30px; */
    color: black;
+   width: 75%;
+   height: 50px;
+   border: none;
+   border-radius: 10PX;
+   padding-left: 30px;
 
 }
-.twoFactorForm input:focus
+#twoFactor .twoFactorCard input:focus
 {
    margin-bottom: 30px;
    border: none;
@@ -67,22 +204,15 @@
 
 }
 
-.twoFactor form   #code
-{
-    width: 75%;
-    height: 50px;
-    border: none;
-    border-radius: 10PX;
-    padding-left: 30px;
-}
 
-.twoFactor form   #code::placeholder
+
+#twoFactor .twoFactorCard #input::placeholder
 {
     color: grey;
     font-size: 15px;
   
 }
-.twoFactor form   #submit
+#twoFactor .twoFactorCard form   #submit
 {
     width: 30%;
     height: 40px;
@@ -133,5 +263,4 @@
       transform: translateX(0);
     }
   }
-
 

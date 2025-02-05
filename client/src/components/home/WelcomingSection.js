@@ -43,7 +43,7 @@ export const WelcomingSection = defineComponent({
     },
     onMounted()
     {
-        customFetch('http://localhost:3000/api/user?fields=score,rank')
+        customFetch(`${window.env.DOMAIN}/api/user?fields=score,rank`)
         .then(result =>{
 
             if (!result.ok)
