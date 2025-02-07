@@ -13,7 +13,7 @@ export const EnableTwoFactor =  defineComponent({
     },
     onMounted(){
 
-        customFetch('http://localhost:3000/auth/twoFactor/activate/').then(async (result)=>{
+        customFetch(`${window.env.DOMAIN}/auth/twoFactor/activate/`).then(async (result)=>{
 
         const data = await result.json()
         if(!result.ok)
@@ -30,7 +30,7 @@ export const EnableTwoFactor =  defineComponent({
     {
         event.preventDefault()    
         const form = document.querySelector(".twoFactorForm");
-        customFetch('http://localhost:3000/auth/twoFactor/validateQrCode/',
+        customFetch(`${window.env.DOMAIN}/auth/twoFactor/validateQrCode/`,
         {
             method:'POST',
             body:new FormData(form)

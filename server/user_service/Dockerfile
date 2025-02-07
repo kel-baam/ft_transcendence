@@ -10,8 +10,9 @@ WORKDIR /app
 
 # Install system dependencies for PostgreSQL and build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \
-    gcc \
+    libpq-dev\
+    postgresql-client \
+    gcc\
     && apt-get clean \
     && apt-get  -y install libmagic1\
     && rm -rf /var/lib/apt/lists/*
@@ -21,15 +22,13 @@ COPY requirements.txt .
 
 # Install dependencies in the virtual environment
 # RUN pip install --upgrade pip && pip install -r requirements.txt --verbose
+
 RUN apt-get update && apt-get install -y build-essential libpq-dev && \
     pip install --upgrade pip && \
     pip install -r requirements.txt
 
 COPY . .
-COPY ./script.sh /usr/bin
-RUN chmod +x /usr/bin/script.sh
 
-# Expose the desired port (replace with your app's port if needed)
-# EXPOSE 8000
+RUN chmod +x /app/script.sh
 
-CMD ["sh", "/usr/bin/script.sh"]
+CMD [ "sh", "/app/script.sh" ]

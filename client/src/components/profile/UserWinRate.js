@@ -1,24 +1,27 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js' 
+import { customFetch } from '../../package/fetch.js'
 
 export const UserWinRate =  defineComponent({
     state(){
       return {
-        isLoading:true,
+        isLoading: true,
         data : {
-          // total_matches: '150',
-          // losses: '22',
-          // wins : '40',
-        },
+         },
         activateSection : 'win'
       }
     },
     render(){
       const {data, isLoading} = this.state
         if (isLoading) {
-            return h('div', { class: 'loading' }, ['Loading user stats...']);
+            return h('div', { class: 'wining-rate-container' },[
+              h('div', { class: 'title' }, [
+                h('span', {}, [
+                  h('h2', {}, ['Wining rate'])
+                ])
+              ]),
+            ]);
         }
-
         return h('div', { class: 'wining-rate-container' }, [
             h('div', { class: 'title' }, [
               h('span', {}, [
@@ -30,37 +33,39 @@ export const UserWinRate =  defineComponent({
                     [h('div', {class: 'circular_progress', style: {                        
                         background: this.state.activateSection === 'win' ? 
                         `conic-gradient(#0AA989  calc(${ 
-                          Math.round(isNaN(data.wins / data.total_matches) ? 0 : (data.wins / data.total_matches) * 100)
-                        } * 3.6deg), #CBCBCB 0deg)` :
+                           Math.round(isNaN(data.wins / data.total_matches)? 0: (data.wins / data.total_matches) * 100)
+                        } * 3.6deg), #CBCBCB 0deg)`  :
                         `conic-gradient(#D44444 calc(${ Math.round( isNaN(data.losses / data.total_matches) ? 0 : 
                           (data.losses / data.total_matches)* 100)} * 3.6deg), #CBCBCB 0deg)`
                       }}, [h('span', { style : {color: this.state.activateSection === 'win'? '#0AA989':'#D44444', fontSize : '22px'}}, 
-                        [this.state.activateSection === 'win' ? `${ Math.round((data.wins / data.total_matches) * 100)}`+ '%':
-                         ` ${ Math.round((data.losses/ data.total_matches)* 100)}` + '%'])])])
+                        [this.state.activateSection === 'win' ? `${ Math.round(isNaN(data.wins / data.total_matches)? 0:
+                           (data.wins / data.total_matches) * 100)}`+ '%':
+                         ` ${ Math.round( isNaN(data.losses / data.total_matches) ? 0 : 
+                          (data.losses / data.total_matches)* 100)}` + '%'])])])
                 ,
               h('div', { class: 'buttons' }, [
-                h('button', { class: 'win-button', style : {color:' #0AA989', 
-                  backgroundColor : this.state.activateSection === 'win'? '#ddd':'#CBCBCB'}, 
-                on : {
-                  click : () => {
-                      this.updateState({activateSection:'win'})
-                }}}, [
-                  'Win',
-                  h('br'),
-                  `${data.wins}` + '/' + `${data.total_matches}`
-                ]),
-                h('button', { class: 'lose-button', style: {color: '#D44444',
-                  backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
-                } ,
-                on : {
-                  click : ()=> {
-                    this.updateState({activateSection:'lose'})
-                }}
-                }, [
-                  'Loss',
-                  h('br'),
-                  `${data.losses}` + '/' + `${data.total_matches}`
-                ])
+                  h('button', { class: 'win-button', style : {color:' #0AA989', 
+                    backgroundColor : this.state.activateSection === 'win'? '#ddd':'#CBCBCB'}, 
+                  on : {
+                    click : () => {
+                        this.updateState({activateSection:'win'})
+                  }}}, [
+                    'Win',
+                    h('br'),
+                    `${data.wins}` + '/' + `${data.total_matches}`
+                  ]),
+                  h('button', { class: 'lose-button', style: {color: '#D44444',
+                    backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
+                  } ,
+                  on : {
+                    click : ()=> {
+                      this.updateState({activateSection:'lose'})
+                  }}
+                  }, [
+                    'Loss',
+                    h('br'),
+                    `${data.losses}` + '/' + `${data.total_matches}`
+                  ])
               ])
             ])
           ])
@@ -68,31 +73,33 @@ export const UserWinRate =  defineComponent({
   },
   onMounted()
   {
-      fetch('http://localhost:3000/api/user/stats')
-      .then(result =>{
+      const {key} = this.props
+      const endPoint = !key ?  `${window.env.DOMAIN}/api/user/stats` :
+      `${window.env.DOMAIN}/api/user/stats?username=${key}`
+      customFetch(endPoint)
+        .then(result =>{
 
-          // console.log("----------------------> data fetched ", result)
-          return result.json()
-      })
-      .then(res =>{
-        // console.log('>>>>>>>>>>>>>>>>>> here : ', res)
-          console.log(">>>>>>>>>>>>>>>>>>>>>> here ")
-        this.updateState({
-          isLoading: false,  
-          // data: res,
-          data : {
-            total_matches: '0',
-            losses: '0',
-            wins : '0',
-          }  , 
-          error: null   
-        });
-        console.log("----------------------> win states ", `${Math.round(isNaN(this.state.data.wins / this.state.data.total_matches) ? 0 :
-           (this.state.data.wins / this.state.data.total_matches) * 100)}`)
-        // console.log(">>>>>> res : ", res)
-      })
-      .catch(error=>{
-          console.log(">>>>>>>>>>>> error : ", error)
-      })
+            if (!result.ok)
+            {
+                // console.log("res isn't okey ," , " | ", this)
+                
+                this.appContext.router.navigateTo('/login')
+            }
+
+            return result.json()
+        })
+        .then(res => {
+            // console.log(">>>>>>>>>>>>>>> in win  res : ", res,"|",res.status)
+            // console.log("res is okey")
+            this.updateState({
+                    isLoading: false,  
+                    data: res,   
+                    error: null   
+            });
+
+        })
+        .catch(error => {
+            // console.log(">>>>>>>>>>>> error in win  : ", error)
+        })
   }
 })

@@ -17,8 +17,8 @@ import random
 from .models import User
 
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+# logging.basicConfig(level=logging.DEBUG)
+# logger = logging.getLogger(__name__)
 
 
 def generate_otp():       
@@ -31,9 +31,7 @@ def activate_two_Factor(request):
         if user:
                 totp_secret = generate_otp()
                 user.tmp_secret = totp_secret.secret
-                # logger.debug("before=>",totp_secret.secret)
                 user.save()
-                # logger.debug("after saving=>",user.tmp_secret)
 
                 totp =  pyotp.TOTP(user.tmp_secret,interval=30)
                 uri = totp.provisioning_uri(name=user.email, issuer_name='ping pong')
@@ -56,7 +54,6 @@ def validate_qrcode(request):
                 user = User.objects.filter(username=username).first()
                 totp = pyotp.TOTP(user.tmp_secret, interval=30)
 
-                logger.debug("2FA valiadte==>",totp.now(),code,username,"||",user.tmp_secret)
                 if(totp.verify(code)):
                         user.secret = user.tmp_secret
                         user.enabled_twoFactor = True
@@ -80,8 +77,7 @@ def verify_code(request):
                 user = User.objects.filter(username=username).first()
 
 
-                print("yeeeeeeeeeeeeeeeeee=>++++++++++++++++++++++++++++++++++",request.META.get('HTTP_X_AUTHENTICATED_USER'),user)
-                if not user:  # Check if user is None
+                if not user:
                         return JsonResponse({'message': username}, status=400)
 
                 code = request.POST.get('code', 'none')

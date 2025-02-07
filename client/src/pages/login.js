@@ -7,20 +7,18 @@ import {showErrorNotification} from '../package/utils.js'
 export const Login = defineComponent({
     state(){
         return {
-            socket : null,
             errors :{}
-
     }
     },
 
     intraEvent()
     {
-                window.location.href = `http://localhost:3000/auth/intra/?type=${encodeURIComponent('login')}`
+                window.location.href = `${window.env.DOMAIN}/auth/intra/?type=${encodeURIComponent('login')}`
     },
 
     googleEvent(){
     
-                    window.location.href = `http://localhost:3000/auth/google/?type=${encodeURIComponent('login')}`
+                    window.location.href = `${window.env.DOMAIN}/auth/google/?type=${encodeURIComponent('login')}`
     },
 
     getErrorMessage(id){
@@ -31,19 +29,27 @@ export const Login = defineComponent({
     async loginForm(event)
     {
         event.preventDefault()
-        const response = await fetch('http://localhost:3000/auth/login/',{
+        const response = await fetch(`${window.env.DOMAIN}/auth/login/`,{
             method:'POST',
             body:new FormData(document.querySelector(".loginForm")),
         })
-        if(!response.ok)
-        {   
-            const errors = await response.json();
-            this.updateState({errors: errors });
-        }
-        else
-            this.appContext.router.navigateTo('/home')
-    },
 
+        
+        if(!response.ok)
+            {   
+                const errors = await response.json();
+                this.updateState({errors: errors });
+            }
+        else
+        {
+            const res = await response.json();
+            if(res.message === "2fa active")
+                this.appContext.router.navigateTo('/2FA')
+            else
+                this.appContext.router.navigateTo('/home')
+        }
+    },
+    
     render(){
         return h ('div',{id:"global"},[
             h('div',{class:"login-page-content"},[

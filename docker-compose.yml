@@ -11,7 +11,14 @@ services:
       - 5432:5432
     networks:
       - app_network
-      
+  
+  redis:
+    image: redis:alpine
+    container_name: redis-service
+    ports:
+      - "6380:6379"
+    networks:
+      - app_network
   # redis :
   #   build: ./redis
   #   container_name: redis-service
@@ -23,14 +30,6 @@ services:
   #     - "6378:6378"
   #   networks:
   #     - app_network
-
-  redis:
-    image: redis:alpine
-    container_name: redis-service
-    ports:
-      - "6380:6379"
-    networks:
-      - app_network
 
     # redis-client :
     #   build: ./redis-client
@@ -51,6 +50,8 @@ services:
       - client_volume:/usr/share/nginx/html
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     depends_on:
       - auth-service
       - db
@@ -70,6 +71,16 @@ services:
       - .env
     volumes:
       - auth_volume:/usr/src/app
+    # entrypoint: >
+    #       bash -c "
+    #         # echo 'Waiting for PostgreSQL to be ready...';
+    #         # until pg_isready -h db-service -U postgres -p 5432; do
+    #         #   sleep 2;
+    #         # done;
+    #         sleep 10;
+    #         echo 'PostgreSQL is up and running!';
+    #         exec python manage.py runserver 0.0.0.0:8000;
+    #       "
 
   user-service:
       build: ./server/user_service
@@ -82,24 +93,9 @@ services:
         - app_network
       depends_on:
         - db
-        - redis
       volumes:
         - user_volume:/app
-  
-  tournament-service:
-      build: ./server/tournament_service
-      container_name: tournament-service
-      env_file:
-        - .env
-      ports:
-        - "8002:8002"
-      networks:
-        - app_network
-      depends_on:
-        - db
-        - redis
-      volumes:
-        - tournament_volume:/usr/src/app
+      # entrypoint: ["/app/script.sh"]
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -116,6 +112,23 @@ services:
     # volumes:
     #   - pgadmin_data:/var/lib/pgadmin
     restart: always
+
+  chat-service:
+    build: ./server/chat_service
+    container_name : chat-service
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      # - auth-service
+      - db
+    volumes:
+      - chat_volume:/app 
+    networks:
+      - app_network
+      
+
 volumes:
   dataBase:
     driver: local
@@ -123,6 +136,14 @@ volumes:
       type: none
       device: ~/data/db/
       o: bind
+  
+  chat_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/chat_service
+        o: bind
+
     
   auth_volume:
     driver: local
@@ -136,13 +157,6 @@ volumes:
     driver_opts:
         type: none
         device: ./server/user_service
-        o: bind
-
-  tournament_volume:
-    driver: local
-    driver_opts:
-        type: none
-        device: ./server/tournament_service
         o: bind
 
   client_volume:

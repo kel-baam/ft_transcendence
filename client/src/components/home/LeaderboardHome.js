@@ -6,19 +6,19 @@ export const LeaderboardHome = defineComponent({
         return {
             data:[
                 {
-                    user : {rank:'1', username:'niboukha', score:'2500'}
+                    user : {Rank:'1', username:'niboukha', score:'2500'}
                 },
                 {
-                    user : {rank:'2', username:'dfgdg', score:'2500'}
+                    user : {Rank:'2', username:'dfgdg', score:'2500'}
                 },
                 {
-                    user : {rank:'3', username:'nxcvxc', score:'2500'}
+                    user : {Rank:'3', username:'nxcvxc', score:'2500'}
                 },
                 {
-                    user : {rank:'4', username:'dfsdftwer', score:'2500'}
+                    user : {Rank:'4', username:'dfsdftwer', score:'2500'}
                 },
                 {
-                    user : {rank:'5 ', username:'sdfsda', score:'2500'}
+                    user : {Rank:'5 ', username:'sdfsda', score:'2500'}
                 }
             ]
         }
@@ -27,7 +27,7 @@ export const LeaderboardHome = defineComponent({
     render(){
         // console.log(">>>>>>>>>>>>> data : ",  this.state.data.map(item =>
         //     h('div', { class: 'second-one' }, [
-        //         h('p', {}, [`${item.user.rank}`]),
+        //         h('p', {}, [`${item.user.Rank}`]),
         //         h('h3', {}, [`${item.user.username}`]),
         //         h('div', { class: 'scor-coin' }, [
         //             h('p', {}, [`${item.user.score}`]),
@@ -74,7 +74,7 @@ export const LeaderboardHome = defineComponent({
                     h('div', { class: 'lead' }, 
                         this.state.data.map((item )=>
                             h('div', { class: 'second-one' }, [
-                            h('p', {}, [`${item.user.rank}`]),
+                            h('p', {}, [`${item.user.Rank}`]),
                             h('h3', {}, [`${item.user.username}`]),
                             h('div', { class: 'scor-coin' }, [
                                 h('p', {}, [`${item.user.score}`]),

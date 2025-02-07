@@ -16,7 +16,6 @@ def refreshTokenRequired(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
             refeshToken = request.COOKIES.get("refresh_token","default") 
-            logger.debug("test=>",refeshToken)
             try:
                 payload = jwt.decode(refeshToken, settings.SECRET_KEY, algorithms=["HS256"])
                 user = User.objects.filter(email=payload["email"]).first()

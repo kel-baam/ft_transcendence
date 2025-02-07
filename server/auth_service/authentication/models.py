@@ -1,35 +1,74 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from channels.db import database_sync_to_async
-from django.core.validators     import MinLengthValidator
-from django.utils import timezone 
+from django.core.validators import RegexValidator, MinLengthValidator
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=50, unique=True)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=50, unique=True)
-    phone_number = models.CharField(max_length=255, blank=True, null=True)
-    # picture = models.BinaryField()
-    # picture = models.ImageField(upload_to='user_pics/', blank=True, null=True)
-    gender = models.CharField(max_length=255, null=True)
-    nationality = models.CharField(max_length=255, null=True)
-    status = models.BooleanField(null=True)
     
-    is_verify = models.BooleanField(default=False)
-    verify_token =  models.CharField(max_length=255,null=True)
+    username = models.CharField(max_length=50, unique=True, validators=[MinLengthValidator(3),
+                RegexValidator(r'^[a-zA-Z0-9!@#$%^&*()_+=\-\[\]{};:\'",.<>?/|\\`~ \t\n\r]*$',
+        'Only alphabetic, numeric, special characters, and whitespace are allowed.')])
+    first_name = models.CharField(max_length=50, validators=[MinLengthValidator(3), 
+                RegexValidator(r'^[a-zA-Z_\-\r ]*$',
+    'Only alphabetic characters, underscores, hyphens, carriage returns, and spaces are allowed.')]
+)
+    last_name = models.CharField(max_length=50, validators=[MinLengthValidator(3),
+                RegexValidator(r'^[a-zA-Z_\-\r ]*$',
+    'Only alphabetic characters, underscores, hyphens, carriage returns, and spaces are allowed.'
+)                                           ])
+    email = models.EmailField(max_length=50, unique=True)
+    phone_number = models.CharField(
+        max_length=15,  # Enough to store international numbers
+        validators=[
+            RegexValidator(
+                regex=r'^\+?1?\d{9,15}$',  # Regex for international phone numbers
+                message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+            )
+        ],
+        blank=True
+    )
+    picture = models.ImageField(upload_to='users_pics/', default= 'users_pics/default.png', null=True, blank=True)
+    gender = models.CharField(max_length=255, blank=True)
+    nationality = models.CharField(max_length=255, blank=True) 
+    status = models.BooleanField(default=False)
     enabled_twoFactor = models.BooleanField(default=False)
+    is_verify = models.BooleanField(default=False)
+    age = models.CharField(max_length=255, blank=True,  validators=[
+            RegexValidator(
+                
+                regex=r'^\d+$', 
+                message="Age must be a valid positive number."
+            )
+        ])
+    verify_token =  models.CharField(max_length=255,null=True)
     refresh_token= models.CharField(max_length=255,null=True)
     secret =  models.CharField(max_length=255,null=True)
     tmp_secret =  models.CharField(max_length=255,null=True)
 
 
-    def __str__(self):
-        return self.username
     class Meta:
         db_table = 'User'
 
+
+    def __str__(self):
+        return self.username
+
+     
+class PrivateMessage(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField() 
+    timestamp = models.DateTimeField(auto_now_add=True) 
+    read = models.BooleanField(default=False)
+    roomName = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        ordering = ['timestamp']  # Trier les messages par date d'envoi
+        db_table = 'PrivateMessage'
+
+    def __str__(self):
+        return f"De {self.sender.username} à {self.receiver.username}: {self.content[:20]}"
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -93,26 +132,6 @@ class PlayerTournament(models.Model):
     class Meta:
         db_table    = 'PlayerTournament'
 
-
-class Match(models.Model):
-    # STATUS_CHOICES = [
-    #     ('active', 'Active'),
-    #     ('completed', 'Completed')
-    # ]
-    player1 = models.ForeignKey(Player, on_delete=models.CASCADE,related_name='player1')            
-    player2 = models.ForeignKey(Player,on_delete=models.CASCADE,related_name='player2')
-    date = models.DateField()
-    player1_points = models.PositiveIntegerField()  
-    player2_points = models.PositiveIntegerField()
-    # status =  models.CharField(max_length=255, choices=STATUS_CHOICES)
-    class Meta:
-        verbose_name = "Match"
-        verbose_name_plural = "Matches"         
-    def __str__(self):
-        return f"Match on {self.date} - Player {self.player1} vs Player {self.player2}"
-    class Meta:
-        db_table= 'Match'
-
 class Request(models.Model):
     STATUS_CHOICES = [
         ('accepted', 'Accepted'),
@@ -138,92 +157,62 @@ class Request(models.Model):
     class Meta:
         db_table= 'Request'
 
-
-class Achievement(models.Model):
-    name = models.CharField(max_length=255) 
-    status = models.BooleanField(default=False)
-    picture = models.JSONField()
-    PlayerId = models.ForeignKey(Player,on_delete=models.CASCADE,related_name='badge_locked')
+class Match(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('completed', 'Completed')
+    ]
+    player1 = models.ForeignKey(Player, on_delete=models.CASCADE,related_name='player1')            
+    player2 = models.ForeignKey(Player,on_delete=models.CASCADE,related_name='player2')
+    date = models.DateField()
+    player1_points = models.PositiveIntegerField()  
+    player2_points = models.PositiveIntegerField()
+    status =  models.CharField(max_length=255, choices=STATUS_CHOICES)
+    # class Meta:
+    #     verbose_name = "Match"
+    #     verbose_name_plural = "Matches"         
+    def __str__(self):
+        return f"Match on {self.date} - Player {self.player1} vs Player {self.player2}"
     class Meta:
-        verbose_name = "badge"
-        verbose_name_plural = "badges"
+        db_table= 'Match'
+
+
+
+class Badge(models.Model):
+    name = models.CharField(max_length=255)
+    icon = models.URLField() 
+    class Meta:
+        db_table = 'Badge'
+        # managed = True
+        # verbose_name = 'ModelName'
+        # verbose_name_plural = 'ModelNames'
     def __str__(self):
         return self.name
+
+class UserBadge(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    # unlock = models.BooleanField(default=False)
+    unlocked_at = models.DateTimeField(auto_now_add=True) 
     class Meta:
-        db_table= 'Achievement'
+        unique_together = ('user', 'badge')  # Ensure a user can't have duplicate badge entries
+        db_table = 'UserBadge'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.badge.name}"
 
 class Notification(models.Model):
     NOTIF_CHOICES = [
         ('tournament', 'Tournament'),
         ('request', 'Request'),
-        ('invitation', 'Invitation'),
         ('accepted', 'Accepted'),
     ]
     
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
+    sender =  models.ForeignKey(User, on_delete=models.CASCADE, related_name='notif_from')
+    reciever = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notif_to')
     type = models.CharField(max_length=10, choices=NOTIF_CHOICES)
-    message = models.TextField()  # A field for the actual notification message
-    time = models.DateTimeField(auto_now_add=True)  # Store both date and time of notification creation
-    read_at = models.DateTimeField(null=True, blank=True)  # Track when the notification was read
-    
-    def mark_as_read(self):
-        self.read_at = timezone.now()
-        self.save()
-
+    time = models.TimeField()
     def __str__(self):
-        return f"Notification from {self.sender} to {self.receiver} - Type: {self.type}"
-
+        return self.name
     class Meta:
-        db_table = 'Notification'
-        
-# class Tournament(models.Model):
-#     creator         = models.ForeignKey(User, on_delete=models.CASCADE)
-#     name            = models.CharField(max_length=100, validators=[MinLengthValidator(3)])
-#     status_choices  = [('pending', 'Pending'), ('started', 'started'), ('finished', 'finished')]
-#     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
-#     created_at      = models.DateTimeField(auto_now_add=True, null=True)
-#     def get_creator_image(self):
-#         try:
-#             player = Player.objects.get(user_id=self.creator.id, tournament=self)
-#             return player.image.url if player.image else 'default-image.jpg'
-#         except Player.DoesNotExist:
-#             return '../../frontend/assets/css/uknown.png'
-
-#     def __str__(self):
-#         return self.name
-#     class Meta:
-#         db_table = 'local_tournament'
-#         app_label = 'local'
-
-# class Player(models.Model):
-#     tournament  = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-#     nickname    = models.CharField(max_length=50)
-#     avatar      = models.ImageField(upload_to='player_images/')
-#     score       = models.IntegerField(default=0)
-    
-#     def __str__(self):
-#         return self.nickname
-#     class Meta:
-#         db_table = 'local_player'
-#         app_label = 'local'
-
-
-# class Match(models.Model):
-#     player1         = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
-#     player2         = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
-#     tournament      = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matches')
-#     created_at      = models.DateTimeField(auto_now_add=True)
-#     status_choices  = [
-#         ('pending', 'Pending'),
-#         ('completed', 'Completed'),
-#         ('exited', 'exited')]
-#     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
-
-#     def __str__(self):
-#         return f"Match between {self.player1.nickname} and {self.player2.nickname} in {self.tournament.name}"
-#     class Meta:
-#         db_table = 'local_match'
-#         app_label = 'local'
-
-
+        db_table= 'Notification'

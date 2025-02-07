@@ -4,11 +4,9 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
-html {
-    scroll-behavior: smooth;
-}
+
 .local-tournament{
-    padding: 80px;
+    /* padding: 8px; */
     background-color: rgba(217, 217, 217, 0.05);
     border-radius: 56px;
     display: grid;
@@ -55,14 +53,6 @@ html {
 
 }
 
-input {
-    outline: none;
-    transition: border 0.3s ease;
-}
-
-input:focus {
-    border: none;
-}
 
 .local-tournament .create .title h1,
 .local-tournament .create_one .title h2
@@ -75,24 +65,21 @@ input:focus {
     /* top: 7%; */
 }
 
-body::-webkit-scrollbar {
-    display: none;
-}
-
 .local-tournament .create .tournaments{
     display: grid;
-    grid-auto-rows: 13.5%;
-    row-gap: 4px;
+    grid-auto-rows: 11.1%;
+    row-gap: 0.03em;
     align-items: center;
     justify-content: end;
-    height: 70%;
+    height: 93%;
     overflow-y: scroll;
     scroll-behavior: smooth;
     width: 104%;
-    scrollbar-width: none;
-
+    /* scrollbar-width: px; */
     /* overflow: hidden; */
+    
     /* border: 1px solid rgb(225, 255, 1); */
+
 }
 
 .local-tournament .create .tournaments .created{
@@ -104,9 +91,6 @@ body::-webkit-scrollbar {
     border-radius: 25px;
     width: 400px;
     height: 65px;
-    
-    /* scrollbar-width: none;
-    overflow: hidden; */
     /* border: 1px solid rgb(1, 255, 242); */
 }
 
@@ -138,8 +122,8 @@ body::-webkit-scrollbar {
 
 .local-tournament form .form{
     display: grid;
-    grid-template-rows: 20% 70% 10%;
-    row-gap: 2em;
+    grid-template-rows: 90% 10%;
+    row-gap: 10px;
     /* border: 1px solid rgb(255, 1, 1); */
 }
 
@@ -171,13 +155,6 @@ body::-webkit-scrollbar {
     border: none;
     cursor: text;
     box-sizing: border-box;
-    /* border: 1px solid rgb(1, 238, 255); */
-
-}
-
-.local-tournament form .form .players-name{
-    /* border: 1px solid rgb(1, 238, 255); */
-
 }
 
 .local-tournament form .form .players-name label{
@@ -189,14 +166,14 @@ body::-webkit-scrollbar {
     pointer-events: none;
     margin-left: 10px;
     display: block;
-    /* margin-top: 20px; */
+    margin-top: 20px;
     margin-bottom: 10px;
 }
 
 .local-tournament form .form .players-name .players{
     display: grid;
     grid-template-rows: 25% 25% 25% 25%;
-    row-gap: 1em;
+    row-gap: 10px;
     /* border: 1px solid rgb(1, 238, 255); */
 }
 
@@ -272,8 +249,8 @@ body::-webkit-scrollbar {
     left: 45%; */
     display: inline-block;
     border: none;
-    width: 120px;
-    height: 60px;
+    width: 100px;
+    height: 50px;
     font-family: myFont;
     color: #FFEEBF;
     font-size: 20px;

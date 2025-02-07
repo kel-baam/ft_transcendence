@@ -6,123 +6,105 @@
     font-family: myFont;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-@font-face {
-    font-family: myFont;
-    src: url(../fonts/Season\ Prime.otf);
-}
-
-@font-face {
-    font-family: hFont;
-    src: url(../fonts/Playground.ttf);
-}
-
-.local-online{
-    /* padding: 8px; */
+.tournament-content{
+    padding: 8px;
     background-color: rgba(217, 217, 217, 0.05);
     border-radius: 56px;
-    display: grid;
+        width: 100%;
     height: 100%;
-    /* width: 80%; */
-    grid-template-rows: 40% 30%;
-    /* row-gap: 0.2em; */
-    /* border: 1px solid rgb(230, 255, 1); */
+    display: grid;
+    grid-template-rows: 30% 70%;
 }
 
-.local-online .game-title{
+.tournament-content .game-title{
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    padding-top: 100px;
-
-    /* border: 1px solid rgb(31, 255, 1); */
 }
 
-.local-online .game-title h1{
+.tournament-content .game-title h1{
     font-family: myFont;
     font-size: 50px;
     color: #FFEEBF;
-
     letter-spacing: 5px;
-    /* padding-top: 100px;
+    padding-top: 100px;
     margin-right: 80px;
-    margin-bottom: 10px; */
-
-    /* border: 1px solid rgb(255, 1, 1); */
-
+    margin-bottom: 10px;
 }
 
-.local-online .content-body{
+.tournament-content .btns-local-online{
+    /* height: 100%; */
+    /* width: 100%; */
     display: grid;
-    grid-template-columns: 47.5% 5% 47.5%;
-    /* column-gap: 10%; */
-    /* border: 1px solid rgb(255, 1, 1); */
-
+    grid-template-columns: 40% 20% 40%;
+    position: absolute;
+    /* position: relative; */
+    bottom: 35%;
+    right: 35%;
+    /* border: 1px solid rgb(1, 238, 255); */
 }
 
-.local-online .content-body .local{
-    /* border: 1px solid rgb(255, 1, 1); */
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.local-online .content-body .or{
-    /* border: 1px solid rgb(255, 1, 1); */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.local-online .content-body .or h2{
-    color: #9E9E9E;
-    font-size: 24px
-}
-
-.local-online .content-body .online{
-    /* border: 1px solid rgb(255, 1, 1); */
+.tournament-content .btns-local-online .online{
     display: flex;
     align-items: center;
     justify-content: flex-end;
-
+    /* border: 1px solid rgb(238, 255, 1); */
 }
 
-.local-online .content-body .local .btn,
-.local-online .content-body .online .btn{
-    border: none;
-    border-radius: 30px;
+.tournament-content .btns-local-online .online .btn,
+.tournament-content .btns-local-online .local .btn{
     display: inline-block;
+    /* border: none; */
     width: 300px;
-    height: 120px;
+    height: 150px;
     font-family: myFont;
-    font-weight: bold;
-    color: #FFEEBF;
-    font-size: 50px;
-    background: #9E9E9E3D;
+    color: #33518F;
+    font-size: 40px;
+    background: #FFEEBF;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 40px;
     letter-spacing: 3px;
     cursor: pointer;
+    border-width: 0;
     -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;
-    /* -webkit-transition-property: box-shadow, transform;
-    transition-property: box-shadow, transform; */
+    -webkit-transition-property: box-shadow, transform;
+    transition-property: box-shadow, transform;
 }
 
-.local-online .content-body .local .btn:hover,
-.local-online .content-body .local .btn:focus,
-.local-online .content-body .local .btn:active{
-    /* box-shadow: 0px 4px 4px rgba(99, 90, 90, 0.795); */
+.tournament-content .btns-local-online .online .btn:hover,
+.tournament-content .btns-local-online .online .btn:focus,
+.tournament-content .btns-local-online .online .btn:active,
+.tournament-content .btns-local-online .local .btn:hover,
+.tournament-content .btns-local-online .local .btn:focus,
+.tournament-content .btns-local-online .local .btn:active
+{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
 
-.local-online .content-body .online .btn:hover,
-.local-online .content-body .online .btn:focus,
-.local-online .content-body .online .btn:active{
-    /* box-shadow: 0px 4px 4px rgba(99, 90, 90, 0.795); */
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-} 
+.tournament-content .btns-local-online .or{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(255, 1, 1); */
+}
 
 
+.tournament-content .btns-local-online .or h2{
+    /* font-family: myFont; */
+    color: #9E9E9E;
+    font-size: 24px
+    
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+
+.tournament-content .btns-local-online .local{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* border: 1px solid rgb(255, 1, 221); */
+
+}

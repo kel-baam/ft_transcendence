@@ -113,9 +113,7 @@ export class HashRouter {
     if (shouldNavigate) {
       this.#matchedRoute = matcher.route
       this.#params = matcher.extractParams(path)
-      console.log("heeere",path)
-      // if(flag == 2)
-        // this.#pushState(path)
+   
       this.#query = matcher.extractQuery(path)
       this.#dispatcher.dispatch(ROUTER_EVENT, {from, to, router: this })
     }
@@ -153,7 +151,6 @@ export class HashRouter {
       this.#params = matcher.extractParams(path)
 
       this.#query = matcher.extractQuery(path)
-      console.log("heeeDDDDDDDDDre",path)
       this.#pushState(path)
       this.#dispatcher.dispatch(ROUTER_EVENT, {from, to, router: this })
     }

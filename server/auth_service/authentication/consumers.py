@@ -35,24 +35,24 @@ class MyConsumer(AsyncWebsocketConsumer):
                     key, value = cookie.split("=", 1)  
                     cookies[key] = value          
                 try:
-                    logger.debug("accccc=>",cookies.get("access_token").encode("utf-8"))
+                    # logger.debug("accccc=>",cookies.get("access_token").encode("utf-8"))
                     payload = jwt.decode(cookies.get("access_token").encode("utf-8"), settings.SECRET_KEY, algorithms=["HS256"])
                     self.access_token = cookies.get("access_token")
                     user = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
                     if user:
-                        logger.debug("done")
+                        # logger.debug("done")
                         self.scope['user_id']  = user
                         self.scope['email']  = payload["email"]
                         # add what ever you want
                     else:
-                        logger.debug("user nor")
+                        # logger.debug("user nor")
                         await self.send(text_data=json.dumps({"error": "user doesn't exist"}))
                 except Exception as e:
-                        logger.debug("errrr nor",e)
+                        # logger.debug("errrr nor",e)
                         await self.send(text_data=json.dumps({"error": "token expired"}))
 
     async def disconnect(self, close_code):
-        logger.debug("disconnect from server !!")
+        # logger.debug("disconnect from server !!")
         self.close(code=4001)
 
     async def receive(self, text_data):

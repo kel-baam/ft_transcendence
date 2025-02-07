@@ -1,131 +1,29 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js' 
+import { customFetch } from '../../package/fetch.js'
 
 export const GameHistoryCard = defineComponent({
     state()
     {
       return {
+        isLoading : true,
         shownOnviewAll : false,
         data : [
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          ,
-          {
-            player1: {FirstName : 'souad' , LastName :'hicham', username: 'shicham', image: {src : 'images/kjarmoum.png'}},
-            player2: {FirstName : 'karima' , LastName :'jarmoumi',username: 'kjarmoum', image: {src : 'images/kjarmoum.png'}},
-            player1_points:'1',
-            player2_points:'2',
-            date : '10-11-2024'
-          },
-          
         ]
       }
     },
     render()
     {
+      const {data, isLoading} = this.state
+      if (isLoading)
+        return  h('div', { class: 'match-history-container'})
       if (this.props.viewAll)
       {
-        // console.log(">>>>>>>>>>>>>>>>>> this.props.viewAll ", this.props.viewAll)
         this.state.shownOnviewAll = this.props.viewAll
       }
       return h('div', { class: 'match-history-container' , 
-        style : this.state.shownOnviewAll ? {position :  'absolute', top : '17%', left: '30%',
+        style : this.state.shownOnviewAll ? {
+          position :  'absolute', top : '17%', left: '30%',
           backgroundColor: '#161C40', width:'800px', height : '700px', 'grid-template-rows': '10% 80% 10%'
         } : {}},
         [
@@ -133,7 +31,7 @@ export const GameHistoryCard = defineComponent({
             [
                h('span', {}, 
                 [
-                  h('h1', {style : this.state.shownOnviewAll ? {color : '#FFEEBF', paddingLeft:'300px'} : {}}, ['Match history'])
+                  h('h1', {style : this.state.shownOnviewAll ? {color : '#FFEEBF', paddingLeft:'300px'} : {}}, ['Matches history'])
                 ]
               ),this.state.shownOnviewAll ?
               h('i', { 
@@ -143,16 +41,52 @@ export const GameHistoryCard = defineComponent({
               }): null
             ]
           ),
-          h(GameHistoryItems, {data : this.state.data, shownOnviewAll : this.state.shownOnviewAll ? true : false})
+          h(GameHistoryItems, {data : data, shownOnviewAll : this.state.shownOnviewAll ? true : false})
           ,
             h('div', { class: 'view-all-match' },
-            this.state.data.length >= 4  && !this.state.shownOnviewAll ? 
+            data.length >= 4  && !this.state.shownOnviewAll ? 
             [
               h('a', { on : {click : () => this.emit('blurProfile', {MatchHistory:true})}}, ['View all'])
             ]: []
           )
         ]
       )    
+    },
+    onMounted()
+    {
+      // var  endPoint  = `${window.env.DOMAIN}/api/user/matches`
+      // if(JSON.stringify(this.appContext.router.params) !== '{}')
+      // {
+      //     console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
+      //     endPoint = `${window.env.DOMAIN}/api/user/matches?username=${this.appContext.router.params.username}`
+      // }
+      const {key} = this.props
+      const endPoint = !key ?  `${window.env.DOMAIN}/api/user/matches` :
+      `${window.env.DOMAIN}/api/user/matches?username=${key}`
+        customFetch(endPoint)
+          .then(result =>{
+  
+              if (!result.ok)
+              {
+                  // console.log("res isn't okey ," , " | ", this)
+                  
+                  this.appContext.router.navigateTo('/login')
+              }
+  
+              return result.json()
+          })
+          .then(res => {
+              console.log("res is okey")
+              this.updateState({
+                      isLoading: false,  
+                      data: res,   
+                      error: null   
+              });
+  
+          })
+          // .catch(error => {
+          //     // console.log(">>>>>>>>>>>> error in win  : ", error)
+          // })
     }
   })
   const GameHistoryItems = defineComponent({
@@ -164,10 +98,8 @@ export const GameHistoryCard = defineComponent({
     },
     render()
     {
-      // console.log( "----------------------------------> data in game history : ", this.props.data)
       this.state.shownOnviewAll = this.props.shownOnviewAll
       const data = this.state.shownOnviewAll ? this.props.data : this.props.data.slice(0,4)
-      // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> this.state.shownOnviewAll  : ', this.state.shownOnviewAll )
       return h('div', {class:'center-div', 
         style : this.state.shownOnviewAll ?  {'row-gap' :'0%', 'grid-auto-rows': '16.7%'} : {}},
         data.map((item)=> h('div', { class: 'match-result-item',

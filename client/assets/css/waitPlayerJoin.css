@@ -1,8 +1,6 @@
 
 /* --------------------game-wait-content------------------ */
-html {
-    scroll-behavior: smooth;
-}
+
 .game-wait-content{
     display: grid;
     grid-template-rows: 35% 65%;

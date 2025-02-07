@@ -1,0 +1,32 @@
+=>password in intra and google
+=>online friends
+=>blocked friends (done)
+=>serach how can i user API gatway websockets (done)
+=>crf token 
+=>icons in profile
+=>password forget passowrd problem(kaoutar mission's)
+=> email (the errors in format not detected)
+=> handle error form request to /api/user(kaoutar mission's)
+=> remove icon camera from the profile of the other user 
+=> search bar in blocked friends (done)
+=> to add later (set status of the user to true)
+=> problem in settings
+// location /ws/ {
+//         proxy_pass http://backend:8000/;  # WebSocket backend
+//         proxy_http_version 1.1;
+//         proxy_set_header Upgrade $http_upgrade;
+//         proxy_set_header Connection "Upgrade";
+//         proxy_set_header Host $host;
+//         proxy_set_header X-Real-IP $remote_addr;
+//         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+//     }
+
+
+
+merge 
+=> models 
+=>logo clicked navigate to 
+
+password err while registring
+
+undifiend when chnaged password

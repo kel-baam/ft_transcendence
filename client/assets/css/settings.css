@@ -15,6 +15,27 @@
     /* background: rgba(255, 255, 255, 0.2);  */
      
 }
+/************* i add this ones //******/
+.settings-container  select , .settings-container  span, 
+.settings-container  input, .settings-container  h2, 
+.settings-container  button, .settings-container label,
+.settings-container div
+{
+    font-family: myFont;
+    /* text-shadow: 0px 2px 2px rgba(145, 126, 126, 0.5); */
+    font-weight: 100; /* Normal text */
+    line-height: 1;
+    letter-spacing: 1px;
+
+    /* font-size: 24px; */
+
+}
+.settings-container  h2
+{
+    color: #33518F;
+    text-shadow: 0px 2px 2px rgba(145, 126, 126, 0.5);
+}
+/************************************************************/
 
 .settings-container 
 {
@@ -46,7 +67,9 @@
     height: 80px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
+    justify-content: space-evenly;
+
     color: #14397C;
     background-color: #CBCBCB;
     /* cursor: pointer; */
@@ -79,7 +102,6 @@
 {
     position: absolute;
     left: 40px;
-    /* border: 2px solid blue; */
 
 }
 
@@ -133,11 +155,11 @@
 
 }
 
-.fa-camera
+/* .fa-camera
 {
     position: relative;
     bottom: 4%;
-}
+} */
 .settings-container > div:nth-child(2) > form > div:nth-child(2) 
 {
     display: flex;
@@ -184,6 +206,10 @@
     padding: 0px 0px 0px 10px;
     color: #9c9a9a;
     background-color: #e9e6e6; 
+}
+.settings-container form  small
+{
+    width: 250px;
 }
 
 .settings-container > div:nth-child(2) > form > div:nth-child(3) > button
@@ -350,7 +376,7 @@ label
     flex-direction: column;
 }
 
-.auth-password-card
+.auth-password-card form
 {
     width:600px;
     height:260px;
@@ -366,7 +392,7 @@ label
 }
 .auth-password-card input {
 
-        width: 250px;
+    width: 250px;
         height: 40px;
         border-radius: 12px;
         border: none;
