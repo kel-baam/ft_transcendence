@@ -14,7 +14,7 @@ function waitForMessage(socket) {
         }; 
     });
 }
-export const socketChat = new WebSocket(`ws://localhost:8080/ws/chat/chat/`)
+// export const socketChat = new WebSocket(`ws://localhost:8080/ws/chat/chat/`)
 
 export const Chat = defineComponent(
   {  

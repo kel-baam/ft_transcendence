@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(choices=[('public', 'Public'), ('private', 'Private')], default='private', max_length=50)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('status', models.CharField(choices=[('pending', 'Pending'), ('matchmaking', 'Matchmaking Done'), ('started', 'Started'), ('finished', 'Finished')], default='pending', max_length=20)),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='online_tournament_creator', to='authentication.user')),
+                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='online_tournament_creator', to='game.user')),
             ],
             options={
                 'db_table': 'Tournament',
@@ -82,8 +82,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('status', models.CharField(choices=[('accepted', 'Accepted'), ('blocked', 'Blocked'), ('pending', 'Pending')], max_length=255)),
-                ('reciever', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='received_request', to='authentication.user')),
-                ('sender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sent_request', to='authentication.user')),
+                ('reciever', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='received_request', to='game.user')),
+                ('sender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sent_request', to='game.user')),
             ],
             options={
                 'db_table': 'Request',
@@ -97,8 +97,8 @@ class Migration(migrations.Migration):
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('read', models.BooleanField(default=False)),
                 ('roomName', models.CharField(blank=True, max_length=100)),
-                ('receiver', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='received_messages', to='authentication.user')),
-                ('sender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sent_messages', to='authentication.user')),
+                ('receiver', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='received_messages', to='game.user')),
+                ('sender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sent_messages', to='game.user')),
             ],
             options={
                 'db_table': 'PrivateMessage',
@@ -114,8 +114,8 @@ class Migration(migrations.Migration):
                 ('nickname', models.CharField(blank=True, max_length=50, null=True)),
                 ('avatar', models.ImageField(blank=True, null=True, upload_to='player_images/')),
                 ('invited_at', models.DateTimeField(auto_now_add=True)),
-                ('player', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tournament_entries', to='authentication.player')),
-                ('tournament', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participants', to='authentication.tournament')),
+                ('player', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tournament_entries', to='game.player')),
+                ('tournament', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participants', to='game.tournament')),
             ],
             options={
                 'db_table': 'PlayerTournament',
@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='player',
             name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='authentication.user'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='game.user'),
         ),
         migrations.CreateModel(
             name='Notification',
@@ -132,8 +132,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('type', models.CharField(choices=[('tournament', 'Tournament'), ('request', 'Request'), ('accepted', 'Accepted')], max_length=10)),
                 ('time', models.TimeField()),
-                ('reciever', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notif_to', to='authentication.user')),
-                ('sender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notif_from', to='authentication.user')),
+                ('reciever', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notif_to', to='game.user')),
+                ('sender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notif_from', to='game.user')),
             ],
             options={
                 'db_table': 'Notification',
@@ -147,8 +147,8 @@ class Migration(migrations.Migration):
                 ('player1_points', models.PositiveIntegerField()),
                 ('player2_points', models.PositiveIntegerField()),
                 ('status', models.CharField(choices=[('active', 'Active'), ('completed', 'Completed')], max_length=255)),
-                ('player1', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='player1', to='authentication.player')),
-                ('player2', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='player2', to='authentication.player')),
+                ('player1', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='player1', to='game.player')),
+                ('player2', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='player2', to='game.player')),
             ],
             options={
                 'db_table': 'Match',
@@ -159,8 +159,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('unlocked_at', models.DateTimeField(auto_now_add=True)),
-                ('badge', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='authentication.badge')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='authentication.user')),
+                ('badge', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='game.badge')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='game.user')),
             ],
             options={
                 'db_table': 'UserBadge',

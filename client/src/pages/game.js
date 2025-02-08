@@ -6,178 +6,141 @@ import{createApp, defineComponent, DOM_TYPES, h,
 // import { NotFound } from './404.js'
 import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
+// socket=null
+
+
+
+let socket = null;
+
+
+let ballX = 200;
+let ballY = 200;
+let ballSpeedX = 5;
+let ballSpeedY = 5;
+let ballRadius = 18;
+
+let paddleWidth = 15;
+let paddleHeight = 125;
+// let paddle1Y = canvas.height / 2 - paddleHeight / 2;
+// let paddle2Y = canvas.height / 2 - paddleHeight / 2;
+let paddle1Speed = 13;
+let paddle2Speed = 0;
+
+const KEY_UP = 87;
+const KEY_DOWN = 83;
+let player='';
+
+const KEY_UP2 = 38;   // Up Arrow for Player 2 (Paddle 2)
+const KEY_DOWN2 = 40;
+
+const keyPressed ={};
 export const Game = defineComponent(
     {
         state()
         {
+            return {
+            }
+            
+        },
+     
+        onMounted()
+        {
+            this.initWebSocket();
+
+
 
         },
-        gameUpdate()
-        {
-
+        onUnmounted() {
+            if (socket) {
+                console.log('WebSocket connection closed');
+                socket.close();
+            }
         },
-        gameDraw()
+        
+        initWebSocket()
         {
+            const canvas = document.getElementById("tableGame");
 
-        },
-        gameLoop()
-        {
-            const canvas = document.getElementById('tableGame');
-            const ctx = canvas.getContext('2d');
-            let ballX = 200;
-            let ballY = 200;
-            let ballSpeedX = 5;
-            let ballSpeedY = 5;
-            let ballRadius = 18;
-            let paddleWidth = 15;
-            let paddleHeight = 125;
+            const ctx = canvas.getContext("2d");
             canvas.width="1350" 
             canvas.height="650"
-            console.log("canvas height",canvas.height);
-            console.log("canvas height",canvas.width);
-
-            let paddle1Y = canvas.height / 2 - paddleHeight / 2;
-            let paddle2Y = canvas.height / 2 - paddleHeight / 2;
-            let paddle1Speed = 13;
-            let paddle2Speed = 0;
-
-            const KEY_UP = 119;
-            const KEY_DOWN = 115;
-            const keyPressed ={};
-
-            window.addEventListener('keypress',function (e){
-
-                e.preventDefault();
-                keyPressed[e.keyCode] = true;
-                console.log("Key clicked:", e.keyCode);
-                
-                // console.log(e.keyCode,keyPressed[e.keyCode]);
-            })
-
-         
-            
-            window.addEventListener('keyup',function(e){
-
-                console.log("keeeey up",e.keyCode)
-                if(e.keyCode == 87)
-                    keyPressed[KEY_UP] =false
-                if(e.keyCode == 83)
-                    keyPressed[KEY_DOWN] =false
-
-                // keyPressed[e.keyCode] = false;
-            })
-
-
-            const leftPaddle =()=>{
-
-                ctx.fillStyle = "#CF4551";
-                ctx.fillRect(0, paddle1Y, paddleWidth, paddleHeight); // Left paddle
-            }
-
-            const rightPaddle =()=>{
-
-                ctx.fillStyle = "#1667E0";
-
-                ctx.fillRect(canvas.width - paddleWidth, paddle2Y, paddleWidth, paddleHeight); // Right paddle
-
-            }
-            const paddleUpdate=()=>
-            {
-
-                if(keyPressed[KEY_UP])
-                {
-                    paddle1Y -= paddle1Speed;
-                }
-                if(keyPressed[KEY_DOWN])
-                {
-                    paddle1Y +=paddle1Speed;
-
-                }
-            };
-            
-            const paddleCollison = ()=>
-            {
-                if(paddle1Y <= 0)
-                    paddle1Y = 0;
-                if(paddle1Y + paddleHeight>= canvas.height)
-                    paddle1Y = canvas.height - paddleHeight;
-                    
-            };
-            const ballCollision= (ball)=>
-            {
-                if(ball.pos.y + ball.raduis >= canvas.height || ball.pos.y - ball.raduis <= 0)
-                {
-                    ball.speed.y *=-1;
-                }
-
-                if(ball.pos.x + ball.raduis >= canvas.width || ball.pos.x - ball.raduis <= 0)
-                {
-                    ball.speed.x *=-1;
-                }
-
-            };
             const vec2 = (x,y)=>
             {
                 return {x: x , y: y};
             };
 
-            class ball{
-                constructor(pos,speed,raduis)
-                {
-                    this.pos = pos;
-                    this.speed = speed;
-                    this.raduis = raduis;
-                };
+            
+            const leftPaddle =(y,paddleWidth,paddleHeight)=>{
 
-                update=() =>{
-                    this.pos.x +=this.speed.x;
-                    this.pos.y += this.speed.y;  
-                };
-                drawBall = () =>{
-                    ctx.fillStyle = "white";
-                    ctx.beginPath();
-                    // ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
-                    ctx.arc(this.pos.x, this.pos.y, this.raduis, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.closePath();
-                };
-
-
+                ctx.fillStyle = "#CF4551";
+                ctx.fillRect(0, y, paddleWidth, paddleHeight); 
             }
 
-            const BALL = new ball(vec2(ballX,ballY),vec2(ballSpeedX,ballSpeedY),ballRadius)
-            const gameDraw = () => {
+            const rightPaddle =(y,paddleWidth,paddleHeight)=>{
+                ctx.fillStyle = "#1667E0";
 
-                leftPaddle();
-                rightPaddle();
-                BALL.drawBall();
-            };
+                ctx.fillRect(canvas.width - paddleWidth, y, paddleWidth, paddleHeight); // Right paddle
 
+            }
+          
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+
+                    socket = new WebSocket(
+                        'ws://10.14.3.3:3000/ws/game/'
+                    );
             
-            const gameUpdate = () =>
-            {
-                BALL.update();
-                ballCollision(BALL);
-
-                paddleUpdate();
-                paddleCollison();
-            };
-
-            const loop = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+                    window.addEventListener('keydown', function(e) {
             
-                gameDraw();
-                gameUpdate();
-                requestAnimationFrame(loop); // Keep calling game loop
-            };
-    
-            loop();
+                        e.preventDefault();
+                            keyPressed[e.keyCode] = true;
 
-        },
-        onMounted()
-        {
-            this.gameLoop()
+                        if (keyPressed[KEY_UP] && player == 'player1') {
+                            socket.send(JSON.stringify({ move: 'up' ,player :player}));
+                        }
+                        if (keyPressed[KEY_DOWN] && player == 'player1') {
+                            socket.send(JSON.stringify({ move: 'down',player: player}));
+                        }
 
+                        if (keyPressed[KEY_UP2] && player == 'player2') {
+
+                            socket.send(JSON.stringify({ move: 'up' ,player :player}));
+                        }
+                        if (keyPressed[KEY_DOWN2] && player == 'player2') {
+                            socket.send(JSON.stringify({ move: 'down',player: player}));
+                        }
+                    })
+                    
+                    window.addEventListener('keyup', function(e) {
+                        keyPressed[e.keyCode] = false; 
+                    });
+
+                    socket.onopen = function(e) {
+                        console.log("WebSocket is open now.");
+                    };
+            
+                    socket.onmessage = function(e) {
+
+
+                        const data = JSON.parse(e.data);
+
+                        if(data.paddle1Y || data.paddle2Y)
+                        {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            if(data.player || player)
+
+                            leftPaddle(data.paddle1Y,data.paddleWidth,data.paddleHeight)
+                            rightPaddle(data.paddle2Y,data.paddleWidth,data.paddleHeight)
+                            if(data.player)
+                                player = data.player
+                        }
+                       
+                        
+                    }.bind(this);
+                    
+                    socket.onclose = function(e) {
+                        console.log("WebSocket is closed now.",e);
+                    };
+            }
         },
         render()
         {
@@ -204,7 +167,7 @@ export const Game = defineComponent(
                         h('img',{class:'vsPic',src:"./images/vs (2).png"}),
 
                         h('div',{class:'secondPlayer'},[
-                            h('div',{class:'scoreCard'},[ h('h4',{},['10'])]),
+                            h('div',{class:'scoreCard'},[ h('h4',{},['100'])]),
                             h('div',{class:'info'},[
                                 h('img',{src:'./images/niboukha.jpeg',class:'playerPicture'}),
                                 h('h4',{class:'playerName'},['Niboukha']),
