@@ -30,11 +30,17 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [('redis-service', 6379)],
+            # "capacity": 1500,
+            "capacity": 1000,  # Default is usually 100
+
+            # "expiry": 10,
+            
         },
     },
 }
 
-# Application definition
+
+
 
 INSTALLED_APPS = [
 
@@ -109,6 +115,9 @@ DATABASES = {
         # },
     }
 }
+
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 

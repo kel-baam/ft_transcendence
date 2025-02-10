@@ -7,6 +7,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
 import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
 // socket=null
+// import asyncio
 
 
 
@@ -29,10 +30,11 @@ let paddle2Speed = 0;
 const KEY_UP = 87;
 const KEY_DOWN = 83;
 let player='';
-
+let ball;
 const KEY_UP2 = 38;   // Up Arrow for Player 2 (Paddle 2)
 const KEY_DOWN2 = 40;
-
+let ctx;
+let canvas;
 const keyPressed ={};
 export const Game = defineComponent(
     {
@@ -42,28 +44,53 @@ export const Game = defineComponent(
             }
             
         },
-     
+        
         onMounted()
         {
             this.initWebSocket();
-
-
-
         },
         onUnmounted() {
+            console.log("test")
             if (socket) {
                 console.log('WebSocket connection closed');
                 socket.close();
+
             }
         },
-        
+        Ball()
+        {
+            // constructor(pos,velocity,radius)
+            // {
+                // const canvas = document.getElementById("tableGame");
+
+                // const ctx = canvas.getContext("2d");
+
+                // this.pos = pos;
+                // this.velocity = velocity;
+                // this.radius = radius;
+                // context = ctx;
+            // };
+            return {
+
+                update : function(){
+                    // this.pos.x  += this.velocity.x;
+                    // this.pos.y  += this.velocity.y;
+    
+                },
+               draw : function(context,pos,radius)
+                {
+                    context.fillStyle = "white";
+                    // context.strokeStyle = '#F39C12';
+                    context.beginPath();
+                    context.arc(pos.x,pos.y,radius,0,Math.PI *2)
+                    context.fill();
+                    context.stroke()
+                }
+            }
+        },
         initWebSocket()
         {
-            const canvas = document.getElementById("tableGame");
-
-            const ctx = canvas.getContext("2d");
-            canvas.width="1350" 
-            canvas.height="650"
+          
             const vec2 = (x,y)=>
             {
                 return {x: x , y: y};
@@ -86,26 +113,23 @@ export const Game = defineComponent(
             if (!socket || socket.readyState !== WebSocket.OPEN) {
 
                     socket = new WebSocket(
-                        'ws://10.14.3.3:3000/ws/game/'
+                        'ws://localhost:3000/ws/game/'
                     );
+                    canvas = document.getElementById("tableGame");
             
+                    ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.width="1350" 
+                    canvas.height="650"
                     window.addEventListener('keydown', function(e) {
             
                         e.preventDefault();
-                            keyPressed[e.keyCode] = true;
+                        keyPressed[e.keyCode] = true;
 
-                        if (keyPressed[KEY_UP] && player == 'player1') {
+                        if (keyPressed[KEY_UP]) {
                             socket.send(JSON.stringify({ move: 'up' ,player :player}));
                         }
-                        if (keyPressed[KEY_DOWN] && player == 'player1') {
-                            socket.send(JSON.stringify({ move: 'down',player: player}));
-                        }
-
-                        if (keyPressed[KEY_UP2] && player == 'player2') {
-
-                            socket.send(JSON.stringify({ move: 'up' ,player :player}));
-                        }
-                        if (keyPressed[KEY_DOWN2] && player == 'player2') {
+                        if (keyPressed[KEY_DOWN]) {
                             socket.send(JSON.stringify({ move: 'down',player: player}));
                         }
                     })
@@ -115,6 +139,8 @@ export const Game = defineComponent(
                     });
 
                     socket.onopen = function(e) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas on new connection
+
                         console.log("WebSocket is open now.");
                     };
             
@@ -122,23 +148,47 @@ export const Game = defineComponent(
 
 
                         const data = JSON.parse(e.data);
-
-                        if(data.paddle1Y || data.paddle2Y)
+                        if(data.action == "init_game")
                         {
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            if(data.player || player)
 
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                            ball =  this.Ball(vec2(200,200),vec2(5,5),ballRadius)
+                            ball.draw(ctx,vec2(data.ballX,data.ballY),data.radius)
                             leftPaddle(data.paddle1Y,data.paddleWidth,data.paddleHeight)
                             rightPaddle(data.paddle2Y,data.paddleWidth,data.paddleHeight)
-                            if(data.player)
-                                player = data.player
+                            
+                            player = data.player
                         }
-                       
+
+                        if(data.action == "move_leftPaddle" || data.action == "move_rightPaddle")
+                        {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            leftPaddle(data.paddle1Y,data.paddleWidth,data.paddleHeight)
+                            rightPaddle(data.paddle2Y,data.paddleWidth,data.paddleHeight)
+                            ball.draw(ctx,vec2(data.ballX,data.ballY),data.radius)
+                            socket.send(JSON.stringify({ update: 'update_paddles_data', data: data}));
+
+
+                        }
+                        if(data.action == "move_ball")
+                        {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            leftPaddle(data.paddle1Y,data.paddleWidth,data.paddleHeight)
+                            rightPaddle(data.paddle2Y,data.paddleWidth,data.paddleHeight)
+                            ball.draw(ctx,vec2(data.ballX,data.ballY),data.radius)
+
+
+                        }
+                        // console.log("yes",data,player)
                         
                     }.bind(this);
                     
                     socket.onclose = function(e) {
                         console.log("WebSocket is closed now.",e);
+                    };
+                    socket.onerror = function(e) {
+                        console.log("WebSocket error",e);
                     };
             }
         },

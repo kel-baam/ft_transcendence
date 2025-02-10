@@ -14,7 +14,7 @@ import { ResetPassword } from './pages/resetPassword.js';
 import { Game } from './pages/game.js';
 
 window.env = {
-  DOMAIN: "http://10.14.3.3:3000",
+  DOMAIN: "http://localhost:3000",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
