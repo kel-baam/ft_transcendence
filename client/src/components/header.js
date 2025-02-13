@@ -17,6 +17,7 @@ export const header = defineComponent({
  
     render(){
         const {suggestions} = this.state
+        // console.log(">>>>>>>>>>>>>>>> render the header ")
     return h('header', { class: 'container' }, [
         h('nav', {}, [
             h('a', { href: '/home' }, [
@@ -36,7 +37,7 @@ export const header = defineComponent({
                             suggestions.style.display = 'none';
                         }
                         
-                        customFetch(`${window.env.DOMAIN}/api/user/search?q=${searchBox.value}`)
+                        customFetch(`https://${window.env.IP}:3000/api/user/search?q=${searchBox.value}`)
                         .then((result)=>
                         {
                             switch(result.status)
@@ -65,9 +66,14 @@ export const header = defineComponent({
                 // <div class="suggestions" id="suggestions">
                 h('div', {class : 'suggestions', id : 'suggestions'},  suggestions.map(suggestion => 
                     h('div', { class: 'suggestion-item', on : {
-                        click : ()=>this.appContext.router.navigateTo(`/user/${suggestion.username}`)
+                        click : ()=>
+                        {
+                            // this.updateState({suggestion:[]})
+                            this.appContext.router.navigateTo(`/user/${suggestion.username}`)
+                        }
+                            
                     }}, [
-                        h('img', { src: `${window.env.DOMAIN}${suggestion.picture}`, alt: 'User picture', style : {'object-fit': 'cover' }}),
+                        h('img', { src: `https://${window.env.IP}:3000${suggestion.picture}`, alt: 'User picture', style : {'object-fit': 'cover' }}),
                         ` ${suggestion.username}`
                     ])
             ))
@@ -79,7 +85,7 @@ export const header = defineComponent({
                 ]),
                 h('a', {on :{click: async (event)=> {
                     event.preventDefault()
-                    fetch(`${window.env.DOMAIN}/auth/logout/`,{
+                    fetch(`https://${window.env.IP}:3000/auth/logout/`,{
                         method:'POST',
                         credentials: 'include',
                     }).then(async (res)=>{

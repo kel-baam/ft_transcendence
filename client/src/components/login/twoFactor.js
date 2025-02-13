@@ -12,7 +12,7 @@ export const TwoFactor =  defineComponent({
     {
         event.preventDefault()    
                 
-        customFetch(`${window.env.DOMAIN}/auth/twoFactor/verify/`,
+        customFetch(`https://${window.env.IP}:3000/auth/twoFactor/verify/`,
         {
             method:'POST',
             body:new FormData(document.querySelector(".twoFactorForm")),  

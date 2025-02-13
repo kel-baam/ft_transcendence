@@ -23,11 +23,9 @@ class UserSerializer(serializers.ModelSerializer):
             for field_name in exclude:
                 self.fields.pop(field_name, None)
     def validate(self, attrs):
-        print("dhdghf=====================================>",attrs)
-
+        print(">>>>>>>>>>>>>>>>>>>> here on validate data ")
         new_password = attrs.get('new_password')
         confirm_password = attrs.get('confirm_password')
-        print('new password==>',new_password)
         if  new_password or confirm_password:
             if not new_password:
                 raise serializers.ValidationError({"new_password" : "This field is required"})
@@ -43,9 +41,12 @@ class UserSerializer(serializers.ModelSerializer):
             password = attrs.get('password')
             try:
                 validate_password(password)
-                attrs['password']=make_password(attrs['password'])
+                
+                attrs['password']= make_password(attrs['password'])
             except ValidationError as e:
                 raise serializers.ValidationError({"password": e.messages[0]})
+        return attrs  # This line is crucial to return the validated data
+
     class Meta:
         model = User
         fields = '__all__'

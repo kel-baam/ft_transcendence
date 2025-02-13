@@ -54,15 +54,15 @@ export const GameHistoryCard = defineComponent({
     },
     onMounted()
     {
-      // var  endPoint  = `${window.env.DOMAIN}/api/user/matches`
+      // var  endPoint  = `https://${window.env.IP}:3000/api/user/matches`
       // if(JSON.stringify(this.appContext.router.params) !== '{}')
       // {
       //     console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
-      //     endPoint = `${window.env.DOMAIN}/api/user/matches?username=${this.appContext.router.params.username}`
+      //     endPoint = `https://${window.env.IP}:3000/api/user/matches?username=${this.appContext.router.params.username}`
       // }
       const {key} = this.props
-      const endPoint = !key ?  `${window.env.DOMAIN}/api/user/matches` :
-      `${window.env.DOMAIN}/api/user/matches?username=${key}`
+      const endPoint = !key ?  `https://${window.env.IP}:3000/api/user/matches` :
+      `https://${window.env.IP}:3000/api/user/matches?username=${key}`
         customFetch(endPoint)
           .then(result =>{
   

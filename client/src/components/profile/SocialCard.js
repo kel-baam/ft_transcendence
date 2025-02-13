@@ -35,14 +35,15 @@ export const SocialCard = defineComponent({
             style : isExpanded || key ? {display :'flex', justifyContent:'center'} : {} }, 
             !isExpanded ? [
 
-            h('div', {}, [
+            h('div', {style : key ? {display:'flex', justifyContent :'center'}:{}}, [
+              !key ?
               h('button', { class: 'friends-button', style: {backgroundColor:  
                 activateSection === 'friends' && !key ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
               on : { click : () => 
-                this.fetch(`${window.env.DOMAIN}/api/user/friendships?status=accepted`,'friends')
+                this.fetch(`https://${window.env.IP}:3000/api/user/friendships?status=accepted`,'friends')
               } }, [
                 h('h1', {}, ['Friends'])
-              ])
+              ]): h('h1', {}, ['Friends'])
             ]),
 
             h('div', { style : key ? {display : 'none'}:{}}, [
@@ -50,7 +51,7 @@ export const SocialCard = defineComponent({
                 activateSection === 'requests' ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
                 on : {
                   click : () => {
-                    this.fetch(`${window.env.DOMAIN}/api/user/friendships?status=recieved`,'requests' )
+                    this.fetch(`https://${window.env.IP}:3000/api/user/friendships?status=recieved`,'requests' )
                     }
               } }, [
                 h('h1', {}, ['Requests'])
@@ -65,7 +66,7 @@ export const SocialCard = defineComponent({
                 on : {
                   click : ()=> 
                   {
-                    this.fetch(`${window.env.DOMAIN}/api/user/friendships?status=sent`,'pending' )
+                    this.fetch(`https://${window.env.IP}:3000/api/user/friendships?status=sent`,'pending' )
                   }
                 }}, [h('h1', {}, ['Pending'])
               ])
@@ -94,7 +95,7 @@ export const SocialCard = defineComponent({
             ])
         ])])
           ,
-          (activateSection === 'friends' && h(FriendsItems, {data: data, isExpanded: isExpanded})) ||
+          (activateSection === 'friends' && h(FriendsItems, {data: data, isExpanded: isExpanded, key})) ||
           (activateSection === 'requests' && h(RequestsItems, {data: data, isExpanded: isExpanded,
             on : {
               remove : this.removeRequest,
@@ -123,7 +124,7 @@ export const SocialCard = defineComponent({
     },
     removeRequest({id, i})
     {
-        customFetch(`${window.env.DOMAIN}/api/user/friendships?id=${id}`, {
+        customFetch(`https://${window.env.IP}:3000/api/user/friendships?id=${id}`, {
           method : 'DELETE'
         }).then((res)=>
         {
@@ -137,7 +138,7 @@ export const SocialCard = defineComponent({
     },
     acceptRequest({id, i})
     {
-      customFetch(`${window.env.DOMAIN}/api/user/friendships`, {
+      customFetch(`https://${window.env.IP}:3000/api/user/friendships`, {
         method : 'PUT',
         headers: {
           'Content-Type': 'application/json', 
@@ -160,8 +161,8 @@ export const SocialCard = defineComponent({
     onMounted()
     {
       const {key} = this.props
-      const  endPoint  = !key ? `${window.env.DOMAIN}/api/user/friendships?status=accepted`:
-      `${window.env.DOMAIN}/api/user/friendships?username=${key}&status=accepted`
+      const  endPoint  = !key ? `https://${window.env.IP}:3000/api/user/friendships?status=accepted`:
+      `https://${window.env.IP}:3000/api/user/friendships?username=${key}&status=accepted`
       customFetch(endPoint)
         .then(result =>{
 

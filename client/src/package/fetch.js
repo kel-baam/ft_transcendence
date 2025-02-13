@@ -16,16 +16,14 @@ export async function customFetch(url,options={})
     }
     return  await fetch(url,mergedOptions).then(async (response)=>
             {
-                // console.log("daatta",response.status)
                 if(!response.ok)
                 {
                     if(response.status == 401)
                     {
-                        const refreshAccessToken = await fetch(`${window.env.DOMAIN}/auth/refresh/token/`,{
+                        const refreshAccessToken = await fetch(`https://${window.env.IP}:3000/auth/refresh/token/`,{
                             method:'GET',
                             credentials: 'include',})
-                            // console.log("custome feeetch")
-                            // console.log("ref data=>",refreshAccessToken)
+                          
                         
                             if(!refreshAccessToken.ok)           
                                 return refreshAccessToken;
@@ -33,7 +31,6 @@ export async function customFetch(url,options={})
                         return  customFetch(url,options)
                         }
                 }
-                // console.log("finaaaaaly result=>",response)
                 return response
         })
 }

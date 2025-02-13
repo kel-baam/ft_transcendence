@@ -41,18 +41,17 @@ def token_required(request):
         try:              
                 access_token = request.COOKIES.get("access_token","default")
                 payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
-
                 user = (User.objects.filter(email=payload["email"]).first)()
-                
 
                 if user:
+
                         if (user.enabled_twoFactor  and payload.get('login_level') == 1 and request.query_params.get('2fa') == "false"):
                                 return JsonResponse({'message': 'Invalid user'},status = 401)
                         response = JsonResponse({'message':'valid token'})
                         response['X-Authenticated-User'] = payload['username']
                         request.user = payload['username']
                         return response
-                      
+                
                 return JsonResponse({'message': 'Invalid user'},status = 401)
         except Exception as e:
                 return JsonResponse({'message': 'Invalid token'},status = 401)

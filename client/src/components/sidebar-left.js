@@ -4,22 +4,41 @@ import{createApp, defineComponent, DOM_TYPES, h,
 export const sidebarLeft = defineComponent({
     render()
     {
-        return h('div', { class: 'side-bar' },
+        console.log(">>>>>>>>>>>>>>>>>> here render side bar left ")
+        return h('div', { class: 'side-bar', key : 'side-bar'},
             [h('i', {
                 class: 'fa-regular fa-circle-user icon',
-                on :{ click:()=>{ this.appContext.router.navigateTo('/user')}
+                on :{ click:(e)=>{ 
+                    const target = e.currentTarget;
+                    console.log("====>  Color before navigation:", target);           
+                    target.style.color = "#F45250";
+                    this.appContext.router.navigateTo('/user');
+            }
             }}),
             h('i', {
                 class: 'fa-regular fa-message icon',
-                on :{ click:()=>{ this.appContext.router.navigateTo('/chat')} }
+                on :{ click:(e)=>{ 
+                    e.currentTarget.style.color  = 'red'
+                    
+                    // console.log(">>>>>>>>>>>>>>>>>. event e : ", e)
+                    // e.target.classList.toggle('active')
+                    this.appContext.router.navigateTo('/chat')
+                } }
             }),
             h('i', {
                 class: 'fa-sharp fa-solid fa-house-chimney icon',
-                on :{ click:()=>{ this.appContext.router.navigateTo('/home')} }
+                on :{ click:(e)=>{
+                    // console.log(">>>>>>>>>>>>>>>>>. event e : ", e)
+                    // e.target.classList.toggle('active')
+                    e.target.style.color  = 'red'
+                     this.appContext.router.navigateTo('/home')} }
             }),
             h('i', {
                 class: 'fa-solid fa-ranking-star icon', 
-                on :{ click:()=>{ this.appContext.router.navigateTo('/leaderboard')} }
+                on :{ click:(e)=>{ 
+                    // console.log(">>>>>>>>>>>>>>>>>. event e : ", e)
+                    // e.target.classList.toggle('active')
+                    this.appContext.router.navigateTo('/leaderboard')} }
             }),
             h('i', {
                 class: 'fa-solid fa-network-wired fa-rotate-90 icon',

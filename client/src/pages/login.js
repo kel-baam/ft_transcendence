@@ -13,12 +13,12 @@ export const Login = defineComponent({
 
     intraEvent()
     {
-                window.location.href = `${window.env.DOMAIN}/auth/intra/?type=${encodeURIComponent('login')}`
+                window.location.href = `https://${window.env.IP}:3000/auth/intra/?type=${encodeURIComponent('login')}`
     },
 
     googleEvent(){
     
-                    window.location.href = `${window.env.DOMAIN}/auth/google/?type=${encodeURIComponent('login')}`
+                    window.location.href = `https://${window.env.IP}:3000/auth/google/?type=${encodeURIComponent('login')}`
     },
 
     getErrorMessage(id){
@@ -29,17 +29,25 @@ export const Login = defineComponent({
     async loginForm(event)
     {
         event.preventDefault()
-        const response = await fetch(`${window.env.DOMAIN}/auth/login/`,{
+        const response = await fetch(`https://${window.env.IP}:3000/auth/login/`,{
             method:'POST',
             body:new FormData(document.querySelector(".loginForm")),
         })
+
+        
         if(!response.ok)
-        {   
-            const errors = await response.json();
-            this.updateState({errors: errors });
-        }
+            {   
+                const errors = await response.json();
+                this.updateState({errors: errors });
+            }
         else
-            this.appContext.router.navigateTo('/home')
+        {
+            const res = await response.json();
+            if(res.message === "2fa active")
+                this.appContext.router.navigateTo('/2FA')
+            else
+                this.appContext.router.navigateTo('/home')
+        }
     },
     
     render(){

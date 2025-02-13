@@ -25,6 +25,7 @@ class UserInfoView(APIView):
                 fields = set(request.query_params.get('fields', None).split(','))
                 # print('>>>>>>>>>>>>> fields extracted ', fields)
             if request.query_params.get('username', None) :
+                # print(">>>>>>>>>>>>>>>>>>>> im here ")
                 other_user = User.objects.get(username=request.query_params.get('username'))
                 logged_in_user = User.objects.get(username=request.META.get('HTTP_X_AUTHENTICATED_USER'))
                 Userserializer = UserSerializer(other_user, exclude = ['password'], context = {'logged_in_user' : logged_in_user}).data
@@ -38,7 +39,9 @@ class UserInfoView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            # print(">>>>>>>>>>>>>>>> here the problem : ", str(e))
+
+            print(">>>>>>>>>>>>>>>> here the problem : ", str(e))
+
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -94,19 +97,15 @@ class UserInfoView(APIView):
                     )
                 data['picture'] = in_memory_file
             Userserializer = UserSerializer(data=data)
-            # print(">>>>>>>>>>>>>> here : ")
             if Userserializer.is_valid(raise_exception=True):
-                # print(">>>>>>>>>>> user : ", Userserializer.data)
-                # print(">>>>>>>>>>> here here the serializer valide ")
+             
                 Userserializer.save()
                 return Response({"message " : "the user added successfully"}, status=status.HTTP_200_OK)
         except serializers.ValidationError as e:
-            # logger.debug(">>>>>>>>>>> here validation error %s",e)
-            # print(">>>>>>>>>>>>>>>the error is here : ", Userserializer.errors)
+       
             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            # logger.debug(">>>>>>>>> here internal server %s",e)
-            # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> the hhhhh error is here : ", e)
+            print(">>>>>>>>>>>>>>>>>>>>>>>> here the problem : ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 

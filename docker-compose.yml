@@ -49,7 +49,7 @@ services:
     volumes:
       - client_volume:/usr/share/nginx/html
     ports:
-      - "3000:3000"
+      - "3000:443"
     env_file:
       - .env
     depends_on:
@@ -63,6 +63,8 @@ services:
     container_name: auth-service
     ports:
       - "8000:8000"
+    # expose:
+    #   - 8000
     networks:
       - app_network
     depends_on:
@@ -71,24 +73,35 @@ services:
       - .env
     volumes:
       - auth_volume:/usr/src/app
-    # entrypoint: >
-    #       bash -c "
-    #         # echo 'Waiting for PostgreSQL to be ready...';
-    #         # until pg_isready -h db-service -U postgres -p 5432; do
-    #         #   sleep 2;
-    #         # done;
-    #         sleep 10;
-    #         echo 'PostgreSQL is up and running!';
-    #         exec python manage.py runserver 0.0.0.0:8000;
-    #       "
+  
+  game-service:
+    build: ./server/game_service
+    container_name: game-service
+    # ports:
+    #   - "8002:8002"
+    expose:
+      - 8002
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - game_volume:/usr/src/app
+  
 
   user-service:
       build: ./server/user_service
       container_name: user-service
       env_file:
         - .env
-      ports:
-        - "8001:8001"
+      expose:
+        - 8001
+      # ports:
+      #   - "8001:8001"
+      
       networks:
         - app_network
       depends_on:
@@ -118,8 +131,10 @@ services:
     container_name : chat-service
     env_file:
       - .env
-    ports:
-      - "8080:8080"
+    # ports:
+    #   - "8080:8080"
+    expose:
+      - 8080
     depends_on:
       # - auth-service
       - db
@@ -144,6 +159,12 @@ volumes:
         device: ./server/chat_service
         o: bind
 
+  game_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/game_service
+        o: bind
     
   auth_volume:
     driver: local

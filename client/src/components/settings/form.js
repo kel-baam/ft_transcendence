@@ -61,7 +61,7 @@ export const Form = defineComponent({
                             for (let [key, value] of formData.entries()) {
                                 console.log(`${key}:`, value);
                             }
-                            customFetch(`${window.env.DOMAIN}/api/user`, {
+                            customFetch(`https://${window.env.IP}:3000/api/user`, {
                                 method : 'PUT',
                                 body : formData
                             }
@@ -119,7 +119,7 @@ export const Form = defineComponent({
                                 position: 'relative',
                                 width: '100%',       
                                 height: '100%'}},[
-                            h('img', { src: `${window.env.DOMAIN}${data.picture}` , alt: 'profile picture', class: 'profile-pic',
+                            h('img', { src: `https://${window.env.IP}:3000${data.picture}` , alt: 'profile picture', class: 'profile-pic',
                                 id : 'profile-pic',
                                 style : {
                                     'object-fit': 'cover'  
@@ -254,7 +254,7 @@ export const Form = defineComponent({
     onMounted()
     {
         
-        customFetch(`${window.env.DOMAIN}/api/user`)
+        customFetch(`https://${window.env.IP}:3000/api/user`)
         .then(result =>{
 
             if (!result.status == 401)

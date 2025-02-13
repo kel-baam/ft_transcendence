@@ -8,8 +8,11 @@
 => email (the errors in format not detected)
 => handle error form request to /api/user(kaoutar mission's)
 => remove icon camera from the profile of the other user 
+
 => search bar in blocked friends (done)
+
 => to add later (set status of the user to true)
+
 => problem in settings
 // location /ws/ {
 //         proxy_pass http://backend:8000/;  # WebSocket backend
@@ -25,8 +28,35 @@
 
 merge 
 => models 
+
 =>logo clicked navigate to 
 
-password err while registring
+password err while registring(done)
 
-undifiend when chnaged password
+undifiend when chnaged password(done)
+
+
+Major module: Use a Framework as backend 
+
+Minor module: Use a database for the backend
+
+Major module: Implementing a remote authentication
+
+Major module: Remote players
+
+Major module: Implement Two-Factor Authentication (2FA) and JWT.
+
+Major module: Designing the Backend as Microservices
+
+Major module: Standard user management, authentication, users across
+tournaments.
+
+put in plac of the leaderboard and top 5 the content when no user play a match 
+
+=>i add registration_type in data got from intra and google(done)
+
+=>handle error come from /api/user
+
+=>here was an error ''if hasattr(user, 'enabled_twoFactor') and user.enabled_twoFactor:'' i change it with this one 
+
+=>duplicate email in intra should display error (kaoutar's mission)

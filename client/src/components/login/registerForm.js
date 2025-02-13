@@ -1,5 +1,7 @@
 import{defineComponent,h} from '../../package/index.js'
 import { showSuccessNotification } from '../../package/utils.js'
+import { showErrorNotification } from '../../package/utils.js'
+
 export const RegisterForm = defineComponent({
     state(){
         return {
@@ -15,7 +17,7 @@ export const RegisterForm = defineComponent({
     {
         event.preventDefault()      
         const form = new FormData(document.querySelector(".registerForm"))
-        fetch(`${window.env.DOMAIN}/auth/register/`,{
+        fetch(`https://${window.env.IP}:3000/auth/register/`,{
             method: 'POST' ,
             body:form,
             credentials: 'include', 
@@ -23,6 +25,7 @@ export const RegisterForm = defineComponent({
             if (!res.ok) {
                 
                 const errors = await res.json();
+                showErrorNotification(Object.values(errors)[0])
                 this.updateState({errors:errors})
             }
             else
@@ -31,7 +34,6 @@ export const RegisterForm = defineComponent({
                 inputFields.forEach(input => {
                     input.value='';
                     });
-                console.log("wwiiiik=>",res)
                 showSuccessNotification("Almost there! 🎉\n\nPlease check your inbox to verify your email.")  
                 this.updateState({errors: ''});
             }

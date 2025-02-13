@@ -151,7 +151,6 @@ export class HashRouter {
       this.#params = matcher.extractParams(path)
 
       this.#query = matcher.extractQuery(path)
-      console.log("heeeDDDDDDDDDre",path)
       this.#pushState(path)
       this.#dispatcher.dispatch(ROUTER_EVENT, {from, to, router: this })
     }

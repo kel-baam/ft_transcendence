@@ -11,7 +11,7 @@ export const ChatList = defineComponent(
         },
         render()
         {
-            console.log("ChatList==>")
+            // console.log("ChatList==>")
             const {isLoading} = this.state
             if (isLoading)
                 return h('div', { class : 'chat-list-container' })
@@ -102,7 +102,7 @@ const ChatListItems = defineComponent(
                 on : {
                 showMessages: (data) => {//roomName passed by chat item by emit
                    
-                    console.log("data catched on ChatItem by emit: ", JSON.stringify(data, null, 2)) // roomName  of room clicked  
+                    // console.log("data catched on ChatItem by emit: ", JSON.stringify(data, null, 2)) // roomName  of room clicked  
 
                     this.emit('showMessages', {roomName: data.roomName, UserTarget: itemData.user}) // roomName + dataOfUser clicked
                 }

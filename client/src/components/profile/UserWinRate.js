@@ -74,8 +74,8 @@ export const UserWinRate =  defineComponent({
   onMounted()
   {
       const {key} = this.props
-      const endPoint = !key ?  `${window.env.DOMAIN}/api/user/stats` :
-      `${window.env.DOMAIN}/api/user/stats?username=${key}`
+      const endPoint = !key ?  `https://${window.env.IP}:3000/api/user/stats` :
+      `https://${window.env.IP}:3000/api/user/stats?username=${key}`
       customFetch(endPoint)
         .then(result =>{
 

@@ -45,7 +45,7 @@ const PendingItem = defineComponent({
           } : {}
           }, [
             h('div', { class: 'picture-item' }, [
-              h('img', { src: `${window.env.DOMAIN}${user.picture}`, alt: 'profile picture', class : 'picture-item', style : {'object-fit': 'cover'} })
+              h('img', { src: `https://${window.env.IP}:3000${user.picture}`, alt: 'profile picture', class : 'picture-item', style : {'object-fit': 'cover'} })
             ]),
             h('div', { class: 'data-user' }, [
               h('span', {}, [user.first_name + ' ' + user.last_name]),

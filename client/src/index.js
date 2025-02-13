@@ -11,10 +11,10 @@ import { settings } from './pages/settings.js';
 import { Profile } from './pages/profile.js';
 import { Chat } from './pages/chat.js';
 import { ResetPassword } from './pages/resetPassword.js';
-
+import { Game } from './pages/game.js';
 
 window.env = {
-  DOMAIN: "http://10.13.3.1:3000",
+  IP: "10.13.4.5",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -52,8 +52,7 @@ async function isAuthenticated(currentLocation)
       let query = false
       if(currentLocation == '/2FA')
         query = true
-      const result = await customFetch(`${window.env.DOMAIN}/isAuthenticated?2fa=${query}`)
-      // console.log("res===>",result,query)
+      const result = await customFetch(`https://${window.env.IP}:3000/isAuthenticated?2fa=${query}`)
       if(result)
       {
         if(!result.ok)
@@ -71,7 +70,12 @@ const router = new HashRouter([
     },
     { path: '/login', component: Login },
     { path: '/register',  component: Register },
-    { path:'/home', component: Home},
+    { path:'/home', component: Home,
+      // beforeEnter:isAuthenticated
+
+    },
+    { path:'/game', component: Game},
+
     
     // { path:'/home', component: test},
     { path: '/2FA', component: TwoFactor,

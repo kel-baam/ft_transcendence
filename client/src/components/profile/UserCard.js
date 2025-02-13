@@ -2,6 +2,13 @@ import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../../package/index.js'
 import { customFetch } from '../../package/fetch.js'
 // import { config } from '../../config.js'
+const statusIcons = {
+    sent: { icon: '<i class="fa fa-user-clock"></i>', action: "Cancel Request" },  // Request sent, waiting for acceptance
+    received: { icon: '<i class="fa fa-user-check"></i>', action: "Accept / Decline" }, // Request received
+    blocked: { icon: '<i class="fa fa-user-slash"></i>', action: "Unblock User" },  // User is blocked
+    accepted: { icon: '<i class="fa fa-user-friends"></i>', action: "Remove Friend" }, // Already friends
+    none: { icon: '<i class="fa fa-user-plus"></i>', action: "Send Request" }, // No relationship (send request)
+};
 
 export const UserCard = defineComponent({
     state(){
@@ -18,32 +25,39 @@ export const UserCard = defineComponent({
     render(){
 
         const {data, isLoading} = this.state
+        // console.log('>>>>>>>>>>>>>>>>>>>>>> data content : ', data )
         const {key} = this.props
         if (isLoading) 
             return h('div', { class: 'infos-user-container' });
         return  h('div', { class: 'infos-user-container' },
             [h('div', {},
-            [ h('img', { src: `${window.env.DOMAIN}${data.picture}`, alt :"profile picture" , style : {'object-fit': 'cover'}}),
+            [ 
+                h('img', { src: `https://${window.env.IP}:3000${data.picture}`, alt :"profile picture" , style : {'object-fit': 'cover'}}),
 
-                h('i', { class: 'fa-solid fa-camera', 
+                ...(!key  ? [  
+                    h('i', { 
+                        class: 'fa-solid fa-camera', 
                         style: {
-                            color: '#5293CB', fontSize : '20px',
-                             position: 'absolute', 
-                             bottom: '25%',
-                             left: '75%'},
-                        on :{
-                            click :() => document.getElementById('file-input').click() 
+                            color: '#5293CB', 
+                            fontSize: '20px',
+                            position: 'absolute', 
+                            bottom: '25%',
+                            left: '75%'
+                        },
+                        on: {
+                            click: () => document.getElementById('file-input').click() 
                         }
                     }),
-                h('input', {
-                    type: 'file',
-                    id: 'file-input',
-                    style: { display: 'none' }, 
-                    accept: 'image/*',  
-                    on : {
-                        change : (event)=> this.handleFileChange(event)
-                    }
-                  })
+                    h('input', {
+                        type: 'file',
+                        id: 'file-input',
+                        style: { display: 'none' }, 
+                        accept: 'image/*',  
+                        on: {
+                            change: (event) => this.handleFileChange(event)
+                        }
+                    })
+                ] : [])
             ]
             ),
             h('div', {},
@@ -80,67 +94,41 @@ export const UserCard = defineComponent({
                                      },
                                      'data-text': 'Invite User',
                                 on : {
-                                    click : ()=>
-                                    {
-                                        customFetch(`${window.env.DOMAIN}/api/user/friendships`, {
-                                            method : 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                              },
-                                            body : JSON.stringify({
-                                                reciever : data.id,
-                                                status : 'pending'
-                                            })
-                                        }).then((res)=>
-                                        {
-                                            if (res.status == 201)
-                                                this.updateState({
-                                                    data : {
-                                                        ...this.state.data,
-                                                        relationship_status : 'pending'
-                                                    }
-                                            })
-                                        })
-                                    }
+                                    click : ()=> this.sendRequest()
                                 }
-                            }) : `${data.relationship_status}` === 'pending' ? 
-                            h('i', {class : 'fas fa-user-clock',
+                            }) : `${data.relationship_status}` === 'sent' ? 
+                            h('i', {class : 'fa fa-user-clock',
                                 style : {'font-size' : '20px', color : '#5293CB' , 
                                     position : 'absolute', left : '85%'},
-                                'data-text': 'Pending Request'}) : 
-                                `${data.relationship_status}` === 'accepted' ?  h('i', {class : 'fas fa-user-times',
+                                'data-text': 'Pending Request',
+                                on : {
+                                    // click :()=>{
+
+                                    // }
+                                } 
+                                }) : 
+                                `${data.relationship_status}` === 'accepted' ?  h('i', {class : 'fa fa-user-friends',
                                     style : {'font-size' : '20px', color : '#5293CB' , 
                                         position : 'absolute', left : '85%'},
                                         'data-text': 'Block User',
                                         on : {
-                                            click : ()=>
-                                            {
-                                                customFetch(`${window.env.DOMAIN}/api/user/friendships`, {
-                                                    method : 'PUT',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                      },
-                                                    body : JSON.stringify({
-                                                        target: data.username,
-                                                        status : 'blocked'
-                                                    })
-                                                }).then((res)=>
-                                                {
-                                                    if (res.status == 200)
-                                                    {
-                                                        console.log(">>>>>>>>>>>>> here blocked nisrin ")
-                                                        this.updateState({
-                                                            data : {
-                                                                ...this.state.data,
-                                                                relationship_status : 'blocked'
-                                                            }
-                                                    })
-
-                                                    }
-                                                })
-                                            }
+                                            // click : ()=>this.changeRelationshipStatus('pending')
                                         }
-                                        }): null
+                                        }): `${data.relationship_status}` === 'recieved' ?  h('i', {class : 'fa fa-user-check',
+                                    style : {'font-size' : '20px', color : '#5293CB' , 
+                                        position : 'absolute', left : '85%'},
+                                        'data-text': 'Block User',
+                                        on : {
+                                            // click : ()=>this.changeRelationshipStatus('blocked')
+                                        }
+                                        }):`${data.relationship_status}` === 'blocked' ?  h('i', {class : "fa fa-user-slash",
+                                        style : {'font-size' : '20px', color : '#5293CB' , 
+                                        position : 'absolute', left : '85%'},
+                                        'data-text': 'Block User',
+                                        on : {
+                                            // click : ()=>this.changeRelationshipStatus('blocked')
+                                        }
+                                        }):null
                         ] )]
                 
                 ),
@@ -188,8 +176,8 @@ export const UserCard = defineComponent({
    onMounted()
     {
         const {key} = this.props
-        const  endPoint  = !key ? `${window.env.DOMAIN}/api/user?fields=first_name,last_name,username,picture,score,rank`:
-        `${window.env.DOMAIN}/api/user?username=${key}&
+        const  endPoint  = !key ? `https://${window.env.IP}:3000/api/user?fields=first_name,last_name,username,picture,score,rank`:
+        `https://${window.env.IP}:3000/api/user?username=${key}&
             fields=first_name,last_name,username,picture,score,rank`
        
         customFetch(endPoint)
@@ -225,7 +213,7 @@ export const UserCard = defineComponent({
         const formData = new FormData();
         formData.append('picture', file);
         console.log(">>>>>>>>>>>>>>-------------------------------> file : ", file)
-        customFetch(`${window.env.DOMAIN}/api/user`, {
+        customFetch(`https://${window.env.IP}:3000/api/user`, {
             method : 'PUT',
             body : formData
         }
@@ -262,5 +250,59 @@ export const UserCard = defineComponent({
         //     // console.log(">>>>>>>>>>>> error : ", error)
         // })
 
+    },
+    sendRequest()
+    {
+        const {data} = this.state
+        // console.log(">>>>>>>>>>>>>>>>>>>>>>>> data ")
+        console.log(">>>>>>>>>>>>>>>>>> here in sent function : ")
+        customFetch(`https://${window.env.IP}:3000/api/user/friendships`, {
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+              },
+            body : JSON.stringify({
+                reciever : data.id,
+                status : 'pending'
+            })
+        }).then((res)=>
+        {
+            if (res.status == 201)
+                this.updateState({
+                        data : {
+                            ...this.state.data,
+                            relationship_status : 'sent'
+                        }
+                    
+            })
+        })
+    },
+    changeRelationshipStatus(status)
+    {
+        customFetch(`https://${window.env.IP}:3000/api/user/friendships`, {
+            method : 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+              },
+            body : JSON.stringify({
+                target: data.username,
+                status : status
+            })
+        }).then((res)=>
+        {
+            if (res.status == 200)
+            {
+                console.log(">>>>>>>>>>>>> here blocked nisrin ")
+                this.updateState({
+                    data : {
+                        ...this.state.data,
+                        relationship_status : status
+                    }
+            })
+
+            }
+        })
     }
+
+
 })

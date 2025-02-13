@@ -19,7 +19,7 @@ export const SecuritySettings = defineComponent(
         disable2FA(event)
         {
             event.preventDefault()    
-            customFetch(`${window.env.DOMAIN}/auth/twoFactor/desactivate/`,{}).then(async(result)=>{
+            customFetch(`https://${window.env.IP}:3000/auth/twoFactor/desactivate/`,{}).then(async(result)=>{
                 if(!result.ok)
                 {
                     if(result.status == 401)
@@ -30,7 +30,7 @@ export const SecuritySettings = defineComponent(
         },
         onMounted()
         {
-            customFetch(`${window.env.DOMAIN}/auth/twoFactor/state/`,{}).then(async(result)=>{
+            customFetch(`https://${window.env.IP}:3000/auth/twoFactor/state/`,{}).then(async(result)=>{
                 if(!result.ok)
                 {
                     if(result.status == 401)
@@ -120,7 +120,7 @@ export const SecuritySettings = defineComponent(
                                 for (let [key, value] of formData.entries()) {
                                     console.log(`${key}:`, value);
                                 }
-                                customFetch(`${window.env.DOMAIN}/api/user/`, {
+                                customFetch(`https://${window.env.IP}:3000/api/user/`, {
                                     method : 'PUT',
                                     headers: {
                                         'Content-Type': 'application/json', // Explicitly set content type
@@ -157,7 +157,7 @@ export const SecuritySettings = defineComponent(
                                     console.log("res is okey")
                                     console.log(">>>>>>>>>>>>>>>>>>>>> res here : ", res)
                                     document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
-                                    fetch(`${window.env.DOMAIN}/auth/logout/`,{
+                                    fetch(`https://${window.env.IP}:3000/auth/logout/`,{
                                         method:'POST',
                                         credentials: 'include',
                                     }).then(async (res)=>{
