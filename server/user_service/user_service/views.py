@@ -11,6 +11,8 @@ from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
 from django.db.models import OuterRef, Exists, Q
+import os
+import requests
 
 
 
@@ -441,5 +443,21 @@ class UserBadgesView(APIView):
             return Response({"message":"the badge was locked"}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError:
             return  Response({key: value[0] for key, value in user_badges_serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class NotificationsView(APIView):
+    def get(self, request):
+        try:
+            username = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            user     = User.objects.get(username=username)
+
+            notif = NotificationSerializers(Notification.objects.filter(receiver=user), many=True)
+
+            return Response(notif.data, status=status.HTTP_200_OK)
+        
+        except serializers.ValidationError:
+             return  Response({key: value[0] for key, value in serializers.ValidationError.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)

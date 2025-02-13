@@ -5,7 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db.models import  Q
 
-# import os
+# # import os
 # import requests
 # from django.core.files import File
 # from django.core.files.temp import NamedTemporaryFile
@@ -224,8 +224,8 @@ class MatchSerializer(serializers.ModelSerializer):
 #     tournament  = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
 #     player1     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
 #     player2     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
-#     room_name   = models.CharField(max_length=50)  # Store the match room name
-#     created_at  = models.DateTimeField(auto_now_add=True)
+#           room_name = models.CharField(max_length=50, null=True)
+#     
     
 #     status_choices = [
 #         ('pending', 'Pending'),
@@ -289,3 +289,10 @@ class BadgeSerializer(serializers.ModelSerializer):
 class UserBadgeSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
+
+
+class NotificationSerializers(serializers.ModelSerializer):
+    class Meta:
+        model   = Notification
+        fields  = '__all__'
+        

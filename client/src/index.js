@@ -14,7 +14,7 @@ import { ResetPassword } from './pages/resetPassword.js';
 import { Game } from './pages/game.js';
 
 window.env = {
-  IP: "10.13.4.5",
+  IP: "10.14.3.2",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
