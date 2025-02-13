@@ -17,7 +17,7 @@ export const PlayerVsPlayer = defineComponent({
                         h('img', { src: './images/bnt-removebg-preview.png', class: 'girlplay' })
                     ]),
                     h('div', { class: 'play-girl' }, [
-                        h('img', { src: './images/vs (2).png', class: 'vs2' })
+                        h('img', { src: './images/vs.png', class: 'vs2' })
                     ]),
                     h('div', { class: 'play-girl' }, [
                         h('img', { src: './images/playervs-removebg-preview.png', class: 'boy' })

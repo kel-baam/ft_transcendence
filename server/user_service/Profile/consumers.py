@@ -4,6 +4,7 @@ from asgiref.sync import sync_to_async
 from .models import User
 from django.conf import settings
 import jwt
+from asgiref.sync                   import async_to_sync
 
 # Notification container's WebSocket consumer
 class Notification(AsyncWebsocketConsumer):

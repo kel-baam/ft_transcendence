@@ -3,6 +3,7 @@ services:
   db :
     build: ./db
     container_name: db-service
+    image: db-service
     env_file:
     - .env
     volumes:
@@ -47,6 +48,7 @@ services:
   client-service:
     build: ./client
     container_name: client-service
+    image: client-service
     volumes:
       - client_volume:/usr/share/nginx/html
     ports:
@@ -60,6 +62,7 @@ services:
   auth-service:
     build: ./server/auth_service
     container_name: auth-service
+    image: auth-service
     ports:
       - "8000:8000"
     networks:
@@ -73,6 +76,7 @@ services:
 
   user-service:
       build: ./server/user_service
+      image: user-service
       container_name: user-service
       env_file:
         - .env
@@ -88,6 +92,7 @@ services:
   
   tournament-service:
       build: ./server/tournament_service
+      image: tournament-service
       container_name: tournament-service
       env_file:
         - .env
@@ -104,6 +109,7 @@ services:
   matchmaking-service:
     build: ./server/matchmaking_service
     container_name: matchmaking-service
+    image: matchmaking-service
     env_file:
       - .env
     ports:

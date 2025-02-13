@@ -111,6 +111,33 @@ export const header = defineComponent({
         }
     },
 
+    async enterTournament(tournamentId)
+    {
+        try {
+            const response = await customFetch(`http://localhost:3000/tournament/api/online/tournaments/tournament-existence/${tournamentId}/`, {
+                method      : 'GET',
+                credentials : 'include'
+            });
+        
+            if (!response.ok) {
+                const errorData = await response.json();
+        
+                if(response.status === 401)
+                    this.appContext.router.navigateTo('/login');
+                
+                console.error("Error response:", errorData.error);
+                throw new Error(errorData.error);
+            }
+        
+            const successData = await response.json();
+            this.appContext.router.navigateTo(`/tournament/online/online_hierachy/${tournamentId}`);
+        }
+        catch (error) {
+            showErrorNotification(error);
+        }
+        
+    },
+
     renderNotifications() {
         if (!this.state.notification || this.state.notification.length === 0) {
             return h("div", { class: "notifications-container" }, [
@@ -145,7 +172,15 @@ export const header = defineComponent({
                                         ["[Decline]"] ),
                                     ];
                         break;
+                    case "enter_tournament":
+                        content = `${notification.message}`;
+                        actions =
+                        [
+                            h( "a", { onclick: () => this.enterTournament(notification.object_id)}, ["[Enter]"] ),
+                        ]
+                        break;
                     default:
+                        // console.log(`⚠️ ${notification.message}`);
                         content = `⚠️ ${notification.message}`;
                         break;
                 }

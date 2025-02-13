@@ -44,6 +44,9 @@ export const Home = defineComponent({
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            this.updateState({
+                isBlur: false,
+            })
         }
     },
 
@@ -93,7 +96,7 @@ export const Home = defineComponent({
                 }),
                 h('form', {
                     class   : 'form1',
-                    on      : {submit: this.submitForm.bind(this) }
+                    on      : { submit: (event) => this.submitForm(event) }
                 }, [
                     h('div', { class: 'avatar' }, [
                         h('img', { 

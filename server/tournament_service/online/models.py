@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 # from django.contrib.auth.models import User
+from asgiref.sync                   import async_to_sync
+
 
 
 class User(AbstractBaseUser):
@@ -57,7 +59,7 @@ class Tournament(models.Model):
             return player.image.url if player.image else 'default-image.jpg'
         except Player.DoesNotExist:
             return '../../frontend/assets/css/uknown.png'
-        
+
     def __str__(self):
         return self.name
     class Meta:
@@ -68,10 +70,16 @@ class Player(models.Model):
     score = models.FloatField(default=0)
     level = models.FloatField(default=0.0)
     rank = models.BigIntegerField(default=0)
+
+    def get_user_info(self):
+        return self.user.username, self.score, self.rank
+
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
+
     class Meta:
         db_table = 'Player'
+
 
 class PlayerTournament(models.Model):
     tournament      = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='participants')
@@ -160,6 +168,7 @@ class Achievement(models.Model):
 class Notification(models.Model):
     NOTIF_CHOICES = [
         ('tournament', 'Tournament'),
+        ('enter_tournament', 'enter_tournament'),
         ('information', 'information'),
         ('request', 'Request'),
         ('invitation', 'Invitation'),

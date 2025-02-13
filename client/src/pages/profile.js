@@ -37,7 +37,9 @@ export const Profile = defineComponent({
   async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        formData.append('tournament_id', JSON.stringify(this.state.id));
+        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
+
+        console.log("submit form ", this.state.notification_data.object_id);
         formData.append('status', 'accepted');
 
         try {
@@ -55,9 +57,14 @@ export const Profile = defineComponent({
 
             const successData = await response.json();
             console.log("Player added:", successData.message);
-            this.updateState({ isBlur: false });
-        } catch (error) {
+            this.updateState({
+                notif_blur: false,
+            })
+        } catch (error) { 
             showErrorNotification(error);
+            this.updateState({
+                notif_blur: false,
+            })
         }
     },
 
@@ -71,7 +78,7 @@ export const Profile = defineComponent({
               blur :(notification_data)=> {
                   this.updateState({
                       notif_blur            : !this.state.notif_blur,
-                      notification_data : notification_data
+                      notification_data     : notification_data
                   })
               }
           }
@@ -120,7 +127,7 @@ export const Profile = defineComponent({
                 }),
                 h('form', {
                     class   : 'form1',
-                    on      : {submit: this.submitForm.bind(this) }
+                    on      : { submit: (event) => this.submitForm(event) }
                 }, [
                     h('div', { class: 'avatar' }, [
                         h('img', { 
@@ -131,7 +138,7 @@ export const Profile = defineComponent({
                         h('div', { 
                             class   : 'editIcon', 
                             on      : {
-                                click: () => { document.getElementById(`file-upload1`).click(); }
+                              click : () => { document.getElementById(`file-upload1`).click(); }
                             }
                         }, [
                             h('input', {

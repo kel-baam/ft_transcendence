@@ -9,9 +9,9 @@ export const Tournament = defineComponent({
     
     state(){
         return {
-            notificationActive: false,
-            isBlur:false,
-            notification_data: null
+            notificationActive  : false,
+            notification_data   : null,
+            isBlur              : false,
         }
     },
 
@@ -55,7 +55,7 @@ export const Tournament = defineComponent({
             }
         }),h('div', {class:'content'}, 
             [h(sidebarLeft, {}), h('div', {
-                class: 'local-online',
+                class : 'local-online',
                 style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
 
             },
@@ -103,7 +103,8 @@ export const Tournament = defineComponent({
                 }),
                 h('form', {
                     class   : 'form1',
-                    on      : {submit: this.submitForm.bind(this) }
+                    on      : { submit: (event) => this.submitForm(event) }
+
                 }, [
                     h('div', { class: 'avatar' }, [
                         h('img', { 

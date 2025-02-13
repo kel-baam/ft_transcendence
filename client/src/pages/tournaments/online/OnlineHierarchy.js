@@ -8,16 +8,50 @@ export const OnlineHierarchy = defineComponent({
 
     state(){
         return {
-            matcheRounds    : [],
+            first_round : [],
+            notificationActive: false,
+            isBlur:false,
+            notification_data: null,
         }
     },
+
+    async submitForm(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
+        formData.append('status', 'accepted');
+        
+        try {
+            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+                method: 'PUT',
+                body: formData,
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) this.appContext.router.navigateTo('/login');
+                const errorText = await response.json();
+                throw new Error(Object.values(errorText)[0]);
+            }
+
+            const successData = await response.json();
+            console.log("Player added:", successData.message);
+            this.updateState({ isBlur: false });
+        } catch (error) {
+            showErrorNotification(error);
+            this.updateState({
+                isBlur: false,
+            })
+        }
+    },
+
 
     matchmake_players()
     {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
             
-            socket   = new WebSocket('ws://localhost:8003/ws/matchmaking/');
-            const tournamentId  = this.appContext.router.params.id;
+            socket = new WebSocket('ws://localhost:8003/ws/matchmaking/');
+            const tournamentId = this.appContext.router.params.id;
         
             console.log("---> : ", tournamentId)
             
@@ -25,23 +59,30 @@ export const OnlineHierarchy = defineComponent({
                 console.log('WebSocket connection established');
 
                 socket.send(JSON.stringify({
-                    action          : 'online_tournament',
-                    tournamentId    : tournamentId
+                    action       : 'online_tournament',
+                    tournamentId : tournamentId
                 }));
             };
 
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-            
+
                 console.log('WebSocket Data:', data);
-            
-                if (data.success) {
+                if (data.success)
+                {
+                    console.log(" ==--> ", data.matches);
                     this.updateState({
-                        matcheRounds : data.matches
+                        first_round: data.matches
                     });
-                } else {
-                    console.error(`Error (${data.code}):`, data.error || 'Unknown error');
-                    this.appContext.router.navigateTo(`/404`);
+                    this.startMatches(data.matches);
+                }
+                else if (data.is_user)
+                {
+                    this.appContext.router.navigateTo(`/game/${data.match_id}`);
+                }
+                else
+                {
+                    console.error('Ignoring message:', data);
                 }
             };
 
@@ -50,7 +91,24 @@ export const OnlineHierarchy = defineComponent({
             };
         }
     },
-   
+
+    async startMatches(matches)
+    {
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        
+        matches.forEach((match) => {
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({
+                    action  : 'start_match',
+                    matchId : match.match_id
+                }));
+            } 
+            
+            console.log("here");
+        });
+    },
+    
+
     onMounted()
     {
         this.matchmake_players();
@@ -63,33 +121,47 @@ export const OnlineHierarchy = defineComponent({
         }
     },
 
-    //onUnmounted
-
     render()
     {
-
-        return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
+        return h('div', {id:'global'}, [h(header, {
+            icon_notif: this.state.notificationActive,
+            on          : {
+                iconClick :()=>{
+                    this.updateState({ notificationActive: !this.state.notificationActive }); 
+                },
+                blur :(notification_data)=> {
+                    this.updateState({
+                        isBlur            : !this.state.isBlur,
+                        notification_data : notification_data
+                    })
+                },
+            }
+        }),h('div', {class:'content'}, 
             [h(sidebarLeft, {}),
-                h('div', { class: 'hierarchy-global-content' }, [
+                h('div', {
+                    class: 'hierarchy-global-content',
+                    style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
+
+                }, [
                     h('div', { class: 'title' }, [
                         h('h1', {}, ['Tournament in Progress'])
                     ]),
                     h('div', { class: 'rounds' }, [
                         h('div', { class: 'round1' }, 
-                            (this.state.matcheRounds || []).map((match, i) =>
+                            (this.state.first_round || []).map((match, i) =>
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
-                                            src: match.avatar1 ? `http://localhost:8002${match.avatar1}` : './images/people_14024721.png'
+                                            src: './images/people_14024721.png'
                                         }),
                                         h('h2', {}, [match.player1])
                                     ]),
                                     h('div', { class: 'vs' }, [
-                                        h('img', { src: './images/vs (2).png' })
+                                        h('img', { src: './images/vs.png' })
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
-                                            src: match.avatar2 ? `http://localhost:8002${match.avatar2}` : './images/people_14024721.png'
+                                            src: './images/people_14024721.png'
                                         }),
                                         h('h2', {}, [match.player2])
                                     ])
@@ -103,7 +175,7 @@ export const OnlineHierarchy = defineComponent({
                                 h('h2', {}, ['username'])
                             ]),
                             h('div', { class: 'vs' }, [
-                                h('img', { src: './images/vs (2) 5 (1).png' })
+                                h('img', { src: './images/vs.png' })
                             ]),
                             h('div', { class: 'player2' }, [
                                 h('img', { src: './images/people_14024721.png' }),
@@ -119,7 +191,70 @@ export const OnlineHierarchy = defineComponent({
                         ])
                     ])
                 ])
-            ]) 
+            ]),
+            this.state.isBlur ? 
+            h('div', { class: 'join-player-form' }, [
+                h('i', {
+                    class   : 'fa-regular fa-circle-xmark icon',
+                    on      : {
+                        click : () => {
+                            this.updateState({
+                                isBlur: false,
+                            })
+                        }
+                    }
+                }),
+                h('form', {
+                    class   : 'form1',
+                    on      : { submit: (event) => this.submitForm(event) }
+                }, [
+                    h('div', { class: 'avatar' }, [
+                        h('img', { 
+                            class   : 'createAvatar', 
+                            src     : './images/people_14024721.png', 
+                            alt     : 'Avatar' 
+                        }),
+                        h('div', { 
+                            class   : 'editIcon', 
+                            on      : {
+                                click: () => { document.getElementById(`file-upload1`).click(); }
+                            }
+                        }, [
+                            h('input', {
+                                type    : 'file',
+                                id      : 'file-upload1',
+                                name    : 'player_avatar',
+                                accept  : 'image/*',
+                                style   :{
+                                    display         : 'none',
+                                    pointerEvents   : 'none'
+                                },
+                                on      : { change: (event) => {
+                                    const file = event.target.files[0];
+                                    if (file) {
+                                        const reader    = new FileReader();
+                                        reader.onload   = (e) => {
+                                            document.querySelector(`.createAvatar`).src = e.target.result;
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                            }),
+                            h('i', { class: 'fas fa-edit icon' })
+                        ])
+                    ]),
+                    h('div', { class: 'createInput' }, [
+                        h('label', { htmlFor: 'playerNickname' }, ['Nickname:']),
+                        h('br'),
+                        h('input', { 
+                            type        : 'text', 
+                            name        : 'nickname', 
+                            placeholder : 'Enter Nickname...' 
+                        })
+                    ]),
+                    h('button', { type: 'submit' }, ['Submit'])
+                ])
+            ]) : null
         ])  
     }                    
 })

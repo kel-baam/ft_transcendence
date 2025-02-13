@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 # from django.contrib.auth.models import User
+from asgiref.sync                   import async_to_sync
 
 
 class User(AbstractBaseUser):
@@ -44,10 +45,10 @@ class Tournament(models.Model):
     type            = models.CharField(max_length=50, choices=type_choices) # i remove this ", default='private'"
     created_at      = models.DateTimeField(auto_now_add=True)
     STATUS_CHOICES  = [
-            ('pending', 'Pending'),
+            ('pending',     'Pending'),
             ('matchmaking', 'Matchmaking Done'),
-            ('started', 'Started'),
-            ('finished', 'Finished'),
+            ('started',     'Started'),
+            ('finished',    'Finished'),
         ]
     status          = models.CharField(max_length = 20, choices = STATUS_CHOICES, default = 'pending')
 
@@ -68,10 +69,16 @@ class Player(models.Model):
     score = models.FloatField(default=0)
     level = models.FloatField(default=0.0)
     rank = models.BigIntegerField(default=0)
+
+    def get_user_info(self):
+        return self.user.username, self.score, self.rank
+
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
+
     class Meta:
         db_table = 'Player'
+
 
 class PlayerTournament(models.Model):
     tournament      = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='participants')
@@ -94,7 +101,6 @@ class PlayerTournament(models.Model):
     
     class Meta:
         db_table    = 'PlayerTournament'
-
 
 class Match(models.Model):
     tournament  = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
@@ -160,6 +166,7 @@ class Achievement(models.Model):
 class Notification(models.Model):
     NOTIF_CHOICES = [
         ('tournament', 'Tournament'),
+        ('enter_tournament', 'enter_tournament'),
         ('information', 'information'),
         ('request', 'Request'),
         ('invitation', 'Invitation'),

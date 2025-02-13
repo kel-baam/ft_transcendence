@@ -5,6 +5,7 @@ from django.core.validators     import MinLengthValidator
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils import timezone 
+from asgiref.sync                   import async_to_sync
 
 class User(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
@@ -37,10 +38,16 @@ class Player(models.Model):
     score = models.FloatField(default=0)
     level = models.FloatField(default=0.0)
     rank = models.BigIntegerField(default=0)
+
+    def get_user_info(self):
+        return self.user.username, self.score, self.rank
+
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
+
     class Meta:
         db_table = 'Player'
+
 
 class Tournament(models.Model):
     creator         = models.ForeignKey(User, on_delete = models.CASCADE,related_name='online_tournament_creator')
@@ -160,6 +167,7 @@ class Achievement(models.Model):
 class Notification(models.Model):
     NOTIF_CHOICES = [
         ('tournament', 'Tournament'),
+        ('enter_tournament', 'enter_tournament'),
         ('information', 'information'),
         ('request', 'Request'),
         ('invitation', 'Invitation'),

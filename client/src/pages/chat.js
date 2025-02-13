@@ -107,7 +107,7 @@ export const Chat = defineComponent(
                     }),
                     h('form', {
                         class   : 'form1',
-                        on      : {submit: this.submitForm.bind(this) }
+                        on      : { submit: (event) => this.submitForm(event) }
                     }, [
                         h('div', { class: 'avatar' }, [
                             h('img', { 

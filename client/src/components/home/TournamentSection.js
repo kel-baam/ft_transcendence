@@ -16,7 +16,7 @@ export const TournamentSection = defineComponent({
                         h('img', { src: './images/bnt-removebg-preview.png', class: 'player1' })
                     ]),
                     h('div', { class: 'vs1-div' }, [
-                        h('img', { src: './images/vs (2).png', class: 'vs' })
+                        h('img', { src: './images/vs.png', class: 'vs' })
                     ]),
                     h('div', { class: 'girl-div' }, [
                         h('img', { src: './images/girlplay-removebg-preview.png', class: 'player3' })
@@ -36,7 +36,7 @@ export const TournamentSection = defineComponent({
                         h('img', { src: './images/player.jpg.png', class: 'player6' })
                     ]),
                     h('div', { class: 'vs2-div' }, [
-                        h('img', { src: './images/vs (2).png', class: 'vs' })
+                        h('img', { src: './images/vs.png', class: 'vs' })
                     ]),
                     h('div', { class: 'boy-div' }, [
                         h('img', { src: './images/playervs-removebg-preview.png', class: 'player5' })

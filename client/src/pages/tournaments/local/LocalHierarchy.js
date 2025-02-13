@@ -123,7 +123,7 @@ export const LocalHierarchy = defineComponent({
                                         h('h2', {}, [match.player1])
                                     ]),
                                     h('div', { class: 'vs' }, [
-                                        h('img', { src: './images/vs (2).png' })
+                                        h('img', { src: './images/vs.png' })
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
@@ -141,7 +141,7 @@ export const LocalHierarchy = defineComponent({
                                 h('h2', {}, ['username'])
                             ]),
                             h('div', { class: 'vs' }, [
-                                h('img', { src: './images/vs (2) 5 (1).png' })
+                                h('img', { src: './images/vs.png' })
                             ]),
                             h('div', { class: 'player2' }, [
                                 h('img', { src: './images/people_14024721.png' }),
@@ -163,7 +163,7 @@ export const LocalHierarchy = defineComponent({
                             h('h3', {}, [this.state.currentMatch.player1])
                         ]),
                         h('div', { class: 'vs' }, [
-                            h('img', { src: './images/vs (2).png' })
+                            h('img', { src: './images/vs.png' })
                         ]),
                         
                         h('div', { class: 'invited' },
