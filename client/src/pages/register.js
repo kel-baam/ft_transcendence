@@ -9,11 +9,11 @@ export const Register = defineComponent({
     },
     intraEvent()
     {
-        window.location.href = `http://localhost:3000/auth/intra/?type=${encodeURIComponent('register')}`
+        window.location.href = `https://${window.env.IP}:3000/auth/intra/?type=${encodeURIComponent('register')}`
     },
     googleEvent(){
         
-        window.location.href = `http://localhost:3000/auth/google/?type=${encodeURIComponent('register')}`
+        window.location.href = `https://${window.env.IP}:3000/auth/google/?type=${encodeURIComponent('register')}`
     },
 
 

@@ -25,7 +25,7 @@ export const CreateTournament = defineComponent({
         }
 
         try {
-            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+            const response = await customFetch("http://10.14.3.1:3000/api/tournament/online/tournaments/", {
                 method      : 'POST',
                 body        : formData,
                 credentials : 'include'
@@ -71,7 +71,7 @@ export const CreateTournament = defineComponent({
             const searchQuery   = event.target.value;
             const playersLength = this.state.players.length;
             
-            const response      = await customFetch(`http://localhost:3000/tournament/api/online/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`,
+            const response      = await customFetch(`http://10.14.3.1:3000/api/tournament/online/tournaments/friends-list?search=${encodeURIComponent(searchQuery)}&playersLength=${playersLength}`,
             {
                 method      : 'GET',
                 credentials : 'include',

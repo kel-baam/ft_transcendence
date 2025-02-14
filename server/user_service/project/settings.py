@@ -22,7 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-0+9=y=k@_rpy39wp6177h7hh8jdv3irye=(&y&q(2j=ej(-*hh'
 SECRET_KEY = 'django-insecure-1mpj)ud(wiuuvgy6dpm42h@o27ztef$ag%k!k33#r%97jrtflp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -47,23 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
-    'Profile',
+    'user_service',
     'rest_framework',
-    'rest_framework_simplejwt',
     'corsheaders',
+    'rest_framework_simplejwt',
     'channels',
 ]
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('redis-service', 6379)],
-        },
-    },
-}
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,6 +84,15 @@ TEMPLATES = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis-service', 6379)],
+        },
+    },
+}
+
 # WSGI_APPLICATION = 'project.wsgi.application'
 ASGI_APPLICATION = 'project.asgi.application'
 
@@ -123,8 +122,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-    {
+     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -150,67 +152,44 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://127.0.0.1:5500",
-#     "http://localhost:5500",
-#     "https://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
-#     "wss://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",
+    "http://10.14.3.1:5500",
+    "https://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
+    "wss://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
+]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 8,
-        }
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#         'OPTIONS': {
+#             'min_length': 8,
+#         }
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',  # Capture DEBUG level and above
-#             'class': 'logging.StreamHandler',  # Send logs to the console
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',  # Capture DEBUG level and above for django logger
-#             'propagate': False,  # Do not propagate to the root logger
-#         },
-#         'django.request': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',  # Capture DEBUG level for request logs
-#             'propagate': False,  # Prevents duplication in logs
-#         },
-#         '': {  # This is the root logger
-#             'handlers': ['console'],
-#             'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
-#             'propagate': False,
-#         },
-#     },
-# }
+
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['*']

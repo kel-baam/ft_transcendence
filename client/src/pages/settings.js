@@ -25,7 +25,7 @@ export const settings = defineComponent({
         formData.append('status', 'accepted');
 
         try {
-            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
                 body: formData,
                 credentials: 'include',
@@ -44,6 +44,7 @@ export const settings = defineComponent({
             showErrorNotification(error);
         }
     },
+
 
     render()
     {
@@ -65,60 +66,61 @@ export const settings = defineComponent({
                 }
             }
         }),h('div', {class:'content'}, 
-            [h(sidebarLeft, {}), h('div', {
-                class:'global-content',
-                style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
-
-            },
-                [h('div', { class: 'settings-container' },
-                    [ h( 'div',  { class: 'section-headings' },
-                        [
-                            h(
-                                'button',
-                                {
-                                    on : {click : () =>{
-                                    this.updateState({activateSection:'form'})
-                                    }},
-                                    style : this.state.activateSection ==='form' ? { 'background-color' : 'rgba(0, 0, 0, 0.2)'}: {}
-                                },
-                                [
-                                    h('img', { src: 'images/informations_icon.png', alt: 'informations icon' }),
-                                    h('h2', {}, ['Informations'])
-                                ]
-                            ),
-                            h('button',
-                                {
-                                    on : {click : () =>{
-                                        this.updateState({activateSection:'BlockedFriends'})
+            [h(sidebarLeft, {}), h('div', {class:'global-content'},
+                [h(
+                    'div',
+                    { class: 'settings-container' },
+                    [
+                        h(
+                            'div',
+                            { class: 'section-headings' },
+                            [
+                                h(
+                                    'button',
+                                    {
+                                        on : {click : () =>{
+                                        this.updateState({activateSection:'form'})
                                         }},
-                                        style : this.state.activateSection === 'BlockedFriends'? { 'background-color' : 'rgba(0, 0, 0, 0.2)'}:{}
-                                    
-                                },
-                                [
-                                    h('img', { src: 'images/blocked_fr_icon.png', alt: 'blocked friends icon' }),
-                                    h('h2', {}, ['Blocked friends'])
-                                ]
-                            ),
-                            h(
-                                'button',
-                                {
-                                    on : {click : () =>{
-                                        this.updateState({activateSection:'securitySettings'})
-                                        }},
-                                        style : this.state.activateSection === 'securitySettings'? { 'background-color' : 'rgba(0, 0, 0, 0.2)'}:{}
-                                },
-                                [
-                                    h('i', { class: 'fas fa-lock', style: {'font-size':'20px' ,  color: '#0A377E'} }),
-                                    h('h2', {}, ['Security'])
-                                ]
-                            )
-                        ]
-                    ),
-                    this.state.activateSection === 'form' ? h(Form , {}) : 
-                    this.state.activateSection === 'BlockedFriends'? h(listBlockedFriends, {}) : 
-                    h(SecuritySettings, {})
+                                        style : this.state.activateSection ==='form' ? { 'background-color' : 'rgba(0, 0, 0, 0.2)'}: {}
+                                    },
+                                    [
+                                        h('img', { src: 'images/informations_icon.png', alt: 'informations icon' }),
+                                        h('h2', {}, ['Informations'])
+                                    ]
+                                ),
+                                h('button',
+                                    {
+                                        on : {click : () =>{
+                                            this.updateState({activateSection:'BlockedFriends'})
+                                            }},
+                                            style : this.state.activateSection === 'BlockedFriends'? { 'background-color' : 'rgba(0, 0, 0, 0.2)'}:{}
+                                        
+                                    },
+                                    [
+                                        h('img', { src: 'images/blocked_fr_icon.png', alt: 'blocked friends icon' }),
+                                        h('h2', {}, ['Blocked friends'])
+                                    ]
+                                ),
+                                h(
+                                    'button',
+                                    {
+                                        on : {click : () =>{
+                                            this.updateState({activateSection:'securitySettings'})
+                                            }},
+                                            style : this.state.activateSection === 'securitySettings'? { 'background-color' : 'rgba(0, 0, 0, 0.2)'}:{}
+                                    },
+                                    [
+                                        h('i', { class: 'fas fa-lock', style: {'font-size':'20px' ,  color: '#0A377E'} }),
+                                        h('h2', {}, ['Security'])
+                                    ]
+                                )
+                            ]
+                        ),
+                        this.state.activateSection === 'form' ? h(Form , {}) : 
+                        this.state.activateSection === 'BlockedFriends'? h(listBlockedFriends, {}) : 
+                        h(SecuritySettings, {})
                     ]
-                ),]
+                )]
                 
 
             ),

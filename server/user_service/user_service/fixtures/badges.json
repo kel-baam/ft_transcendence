@@ -1,0 +1,6 @@
+[
+    {"model": "user_service.badge", "pk": 1, "fields": {"name": "Warrior", "icon": "/static/images/badge1.png"}},
+    {"model": "user_service.badge", "pk": 2, "fields": {"name": "Explorer", "icon": "/static/images/badge1.png"}},
+    {"model": "user_service.badge", "pk": 3, "fields": {"name": "Master", "icon": "/static/images/badge1.png"}},
+    {"model": "user_service.badge", "pk": 4, "fields": {"name": "Legend", "icon": "/static/images/badge1.png"}}
+]

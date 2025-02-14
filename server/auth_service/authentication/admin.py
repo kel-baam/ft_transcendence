@@ -6,6 +6,6 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'first_name', 'last_name', 'email', 'phone_number','password')
 
 
-@admin.register(Player)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'score', 'rank', 'level')
+# @admin.register(Player)
+# class UserAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'score', 'rank', 'level')

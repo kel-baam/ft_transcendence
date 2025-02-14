@@ -1,9 +1,9 @@
 IMAGES 					= db-service redis:alpine client-service \
-							auth-service user-service tournament-service matchmaking-service \
-							dpage/pgadmin4:latest
+							auth-service user-service game-service dpage/pgadmin4:latest \
+							dpage/pgadmin4:latest tournament-service matchmaking-service \
 
 VOLUMES					= dataBase auth_volume user_volume tournament_volume matchmaking_volume \
-							client_volume
+							client_volume game_volume
 
 up : 
 	docker compose -f docker-compose.yml up

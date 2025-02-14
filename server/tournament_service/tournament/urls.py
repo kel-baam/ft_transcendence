@@ -21,9 +21,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tournament/api/local/', include('local.urls')),
-    path('tournament/api/online/', include('online.urls')),
+    path('api/tournament/local/', include('local.urls')),
+    path('api/tournament/online/', include('online.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    

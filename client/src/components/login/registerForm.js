@@ -1,5 +1,7 @@
 import{defineComponent,h} from '../../package/index.js'
 import { showSuccessNotification } from '../../package/utils.js'
+import { showErrorNotification } from '../../package/utils.js'
+
 export const RegisterForm = defineComponent({
     state(){
         return {
@@ -15,13 +17,15 @@ export const RegisterForm = defineComponent({
     {
         event.preventDefault()      
         const form = new FormData(document.querySelector(".registerForm"))
-        fetch('http://localhost:3000/auth/register/',{
+        fetch(`https://${window.env.IP}:3000/auth/register/`,{
             method: 'POST' ,
             body:form,
             credentials: 'include', 
         }).then((async (res)=>{
             if (!res.ok) {
+                
                 const errors = await res.json();
+                showErrorNotification(Object.values(errors)[0])
                 this.updateState({errors:errors})
             }
             else
@@ -51,3 +55,6 @@ export const RegisterForm = defineComponent({
         ])
     }
     })
+
+
+    

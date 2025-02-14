@@ -21,6 +21,7 @@ import {
 
 export function patchDOM(oldVdom, newVdom, parentEl, hostComponent = null) {
     if (!areNodesEqual(oldVdom, newVdom)) {
+      // console.log("----------------------------------> here here patch equal zero ")
         const index = findIndexInParent(parentEl, oldVdom.el)
         destroyDOM(oldVdom)
         mountDOM(newVdom, parentEl, index, hostComponent)
@@ -46,7 +47,7 @@ export function patchDOM(oldVdom, newVdom, parentEl, hostComponent = null) {
         break
         }
 }
-https://profile.intra.42.fr/
+
 patchChildren(oldVdom, newVdom, hostComponent)
 
 return newVdom

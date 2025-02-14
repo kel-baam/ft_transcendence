@@ -19,9 +19,7 @@ def refreshTokenRequired(view_func):
             try:
                 payload = jwt.decode(refeshToken, settings.SECRET_KEY, algorithms=["HS256"])
                 user = User.objects.filter(email=payload["email"]).first()
-                if user:
-                        request.user = user
-                else:
+                if  not user:
                         return JsonResponse({'error': 'Invalid or missing token'}, status=401)
             except Exception as e:
                 return JsonResponse({'error': 'Invalid or missing token'}, status=401)

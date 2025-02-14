@@ -30,12 +30,12 @@ urlpatterns = [
     path('auth/password/reset/',auth.password_reset_request,name='password_reset_request'),
     path('auth/password/reset/confirm/',auth.password_reset_confirm,name='password_reset_confirm'),
 
-    
-    path("auth/twoFactor/verify/",views.verify_code,name='verifyCode'),
+    path("auth/twoFactor/verify/",views.verify_code),
     path("auth/twoFactor/activate/",views.activate_two_Factor,name='active2FA'),
     path("auth/twoFactor/desactivate/",views.desactive2FA,name='active2FA'),
     path("auth/twoFactor/validateQrCode/",views.validate_qrcode,name='validateQrCode'),
     path("auth/twoFactor/state/",views.twoFactoreState),
+
     path('get-csrf-token/',csrf_token_view, name='csrf_token'),
 
 ]

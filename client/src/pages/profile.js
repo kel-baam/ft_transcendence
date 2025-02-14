@@ -5,113 +5,167 @@ import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
 import { UserCard } from '../components/profile/UserCard.js'
 import { UserWinRate } from '../components/profile/UserWinRate.js'
-import { UserAchievementsCard } from '../components/profile/UserAchievementsCard.js'
+import {UserAchievementsCard} from '../components/profile/UserAchievementsCard.js'
 import { GameHistoryCard } from '../components/profile/GameHistoryCard.js'
 import { SocialCard } from '../components/profile/SocialCard.js'
-import { JoinTournamentForm } from '../components/JoinTournamentForm.js'
-import { showErrorNotification } from './utils/errorNotification.js'
-import { customFetch } from '../package/fetch.js'
+import {sidebarRight} from '../components/sidebar-right.js'
 
 export const Profile = defineComponent({
-    state()
-    {
+  state(){
+    
       return {
-          isLoading : true,
-          isBlur : false,
-          data : [],
-          // activateSection:'friends',
-          viewAll: {
-            // MatchHistory : false,
-            // friends : false,
-            // requests: false,
-            // pending : false
-          },
+            isLoading : true,
+            isBlured : false,
+            data : [],
+            activateSection:'friends',
+            Expanded: null,
 
-          notificationActive: false,
-          notif_blur:false,
-          notification_data: null
-      }
-    },
-
+            notificationActive: false,
+            notif_blur:false,
+            notification_data: null
+          }
+  },
 
   async submitForm(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
 
-        console.log("submit form ", this.state.notification_data.object_id);
-        formData.append('status', 'accepted');
+    console.log("submit form ", this.state.notification_data.object_id);
+    formData.append('status', 'accepted');
 
-        try {
-            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
-            });
+    try {
+        const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
+            method: 'PUT',
+            body: formData,
+            credentials: 'include',
+        });
 
-            if (!response.ok) {
-                if (response.status === 401) this.appContext.router.navigateTo('/login');
-                const errorText = await response.json();
-                throw new Error(Object.values(errorText)[0]);
-            }
-
-            const successData = await response.json();
-            console.log("Player added:", successData.message);
-            this.updateState({
-                notif_blur: false,
-            })
-        } catch (error) { 
-            showErrorNotification(error);
-            this.updateState({
-                notif_blur: false,
-            })
+        if (!response.ok) {
+            if (response.status === 401) this.appContext.router.navigateTo('/login');
+            const errorText = await response.json();
+            throw new Error(Object.values(errorText)[0]);
         }
-    },
 
-    render(){
-      return h('div', {id:'global'}, [h(header, {
-          icon_notif: this.state.notificationActive,
-          on          : {
-              iconClick :()=>{ //should be in every part that has a header
-                  this.updateState({ notificationActive: !this.state.notificationActive }); 
-              },
-              blur :(notification_data)=> {
-                  this.updateState({
-                      notif_blur            : !this.state.notif_blur,
-                      notification_data     : notification_data
-                  })
-              }
-          }
-        }),h('div', {class:'content'}, 
-          [h(sidebarLeft, {}), h('div', {
-            class:'global-content',
-            style : this.state.notif_blur ? { filter : 'blur(4px)'} : {}
-          },
-              [h('div', {class:'profile-content', style : (this.state.viewAll.MatchHistory || this.state.viewAll.SocialCard) ? { filter : 'blur(4px)'}: {} 
-              },[h('div', {class:'profile-info'}, 
+        const successData = await response.json();
+        console.log("Player added:", successData.message);
+        this.updateState({
+            notif_blur: false,
+        })
+    } catch (error) { 
+        showErrorNotification(error);
+        this.updateState({
+            notif_blur: false,
+        })
+    }
+  },
+
+  render(){
+    const key =  this.appContext.router.params.username
+    const {isBlured, Expanded, activateSection, isLoading} = this.state
+
+    return h('div', {id:'global'}, [
+      h(header, {
+        icon_notif: this.state.notificationActive,
+        on          : {
+            iconClick :()=>{ //should be in every part that has a header
+                this.updateState({ notificationActive: !this.state.notificationActive }); 
+            },
+            blur :(notification_data)=> {
+                this.updateState({
+                    notif_blur            : !this.state.notif_blur,
+                    notification_data     : notification_data
+                })
+            }
+        }
+      }),h('div', {class:'content'}, 
+          [
+            h(sidebarLeft, {}), h('div', {class:'global-content'},
               [
-                  h('div', {class:'infos'}, [h(UserCard, {}), h(UserWinRate, {})]),
-                  h('div', {class:'other-cards'}, [h(UserAchievementsCard, {}), 
-                    h(SocialCard,{
-                      on : 
-                      { blurProfile : this.blurProfile}
-                    }), h(GameHistoryCard, {
-                      on : { blurProfile : this.blurProfile}
-                    })])
-              ]
+                // h('div', {class:'profile-content', style : isBlured ? { filter : 'blur(4px)'}: {}},
+                //   [
+                //       h('div', {class:'profile-info'}, 
+                //     [
+                //       h('div', {class:'infos'}, [
+                //         h(UserCard, {'key' : key}), h(UserWinRate, {})]),
+                //       h('div', {class:'other-cards'}, 
+                //         [
+                //           h(UserAchievementsCard, {}), 
+                //           h(SocialCard,{
+                //             'key' : key,
+                //             activateSection : activateSection,
+                //             on : 
+                //             { blurProfile : this.blurProfile,
+                //               // removeBlurProfile: this.removeBlurProfile
+                //             },
+                //             isExpanded:false
+                //           }), h(GameHistoryCard, {
+                //             on : { blurProfile : this.blurProfile,
+                //               // removeBlurProfile: this.removeBlurProfile
+                //             }
+                //           }), 
+                //       ]
+                //       )
+                //     ]
+                //     )
 
-              )])])
-              ,
-              (this.state.viewAll.MatchHistory ?  h(GameHistoryCard, {viewAll : true, on : {
-                removeBlurProfile: this.removeBlurProfile
+                //     ]
+                //   ),
+                h('div', {
+                  class: 'profile-container',
+                  style: isBlured || this.state.notif_blur ? { filter: 'blur(4px)' } : {}
+                  
+                }, [
+                  h('div', { class: 'profile-details' }, [
+                    h(UserCard, { key }),
+                    h(UserWinRate, {key}),
+                  ]),
+                  h('div', { class: 'profile-extras' }, [
+                    h(UserAchievementsCard, {}),
+                    h(SocialCard, {
+                      key,
+                      activateSection,
+                      on: { blurProfile: this.blurProfile },
+                      isExpanded: false,
+                    }),
+                    h(GameHistoryCard, {
+                      key,
+                      on: { blurProfile: this.blurProfile },
+                    }),
+                  ]),
+                ])
+                
+                 
+              ]),
+              h('div', { class: 'friends-bar' }, [
+                h(sidebarRight, {})
+              ]
+              ),
+              (Expanded === 'MatchesHistory' ?  h(GameHistoryCard, {
+                isExpanded : true,
+                on : {
+                removeBlurProfile: this.removeBlurProfile,
+
               }}) : null)
               ,
-              (this.state.viewAll.SocialCard ? h(SocialCard, {viewAll : true,on : {
+              (Expanded === 'socialCard' ? h(SocialCard, {isExpanded : true,
+                activateSection : activateSection, on : {
                 removeBlurProfile: this.removeBlurProfile
               },
-              activateSection:this.state.viewAll.activateSection
-            }) : null)
-
+            }) : null),
+            // [
+            //   Expanded === 'MatchesHistory' &&
+            //     h(GameHistoryCard, {
+            //       isExpanded: true,
+            //       on: { removeBlurProfile: this.toggleBlurProfile },
+            //     }),
+            //   Expanded === 'socialCard' &&
+            //     h(SocialCard, {
+            //       isExpanded: true,
+            //       activateSection,
+            //       on: { removeBlurProfile: this.toggleBlurProfile },
+            //     }),
+            // ].filter(Boolean),
             ]),
             this.state.notif_blur ? 
             h('div', { class: 'join-player-form' }, [
@@ -177,22 +231,39 @@ export const Profile = defineComponent({
                 ])
             ]) : null
           ])
-    },
-    blurProfile(viewAll)
-    {
-      // console.log("----------------------------> {...this.state.viewAll, MatchHistory:true}", {...this.state.viewAll, MatchHistory:true})
-      // const viewAll = { MatchHistory:true}
-      // console.log("----------------------------------------> viewALL , activateSEction ", viewAll," | ")
-      this.updateState({viewAll})
-      // console.log("===========================>> this.state : ", this.state)
-      // console.log(">>>>>>>>>>>>>>>>>>> data after blur : ", data)
-      // createApp(compMatchHistory).mount(document.body)
-    },
-    removeBlurProfile(viewAll)
-    {
-      // const viewAll = { MatchHistory:false}
-      this.updateState({viewAll})
-      // console.log(">>>>>>>>>>>>>>>>")
-    }
+  },
+  blurProfile(obj)
+  {
+    // const viewAll = { MatchHistory:true}
+    // console.log("----------------------------------------> viewALL , activateSEction ", viewAll," | ")
+    console.log("--------------------> obj : ", obj)
+    this.updateState(obj)
+   
+  },
+  removeBlurProfile(ob)
+  {
+    // const viewAll = { MatchHistory:false}
+    this.updateState(ob)
+    // console.log(">>>>>>>>>>>>>>>>")
+  },
+  onMounted()
+  {
+    this.updateState({
+      isLoading:false
+    })
+  }
 })
 
+// createElement('div', {id:'global'}, 
+//   createElement(Header, {}), createElement('div', { className: 'content' },
+//       createElement(Sidebar, {}), createElement('div', {className:'global-content'},
+//           createElement('div', {className:'profile-content'},
+//               createElement('div', {className:'profile-info'}, 
+//               createElement('div', {className:'infos'}, createElement(UserProfile, {user : this.items.user.user, 
+//                   level : this.items.user.level, score:this.items.user.score, Rank:this.items.user.Rank}), 
+//               createElement(WinningRate, {total_matches : this.items.total_matches, wins:this.items.wins, 
+//                   losses:this.items.losses, draws:this.items.draws})), 
+//               createElement('div', {className:'other-cards'}, createElement(Achievement, {}), 
+//               this.currentViewCard(), createElement(MatchHistory, {...this.items.matches_history}))))
+//               ,createElement('div', { className: 'friends-bar' }))
+//   ))

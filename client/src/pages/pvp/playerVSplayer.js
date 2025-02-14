@@ -20,7 +20,7 @@ export const PlayerVsPlayer = defineComponent({
         formData.append('status', 'accepted');
         
         try {
-            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
                 body: formData,
                 credentials: 'include',

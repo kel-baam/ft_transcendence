@@ -14,18 +14,20 @@ export async function customFetch(url,options={})
         ...defaultOptions,
         ...options,
     }
-
     return  await fetch(url,mergedOptions).then(async (response)=>
             {
                 if(!response.ok)
                 {
                     if(response.status == 401)
                     {
-                        const refreshAccessToken = await fetch('http://localhost:3000/auth/refresh/token/',{
+                        const refreshAccessToken = await fetch(`https://${window.env.IP}:3000/auth/refresh/token/`,{
                             method:'GET',
                             credentials: 'include',})
+                          
+                        
                             if(!refreshAccessToken.ok)           
                                 return refreshAccessToken;
+                        
                         return  customFetch(url,options)
                         }
                 }

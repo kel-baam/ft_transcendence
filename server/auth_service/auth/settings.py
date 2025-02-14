@@ -225,16 +225,22 @@ SIMPLE_JWT = {
 }
 
 # CORS_ALLOWED_ORIGINS = 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 # pip install python-decouple
 # pip install pyjwt
 # CSRF_COOKIE_SAMESITE = 'None'
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5500',
-    'http://localhost:3000',
-    "ws://localhost:8000",
+    'http://10.14.3.1:3000',
+    'http://127.0.0.1:3000',
+
+    "http://10.14.3.1:8000",
+    "ws://10.14.3.1:8000",
+    "http://10.14.3.1:8000",
+    "http://10.14.3.1:3000",
+    "http://10.14.3.1:8000",
+
 
 ]
 CSRF_COOKIE_NAME ='koki'
@@ -245,33 +251,33 @@ ASGI_APPLICATION = "auth.asgi.application"
 ALLOWED_HOSTS = ['*']
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',  # Capture DEBUG level and above
-            'class': 'logging.StreamHandler',  # Send logs to the console
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for django logger
-            'propagate': False,  # Do not propagate to the root logger
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level for request logs
-            'propagate': False,  # Prevents duplication in logs
-        },
-        '': {  # This is the root logger
-            'handlers': ['console'],
-            'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',  # Capture DEBUG level and above
+#             'class': 'logging.StreamHandler',  # Send logs to the console
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for django logger
+#             'propagate': False,  # Do not propagate to the root logger
+#         },
+#         'django.request': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level for request logs
+#             'propagate': False,  # Prevents duplication in logs
+#         },
+#         '': {  # This is the root logger
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
+#             'propagate': False,
+#         },
+#     },
+# }
 
 
 APPEND_SLASH=False
@@ -299,3 +305,26 @@ CACHES = {
         },
     }
 }
+
+
+
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+

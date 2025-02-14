@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.conf import settings
-from decouple import config
+# from decouple import os.getenv
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators   import api_view
@@ -30,17 +30,27 @@ import logging
 from .serializers import  UserSerializer 
 import json
 import random
+import os
+
+
+
+
+
+
 
 from jwt import decode , ExpiredSignatureError, InvalidTokenError
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+# logging.basicos.getenv(level=logging.DEBUG)
+# logger = logging.getLogger(__name__)
 
 
-def set_tokens_in_cookies(request,email,response):
+def set_tokens_in_cookies_with_OAuth(request,email,response):
         try:
-                domain = config('DOMAIN')
+                # domain = os.getenv('DOMAIN')
+                domain = os.getenv('DOMAIN')
+
                 user = User.objects.filter(email=email).first()
+                # print('>>')
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
                         response = redirect(f"{domain}/#/2FA")  
@@ -63,8 +73,47 @@ def set_tokens_in_cookies(request,email,response):
                         response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime)
                         return response
                 except (ExpiredSignatureError, InvalidTokenError) as e:
-                        if(user.enabled_twoFactor):
+
+                        if hasattr(user, 'enabled_twoFactor') and user.enabled_twoFactor:
                                 response = redirect(f"{domain}/#/2FA")
+                        token = generateToken(user,1)
+                        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+                        refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
+                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                        return response
+              
+def set_tokens_in_login(request,email,response):
+        try:
+                domain = os.getenv('DOMAIN')
+                user = User.objects.filter(email=email).first()
+                payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
+
+
+                if(user.enabled_twoFactor and payload['login_level'] == 1):
+                        response = JsonResponse({'message': "2fa active"}, status=200)
+
+                if(email != payload.get("email")):
+                        token = generateToken(user,1)
+                        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+                        refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
+                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                return response
+        except (ExpiredSignatureError, InvalidTokenError):
+                try:
+                        payload = decode(request.COOKIES.get("refresh_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
+                        if(email!= payload.get("email")):
+                                raise InvalidTokenError("Custom error message")
+                        if(user.enabled_twoFactor and payload['login_level'] == 1):
+                                response = JsonResponse({'message': "2fa active"}, status=200)
+                        newAccessToken = generateAccessToken(user,payload["login_level"])
+                        accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+                        response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime)
+                        return response
+                except (ExpiredSignatureError, InvalidTokenError) as e:
+                        if(user.enabled_twoFactor):
+                                response = JsonResponse({'message': "2fa active"}, status=200)
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
@@ -75,14 +124,14 @@ def set_tokens_in_cookies(request,email,response):
 # ----------------------------------------------------------------------------------------google login and register-----------------------------------
 def google_login(request):
         query_type =  request.GET.get('type')
-        redirect_url = config('GOOGLE_FULL_URI')
+        redirect_url = os.getenv('GOOGLE_FULL_URI')
         full_path = f"{redirect_url}&state={query_type}"
         return redirect(full_path) 
 
 
 def storeGoogleData(data):
         try:
-                domain = config('DOMAIN')
+                domain = os.getenv('DOMAIN')
 
                 login = data.get('given_name')
                 user = User.objects.filter(username=login).first()
@@ -97,7 +146,7 @@ def storeGoogleData(data):
                         'phone_number': '',
                         'password': '4475588@kdjndxxxxjfjjdfnbhf',
                         'player' : {
-                                'Rank' : '0',
+                                'rank' : '0',
                                 'level':'0',
                                 'score':'0',
                         },
@@ -113,7 +162,7 @@ def storeGoogleData(data):
                 
 def handle_google_state(state, user, user_info):
 
-    domain = config('DOMAIN')
+    domain = os.getenv('DOMAIN')
     if state == 'login':
         if not user:
             return redirect(f"{domain}/#/register")
@@ -128,23 +177,23 @@ def handle_google_state(state, user, user_info):
 def callback_google(request):
         code = request.GET.get('code','none')
         state = request.GET.get('state', None)
-        domain = config('DOMAIN')
+        domain = os.getenv('DOMAIN')
 
         if code :
-                validateCode = exchange_code_with_token(code,config('GOOGLE_TOKEN_URL'),config('GOOGLE_CLIENT_ID'),config('GOOGLE_SECRET_KEY'),config('GOOGLE_REDIRECT_URI'))
+                validateCode = exchange_code_with_token(code,os.getenv('GOOGLE_TOKEN_URL'),os.getenv('GOOGLE_CLIENT_ID'),os.getenv('GOOGLE_SECRET_KEY'),os.getenv('GOOGLE_REDIRECT_URI'))
                 if validateCode["status_code"] == 200:
-                        user_info = get_user_info(validateCode['accessToken'],config('GOOGLE_API'))
+                        user_info = get_user_info(validateCode['accessToken'],os.getenv('GOOGLE_API'))
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_google_state(state,user,user_info)
                         if((state == 'login' and user) or (state == 'register' and not user)) :                    
-                                response = set_tokens_in_cookies(request,user_info.get("email"),response)
+                                response = set_tokens_in_cookies_with_OAuth(request,user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
 
 #---------------------------------------------------------------------------- login with intra-------------------------------------------
 def intra_login(request):
         query_type =  request.GET.get('type')
-        redirect_url = config('INTRA_FULL_URI')
+        redirect_url = os.getenv('INTRA_FULL_URI')
         full_path = f"{redirect_url}&state={query_type}"
 
         return redirect(full_path)
@@ -152,7 +201,7 @@ def intra_login(request):
 
 def storeIntraData(intraData):
         try:
-                domain = config('DOMAIN')
+                domain = os.getenv('DOMAIN')
                 if intraData.get('phone')=='hidden':
                         phone_number=""
                 else:
@@ -170,13 +219,14 @@ def storeIntraData(intraData):
                         'first_name' : intraData.get('first_name'),
                         'email' :intraData.get('email'),
                         'phone_number': phone_number,
-                        'password': '4475588@kdjndjfjjdfnbhf',
+                        # 'password': '4475588@kdjndjfjjdfnbhf',
+                        'registration_type': 'api',
                         'player' : {
-                                'Rank' : '0',
+                                'rank' : '0',
                                 'level':'0',
                                 'score':'0',
                         },
-                        # 'picture':intraData.get('image').get('link')
+                        'picture':intraData.get('image').get('link')
                 }
                 response = requests.post('http://user-service:8001/api/user', json=data)
                 if response.status_code == 200:
@@ -189,7 +239,7 @@ def storeIntraData(intraData):
 
 
 def handle_state(state, user, user_info):
-    domain = config('DOMAIN')
+    domain = os.getenv('DOMAIN')
     if state == 'login':
         if not user:
             return redirect(f"{domain}/#/register")    
@@ -204,19 +254,19 @@ def handle_state(state, user, user_info):
 def intra_callback(request):
         code = request.GET.get('code')
         state = request.GET.get('state', None)
-        domain = config('DOMAIN')
+        domain = os.getenv('DOMAIN')
 
         if code :
-                validateCode = exchange_code_with_token(code,config('TOKEN_URL'),config('CLIENT_ID'),config('SECRET_KEY'),config('REDIRECT_URI'))
+                validateCode = exchange_code_with_token(code,os.getenv('TOKEN_URL'),os.getenv('CLIENT_ID'),os.getenv('SECRET_KEY'),os.getenv('REDIRECT_URI'))
                 if validateCode['status_code'] == 200:
-                        user_info = get_user_info(validateCode['accessToken'],config('INTRA_API'))
+                        user_info = get_user_info(validateCode['accessToken'],os.getenv('INTRA_API'))
                         # TODO i should here check user_info status code later
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_state(state,user,user_info)
                         #  TODO maybe before setting coookie i should check access id is exist if note set it if yes decode it if i snot valid set new one
                         
                         if((state == 'login' and user) or (state == 'register' and not user))  :         
-                                response = set_tokens_in_cookies(request,user_info.get("email"),response)
+                                response = set_tokens_in_cookies_with_OAuth(request,user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
 
@@ -226,9 +276,10 @@ def intra_callback(request):
 @csrf_exempt
 @api_view(['POST'])                 
 def login(request):
+
         username = request.data.get('username')
         password = request.data.get('password')
-        domain = config('DOMAIN')
+        # domain = os.getenv('DOMAIN')
         user = User.objects.filter(username=username).first()
         if not user:
                 return Response({'username':'invalid username','password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
@@ -236,10 +287,14 @@ def login(request):
                 return Response({'password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         if (user.is_verify == False):
                 return Response({'verification':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
-        response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)      
-        response = set_tokens_in_cookies(request,user.email,response)
+        response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)
+
+        response = set_tokens_in_login(request,user.email,response)
+
+
         return response
-       
+
+
 
 def generate_verification_token(username):
     payload = {
@@ -252,7 +307,7 @@ def generate_verification_token(username):
 @api_view(['POST'])                 
 def  registerForm(request):
         try:
-                domain = config('DOMAIN')
+                domain = os.getenv('DOMAIN')
                 first_name = request.POST.get('firstname')
                 last_name = request.POST.get('lastname')
                 username = request.POST.get('username')
@@ -266,17 +321,17 @@ def  registerForm(request):
                         'email': email,
                         'password': password,
                         'verify_token':token,
+                        'registration_type':'form',
                         'player' : {
                                'score':'0',
-                               'Rank' : '0',
+                               'rank' : '0',
                                'level' : '0'
                         }
                 }
                 response = requests.post('http://user-service:8001/api/user',json=data)
-                # logger.debug('>>>>>>>>>>>>>> response from souad : %s', response)
                 if(response.status_code == 200):
                         uid = urlsafe_base64_encode(username.encode())
-                        verification_link = f'http://localhost:3000/auth/verify/{uid}/{token}/'
+                        verification_link = f'{domain}/auth/verify/{uid}/{token}/'
                         email_subject = 'Please verify your email address'
                         email_body = f'Hello {first_name},\n\nPlease click the link below to verify your email address:\n\n{verification_link}'
                         send_mail(
@@ -285,7 +340,7 @@ def  registerForm(request):
                         settings.EMAIL_HOST_USER,
                         [email],
                         )
-                        return Response(status=status.HTTP_200_OK)                
+                        return Response({"message":"email send successfully"},status=status.HTTP_200_OK)                
                 return Response(response.json(),status=response.status_code)
         except Exception as e:
                 return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -303,28 +358,32 @@ def logout(request):
             response.delete_cookie('access_token')
             return response
         except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])                 
 def verify_email(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
+        domain = os.getenv('DOMAIN')
+
         user = User.objects.filter(username=uid).first()
         if(user):
                 if(user.verify_token == token):
                         user.is_verify = True
                         user.verify_token = "None"
                         user.save()
-                        response = redirect("http://localhost:3000/#/home")
-                        return  set_tokens_in_cookies(request,user.email,response)
-        return redirect("http://localhost:3000/#/login")
+
+                        return redirect("/#/login")
+        return redirect(f"{domain}/#/login")
     except Exception as e:
-                return redirect("http://localhost:3000/#/login")
+                return redirect(f"{domain}/#/login")
 
 
 
 @api_view(['POST'])                 
 def password_reset_request(request):
+        domain = os.getenv('DOMAIN')
+
         email = request.POST.get('email')
         user = User.objects.filter(email=email).first()
         if not user:
@@ -335,15 +394,17 @@ def password_reset_request(request):
         uid = urlsafe_base64_encode(str(user.username).encode())
         user.verify_token = token
         user.save()
-        verification_link = f'http://localhost:3000/#/password/reset?type=change&uid={uid}&token={token}'
+        verification_link = f'{domain}/#/password/reset?type=change&uid={uid}&token={token}'
         email_body = f'Hi {user.first_name},\nWe received a request to reset the password for your account. If you didn’t make this request, you can safely ignore this email.\nTo reset your password, please click the link below:\n\n{verification_link}'
         email_subject = 'Reset Your Password'
+        print("email=====================>",email)
         send_mail(
                 email_subject,
                 email_body,
                 settings.EMAIL_HOST_USER,
                 [email],
         )
+
         return Response(status=status.HTTP_200_OK)
 
 
@@ -352,6 +413,7 @@ def password_reset_request(request):
 def password_reset_confirm(request):
         try:
                 data = json.loads(request.body)
+
                 if( not data.get('token')  or not data.get('token') ):
                         return Response({'password':"error in identify your credentials"},status=status.HTTP_400_BAD_REQUEST)
                 uid = urlsafe_base64_decode(data.get('uid')).decode()
@@ -359,16 +421,20 @@ def password_reset_confirm(request):
                 token = data.get('token')
                 newPassword = data.get('newPassword')
                 confirmPassword = data.get('confirmPassword')
-               
+
+                data ={
+                        'new_password':newPassword,
+                        'confirm_password':confirmPassword
+
+                }
                 if(user):
                         if  token == user.verify_token:
-                                if newPassword == confirmPassword:
-                                        user.password =  make_password(str(newPassword))
-                                        user.verify_token = "None"
-                                        # delete cookies for make person logout
-                                        user.save()
-                                        return Response({'password':"user added succssefylly"},status=200)
-                        return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
+                                serialize = UserSerializer(user,data=data,partial=True)
+                                if serialize.is_valid(raise_exception=True):
+                                        serialize.save()
+                                        return Response({'password':"password reset succssefylly"},status=200)
+                        return Response({'password':"something wrong"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+                return Response({key: value[0] for key, value in serialize.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
+                
    

@@ -74,9 +74,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # CSRF_COOKIE_NAME ='csrfToken'
 # CSRF_TRUSTED_ORIGINS = [
-#     "http://localhost:3000",
+#     "https://${window.env.IP}:3000",
 #     # "http://backend:8000",
-#     "http://localhost:8002",
+#     "https://${window.env.IP}:8002",
 #     # "ws://localhost:8000",
 # ]
 

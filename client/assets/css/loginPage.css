@@ -144,6 +144,8 @@
     justify-content: center;
     align-items: center;
     column-gap: 2em;
+    color:  rgba(255, 255, 255, 0.63);
+
     /* grid-template-columns: 10% 90%; */
     /* justify-content: center; */
 
@@ -171,10 +173,14 @@
     
     background-color:transparent ;
     /* opacity: 0.01; */
+    color:  rgba(255, 255, 255, 0.63);
+
     height: 44px;
     display: flex;
     justify-content: center;
-    
+    /* font-weight: bold; */
+    font-weight: bold;
+    font-family: sans-serif;
     width: 200px;
     border: none;
     border-radius: 10px;
@@ -199,6 +205,10 @@
 .login-page-content .down .login .input::placeholder {
     font-size: 18px;
     color:  rgba(255, 255, 255, 0.63);
+    font-family: myFont;
+    font-weight: normal;
+
+
 
 }
 .login-page-content .down .login .btn{

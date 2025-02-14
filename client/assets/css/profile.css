@@ -17,6 +17,21 @@
     src: url(../fonts/Playground.ttf);
 }
 
+/* .active {
+    color: red; 
+} */
+
+
+/* .icon {
+    font-size: 30px;
+    color: gray; 
+    cursor: pointer;
+    transition: color 0.3s;
+} */
+
+/* .active {
+    color: red !important;
+} */
 /* .container nav .search input{
     font-size: 16px;
     font-family: myFont;
@@ -39,6 +54,36 @@ syntax: '<number>';
 initial-value: 70;
 inherits: false;
 } */
+
+.suggestions {
+    position: absolute;
+    top: 40px;
+    width: 100%;
+    background-color: #1A2553;
+    border-radius: 10px;
+    display: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+.suggestion-item img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.suggestion-item:hover {
+    background-color: #2D3E77;
+}
+
 
 .circular-container{
     /* border: 2px solid red; */
@@ -128,12 +173,66 @@ inherits: false;
     column-gap:1.5%;
 }
 
-/* .infos-user-container
+/*************************what i add **********************/
+.profile-container h1 , .profile-container span, 
+.profile-container input, .profile-container h2, 
+.profile-container button
 {
-    border: 2px solid rgba(95, 114, 125, 0.08);
-    background-color: rgba(95, 114, 125, 0.08);
+    font-family: myFont;
+    /* text-shadow: 0px 2px 2px rgba(145, 126, 126, 0.5); */
+    font-weight: 10; 
+    line-height: 1;
+    letter-spacing: 1px;
+
+
+    /* font-size: 24px; */
+
+}
+.profile-container h1 , .profile-container h2
+{
+    text-shadow: 0px 2px 2px rgba(145, 126, 126, 0.5);
+    color: #33518F;
+}
+.profile-container {
+    /* background-color: rgba(217, 217, 217, 0.05);
+    display: flex;
+    flex-direction: column;  
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%; */
+    width: 100%;
+    border-radius: 56px;
+    background-color: rgba(217, 217, 217, 0.05);
+    height: 100%;
+    display: grid;
+    grid-template-rows:repeat(2, 49.5%);
+    row-gap: 1%;
     border-radius: 50px;
-} */
+    place-items: center;
+}
+
+.profile-details {
+    width: 95%;
+    height: 96%;
+    border-radius: 50px;
+    display: grid;
+    grid-template-columns: 66.18% 32.32%;
+    padding: 10px;
+    column-gap: 1.5%;
+    background-color: #FFEEBF;
+    /* border: 2px solid red; */
+}
+
+.profile-extras {
+    width: 95%;
+    height: 96%;
+    display: grid;
+    grid-template-columns: 32.32% 32.32% 32.32%;
+    column-gap: 1.5%;
+}
+
+/*************************************************************/
 
 .wining-rate-container
 {
@@ -155,7 +254,7 @@ inherits: false;
     justify-content: flex-end;
     color: #14397C;
     letter-spacing: 2px;
-    font-size: 25px;
+    /* font-size: 25px; */
 }
 .circle-and-buttons
 {
@@ -514,12 +613,12 @@ inherits: false;
     /* border: 2px solid red; */
 }
 
-.achievements-title-elt > h1
-{
-    color: #14397C;
-    letter-spacing: 2px;
-    font-size: 25px;
-}
+/* .achievements-title-elt > h1 */
+/* {
+    color: #14397C; */
+    /* letter-spacing: 2px; */
+    /* font-size: 25px; */
+/* } */
 
 .badges-container
 {
@@ -566,6 +665,7 @@ inherits: false;
     flex-grow: 1;
     padding-left: 40px;
     padding-top: 23px;
+    position: relative; 
 }
 
 .infos-user-container > div > img
@@ -621,13 +721,15 @@ inherits: false;
     gap: 20px;
 }
 
-.infos-user-container > div:nth-child(2) > div:nth-child(3) >div:nth-child(1)
+.infos-user-container > div:nth-child(2) >
+ div:nth-child(3) >div:nth-child(1)
 {
     color: #5293CB;
     /* border: 2px solid yellow; */
 }
 
-.infos-user-container > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > span:nth-child(1)
+.infos-user-container > div:nth-child(2) > 
+div:nth-child(3) > div:nth-child(1) > span:nth-child(1)
 {
     display: flex;
     justify-content: flex-end;
@@ -636,7 +738,8 @@ inherits: false;
 }
 
 
-.infos-user-container > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) 
+.infos-user-container > 
+div:nth-child(2) > div:nth-child(3) > div:nth-child(2) 
 {
     color: #5293CB;
     display: flex;
@@ -652,14 +755,7 @@ inherits: false;
 
 }
 
-.fa-camera
-{
-     /* border: 2px solid red; */
-     position: relative;
-     /* right: 10px; */
-     bottom: 30px;
-     left: 54px;
-}
+
 
 .achievement-item
 {

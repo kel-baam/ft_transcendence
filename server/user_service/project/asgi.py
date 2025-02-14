@@ -1,11 +1,11 @@
-# """
-# ASGI config for project project.
+"""
+ASGI config for project project.
 
-# It exposes the ASGI callable as a module-level variable named ``application``.
+It exposes the ASGI callable as a module-level variable named ``application``.
 
-# For more information on this file, see
-# https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
-# """
+For more information on this file, see
+https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
+"""
 
 # import os
 # from django.core.asgi import get_asgi_application
@@ -13,18 +13,15 @@
 # from channels.auth import AuthMiddlewareStack
 # import django
 
-
-
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 # django.setup()
-
-# from Profile import routing as notification_routing
+# from user_service.urls import websocket_urlpatterns
 
 # application = ProtocolTypeRouter({
-#     "http": get_asgi_application(),  # Handle traditional HTTP requests
+#     "http": get_asgi_application(),
 #     "websocket": AuthMiddlewareStack(
 #         URLRouter(
-#             notification_routing.websocket_urlpatterns # Specify your WebSocket URL patterns
+#             websocket_urlpatterns
 #         )
 #     ),
 # })
@@ -34,18 +31,13 @@ import os
 import django
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
+from channels.auth    import AuthMiddlewareStack
 
-# Ensure settings are loaded first
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 
-# Set up Django
 django.setup()
 
-# Delay import to avoid circular imports
-
-from Profile         import routing as Profile_routing 
-# from matchmaking    import routing as matchmaking_routing
+from user_service import routing
 
 def get_application():
 
@@ -53,10 +45,10 @@ def get_application():
         "http": get_asgi_application(),
         "websocket": AuthMiddlewareStack(
             URLRouter(
-                Profile_routing.websocket_urlpatterns
+                routing.websocket_urlpatterns
             )
         ),
     })
 
-# Assign the application to a variable
 application = get_application()
+

@@ -24,7 +24,7 @@ export const OnlinePvp = defineComponent({
         formData.append('status', 'accepted');
         
         try {
-            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
                 body: formData,
                 credentials: 'include',
@@ -50,7 +50,7 @@ export const OnlinePvp = defineComponent({
 
     async initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
-            socket = new WebSocket('ws://localhost:8003/ws/matchmaking/');
+            socket = new WebSocket('wss://10.14.3.1:8003/ws/matchmaking/');
     
             socket.onopen = () => {
                 console.log('WebSocket connection established');

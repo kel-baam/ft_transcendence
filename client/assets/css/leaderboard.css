@@ -11,8 +11,6 @@
     align-items: center;
     height: 20%;
     margin-top: 20px;
-    /* border: 1px solid yellow; */
-
 }
 
 .leaderboard-title h1
@@ -30,10 +28,9 @@
 /* -----size for crown-- */
 .pics-rank .first-place .crown-pic
 {
-    width: 170px;
+    width: 100px;
     height: auto;
 }
-
 /* -----size for second and third place----- */
 
 .pics-rank .second-place .second-symbol ,
@@ -109,9 +106,10 @@
     position: relative;
     /* height: 300px; */
     position: relative;
-    top: -430px;
-}
+    top: -460px;
+    /* border: 1px solid yellow; */
 
+}
 
 .space{
     width: 900px;
@@ -121,6 +119,7 @@
     justify-content: center;
     background-color: #FFEEBF;
 }
+
 .first-row{
     border-radius: 10px 10px 0 0;
     width: 900px;
@@ -139,6 +138,7 @@
 
 .rank-info .info
 {
+    /* border: 1px solid yellow; */
     overflow-y: scroll;
     overflow-x: hidden;
     width: 900px;

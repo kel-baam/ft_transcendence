@@ -6,6 +6,10 @@ psycopg2
 django-cors-headers
 requests 
 Pillow
+daphne
+# olefile
+# libmagic
+# python-magic
 olefile
 libmagic
 python-magic

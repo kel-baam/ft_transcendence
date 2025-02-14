@@ -1,31 +1,28 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../package/index.js'
 
-    const promise = new Promise((resolve, reject)=>{
-        resolve("hello world!")
-    })
-import { customFetch } from '../package/fetch.js';
-import { showErrorNotification } from '../pages/utils/errorNotification.js';
+import { customFetch } from '../package/fetch.js'
 
 let socket = null;
 
 export const header = defineComponent({
-
-    state() {
+    state()
+    {
         return {
+            suggestions : [],
             notif       : false,
             notification: null,
-            icon_notif : false
-        };
+            icon_notif  : false
+        }
     },
-
+    
     onMounted() {
         this.initWebSocket();
     },
 
     initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
-            socket = new WebSocket('ws://localhost:8001/ws/notification/');
+            socket = new WebSocket('wss://10.14.3.1:3000/ws/notification/');
             socket.onopen = () => {console.log('WebSocket connection established'); };
             socket.onmessage = async (event) => {
 
@@ -46,7 +43,7 @@ export const header = defineComponent({
     {
         try
         {
-            const response = await customFetch("http://localhost:3000/api/user/notifications/", {
+            const response = await customFetch("https://10.14.3.1:3000/api/user/notifications/", {
                 method      : 'GET',
                 credentials : 'include'
             });
@@ -84,7 +81,7 @@ export const header = defineComponent({
         formData.append("status", action);
         try
         {
-            const response = await customFetch("http://localhost:3000/tournament/api/online/tournaments/", {
+            const response = await customFetch("http://10.14.3.1:3000/api/tournament/online/tournaments/", {
                 method      : 'PUT',
                 body        : formData,
                 credentials : 'include'
@@ -114,7 +111,7 @@ export const header = defineComponent({
     async enterTournament(tournamentId)
     {
         try {
-            const response = await customFetch(`http://localhost:3000/tournament/api/online/tournaments/tournament-existence/${tournamentId}/`, {
+            const response = await customFetch(`http://10.14.3.1:3000/api/tournament/online/tournaments/tournament-existence/${tournamentId}/`, {
                 method      : 'GET',
                 credentials : 'include'
             });
@@ -134,8 +131,7 @@ export const header = defineComponent({
         }
         catch (error) {
             showErrorNotification(error);
-        }
-        
+        }  
     },
 
     renderNotifications() {
@@ -190,54 +186,97 @@ export const header = defineComponent({
                 ]);
             })
         );
-    },    
+    },
 
-    render() {
-        return h('div', {}, [
-            h('header', { class: 'container' }, [
-                h('nav', {}, [
-                    h('a', { href: 'home' }, [
-                        h('img', { src: './images/logo.png', class: 'logo' })
+    render(){
+        const {suggestions} = this.state
+
+        return h('header', { class: 'container' }, [
+            h('nav', {}, [
+                h('a', { href: '/home' }, [
+                    h('img', { src: './images/logo.png', class: 'logo' })
+                ]),
+                h('div', { class: 'search' }, [
+                    h('a', {  }, [
+                        h('i', { class: 'fa-solid fa-magnifying-glass icon', 'aria-hidden': 'false' })
                     ]),
-                    h('div', { class: 'search' }, [
-                        h('a', { href: '#' }, [
-                            h('i', { class: 'fa-solid fa-magnifying-glass icon'})
-                        ]),
-                        h('input', { type: 'text', placeholder: 'Search...' })
-                    ]),
-                    h('div', { class: 'left-side' }, [
-                        h('a', {}, [
-                            h('i', {
-                                className: `fa-regular fa-bell ${this.props.icon_notif || this.state.icon_notif ? 'icon_notif' : 'icon'}`,
-                                on: {
-                                    click:()=> this.get_notifications(),
-                                }
-                            })
-                        ]),
-                        h('a', { href: '#/settings' }, [
-                            h('i', {
-                                class: `fa-solid fa-sliders icon`,
-                            })
-                        ]),
-                        h('a', {
-                            on: {
-                                click: async (event) => {
-                                    event.preventDefault();
-                                    fetch("http://localhost:3000/auth/logout/", {
-                                        method: 'POST',
-                                        credentials: 'include',
-                                    }).then(async (res) => {
-                                        if (res.ok) {
-                                            this.appContext.router.navigateTo('/login');
-                                        }
-                                    })
-                                },
+                    h('input', { type: 'text', placeholder: 'Search...', id:'searchBox', on : {
+                        input : ()=>
+                        {
+                            const suggestions = document.getElementById('suggestions')
+                            if (searchBox.value.trim() !== '') {
+                                suggestions.style.display = 'block';
+                            } else {
+                                suggestions.style.display = 'none';
                             }
-                        }, [
-                            h('i', {
-                                class: 'fa-solid fa-arrow-right-from-bracket icon'
+                            
+                            customFetch(`https://${window.env.IP}:3000/api/user/search?q=${searchBox.value}`)
+                            .then((result)=>
+                            {
+                                switch(result.status)
+                                {
+                                    case 401:
+                                        console.log(">>>>>>>>>>>>> here ")
+                                        this.appContext.router.navigateTo('/login')
+                                        break;
+                                    // case 404:
+                                    //     console.log(">>>>>>>----------- 404 >>>>>> here ")
+                                    //     h('h1', {}, ['404 not found'])
+                                    //     break;
+                                }
+                                return result.json()
                             })
+                            .then((res)=>{
+                                console.log(">>>>>>>>>>>>>>> here the suggestions ", res)
+                                this.updateState({
+                                    suggestions:res
+                                })
+
+                            })
+
+                        }
+                    } }),
+                    // <div class="suggestions" id="suggestions">
+                    h('div', {class : 'suggestions', id : 'suggestions'},  suggestions.map(suggestion => 
+                        h('div', { class: 'suggestion-item', on : {
+                            click : ()=>
+                            {
+                                // this.updateState({suggestion:[]})
+                                this.appContext.router.navigateTo(`/user/${suggestion.username}`)
+                            }
+                                
+                        }}, [
+                            h('img', { src: `https://${window.env.IP}:3000${suggestion.picture}`, alt: 'User picture', style : {'object-fit': 'cover' }}),
+                            ` ${suggestion.username}`
                         ])
+                ))
+                ]),
+                h('div', { class: 'left-side' }, [
+                    h('a', {}, [
+                        h('i', {
+                            className: `fa-regular fa-bell ${this.props.icon_notif || this.state.icon_notif ? 'icon_notif' : 'icon'}`,
+                            on: {
+                                click:()=> this.get_notifications(),
+                            }
+                        })
+                    ]),
+                    h('a', { href: '#/settings' }, [
+                        h('i', { class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false' })
+                    ]),
+                    h('a', {on :{click: async (event)=> {
+                        event.preventDefault()
+                        fetch(`https://${window.env.IP}:3000/auth/logout/`,{
+                            method:'POST',
+                            credentials: 'include',
+                        }).then(async (res)=>{
+                            if(res.ok)
+                            {
+                                this.appContext.router.navigateTo('/login')
+                            }
+                        })
+                    
+                    }, }}, [
+                        h('i', { class: 'fa-solid fa-arrow-right-from-bracket icon', 'aria-hidden': 'false' })
                     ])
                 ])
             ]),
@@ -247,9 +286,6 @@ export const header = defineComponent({
                 ]),
                 this.renderNotifications(),
             ]) : null
-        ]);
-    },
-
-
-})
+        ])
+}})
 
