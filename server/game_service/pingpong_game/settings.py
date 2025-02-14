@@ -30,10 +30,10 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [('redis-service', 6379)],
-            # "capacity": 1500,
-            "capacity": 1000,  # Default is usually 100
+            # # "capacity": 1500,
+            # "capacity": 1000,  # Default is usually 100
 
-            # "expiry": 10,
+            # # "expiry": 10,
             
         },
     },
