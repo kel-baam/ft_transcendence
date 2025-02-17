@@ -37,7 +37,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 
 django.setup()
 
-from user_service     import routing
+from user_service import routing
 
 def get_application():
 

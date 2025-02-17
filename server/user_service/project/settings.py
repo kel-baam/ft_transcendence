@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'user_service',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
     'channels',
 ]
 
@@ -84,8 +85,11 @@ TEMPLATES = [
 ]
 
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis-service', 6379)],
+        },
     },
 }
 
@@ -160,7 +164,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
-    "http://localhost:5500",
+    "http://10.14.3.1:5500",
     "https://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
     "wss://ancient-sorcery-5ggvvv7q94q4c4947-5501.app.github.dev",
 ]

@@ -210,7 +210,6 @@ class MatchSerializer(serializers.ModelSerializer):
     # def validate(self, attrs):
     #     print(">>>>>>>>>> attrs : ", attrs)
     #     return attrs
-    
     class Meta():
         model = Match
         fields = '__all__'

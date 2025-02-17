@@ -25,6 +25,6 @@ COPY . .
 COPY script.sh /script.sh
 RUN chmod +x /script.sh
 
-EXPOSE 8002
+EXPOSE 8004
 
 CMD ["sh", "./script.sh"]

@@ -1,8 +1,28 @@
-up :
-	docker compose up 
+IMAGES 					= db-service redis:alpine client-service \
+							auth-service user-service game-service dpage/pgadmin4:latest \
+							dpage/pgadmin4:latest tournament-service matchmaking-service \
 
-Down : 
-		docker ps -a -q | xargs -r docker rm -f && \
-		docker images -q | xargs -r docker rmi -f && \
-		docker volume ls -q | xargs -r docker volume rm && \
-		docker network ls | grep -v "bridge|host|none" | awk '{if(NR>1)print $1}' | xargs -r docker network rm 
+VOLUMES					= dataBase auth_volume user_volume tournament_volume matchmaking_volume \
+							client_volume game_volume
+
+up : 
+	docker compose -f docker-compose.yml up
+
+down :
+	docker compose -f docker-compose.yml down
+
+start :
+	docker compose -f docker-compose.yml start
+
+stop :
+	docker compose -f docker-compose.yml stop
+
+clean_volumes :
+	docker volume rm -f $(VOLUMES)
+
+clean_images :
+	docker rmi -f $(IMAGES)
+
+fclean : down clean_volumes clean_images
+
+reset : fclean up

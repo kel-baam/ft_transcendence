@@ -74,7 +74,7 @@ class Tournament(models.Model):
         ('public', 'Public'),
         ('private', 'Private')
     ]
-    type            = models.CharField(max_length=50, choices=type_choices, default='private') # i remove this ", default='private'"
+    type            = models.CharField(max_length=50, choices=type_choices, default='private')
     created_at      = models.DateTimeField(auto_now_add=True)
     STATUS_CHOICES  = [
             ('pending', 'Pending'),
@@ -121,12 +121,13 @@ class PlayerTournament(models.Model):
 
 
 class Match(models.Model):
-    tournament  = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
-    player1     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
-    player2     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
-    room_name   = models.CharField(max_length=50, null=True)
-    
-    
+    tournament    = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
+    player1       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
+    player2       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+    room_name     = models.CharField(max_length=50, null=True)
+    player1_score = models.PositiveIntegerField(default=0)
+    player2_score = models.PositiveIntegerField(default=0)
+
     status_choices = [
         ('pending', 'Pending'),
         ('completed', 'Completed'),
@@ -189,7 +190,7 @@ class Notification(models.Model):
         ('accepted', 'Accepted'),
     ]
     sender         = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
-    receiver       = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
+    receiver       = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications', null=True, blank=True)
     type           = models.CharField(max_length=100, choices=NOTIF_CHOICES)
     message        = models.TextField(null=True)
     time           = models.DateTimeField(auto_now_add=True)

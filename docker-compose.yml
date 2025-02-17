@@ -3,6 +3,7 @@ services:
   db :
     build: ./db
     container_name: db-service
+    image: db-service
     env_file:
     - .env
     volumes:
@@ -19,33 +20,10 @@ services:
       - "6380:6379"
     networks:
       - app_network
-  # redis :
-  #   build: ./redis
-  #   container_name: redis-service
-  #   env_file:
-  #   - .env
-  #   # volumes:
-  #   #   - dataBase:/var/lib/postgresql/13/main
-  #   ports:
-  #     - "6378:6378"
-  #   networks:
-  #     - app_network
-
-    # redis-client :
-    #   build: ./redis-client
-    #   container_name: redis-service
-    #   env_file:
-    #   - .env
-      # volumes:
-      #   - dataBase:/var/lib/postgresql/13/main
-      # ports:
-      #   - 6379:6379
-      # networks:
-      #   - app_network
-
   client-service:
     build: ./client
     container_name: client-service
+    image: client-service
     volumes:
       - client_volume:/usr/share/nginx/html
     ports:
@@ -57,14 +35,13 @@ services:
       - db
     networks:
       - app_network
-      
+
   auth-service:
     build: ./server/auth_service
     container_name: auth-service
-    ports:
-      - "8000:8000"
-    # expose:
-    #   - 8000
+    image: auth-service
+    expose:
+      - 8000
     networks:
       - app_network
     depends_on:
@@ -74,13 +51,59 @@ services:
     volumes:
       - auth_volume:/usr/src/app
   
+  user-service:
+    build: ./server/user_service
+    container_name: user-service
+    image: user-service
+    env_file:
+      - .env
+    expose:
+      - 8001
+    networks:
+      - app_network
+    depends_on:
+      - db
+    volumes:
+      - user_volume:/app
+
+  tournament-service:
+    build: ./server/tournament_service
+    image: tournament-service
+    container_name: tournament-service
+    env_file:
+      - .env
+    expose:
+      - 8002
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - tournament_volume:/usr/src/app
+    
+  matchmaking-service:
+    build: ./server/matchmaking_service
+    container_name: matchmaking-service
+    image: matchmaking-service
+    env_file:
+      - .env
+    expose:
+      - 8003
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - matchmaking_volume:/usr/src/app
+
   game-service:
     build: ./server/game_service
     container_name: game-service
-    # ports:
-    #   - "8002:8002"
+    image: game-service
     expose:
-      - 8002
+      - 8004
     networks:
       - app_network
     depends_on:
@@ -91,25 +114,6 @@ services:
     volumes:
       - game_volume:/usr/src/app
   
-
-  user-service:
-      build: ./server/user_service
-      container_name: user-service
-      env_file:
-        - .env
-      expose:
-        - 8001
-      # ports:
-      #   - "8001:8001"
-      
-      networks:
-        - app_network
-      depends_on:
-        - db
-      volumes:
-        - user_volume:/app
-      # entrypoint: ["/app/script.sh"]
-
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
@@ -160,6 +164,19 @@ volumes:
     driver_opts:
         type: none
         device: ./client
+        o: bind
+  tournament_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/tournament_service
+        o: bind
+
+  matchmaking_volume:
+    driver: local
+    driver_opts:
+        type: none
+        device: ./server/matchmaking_service
         o: bind
 
 networks:

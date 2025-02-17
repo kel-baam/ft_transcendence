@@ -117,7 +117,7 @@ class  UserStatsView(APIView):
 
 
     def get(self, request):
-        # print("----------------------------> here in user stats")
+        print("----------------------------> here in user stats")
         # if request.query_params.get('username', None) :
         #     username = request.query_params.get('username', None)
         # else :
@@ -135,12 +135,12 @@ class  UserStatsView(APIView):
             # user = User.objects.get(username=username)
             # print(">>>>>>>>>>>>>>>> user : ", user)
             matches_as_player1 = Match.objects.filter(player1=Player.objects.get(user=user))#add the status completed
-            player1_wins = matches_as_player1.filter(player1_points__gt=models.F('player2_points')).count()
-            player1_losses = matches_as_player1.filter(player1_points__lt=models.F('player2_points')).count()
+            player1_wins = matches_as_player1.filter(player1_score__gt=models.F('player2_score')).count()
+            player1_losses = matches_as_player1.filter(player1_score__lt=models.F('player2_score')).count()
 
             matches_as_player2 = Match.objects.filter(player2=Player.objects.get(user=user))
-            player2_wins = matches_as_player2.filter(player2_points__gt=models.F('player1_points')).count()
-            player2_losses = matches_as_player2.filter(player2_points__lt=models.F('player1_points')).count()
+            player2_wins = matches_as_player2.filter(player2_score__gt=models.F('player1_score')).count()
+            player2_losses = matches_as_player2.filter(player2_score__lt=models.F('player1_score')).count()
             
             wins = player1_wins + player2_wins
             losses = player1_losses + player2_losses
@@ -151,8 +151,12 @@ class  UserStatsView(APIView):
                 "losses": losses
             }, status=status.HTTP_200_OK)
         except User.DoesNotExist:
+            print("---------------------------------------")
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+
+
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> here the eroor : ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class MatchHistoryView(APIView):
@@ -184,6 +188,7 @@ class MatchHistoryView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print(">>>>>>>>>>>> the problem in matches ccc  histoty in here :   ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         # except serializers.ValidationError:
         #     return Response({key: value[0] for key, value in matches.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -195,6 +200,7 @@ class MatchHistoryView(APIView):
                 serializer.save()
                 return Response({"message" : "the match was created"}, status=status.HTTP_201_CREATED)
         except Exception as e:
+
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)

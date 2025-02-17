@@ -13,34 +13,23 @@
 }
 
 #game{
-
-    /* border: 2px solid red; */
     height:100vh ;
     display: grid;
     grid-template-rows: 8% 92%;
-   
     position: relative;
-
-
 }
 
 #game nav
 {
-    /* border: 2px solid yellow; */
     display: flex;
     flex-direction: row;
-    /* gap: 5em; */
     justify-content: space-between;
     align-items: center;
-    /* width: 100vh; */
     
-    /* margin: 100px; */
     padding: 6px;
 }
 
-/* #exitIcon{
-    padding: 30px;
-} */
+
 #exitIcon i {
     font-size: 24px; 
     color:#5293CB;
@@ -192,11 +181,43 @@
 
 
 #tableGame {
-    /* width: 1350px;
-    height: 650px; */
+
     margin-top: -50px;
     background-color: #0C2340;
     border: 2px solid rgba(255, 255, 255, 0.46);
     border-radius: 10px;
-    box-shadow: 0px 0px 4px rgba(255, 255, 255, 0.78); /* White shadow with 78% opacity */
+    box-shadow: 0px 0px 4px rgba(255, 255, 255, 0.78);
+    max-width: 1350px;
+    max-height: 650px; 
+}
+
+
+
+
+.winner-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 600px; 
+    height: 300px; 
+  
+}
+.winner-card h1{
+    padding: 10px;
+    font-family: myFont;
+    color:#FFEEBF;
+    margin: 0;
+    width: 600px; 
+    height: 300px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 130px;
+    
 }
