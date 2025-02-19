@@ -84,7 +84,7 @@ export const PlayerVsPlayer = defineComponent({
                             h('button', {
                                 type    : 'button',
                                 class   : 'btn',
-                                on      : { click:()=>{   this.appContext.router.navigateTo('/pvp_local')}}
+                                on      : { click:()=>{   this.appContext.router.navigateTo('/game?type=local')}}
                             }, ['Local'])
                         ])
                     ])

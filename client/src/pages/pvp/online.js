@@ -78,7 +78,7 @@ export const OnlinePvp = defineComponent({
                     this.updateState({ player_data: data.opponent });
                     // clearTimeout(redirectTimeout);
                     redirectTimeout = setTimeout(() => {
-                        this.appContext.router.navigateTo(`/game/${data.id}`);
+                        this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                     }, 10000);
                 } 
                 else if (data.action === "opponent_disconnected") {

@@ -112,7 +112,7 @@ const router = new HashRouter([
     {path:'/tournament',component: Tournament, beforeEnter:isAuthenticated},
     {path:'/tournament/local', component: LocalTournament, beforeEnter:isAuthenticated},
     { path:'/game', component: Game, beforeEnter:isAuthenticated},
-    { path:'/game/:id', component: Game, beforeEnter:isAuthenticated},
+    // { path:'/game/:id', component: Game, beforeEnter:isAuthenticated},
     { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy, beforeEnter:isAuthenticated},
     { path:'/tournament/online', component: OnlineTournament,
       beforeEnter:isAuthenticated },

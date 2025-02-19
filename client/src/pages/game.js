@@ -12,26 +12,24 @@ import { showErrorNotification } from '../package/utils.js';
 
 
 let socket = null;
-
-
-
-const confettiParticles = []; 
 const KEY_UP = 87;
 const KEY_DOWN = 83;
+const KEY_UP2 = 38;
+const KEY_DOWN2 = 40;
+const confettiParticles = []; 
+const keyPressed ={};
+let canvas;
+let ctx;
+
+
+
 let player='';
 let ball;
-const KEY_UP2 = 38;   // Up Arrow for Player 2 (Paddle 2)
-const KEY_DOWN2 = 40;
-let ctx;
-let canvas;
-const keyPressed ={};
-let userId = 0;
 export const Game = defineComponent(
     {
         state()
         {
             return {
-                score:{player1Score:0,player2Score:0},
                 player1Score: 0,
                 player2Score:0,
                 player1 : {},
@@ -153,8 +151,11 @@ export const Game = defineComponent(
         },
         initWebSocket()
         {
-            const {id} = this.appContext.router.params
-            console.log("iiiiiid",id)
+            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> this.appContext.router.query ", this.appContext.router.query)
+            const {id, type} = this.appContext.router.query
+
+            console.log(">>>>>>>>>>>>> id && type ", id, " ||| ", type)
+            console.log("---------------->iiiiiid",id)
             const leftPaddle =(y,paddleWidth,paddleHeight)=>{
 
                 ctx.fillStyle = "#CF4551";
@@ -169,7 +170,7 @@ export const Game = defineComponent(
             }
             const draw_game = (data)=>{
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                 
+                    ball =  this.Ball()
                     ctx.strokeStyle = '#FFEEBF'; 
                     ctx.lineWidth = 2;
                     ctx.setLineDash([15, 15]); 
@@ -189,7 +190,7 @@ export const Game = defineComponent(
             if (!socket || socket.readyState !== WebSocket.OPEN) {
 
                     socket = new WebSocket(
-                         `wss://${window.env.IP}:3000/ws/game?id=${id}`
+                         `wss://${window.env.IP}:3000/ws/game?id=${id}&type=${type}`
 
                     );
 
@@ -209,20 +210,22 @@ export const Game = defineComponent(
                     ctx.setLineDash([]);
                    
                     socket.onopen = function(e) {
-
                         console.log("WebSocket is open now.");
-                        
-
                     };
             
+
                     socket.onmessage = function(e) {
                         
                         const data = JSON.parse(e.data);
                         
+                        
+                        // console.log("yees",data)
                         if (data.action && data.action === 'match not found')
                         {
                             console.log(">>>>>>>>>>>>>>> here match not found ")
                             this.updateState({error:"match not found"})
+
+
                             socket.close()
 
                         }
@@ -251,57 +254,61 @@ export const Game = defineComponent(
                             // console.log("ata",data,data.state)
                             this.announce_winner(data.state)
                             socket.close()
-                            
                         }
+
                         if(data.action && data.action == "init_game")
                         {
-                            console.log(">>>>>>>>>>>>>>>>>>>>>> data : in initial state ", data )
-                            ball =  this.Ball()
+                            console.log(">>>>>>>>>>>>>>>>>>>>>> data : in initial state ", data)
                             draw_game(data)
-                            player = data.player
-                            userId = data.userId   
+                            if(data.player)
+                                player = data.player
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
                                 player1: data.player1, player2:data.player2})
-                            // this.updateState({player2Score:data.player2Score})                         
                         }
-
-                        // if(data.action && (data.action == "move_leftPaddle" || data.action == "move_rightPaddle"))
-                        //     socket.send(JSON.stringify({ update: 'update_data', data: data}));
-
 
                         if(data.action && (data.action == "game_state"))
                         {
+                            this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
                             draw_game(data)
                             socket.send(JSON.stringify({ update: 'update_data', data: data}));
                         }
+                        draw_game(data)
 
-                        if(data.player1Score && data.player1Score != this.state.player1Score)
-                            this.updateState({player1Score:data.player1Score})
-
-                        if(data.player2Score && data.player2Score != this.state.player2Score)
-                            this.updateState({player2Score:data.player2Score})                         
+                       
                     }.bind(this);
                 
 
                     window.addEventListener('keydown', function(e) {
             
-                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN)    
+                    
+                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN || e.keyCode == KEY_UP2 || e.keyCode  == KEY_DOWN2)
                         {
                             e.preventDefault();
                             keyPressed[e.keyCode] = true;
+                            console.log("hhhhhh",e.keyCode)
                             if (keyPressed[KEY_UP]) {
                                 socket.send(JSON.stringify({ move: 'up' ,player :player}));
-                                keyPressed[e.keyCode] = true;
     
                             }
                             if (keyPressed[KEY_DOWN]) {
                                 socket.send(JSON.stringify({ move: 'down',player: player}));
                             }
-                        }                    
+
+                            if(type == "local")
+                            {
+                                if (keyPressed[KEY_UP2]) {
+                                    socket.send(JSON.stringify({ move: 'up' ,player :'player2'}));
+        
+                                }
+                                if (keyPressed[KEY_DOWN2]) {
+                                    socket.send(JSON.stringify({ move: 'down',player: 'player2'}));
+                                }
+                            } 
+                        }                   
                     })
                     
                     window.addEventListener('keyup', function(e) {
-                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN)
+                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN || e.keyCode == KEY_UP2 || e.keyCode  == KEY_DOWN2)
                         {
                             e.preventDefault();
                             keyPressed[e.keyCode] = false; 
@@ -318,8 +325,10 @@ export const Game = defineComponent(
         },
         render()
         {
-            // const {id} = this.appContext.router.params
-            // console.log(">>>>>>>>>>>>>>>>>>>>> match id is : ", id)
+            
+            // const {id, type} = this.appContext.router.query
+            // console.log(">>>>>>>>>>>>>>>>>>>>> this.appContext.router.query : ", this.appContext.router.query)
+
             const { player1, player2, error} = this.state
             console.log(">>>>>>>>>>>>>>>>>> player value's : ", player)
             console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> error : ", error)
@@ -347,9 +356,9 @@ export const Game = defineComponent(
                         h('div',{class:'firstPlayer'},[
                            h('div',{class:'info'},[
                            
-                                h('img',{src:`https://${window.env.IP}:3000/media${player1.picture}`,class:'playerPicture', style : {
+                            JSON.stringify(player1) !== "{}" ? h('img',{src:`https://${window.env.IP}:3000/media${player1.picture}`,class:'playerPicture', style : {
                                     'object-fit': 'cover'
-                                }}),
+                                }}) : null,
                                h('h4',{class:'playerName'},[player1.username]) ]),
                            h('div',{class:'scoreCard'},[
                             h('h4',{},[`${this.state.player1Score}`])
@@ -361,9 +370,9 @@ export const Game = defineComponent(
                             h('div',{class:'scoreCard'},[ h('h4',{},[`${this.state.player2Score}`])]),
                             h('div',{class:'info'},  [
                                
-                                h('img',{src:`https://${window.env.IP}:3000/media${player2.picture}`,class:'playerPicture', style : {
+                                JSON.stringify(player2) !== "{}"? h('img',{src:`https://${window.env.IP}:3000/media${player2.picture}`,class:'playerPicture', style : {
                                     'object-fit': 'cover'
-                                }}),
+                                }}) : null,
                                h('h4',{class:'playerName'},[player2.username]) ]),
                          ])
                     ]),
