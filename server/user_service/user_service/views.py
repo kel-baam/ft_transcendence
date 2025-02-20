@@ -188,6 +188,7 @@ class MatchHistoryView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print(">>>>>>>>>>>> the problem in matches ccc  histoty in here :   ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         # except serializers.ValidationError:
         #     return Response({key: value[0] for key, value in matches.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -199,6 +200,7 @@ class MatchHistoryView(APIView):
                 serializer.save()
                 return Response({"message" : "the match was created"}, status=status.HTTP_201_CREATED)
         except Exception as e:
+
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)

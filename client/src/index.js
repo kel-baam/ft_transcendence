@@ -21,14 +21,13 @@ import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
 import { OnlinePvp } from './pages/pvp/online.js';
 import {OnlineHierarchy} from './pages/tournaments/online/OnlineHierarchy.js'
 
-
 window.env = {
   IP: "10.14.3.1",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
-  console.log("------------------> Domain:",  window.ENV);
+  // console.log("------------------> Domain:",  window.ENV);
     links.forEach(link => {
       link.addEventListener('click', function(event) {
           event.preventDefault();
@@ -80,10 +79,8 @@ const router = new HashRouter([
     { path: '/login', component: Login },
     { path: '/register',  component: Register },
     { path:'/home', component: Home,
-      // beforeEnter:isAuthenticated
-
+      beforeEnter:isAuthenticated
     },
-    { path:'/game', component: Game},
 
     
     // { path:'/home', component: test},
@@ -112,15 +109,16 @@ const router = new HashRouter([
 
     { path: '/password/reset',  component: ResetPassword },
 
-    {path:'/tournament',component: Tournament},
-    {path:'/tournament/local', component: LocalTournament},
-    { path:'/game', component: Game},
-    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy},
+    {path:'/tournament',component: Tournament, beforeEnter:isAuthenticated},
+    {path:'/tournament/local', component: LocalTournament, beforeEnter:isAuthenticated},
+    { path:'/game', component: Game, beforeEnter:isAuthenticated},
+    { path:'/game/:id', component: Game, beforeEnter:isAuthenticated},
+    { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy, beforeEnter:isAuthenticated},
     { path:'/tournament/online', component: OnlineTournament,
       beforeEnter:isAuthenticated },
-    { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy},
-    { path: '/pvp', component: PlayerVsPlayer},
-    { path: '/pvp_online', component: OnlinePvp},
+    { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy, beforeEnter:isAuthenticated},
+    { path: '/pvp', component: PlayerVsPlayer, beforeEnter:isAuthenticated},
+    { path: '/pvp_online', component: OnlinePvp, beforeEnter:isAuthenticated},
 
   ])
 

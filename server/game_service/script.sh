@@ -22,6 +22,6 @@ fi
 # fi
 
 # Run the server
-daphne -b 0.0.0.0 -p 8002 pingpong_game.asgi:application
+daphne -b 0.0.0.0 -p 8004 pingpong_game.asgi:application
 
 

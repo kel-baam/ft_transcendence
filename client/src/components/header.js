@@ -22,7 +22,7 @@ export const header = defineComponent({
 
     initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
-            socket = new WebSocket('wss://10.14.3.1:3000/ws/notification/');
+            socket = new WebSocket(`wss://${window.env.IP}:3000/ws/notification/`);
             socket.onopen = () => {console.log('WebSocket connection established'); };
             socket.onmessage = async (event) => {
 
@@ -43,7 +43,7 @@ export const header = defineComponent({
     {
         try
         {
-            const response = await customFetch("https://10.14.3.1:3000/api/user/notifications/", {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/user/notifications/`, {
                 method      : 'GET',
                 credentials : 'include'
             });
@@ -81,7 +81,7 @@ export const header = defineComponent({
         formData.append("status", action);
         try
         {
-            const response = await customFetch("http://10.14.3.1:3000/api/tournament/online/tournaments/", {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method      : 'PUT',
                 body        : formData,
                 credentials : 'include'
@@ -111,7 +111,7 @@ export const header = defineComponent({
     async enterTournament(tournamentId)
     {
         try {
-            const response = await customFetch(`http://10.14.3.1:3000/api/tournament/online/tournaments/tournament-existence/${tournamentId}/`, {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/tournament-existence/${tournamentId}/`, {
                 method      : 'GET',
                 credentials : 'include'
             });

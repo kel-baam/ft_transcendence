@@ -19,7 +19,7 @@ export const LocalHierarchy = defineComponent({
     {
         if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
 
-            this.state.socket   = new WebSocket('ws://localhost:8002/ws/matchmaking/');
+            this.state.socket   = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
             const tournamentId  = this.appContext.router.params.id;
 
             console.log("---> : ", tournamentId)

@@ -100,6 +100,7 @@ export const GameHistoryCard = defineComponent({
     {
       this.state.shownOnviewAll = this.props.shownOnviewAll
       const data = this.state.shownOnviewAll ? this.props.data : this.props.data.slice(0,4)
+      console.log(">>>>>>>>>>>>> data  of matches history : ", data)
       return h('div', {class:'center-div', 
         style : this.state.shownOnviewAll ?  {'row-gap' :'0%', 'grid-auto-rows': '16.7%'} : {}},
         data.map((item)=> h('div', { class: 'match-result-item',
@@ -107,7 +108,7 @@ export const GameHistoryCard = defineComponent({
           [
             h('div', { class: 'picture-item' },
               [
-                h('img', { src: item.player1.image.src, alt: 'profile picture' }),
+                h('img', { src: `https://${window.env.IP}:3000${item.player1.picture}`, alt: 'profile picture' ,  style : {'object-fit': 'cover'}}),
                 this.state.shownOnviewAll ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}},
                  [ `${item.player1.username}`]) : null
               ]
@@ -116,17 +117,17 @@ export const GameHistoryCard = defineComponent({
               [
                 this.state.shownOnviewAll ? hFragment([h('span', {style: {color: '#0B42AF', fontSize:'20px'}}, [`${item.date}`]), 
                 h('br')]): null,
-                h('span', { class: 'user-score', style: {color: `${item.player1_points < item.player2_points ? '#D44444' : '#0AA989'}`} },
-                   [`${item.player1_points}`]),
+                h('span', { class: 'user-score', style: {color: `${item.player1_score < item.player2_score ? '#D44444' : '#0AA989'}`} },
+                   [`${item.player1_score}`]),
                 h('span', { style: {color: '#0B42AF'} }, ['-']),
-                h('span', { class: 'opponent-score', style:{ color: `${item.player1_points < item.player2_points ? '#0AA989' : '#D44444'}`} },
-                   [`${item.player2_points}`])
+                h('span', { class: 'opponent-score', style:{ color: `${item.player1_score < item.player2_score ? '#0AA989' : '#D44444'}`} },
+                   [`${item.player2_score}`])
               ]
             ),
             h('div', { class: 'picture-item' },
               [
                 this.state.shownOnviewAll ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}}, [`${item.player2.username}`]) : null,
-                h('img', { src: item.player2.image.src, alt: 'profile picture' })
+                h('img', { src: `https://${window.env.IP}:3000${item.player2.picture}`, alt: 'profile picture',  style : {'object-fit': 'cover'} }),
   
               ]
             )

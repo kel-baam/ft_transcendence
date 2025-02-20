@@ -18,6 +18,7 @@ import jwt
 
 class Matchmaking(AsyncWebsocketConsumer):
     waiting_player = None
+    is_redirected  = False
 
     async def connect(self):
         print("--------> opened")
@@ -55,7 +56,7 @@ class Matchmaking(AsyncWebsocketConsumer):
                         
                         await self.send_json({
                             'action': 'user_data',
-                            'user'  : UserSerializer(user).data,
+                            'user'  : UserSerializer(user, fields=['id', 'username', 'picture']).data,
                         })
                     else:
                         await self.send_json({"error": "user doesn't exist"})
@@ -69,22 +70,26 @@ class Matchmaking(AsyncWebsocketConsumer):
             Matchmaking.waiting_player = None
 
         existing_match = await self.get_existing_match(self.user_id)
+        user           = await self.get_user(self.user_id)
         if existing_match:
             opponent_user = await self.get_opponent_user(existing_match, self.user_id)
-
-            await self.mark_match_exited(existing_match)
-            if opponent_user:
+            print("+++>>> :", self.is_redirected)
+            if not self.is_redirected:
+                await self.mark_match_exited(existing_match)
+            if opponent_user and not self.is_redirected:
                 await self.channel_layer.group_send(
                     f"{existing_match.room_name}",
                     {
                         "type"   : "opponent_disconnected",
-                        "message": f"Your opponent {self.user_id} has disconnected.",
+                        "message": f"Your opponent {user.username} has disconnected.",
                     }
                 )
+
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name
             )
+
         await self.close()
 
     async def opponent_disconnected(self, event):
@@ -106,8 +111,8 @@ class Matchmaking(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         print("---------> receive")
 
-        data          = json.loads(text_data)
-        action        = data.get('action')
+        data   = json.loads(text_data)
+        action = data.get('action')
 
         if action == 'find_opponent':
             await self.pair_pvp_players()
@@ -115,24 +120,46 @@ class Matchmaking(AsyncWebsocketConsumer):
             await self.pair_online_tournament_players(data.get('tournamentId'))
         if action == 'start_match':
             await self.start_tournament_match(data.get('matchId'))
+        if action == 'ready_for_redirect':
+            self.is_redirected = True
+            print("--+>>> :", self.is_redirected)
+
+            match_id  = data.get('match_id')
+            room_name = data.get('room_name')
+            
+            await self.channel_layer.group_send(
+                room_name,
+                {   
+                    "type"     : "redirect_player",
+                    "id"       : match_id,
+                    "room_name": room_name,
+                }
+            )
         #local tournament
+
+    async def redirect_player(self, event):
+        await self.send_json({
+            "action"   : "redirect_players",
+            "id"       : event['id'],
+            "room_name": event['room_name']
+        })
+
 
 # ------------------------------------------PVP----------------------------
 
     async def pair_pvp_players(self):
         existing_match = await self.get_existing_match(self.user_id)
         if existing_match:
-            opponent_user = await self.get_opponent_user(existing_match, self.user_id)
+            opponent      = await self.get_opponent_user(existing_match, self.user_id)
+            opponent_user = await self.get_user(opponent.id)
             
             print(f"♻️ {self.user_id} is rejoining match with {opponent_user.username}")
 
             await self.send_json({
-                "action"      : "match_found",
-                "opponent"    : {
-                    "id"      : opponent_user.id,
-                    "username": opponent_user.username,
-                },
-                "room_name"   : existing_match.room_name,
+                "action"    : "match_found",
+                "id"        : existing_match.id,
+                "opponent"  : UserSerializer(opponent_user, fields=['id', 'username', 'picture']).data,
+                "room_name" : existing_match.room_name,
             })
             return
 
@@ -155,40 +182,35 @@ class Matchmaking(AsyncWebsocketConsumer):
 
             print(f"Match found: {self.user_id} vs {matched_player['user_id']}")
 
-            opponent_name = await self.get_user(matched_player["user_id"])
-            user_name     = await self.get_user(self.user_id)
+            opponent = await self.get_user(matched_player["user_id"])
+            user     = await self.get_user(self.user_id)
 
-            room_name     = self.generate_room_name(self.user_id, matched_player["user_id"])
-
-            await self.create_match(self.user_id, matched_player["user_id"], room_name)
-
+            room_name = self.generate_room_name(self.user_id, matched_player["user_id"])
+            match     = await self.create_match(self.user_id, matched_player["user_id"], room_name)
+            print("---------> ", match)
             await self.channel_layer.group_add(room_name, self.channel_name)
             await self.channel_layer.group_add(room_name, matched_player["websocket"].channel_name)
 
             await self.send_json({
-                "action"      : "match_found",
-                "opponent"    : {
-                    "id"      : matched_player["user_id"],
-                    "username": opponent_name,
-                },
-                "room_name"   : room_name,
+                "action"    : "match_found",
+                "id"        : match['id'],
+                "opponent"  : UserSerializer(opponent, fields=['id', 'username', 'picture']).data,
+                "room_name" : room_name,
             })
 
             await matched_player["websocket"].send_json({
-                "action"      : "match_found",
-                "opponent"    : {
-                    "id"      : self.user_id,
-                    "username": user_name,
-                },
-                "room_name"   : room_name,
+                "action"    : "match_found",
+                "id"        : match['id'],
+                "opponent"  : UserSerializer(user, fields=['id', 'username', 'picture']).data,
+                "room_name" : room_name,
             })
-    
+
     @database_sync_to_async
     def get_opponent_user(self, existing_match, user_id):
         """Get the user object of the opponent player from the existing match."""
 
         opponent_player = existing_match.player1 if existing_match.player2.id == user_id else existing_match.player2
-        return opponent_player.user
+        return opponent_player
 
     @sync_to_async
     def create_match(self, player1_id, player2_id, room_name):
@@ -247,8 +269,7 @@ class Matchmaking(AsyncWebsocketConsumer):
 
     @sync_to_async
     def get_user(self, user_id):
-        user = User.objects.get(id=user_id)
-        return user.username
+        return User.objects.get(id=user_id)
 
 # ----------------------------------online-------------------------------------------------
 
@@ -272,7 +293,7 @@ class Matchmaking(AsyncWebsocketConsumer):
                     'success': True,
                     'matches': matches,
                 })
-        
+
                 return
 
             player_entries = await self.get_online_tournament_players(id)
@@ -330,7 +351,6 @@ class Matchmaking(AsyncWebsocketConsumer):
                         'status'    : match.get('status'),
                         'match_id'  : match.get('id')
                     })
-
 
             await self.send_json({
                 'success': True,
@@ -505,10 +525,6 @@ class Matchmaking(AsyncWebsocketConsumer):
             await self.send_json({
                 'is_user': False
             })
-
-
-
-
 
 # ----------------------------LOCAL--------------------------------------------------------------------
 

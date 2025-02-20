@@ -12,7 +12,7 @@ export const AvailableTournaments = defineComponent({
           h('div', { class: 'tournaments' },
                 (this.props.tournaments !== undefined && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
                   h('div', { class: 'available' }, [
-                      h('img', { src:  `http://10.14.3.1:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
+                      h('img', { src:  `https://${window.env.IP}:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
                       h('a', {}, [tournament.name]),
                       h('i', {
                         class: "fa-solid fa-circle-plus icon",

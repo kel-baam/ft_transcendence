@@ -14,11 +14,9 @@ export const JoinedTournaments = defineComponent({
     {
         try
         {
-            const response  = await customFetch(`http://10.14.3.1:3000/api/tournament/online/tournaments/?tournamentId=${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            const response  = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/?tournamentId=${id}`, {
+                method    : 'GET',
+                headers   : { 'Content-Type': 'application/json' },
                 credentials: 'include',
             });
 
@@ -27,8 +25,6 @@ export const JoinedTournaments = defineComponent({
 
                 if(errorText === 401)
                     this.appContext.router.navigateTo('/login')
-
-                console.error("Error response:", errorText.error);
                 
                 throw new Error(errorText.error);   
             }
@@ -50,7 +46,7 @@ export const JoinedTournaments = defineComponent({
         console.log("id ----> ", id);
     
         try {
-            const response = await customFetch(`http://10.14.3.1:3000/api/tournament/online/tournaments/?tournamentId=${id}`, {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/?tournamentId=${id}`, {
                 method: 'DELETE',
             });
     
@@ -88,16 +84,16 @@ export const JoinedTournaments = defineComponent({
             h('div', { class: 'tournaments' },
                 (this.props.tournaments && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
                     h('div', { class: 'available' }, [
-                        h('img', { src:  `http://10.14.3.1:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
+                        h('img', { src:  `https://${window.env.IP}:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
                         h('a', {
-                            on      : {
+                            on        : {
                                 click : () => this.startTournament(tournament.id)
                             }
                         }, [tournament.name]),
                         h('i', {
-                            class   : "fa-regular fa-circle-xmark icon", 
-                            style   : { color:'#D44444' },
-                            on      : {
+                            class     : "fa-regular fa-circle-xmark icon", 
+                            style     : { color:'#D44444' },
+                            on        : {
                                 click : () => this.delete_tournament(tournament.id)
                             }
                         })

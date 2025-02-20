@@ -8,24 +8,26 @@ export const OnlineHierarchy = defineComponent({
 
     state(){
         return {
-            first_round : [],
-            notificationActive: false,
-            isBlur:false,
-            notification_data: null,
+            first_round        : [],
+            notificationActive : false,
+            isBlur             : false,
+            notification_data  : null,
         }
     },
 
     async submitForm(event) {
         event.preventDefault();
+
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
+                method      : 'PUT',
+                body        : formData,
+                credentials : 'include',
             });
 
             if (!response.ok) {
@@ -35,26 +37,19 @@ export const OnlineHierarchy = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
-            this.updateState({ isBlur: false });
-        } catch (error) {
-            showErrorNotification(error);
-            this.updateState({
-                isBlur: false,
-            })
         }
+        catch (error) { showErrorNotification(error); }
+        this.updateState({ isBlur: false })
     },
-
 
     matchmake_players()
     {
-        if (!socket || socket.readyState !== WebSocket.OPEN) {
+        if (!socket || socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
+            socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
             
-            socket = new WebSocket('wss://10.14.3.1:8003/ws/matchmaking/');
             const tournamentId = this.appContext.router.params.id;
-        
             console.log("---> : ", tournamentId)
-            
+
             socket.onopen = () => {
                 console.log('WebSocket connection established');
 

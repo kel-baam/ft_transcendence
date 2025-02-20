@@ -50,17 +50,17 @@ class User(AbstractBaseUser):
     secret        = models.CharField(max_length=255,null=True)
     tmp_secret    = models.CharField(max_length=255,null=True)
 
+    def __str__(self):
+        return self.username
     class Meta:
         db_table = 'User'
 
-    def __str__(self):
-        return self.username
-
 class Player(models.Model):
-    user  = models.OneToOneField(User, on_delete=models.CASCADE)
+    user  = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     score = models.FloatField(default=0)
     level = models.FloatField(default=0.0)
     rank  = models.BigIntegerField(default=0)
+    
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
     class Meta:
@@ -70,12 +70,21 @@ class Player(models.Model):
 class Tournament(models.Model):
     creator         = models.ForeignKey(User, on_delete = models.CASCADE,related_name='online_tournament_creator')
     name            = models.CharField(max_length = 50, unique = True, validators=[MinLengthValidator(3)], blank=True)
+    
     type_choices    = [
         ('public', 'Public'),
         ('private', 'Private')
     ]
     type            = models.CharField(max_length=50, choices=type_choices, default='private')
+    
+    mode_choices    = [
+        ('online', 'Online'),
+        ('local', 'Local')
+    ]
+    mode            = models.CharField(max_length=10, choices=mode_choices, default='online')
+    
     created_at      = models.DateTimeField(auto_now_add=True)
+    
     STATUS_CHOICES  = [
             ('pending', 'Pending'),
             ('matchmaking', 'Matchmaking Done'),
@@ -208,4 +217,4 @@ class Notification(models.Model):
         return f"Notification from {self.sender} to {self.receiver} - Type: {self.type}"
 
     class Meta:
-        db_table = 'Notification'
+        db_table = 'Online_Notification'

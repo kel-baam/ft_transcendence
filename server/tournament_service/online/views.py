@@ -26,19 +26,19 @@ class TournamentAPIView(APIView):
 
         try:
             tournament_data = {
-                'creator'   : creator.id,
-                'name'      : request.data.get("name"),
-                'type'      : request.data.get("visibility"),
+                'creator' : creator.id,
+                'name'    : request.data.get("name"),
+                'type'    : request.data.get("visibility"),
             }
 
             serializer = TournamentSerializer( data = tournament_data )
             if serializer.is_valid(raise_exception = True):
                 tournament = serializer.save()
 
-            participants_data   = []
-            notification_data   = []
-            creator_player      = Player.objects.get(user_id=creator.id)
-            creator_data        = {
+            participants_data = []
+            notification_data = []
+            creator_player    = Player.objects.get(user_id=creator.id)
+            creator_data      = {
                 'tournament': tournament.id,
                 'player'    : creator_player.id,
                 'status'    : 'accepted',
@@ -51,26 +51,24 @@ class TournamentAPIView(APIView):
             invited_players     = request.data.get('invited-players', [])
             selected_players    = json.loads(invited_players) if isinstance(invited_players, str) else invited_players
 
-            print("invited players : ", selected_players)
             if invited_players:
                 for player in selected_players:
-                    print("fgfdgfdgd")
-                    player_instance     = Player.objects.get(user_id=player['id'])
-                    player_data         = {
-                        'tournament'    : tournament.id,
-                        'player'        : player_instance.id,
-                        'status'        : 'invited',
-                        'role'          : 'participant',
+                    player_instance = Player.objects.get(user_id=player['id'])
+                    player_data     = {
+                        'tournament': tournament.id,
+                        'player'    : player_instance.id,
+                        'status'    : 'invited',
+                        'role'      : 'participant',
                     }
                     participants_data.append(player_data)
                     content_type = ContentType.objects.get_for_model(tournament)
-                    notif_data = {
-                        'sender': creator.id,
-                        'receiver': player['id'],
-                        'type': 'tournament',
+                    notif_data   = {
+                        'sender'      : creator.id,
+                        'receiver'    : player['id'],
+                        'type'        : 'tournament',
                         'content_type': content_type.id,
-                        'object_id': tournament.id,
-                        'message': f'{creator.username} invited you to join a tournament name is {tournament.name}.',
+                        'object_id'   : tournament.id,
+                        'message'     : f'{creator.username} invited you to join a tournament name is {tournament.name}.',
                     }
                     notification_data.append(notif_data)
                     
@@ -156,10 +154,11 @@ class TournamentAPIView(APIView):
 # -----------------------------------put---------------------------------------------------------------
 
     def put(self, request):
+
         try:
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
             user     = User.objects.get(username=username)
-            player   = Player.objects.get(user=user)
+            player   = Player.objects.get(user_id=user.id)
 
             tournament_id = request.data.get("tournament_id")
             avatar        = request.FILES.get("player_avatar", None)
@@ -199,10 +198,12 @@ class TournamentAPIView(APIView):
                 player_tournament.nickname = nickname
                 player_tournament.avatar   = avatar
                 player_tournament.status   = status_value
-                player_tournament.save()
+                
+                serializer = PlayerTournamentSerializer(player_tournament, data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
 
-            serializer = PlayerTournamentSerializer(player_tournament)
-
+            serializer   = PlayerTournamentSerializer(player_tournament)
             creator_id   = tournament.creator.id
             content_type = ContentType.objects.get_for_model(tournament)
             message      = ''
@@ -232,8 +233,6 @@ class TournamentAPIView(APIView):
             )
 
         except serializers.ValidationError:
-            print("put ++++++++++++++++++++++++++++++++++++", serializer.errors)
-
             if isinstance(serializer.errors, list):
                 errors = {
                     key: value[0] if isinstance(value, list) and value else value

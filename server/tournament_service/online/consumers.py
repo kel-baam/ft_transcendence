@@ -12,12 +12,6 @@ class Tournaments(AsyncWebsocketConsumer):
     async def connect(self):
         print("--------> WebSocket connection opened")
 
-        self.group_name = "all_tournaments_group"
-        await self.channel_layer.group_add(
-            self.group_name,
-            self.channel_name
-        )
-
         self.user_id = None 
         for header_name, header_value in self.scope["headers"]:
             if header_name == b'cookie':
@@ -36,11 +30,17 @@ class Tournaments(AsyncWebsocketConsumer):
                     user              = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
                     if user:
 
-                        print("done",user.id)
+                        print("done user -------> : ",user.id)
 
                         self.scope['user_id'] = user
                         self.user_id          = user.id
                         self.scope['email']   = payload["email"]
+                        
+                        self.group_name = "all_tournaments_group"
+                        await self.channel_layer.group_add(
+                            self.group_name,
+                            self.channel_name
+                        )
 
                         await self.accept() 
                         await self.send_updated_tournaments()
@@ -50,7 +50,6 @@ class Tournaments(AsyncWebsocketConsumer):
                 except Exception as e:
                         print("errrr nor",e)
                         await self.send(text_data=json.dumps({"error": "token expired"}))
-
  
     async def disconnect(self, close_code):
         print("--------> WebSocket connection closed")
@@ -72,15 +71,9 @@ class Tournaments(AsyncWebsocketConsumer):
             await self.send_updated_tournaments()
 
     async def send_updated_tournaments(self):
-        
-        if not self.user_id:
-            await self.send(text_data=json.dumps({
-                "error": "User is not authenticated"
-            }))
-            return
 
-        joined_tournaments_data     = await self.joined_tournaments(self.user_id)
-        available_tournaments_data  = await self.available_tournaments(self.user_id)
+        joined_tournaments_data     = await self.joined_tournaments()
+        available_tournaments_data  = await self.available_tournaments()
 
         await self.send(text_data=json.dumps({
             'joined_tournaments'    : joined_tournaments_data,
@@ -89,43 +82,36 @@ class Tournaments(AsyncWebsocketConsumer):
 
     async def send_updated_tournaments_from_signal(self, event):
         """This method is triggered from the signal."""
+
         await self.send_updated_tournaments()
 
+#update add the tournament role local or online
+
     @sync_to_async
-    def joined_tournaments(self, user_id):
-        if not user_id:
-            return {"error": "User ID is not provided"}
-        
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return {"error": "User not found"}
-        
+    def joined_tournaments(self):
+
         created_tournaments = Tournament.objects.filter(
-            creator = user
+            creator= self.user_id,
+            mode   = 'online'
         )
         joined_tournaments  = Tournament.objects.filter(
-            participants__player__user_id = user_id,
-            participants__status          = 'accepted'
+            participants__player__user_id = self.user_id,
+            participants__status          = 'accepted',
+            mode                          = 'online'
         )
 
         all_tournaments         = created_tournaments.union(joined_tournaments)
         serialized_tournaments  = TournamentSerializer(all_tournaments, many=True)
 
-
         return serialized_tournaments.data
 
     @sync_to_async
-    def available_tournaments(self, user_id):
-        if not user_id:
-            return {"error": "User ID is not provided"}
-    
-        user = User.objects.get(id=user_id)
-        
+    def available_tournaments(self):
         available_tournaments = Tournament.objects.filter(
-            type='public'
+            type='public',
+            mode='online'
         ).exclude(
-            Q(creator=user) | Q(participants__player__user=user)
+            Q(creator=self.user_id) | Q(participants__player__user=self.user_id)
         ).annotate(
             num_accepted_participants=Count(
                 'participants',

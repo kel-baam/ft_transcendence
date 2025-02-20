@@ -4,29 +4,32 @@ import { sidebarLeft } from '../../components/sidebar-left.js'
 import { showErrorNotification } from '../utils/errorNotification.js'
 
 let socket = null;
-let redirectTimeout;
+let redirectTimeout = null;
 
 export const OnlinePvp = defineComponent({
     state() {
         return {
-            player_data: {},
-            user_data  : {},
+            player_data       : {},
+            user_data         : {},
             notificationActive: false,
-            isBlur:false,
-            notification_data: null,
+            isBlur            :false,
+            notification_data : null,
+            isLoading         : true
         }
     },
 
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
-        try {
+        try
+        {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
+                method     : 'PUT',
+                body       : formData,
                 credentials: 'include',
             });
 
@@ -38,19 +41,16 @@ export const OnlinePvp = defineComponent({
 
             const successData = await response.json();
             console.log("Player added:", successData.message);
-            this.updateState({ isBlur: false });
-        } catch (error) {
-            showErrorNotification(error);
-            this.updateState({
-                isBlur: false,
-            })
         }
+        catch (error)
+        { showErrorNotification(error); }
+        this.updateState({ isBlur: false });
     },
-
 
     async initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
-            socket = new WebSocket('wss://10.14.3.1:8003/ws/matchmaking/');
+
+            socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
     
             socket.onopen = () => {
                 console.log('WebSocket connection established');
@@ -62,48 +62,60 @@ export const OnlinePvp = defineComponent({
                 
                 console.log('WebSocket Data:', data);
     
-                if (data.action === "match_not_found") {
+                if (data.action === "match_not_found")
+                {
                     showErrorNotification(data.message);
-                    this.appContext.router.navigateTo('/playerVSplayer');
+                    this.appContext.router.navigateTo('/pvp');
                 } 
-                else if (data.action === "user_data") {
-                    this.updateState({ user_data: data.user });
+                else if (data.action === "user_data")
+                {
+                    this.updateState({ user_data: data.user, isLoading: false });
                 } 
-                else if (data.action === "match_found") {
-                    console.log("in match found :", data);
-    
+                else if (data.action === "match_found")
+                {
                     this.updateState({ player_data: data.opponent });
+
                     clearTimeout(redirectTimeout);
                     redirectTimeout = setTimeout(() => {
-                        this.appContext.router.navigateTo('/game');
+                        socket.send(JSON.stringify({
+                            action   : 'ready_for_redirect',
+                            match_id : data.id,
+                            room_name: data.room_name
+                        }));
                     }, 10000);
-                } 
-                else if (data.action === "opponent_disconnected") {
+                }
+                else if (data.action === "redirect_players")
+                {
+                    this.appContext.router.navigateTo(`/game/${data.id}`);
+                }
+                else if (data.action === "opponent_disconnected")
+                {
                     showErrorNotification(data.message);
-                    this.appContext.router.navigateTo('/playerVSplayer');
+                    this.appContext.router.navigateTo('/pvp');
                     clearTimeout(redirectTimeout);
                 }
             };
     
-            socket.onerror = (error) => {
-                console.error('WebSocket error:', error);
-            };
+            socket.onerror = (error) => { console.error('WebSocket error:', error); };
         }
     },
     
     onMounted() {
+        clearTimeout(redirectTimeout);
         this.initWebSocket();
     },
     
     onUnmounted() {
-        if (socket) {
+        clearTimeout(redirectTimeout);
+        if (socket)
+        {
             socket.close();
             socket = null;
         }
-        clearTimeout(redirectTimeout);
     },
     
     render() {
+        const {isLoading} = this.state
         return h('div', { id: 'global' }, [
             h(header, {
                 icon_notif: this.state.notificationActive,
@@ -126,12 +138,12 @@ export const OnlinePvp = defineComponent({
                     style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
                  }, [
                     h('div', { class: 'user-profile' }, [
-                        h('img', { src: './images/niboukha 1 (1).png' }),
+                        h('img', { src: `https://${window.env.IP}:3000/media${this.state.user_data.picture}`, style : {'object-fit': 'cover'} }),
                         h('h3', {}, [this.state.user_data.username || "Unknown"])
                     ]),
                     h('div', { class: 'vs' }, [h('img', { src: './images/vs.png' })]),
                     h('div', { class: 'invited' }, [
-                        h('img', { src: './images/kel-baam.png' }),
+                        h('img', { src: `https://${window.env.IP}:3000/media${this.state.player_data.picture}`,style : {'object-fit': 'cover'}  }),
                         h('h3', {}, [this.state.player_data.username || "Searching..."])
                     ])
                 ])
