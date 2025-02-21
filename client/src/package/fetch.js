@@ -20,7 +20,7 @@ export async function customFetch(url,options={})
                 {
                     if(response.status == 401)
                     {
-                        const refreshAccessToken = await fetch(`${window.env.DOMAIN}/auth/refresh/token/`,{
+                        const refreshAccessToken = await fetch(`https://${window.env.IP}:3000/auth/refresh/token/`,{
                             method:'GET',
                             credentials: 'include',})
                           

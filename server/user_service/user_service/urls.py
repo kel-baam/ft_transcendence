@@ -14,16 +14,11 @@ urlpatterns = [
     path('api/user/search', SearchUsersView.as_view()),
     path('api/user/ranking', UserRankingView.as_view()),
     path('api/user/badges', UserBadgesView.as_view()),
+    path('api/user/notifications/', NotificationsView.as_view())
 
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-websocket_urlpatterns = [
-    # path('requests/', RequestUpdateConsumer.as_asgi()),
-    path('ws/test', TestConsumer.as_asgi())
-
-]
-
-
+ 

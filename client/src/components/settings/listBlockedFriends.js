@@ -62,7 +62,7 @@ let allUsers;
                             [
                                 h('div', {},
                                     [
-                                        h('img', {src: `${window.env.DOMAIN}${item.user.picture}`, class: 'user-profile-pic',  
+                                        h('img', {src: `https://${window.env.IP}:3000${item.user.picture}`, class: 'user-profile-pic',  
                                         style : {
                                             'object-fit': 'cover'  
                                         },
@@ -87,7 +87,7 @@ let allUsers;
                                             h('i', {class: 'fa-solid fa-unlock', style: {'color': '#14397C'}, on : {
                                                 click : () =>
                                                 {
-                                                    customFetch(`${window.env.DOMAIN}/api/user/friendships?id=${item.id}`, 
+                                                    customFetch(`https://${window.env.IP}:3000/api/user/friendships?id=${item.id}`, 
                                                         {
                                                             method : 'DELETE'
                                                         }
@@ -121,7 +121,7 @@ let allUsers;
     },
     onMounted()
     {
-        customFetch(`${window.env.DOMAIN}/api/user/friendships?status=blocked`)
+        customFetch(`https://${window.env.IP}:3000/api/user/friendships?status=blocked`)
         .then(result =>{
 
             if (!result.status == 401)

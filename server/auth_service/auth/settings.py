@@ -232,14 +232,14 @@ CORS_ALLOW_CREDENTIALS = True
 # pip install pyjwt
 # CSRF_COOKIE_SAMESITE = 'None'
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
+    'http://10.14.3.1:3000',
     'http://127.0.0.1:3000',
 
-    "http://localhost:8000",
-    "ws://localhost:8000",
+    "http://10.14.3.1:8000",
+    "ws://10.14.3.1:8000",
     "http://10.14.3.1:8000",
     "http://10.14.3.1:3000",
-    "http://localhost:8000",
+    "http://10.14.3.1:8000",
 
 
 ]

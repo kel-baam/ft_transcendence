@@ -13,12 +13,12 @@ export const Login = defineComponent({
 
     intraEvent()
     {
-                window.location.href = `${window.env.DOMAIN}/auth/intra/?type=${encodeURIComponent('login')}`
+                window.location.href = `https://${window.env.IP}:3000/auth/intra/?type=${encodeURIComponent('login')}`
     },
 
     googleEvent(){
     
-                    window.location.href = `${window.env.DOMAIN}/auth/google/?type=${encodeURIComponent('login')}`
+                    window.location.href = `https://${window.env.IP}:3000/auth/google/?type=${encodeURIComponent('login')}`
     },
 
     getErrorMessage(id){
@@ -29,15 +29,17 @@ export const Login = defineComponent({
     async loginForm(event)
     {
         event.preventDefault()
-        const response = await fetch(`${window.env.DOMAIN}/auth/login/`,{
+        const response = await fetch(`https://${window.env.IP}:3000/auth/login/`,{
             method:'POST',
             body:new FormData(document.querySelector(".loginForm")),
         })
 
-        
+        // TO CHANGE
         if(!response.ok)
             {   
                 const errors = await response.json();
+                console.log("errrrors",errors)
+                showErrorNotification(Object.values(errors)[0])
                 this.updateState({errors: errors });
             }
         else
@@ -50,6 +52,8 @@ export const Login = defineComponent({
         }
     },
     
+        // TO CHANGE
+
     render(){
         return h ('div',{id:"global"},[
             h('div',{class:"login-page-content"},[
@@ -73,12 +77,12 @@ export const Login = defineComponent({
 
                     h('div',{class:'login'},[
                         h('form',{class :'loginForm',  on :{submit: ( event) => this.loginForm(event)}},[
-                            h('div',{class:'inputSec', id:this.getErrorMessage('username')},[
+                            h('div',{class:'inputSec', id:this.getErrorMessage('username') || this.getErrorMessage('verification')},[
 
                                 h('i',{class:'fa-solid fa-user'}),
                                 h('input',{class:'input',type:'text',name:'username',placeholder:'Username...'}),
                             ]),
-                            h('div',{class:'inputSec',id:this.getErrorMessage('password')},[
+                            h('div',{class:'inputSec',id:this.getErrorMessage('password') || this.getErrorMessage('verification')},[
 
                                 h('i',{class:'fa-solid fa-lock'}),
                                 h('input',{class:'input',type:'password',name:'password',placeholder:'Password...'}),

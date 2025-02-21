@@ -70,6 +70,8 @@ def desactive2FA(request):
         return  JsonResponse({'active2FA':user.enabled_twoFactor},status=200)
 
 # @accessTokenRequired
+
+# TO CHANGE
 @csrf_exempt
 def verify_code(request):
         if(request.method =='POST'):
@@ -90,7 +92,7 @@ def verify_code(request):
                         response.set_cookie('access_token',newAccessToken.get("access"), httponly=True, max_age=accessTokenLifeTime)
                         response.set_cookie('refresh_token',newAccessToken.get("refresh"), httponly=True, max_age=refreshTokenLifeTime)
                         return response
-        return JsonResponse({'message':'the code invalid'},status=400)
+        return JsonResponse({'code':'the code invalid'},status=400)
 
 
 # @accessTokenRequired

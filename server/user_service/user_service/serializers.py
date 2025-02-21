@@ -3,11 +3,13 @@ from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-import os
-import requests
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
-from django.core.files.base import ContentFile
+from django.db.models import  Q
+
+# # import os
+# import requests
+# from django.core.files import File
+# from django.core.files.temp import NamedTemporaryFile
+# from django.core.files.base import ContentFile
 # import logging
 
 
@@ -35,6 +37,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     relationship_status = serializers.SerializerMethodField(required=False)
 
+    password = serializers.CharField(
+        write_only=True, 
+        required=False, 
+        # allow_null=True, 
+        # allow_blank=True
+    )
+
+    registration_type = serializers.ChoiceField(required=False, choices=['api', 'form'])
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
@@ -50,13 +60,9 @@ class UserSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name, None)
 
     def validate(self, attrs):
-        # print(">>>>>>>>>>>>>>>>>>>>> picture in validate stage : ", attrs.get('picture'))
-        # if 'picture' in attrs:
-        #     picture = attrs.get('picture')
 
-        # # Ensure file is open
-        #     if picture.closed:
-        #         raise ValidationError({"picture": "The file is closed, cannot read."})
+        if attrs.get('registration_type') == 'form' and not attrs.get('password'):
+            raise serializers.ValidationError({"password" : "Password is required !!!"})
         if self.instance is not None:
             print(">>>>>>>>>>>>>>>>>>>>>> here in validate data ")
             print(">>>>>>>>>>>> attrs : ", attrs )
@@ -86,10 +92,13 @@ class UserSerializer(serializers.ModelSerializer):
         if 'password' in attrs:
             password = attrs.get('password')
             try:
+                print(">>>>>>>>>>>>>>>>> password is empty ")
                 validate_password(password)
+
                 attrs['password']=make_password(attrs['password'])
             except ValidationError as e:
                 raise serializers.ValidationError({"New_password": e.messages[0]})
+        
         # else:
         #     password = None
         # if 'first_name'in attrs and len(attrs.get('first_name')) < 2 :
@@ -98,6 +107,9 @@ class UserSerializer(serializers.ModelSerializer):
         #     raise serializers.ValidationError({"last_name": "Last name must be longer than 2 characters."})
         # if 'username' in attrs and len(attrs.get('username')) < 2:
         #     raise serializers.ValidationError({"username": "username must be longer than 2 characters."})
+        if 'registration_type' in attrs:
+            attrs.pop('registration_type')
+
         return attrs
 
     def update(self, instance, validated_data):
@@ -121,6 +133,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         if player_data:
             Player.objects.create(user=user,**player_data)
+        print(">>>>>>>>>>>>>>>> user was created ||| ")
         return user
     
 
@@ -135,23 +148,42 @@ class UserSerializer(serializers.ModelSerializer):
             if (logged_in_user == obj):
                 return "self"
         # Check if there is a request between the logged-in user and the target user (obj)
-            relationship = Request.objects.filter(
-                sender=logged_in_user,
-                reciever=obj
-            ).first()  # Get the first matching relationship (if any)
-
-            if not relationship:
-                # If no relationship exists, check the reverse relationship (reciever -> sender)
-                relationship = Request.objects.filter(
+            # relationship = Request.objects.filter(
+            #     sender=logged_in_user,
+            #     reciever=obj
+            # ).first()  # Get the first matching relationship (if any)
+            # print(">>>>>>>>>>>>>>>>>>>>> here the value : ", 
+            #       Request.objects.filter(sender=logged_in_user, reciever=obj).get('status'))
+            # req = Request.objects.filter(sender=logged_in_user, reciever=obj).first()
+            # print("--------------> req ", req, "    |   ")
+            if   Request.objects.filter(sender=logged_in_user, reciever=obj).first() is not None \
+                and Request.objects.filter(sender=logged_in_user, reciever=obj).first().status == "pending":
+                return "sent"
+            elif Request.objects.filter(
                     sender=obj,
                     reciever=logged_in_user
-                ).first()
-
-            if not relationship:
-                return "no_request"  # No request exists between the users
-
-        # Return the relationship status (accepted, blocked, or pending)
-            return relationship.status
+                ).first() is not None and   Request.objects.filter(
+                    sender=obj,
+                    reciever=logged_in_user
+                ).first().status == "pending":
+                return "recieved"
+            elif Request.objects.filter(
+                Q(sender=logged_in_user, reciever=obj) | 
+                Q(sender=obj, reciever=logged_in_user)).first() is not None and \
+                Request.objects.filter(
+                Q(sender=logged_in_user, reciever=obj) | 
+                Q(sender=obj, reciever=logged_in_user)).first().status == "blocked":
+                return "blocked"
+            elif Request.objects.filter(
+                Q(sender=logged_in_user, reciever=obj) | 
+                Q(sender=obj, reciever=logged_in_user)).first() is not None and \
+                Request.objects.filter(
+                Q(sender=logged_in_user, reciever=obj) | 
+                Q(sender=obj, reciever=logged_in_user)).first().status == "accepted":
+                return "accepted"
+            else:
+                return "no_request"
+        
     class Meta:
         model = User
         fields = '__all__'
@@ -174,7 +206,6 @@ class MatchSerializer(serializers.ModelSerializer):
     # def validate(self, attrs):
     #     print(">>>>>>>>>> attrs : ", attrs)
     #     return attrs
-    
     class Meta():
         model = Match
         fields = '__all__'
@@ -182,7 +213,28 @@ class MatchSerializer(serializers.ModelSerializer):
     #     match = Match(**validated_data)
     #     match.save()
     #     return match
-   
+ 
+    
+#    class Match(models.Model):
+#     tournament  = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
+#     player1     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
+#     player2     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+#           room_name = models.CharField(max_length=50, null=True)
+#     
+    
+#     status_choices = [
+#         ('pending', 'Pending'),
+#         ('completed', 'Completed'),
+#         ('exited', 'Exited')
+#     ]
+#     status = models.CharField(max_length=10, choices=status_choices, default='pending')
+
+#     def __str__(self):
+#         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
+#         return f"Match: {self.player1.user.username} vs {self.player2.user.username} ({tournament_info})"
+    
+#     class Meta:
+#         db_table = 'Match'
 
 
 class RequestSerializer(serializers.ModelSerializer):
@@ -232,3 +284,10 @@ class BadgeSerializer(serializers.ModelSerializer):
 class UserBadgeSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
+
+
+class NotificationSerializers(serializers.ModelSerializer):
+    class Meta:
+        model   = Notification
+        fields  = '__all__'
+        

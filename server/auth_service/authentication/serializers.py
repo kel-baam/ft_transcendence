@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             for field_name in exclude:
                 self.fields.pop(field_name, None)
     def validate(self, attrs):
-
+        print(">>>>>>>>>>>>>>>>>>>> here on validate data ")
         new_password = attrs.get('new_password')
         confirm_password = attrs.get('confirm_password')
         if  new_password or confirm_password:

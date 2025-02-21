@@ -25,7 +25,7 @@ export const UserAchievementsCard = defineComponent({
                 alt: 'lock icon' 
               }),
               // h('div', {width:'60%', height:"auto"}, [
-              //    h('img', {src : `${window.env.DOMAIN}${data[0].icon}`, style : !data[0].unlocked ? 
+              //    h('img', {src : `https://${window.env.IP}:3000${data[0].icon}`, style : !data[0].unlocked ? 
               // {
               //   filter : 'grayscale(100%) brightness(0.5) blur(1px)', 
               //   opacity: '0.5'} : {filter : 'none', opacity : 1}})
@@ -60,7 +60,7 @@ export const UserAchievementsCard = defineComponent({
 
     onMounted()
     {
-        customFetch(`${window.env.DOMAIN}/api/user/badges`)
+        customFetch(`https://${window.env.IP}:3000/api/user/badges`)
               .then(result =>{
       
                   // if (!result.ok)

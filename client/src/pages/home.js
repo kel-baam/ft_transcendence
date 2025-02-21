@@ -7,30 +7,144 @@ import { WelcomingSection } from '../components/home/WelcomingSection.js'
 import { TrainingBoot } from '../components/home/TrainingBoot.js'
 import { TournamentSection } from '../components/home/TournamentSection.js'
 import { PlayerVsPlayer } from '../components/home/PlayerVsPlayer.js'
-
-
+import { customFetch } from '../package/fetch.js'
+import { showErrorNotification } from './utils/errorNotification.js'
 
 export const Home = defineComponent({
     state(){
         return {
-            isFilled:true,
-            }
+            notificationActive: false,
+            isBlur:false,
+            notification_data: null,
+            homeActive :false
+        }
     },
-   
+
+    async submitForm(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
+        formData.append('status', 'accepted');
+        
+        try {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
+                method: 'PUT',
+                body: formData,
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) this.appContext.router.navigateTo('/login');
+                const errorText = await response.json();
+                throw new Error(Object.values(errorText)[0]);
+            }
+
+            const successData = await response.json();
+            console.log("Player added:", successData.message);
+            this.updateState({ isBlur: false });
+        } catch (error) {
+            showErrorNotification(error);
+            this.updateState({
+                isBlur: false,
+            })
+        }
+    },
+
+
     render()
     {
-        return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
-            [
-                h(sidebarLeft, {}), h('div', {class:'home-content' ,style:{  filter: !this.state.isFilled?'blur(3px)':undefined }},
-                [
-                    h('div', { class: 'home-top' },
-                        [h(LeaderboardHome, {}), h(WelcomingSection, {})]
-                    ),
-                    h('div', { class: 'home-down'},
-                        [h(TrainingBoot, {}), h(TournamentSection, {}), h(PlayerVsPlayer, {}) ]
-                    )
-                ]),
-        ]) 
+        return h('div', {id:'global'}, [h(header, {
+                icon_notif: this.state.notificationActive,
+                on          : {
+                    iconClick :()=>{
+                        this.updateState({ notificationActive: !this.state.notificationActive }); 
+                    },
+                    blur :(notification_data)=> {
+                        this.updateState({
+                            isBlur            : !this.state.isBlur,
+                            notification_data : notification_data
+                        })
+                    },
+                }
+            }),
+            h('div', {class:'content'},[
+                h(sidebarLeft, {}), h('div', 
+                    {
+                        class :'home-content' ,
+                        style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
+                    },
+                    [
+                        h('div', { class: 'home-top' },
+                            [h(LeaderboardHome, {}), h(WelcomingSection, {})]
+                        ),
+                        h('div', { class: 'home-down'},
+                            [h(TrainingBoot, {}), h(TournamentSection, {}), h(PlayerVsPlayer, {}) ]
+                        )
+                    ]),
+            ]),
+            this.state.isBlur ? 
+            h('div', { class: 'join-player-form' }, [
+                h('i', {
+                    class   : 'fa-regular fa-circle-xmark icon',
+                    on      : {
+                        click : () => {
+                            this.updateState({
+                                isBlur: false,
+                            })
+                        }
+                    }
+                }),
+                h('form', {
+                    class   : 'form1',
+                    on      : { submit: (event) => this.submitForm(event) }
+                }, [
+                    h('div', { class: 'avatar' }, [
+                        h('img', { 
+                            class   : 'createAvatar', 
+                            src     : './images/people_14024721.png', 
+                            alt     : 'Avatar' 
+                        }),
+                        h('div', { 
+                            class   : 'editIcon', 
+                            on      : {
+                                click: () => { document.getElementById(`file-upload1`).click(); }
+                            }
+                        }, [
+                            h('input', {
+                                type    : 'file',
+                                id      : 'file-upload1',
+                                name    : 'player_avatar',
+                                accept  : 'image/*',
+                                style   :{
+                                    display         : 'none',
+                                    pointerEvents   : 'none'
+                                },
+                                on      : { change: (event) => {
+                                    const file = event.target.files[0];
+                                    if (file) {
+                                        const reader    = new FileReader();
+                                        reader.onload   = (e) => {
+                                            document.querySelector(`.createAvatar`).src = e.target.result;
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                            }),
+                            h('i', { class: 'fas fa-edit icon' })
+                        ])
+                    ]),
+                    h('div', { class: 'createInput' }, [
+                        h('label', { htmlFor: 'playerNickname' }, ['Nickname:']),
+                        h('br'),
+                        h('input', { 
+                            type        : 'text', 
+                            name        : 'nickname', 
+                            placeholder : 'Enter Nickname...' 
+                        })
+                    ]),
+                    h('button', { type: 'submit' }, ['Submit'])
+                ])
+            ]) : null
         ])
     }                    
 })

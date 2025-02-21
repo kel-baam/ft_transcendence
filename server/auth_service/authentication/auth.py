@@ -50,6 +50,7 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                 domain = os.getenv('DOMAIN')
 
                 user = User.objects.filter(email=email).first()
+                # print('>>')
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
                         response = redirect(f"{domain}/#/2FA")  
@@ -73,7 +74,7 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                         return response
                 except (ExpiredSignatureError, InvalidTokenError) as e:
 
-                        if(user.enabled_twoFactor):
+                        if hasattr(user, 'enabled_twoFactor') and user.enabled_twoFactor:
                                 response = redirect(f"{domain}/#/2FA")
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
@@ -218,7 +219,8 @@ def storeIntraData(intraData):
                         'first_name' : intraData.get('first_name'),
                         'email' :intraData.get('email'),
                         'phone_number': phone_number,
-                        'password': '4475588@kdjndjfjjdfnbhf',
+                        'registration_type':'api',
+                        # 'password': '4475588@kdjndjfjjdfnbhf',
                         'player' : {
                                 'rank' : '0',
                                 'level':'0',
@@ -263,7 +265,7 @@ def intra_callback(request):
                         response = handle_state(state,user,user_info)
                         #  TODO maybe before setting coookie i should check access id is exist if note set it if yes decode it if i snot valid set new one
                         
-                        if((state == 'login' and user) or (state == 'register' and not user))  :         
+                        if((state == 'login' and user) or (state == 'register' and not user)):         
                                 response = set_tokens_in_cookies_with_OAuth(request,user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
@@ -284,7 +286,7 @@ def login(request):
         if not check_password(password,user.password):
                 return Response({'password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         if (user.is_verify == False):
-                return Response({'verification':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'verification':'please verify your account first'}, status=status.HTTP_400_BAD_REQUEST)
         response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)
 
         response = set_tokens_in_login(request,user.email,response)
@@ -323,7 +325,8 @@ def  registerForm(request):
                                'score':'0',
                                'rank' : '0',
                                'level' : '0'
-                        }
+                        },
+                        'registration_type':'form',
                 }
                 response = requests.post('http://user-service:8001/api/user',json=data)
                 if(response.status_code == 200):
@@ -386,7 +389,7 @@ def password_reset_request(request):
         if not user:
             return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
         if user.is_verify == False:
-            return Response({'email':"please verify email"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'email':"please verify your account first"},status=status.HTTP_400_BAD_REQUEST)
         token = generate_verification_token(user.username)
         uid = urlsafe_base64_encode(str(user.username).encode())
         user.verify_token = token
@@ -394,12 +397,14 @@ def password_reset_request(request):
         verification_link = f'{domain}/#/password/reset?type=change&uid={uid}&token={token}'
         email_body = f'Hi {user.first_name},\nWe received a request to reset the password for your account. If you didn’t make this request, you can safely ignore this email.\nTo reset your password, please click the link below:\n\n{verification_link}'
         email_subject = 'Reset Your Password'
+        print("email=====================>",email)
         send_mail(
                 email_subject,
                 email_body,
                 settings.EMAIL_HOST_USER,
                 [email],
         )
+
         return Response(status=status.HTTP_200_OK)
 
 
@@ -420,17 +425,17 @@ def password_reset_confirm(request):
                 data ={
                         'new_password':newPassword,
                         'confirm_password':confirmPassword
-
                 }
+
                 if(user):
                         if  token == user.verify_token:
                                 serialize = UserSerializer(user,data=data,partial=True)
                                 if serialize.is_valid(raise_exception=True):
-                                        # user.verify_token = "None"
                                         serialize.save()
                                         return Response({'password':"password reset succssefylly"},status=200)
                         return Response({'password':"something wrong"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+
                 return Response({key: value[0] for key, value in serialize.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
                 
    

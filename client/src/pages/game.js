@@ -12,28 +12,28 @@ import { showErrorNotification } from '../package/utils.js';
 
 
 let socket = null;
-
-
-
-const confettiParticles = []; 
 const KEY_UP = 87;
 const KEY_DOWN = 83;
+const KEY_UP2 = 38;
+const KEY_DOWN2 = 40;
+const confettiParticles = []; 
+const keyPressed ={};
+let canvas;
+let ctx;
+
+
 let player='';
 let ball;
-const KEY_UP2 = 38;   // Up Arrow for Player 2 (Paddle 2)
-const KEY_DOWN2 = 40;
-let ctx;
-let canvas;
-const keyPressed ={};
-let userId = 0;
 export const Game = defineComponent(
     {
         state()
         {
             return {
-                score:{player1Score:0,player2Score:0},
                 player1Score: 0,
                 player2Score:0,
+                player1 : {},
+                player2 : {},
+                error: null
 
             }
             
@@ -150,6 +150,10 @@ export const Game = defineComponent(
         },
         initWebSocket()
         {
+            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> this.appContext.router.query ", this.appContext.router.query)
+            const {id, type} = this.appContext.router.query
+
+            
             const leftPaddle =(y,paddleWidth,paddleHeight)=>{
 
                 ctx.fillStyle = "#CF4551";
@@ -164,7 +168,7 @@ export const Game = defineComponent(
             }
             const draw_game = (data)=>{
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                 
+                    ball =  this.Ball()
                     ctx.strokeStyle = '#FFEEBF'; 
                     ctx.lineWidth = 2;
                     ctx.setLineDash([15, 15]); 
@@ -175,7 +179,7 @@ export const Game = defineComponent(
                     ctx.stroke();
 
                     ctx.setLineDash([]);
-
+                    // if(player == "palyer2")
                     ball.draw(ctx,this.vec2(data.ballX,data.ballY),data.radius)
                     leftPaddle(data.paddle1Y,data.paddleWidth,data.paddleHeight)
                     rightPaddle(data.paddle2Y,data.paddleWidth,data.paddleHeight)
@@ -184,7 +188,8 @@ export const Game = defineComponent(
             if (!socket || socket.readyState !== WebSocket.OPEN) {
 
                     socket = new WebSocket(
-                        'ws://localhost:3000/ws/game/'
+                         `wss://${window.env.IP}:3000/ws/game?id=${id}&type=${type}`
+
                     );
 
                     canvas = document.getElementById("tableGame");
@@ -206,14 +211,54 @@ export const Game = defineComponent(
                         console.log("WebSocket is open now.");
                     };
             
+
                     socket.onmessage = function(e) {
                         
                         const data = JSON.parse(e.data);
+                        
+                        
+                        if(data.action && data.action == "init_game")
+                        {
+                            console.log(">>>>>>>>>>>>>>>>>>>>>> data : in initial state ", data)
+                            draw_game(data)
+                            if(data.player)
+                                player = data.player
+                            this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
+                                player1: data.player1, player2:data.player2})
+                        }
+                                
+                        if(data.action && (data.action == "game_state" || data.action == "paddle_move"))
+                        {
+                            console.log("this is my ball data==================>",data)
+                            this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
+                            draw_game(data)
+                            socket.send(JSON.stringify({ update: 'update_data', data: data}));
+                        }
+
+                        if(data.action && data.action == 'opponent_disconnected')
+                        {
+                            showErrorNotification(data.message)
+                            this.announce_winner(data.state)
+                            socket.close()
+                        }
+
+                        if (data.action && data.action === 'match not found')
+                        {
+                            console.log(">>>>>>>>>>>>>>> here match not found ")
+                            this.updateState({error:"match not found"})
+                            socket.close()
+                        }
+
+                        if (data.action && data.action === 'unauthorized')
+                        {
+                            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>here unauthorized ")
+                            this.updateState({error: "unauthorized"})
+                            socket.close()
+
+                        }
 
                         if(data.action && data.action == 'game_over')
                         {
-                            // console.log("game oveeer",data)
-                            // console.log(data)
                             if(player == data.Winner)
                                 this.announce_winner('You Win!')
                             else
@@ -221,62 +266,41 @@ export const Game = defineComponent(
 
                             socket.close()
                         }
-
-                        if(data.action && data.action == 'opponent_disconnected')
-                        {
-                            showErrorNotification(data.message)
-                            // console.log("ata",data,data.state)
-                            this.announce_winner(data.state)
-                            socket.close()
                             
-                        }
-                        if(data.action && data.action == "init_game")
-                        {
-                            ball =  this.Ball()
-                            draw_game(data)
-                            player = data.player
-                            userId = data.userId   
-                            this.updateState({player1Score:data.player1Score})
-                            this.updateState({player2Score:data.player2Score})                         
-                        }
-
-                        // if(data.action && (data.action == "move_leftPaddle" || data.action == "move_rightPaddle"))
-                        //     socket.send(JSON.stringify({ update: 'update_data', data: data}));
-
-
-                        if(data.action && (data.action == "game_state"))
-                        {
-                            draw_game(data)
-                            socket.send(JSON.stringify({ update: 'update_data', data: data}));
-                        }
-
-                        if(data.player1Score && data.player1Score != this.state.player1Score)
-                            this.updateState({player1Score:data.player1Score})
-
-                        if(data.player2Score && data.player2Score != this.state.player2Score)
-                            this.updateState({player2Score:data.player2Score})                         
-                    }.bind(this);
-                
+                        }.bind(this);
+                        
 
                     window.addEventListener('keydown', function(e) {
-            
-                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN)    
-                        {
-                            e.preventDefault();
-                            keyPressed[e.keyCode] = true;
-                            if (keyPressed[KEY_UP]) {
-                                socket.send(JSON.stringify({ move: 'up' ,player :player}));
+                        
+                        
+                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN || e.keyCode == KEY_UP2 || e.keyCode  == KEY_DOWN2)
+                            {
+                                e.preventDefault();
                                 keyPressed[e.keyCode] = true;
-    
-                            }
-                            if (keyPressed[KEY_DOWN]) {
-                                socket.send(JSON.stringify({ move: 'down',player: player}));
-                            }
-                        }                    
+                                console.log("hhhhhh",e.keyCode)
+                                if (keyPressed[KEY_UP]) {
+                                    socket.send(JSON.stringify({ move: 'up' ,player :player}));
+                                    
+                                }
+                                if (keyPressed[KEY_DOWN]) {
+                                    socket.send(JSON.stringify({ move: 'down',player: player}));
+                                }
+
+                            if(type == "local")
+                                {
+                                    if (keyPressed[KEY_UP2]) {
+                                    socket.send(JSON.stringify({ move: 'up' ,player :'player2'}));
+        
+                                }
+                                if (keyPressed[KEY_DOWN2]) {
+                                    socket.send(JSON.stringify({ move: 'down',player: 'player2'}));
+                                }
+                            } 
+                        }                   
                     })
                     
                     window.addEventListener('keyup', function(e) {
-                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN)
+                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN || e.keyCode == KEY_UP2 || e.keyCode  == KEY_DOWN2)
                         {
                             e.preventDefault();
                             keyPressed[e.keyCode] = false; 
@@ -293,6 +317,23 @@ export const Game = defineComponent(
         },
         render()
         {
+            
+            // const {id, type} = this.appContext.router.query
+            // console.log(">>>>>>>>>>>>>>>>>>>>> this.appContext.router.query : ", this.appContext.router.query)
+
+            const { player1, player2, error} = this.state
+            console.log(">>>>>>>>>>>>>>>>>> player value's : ", player)
+            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> error : ", error)
+            if (error && error === "match not found")
+            {
+                console.log(">>>>>>>>>>>>>>> here the error exists ")
+                return h('h1', {}, ["404 game not found !!!"])
+            }
+            if (error && error === "unauthorized")
+            {
+                console.log(">>>>>>>>>>>>>>> here the error exists ")
+                return h('h1', {}, ["401 unauthorized !!!"])
+            }
             return h('div',{id:'game'},[
                 h('nav',{id:'header'},[
                     h('a', { href: '/home' }, [
@@ -306,9 +347,11 @@ export const Game = defineComponent(
                     h('div',{class:'playerInfo'},[
                         h('div',{class:'firstPlayer'},[
                            h('div',{class:'info'},[
-                               h('img',{src:'./images/niboukha.jpeg',class:'playerPicture'}),
-                               h('h4',{class:'playerName'},['Niboukha']),
-                           ]),
+                           
+                            JSON.stringify(player1) !== "{}" ? h('img',{src:`https://${window.env.IP}:3000/media${player1.picture}`,class:'playerPicture', style : {
+                                    'object-fit': 'cover'
+                                }}) : null,
+                               h('h4',{class:'playerName'},[player1.username]) ]),
                            h('div',{class:'scoreCard'},[
                             h('h4',{},[`${this.state.player1Score}`])
                            ])
@@ -317,10 +360,12 @@ export const Game = defineComponent(
 
                         h('div',{class:'secondPlayer'},[
                             h('div',{class:'scoreCard'},[ h('h4',{},[`${this.state.player2Score}`])]),
-                            h('div',{class:'info'},[
-                                h('img',{src:'./images/niboukha.jpeg',class:'playerPicture'}),
-                                h('h4',{class:'playerName'},['Niboukha']),
-                            ]),
+                            h('div',{class:'info'},  [
+                               
+                                JSON.stringify(player2) !== "{}"? h('img',{src:`https://${window.env.IP}:3000/media${player2.picture}`,class:'playerPicture', style : {
+                                    'object-fit': 'cover'
+                                }}) : null,
+                               h('h4',{class:'playerName'},[player2.username]) ]),
                          ])
                     ]),
                    

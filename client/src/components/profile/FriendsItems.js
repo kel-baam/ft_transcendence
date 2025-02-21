@@ -11,7 +11,8 @@ import{createApp, defineComponent, DOM_TYPES, h,
     render()
     {
   
-      const {isExpanded} = this.props
+      const {isExpanded, key} = this.props
+      console.log(">>>>>>>>>>>>>>>>>>>> key here : ", key)
       // console.log('>>>>>>>>>>>>>>> this state of friends : ', this.state)
       const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
       return h('div', {class : 'friends-scope-item',
@@ -20,7 +21,8 @@ import{createApp, defineComponent, DOM_TYPES, h,
         }, data.map((userFriend) =>
           h(FriendItem, {
             user : userFriend.user,
-            isExpanded : isExpanded
+            isExpanded : isExpanded,
+            key
           })
         )
     )
@@ -36,15 +38,16 @@ import{createApp, defineComponent, DOM_TYPES, h,
     // },
     render()
     {
-      const {user, isExpanded} = this.props
+      const {user, isExpanded, key} = this.props
       return  h('div', { class: 'friend-item', style : isExpanded ? 
-        {backgroundColor : '#CBCBCB', 'border-radius' : '15px',
+        {
+          backgroundColor : '#CBCBCB', 'border-radius' : '15px',
           width:'700px', height:'65px'
-        } : {} },
+        } : key ? {display : 'flex', justifyContent:'center'} : {}},
         [
           h('div', { class: 'picture-item' },
             [
-              h('img', { src: `${window.env.DOMAIN}${user.picture}`, alt:'profile picture', class: 'picture-item',
+              h('img', { src: `https://${window.env.IP}:3000${user.picture}`, alt:'profile picture', class: 'picture-item',
                 style : {'object-fit': 'cover'}
               })
             ]
@@ -55,10 +58,15 @@ import{createApp, defineComponent, DOM_TYPES, h,
               h('span', { style: { color: '#A7A4A4'} }, ['@' + user.username])
             ]
           ),
-          h('div', { class: 'chat-icon' },
+          h('div', { class: 'chat-icon' },!key ?
             [
-              h('img', { src: 'images/tabler_message (1).png', alt: 'chat icon' })
-            ]
+              h('img', { src: 'images/tabler_message (1).png', alt: 'chat icon', on :
+                {
+                  click : ()=>this.appContext.router.navigateTo(`/chat/${user.username}`)
+                }
+               })
+            ]:
+            []
           )
         ]
       )

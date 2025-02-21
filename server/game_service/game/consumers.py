@@ -5,14 +5,17 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
 import random
-
+import uuid
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from django.conf import settings
-from .models import User
+from .models import *
 import jwt
 from channels.layers import get_channel_layer
 import re
+from urllib.parse import parse_qs
+from asgiref.sync                       import sync_to_async
+from .serializers import *
 
 paddels ={
    'paddle1Y': 650 / 2 - 125 / 2,
@@ -36,16 +39,16 @@ ball ={
     'ballX': 200,
     'ballY': 200,
     'radius':18,
-    'speedX' :7,
-    'speedY':7,
-    'maxScore':3,
+    'speedX' :10,
+    'speedY':10,
+    'maxScore':8,
 
 }
 
 
 class GameConsumer(AsyncWebsocketConsumer):
  
-    start_play = 0
+    # start_play = 0
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Instance-level variables (instead of class-level)
@@ -63,18 +66,22 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.tableWidth = table['width']
         self.tableHeight = table['height']
         self.maxScore = ball['maxScore']
-
+        self.game_name = 'game_1'
         self.radius = ball['radius']
-        self.game_name = "game_1"
         self.player = None
         self.user_id = None
         self.connected = True
         self.player1Score = 0
         self.player2Score = 0
         self.winner = None
+        self.start_game = True
+        self.player1 =''
+        self.player2 =''
+
 
 
     async def connect(self):
+        # print('>>>>>>>>>>>>>>>>>>> query is : ', self.scope["headers"]['id'])
         for header_name, header_value in self.scope["headers"]:
                     if header_name == b'cookie':
 
@@ -91,26 +98,60 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 self.scope['user_id'] = user
                                 self.user_id          = user.id
                                 self.scope['email']   = payload["email"]
+                                query_string = self.scope['query_string'].decode()
+                                query_params = parse_qs(query_string)
+                                await self.accept()
+                                type = query_params.get('type', [None])[0]
+                                match_id = query_params.get('id', [None])[0]
+                                # if  not match_id.isdigit():
+                                #     print(">>>>>>>>>>>>>>>> here is digit ")
 
-                                self.game_name = "game_1"
-                                GameConsumer.start_play +=1
-                                await self.accept()  
-                                self.channel_layer = get_channel_layer()
-                                await self.channel_layer.group_add(
-                                    self.game_name,
-                                    self.channel_name
-                                )
-                                if self.user_id == 1:
-                                    self.player = "player1"
-                                elif self.user_id == 34:
-                                    self.player = "player2"
+                                if (type != "local" and type !=  "online") or (type == "online"  and match_id == "undefined") or \
+                                    ( match_id != "undefined"  and not match_id.isdigit()):
+                                    # print("----------------------> not found")
+                                    await self.send(text_data=json.dumps({"action": "match not found"}))
+                                    return
+                                
+                                if match_id != "undefined":
+                                    match_instance = await self.get_match(match_id)
+                                    if match_instance is None:
+                                        await self.send(text_data=json.dumps({"action": "match not found"}))
+                                        return
+                                    
+                                    self.player1, self.player2 =  await self.get_user(match_instance)
+                                    if self.user_id != self.player1.id and self.user_id != self.player2.id:
+                                        await self.send(text_data=json.dumps({"action": "unauthorized"}))
+                                        return
+
+                                    self.game_name = match_instance.room_name
+                                    self.channel_layer = get_channel_layer()
+                                    await self.channel_layer.group_add(
+                                        self.game_name,
+                                        self.channel_name
+                                    )
+                                    # current_group_size = len(await self.channel_layer.group_channels(self.game_name))
+                                    # print(">>>>>>>>>>>>>>>>>> room name : ", current_group_size)
+                                    if self.player1.id ==  self.user_id:
+                                        self.player = "player1"
+                                    elif self.player2.id == self.user_id:
+                                        self.player = "player2"
+                                    else:
+                                        self.player = "spectator"
                                 else:
-                                    self.player = "spectator"
-                                await self.send_initial_state()
-                                if(GameConsumer.start_play == 2):
-                                    if not hasattr(self, "game_task"):
-                                            print("Game loop running...")
-                                            self.game_task = asyncio.create_task(self.game_loop())
+                                    unique_id = uuid.uuid4().hex[:6]  # Generates a 6-character unique ID
+                                    self.game_name = f"game_room_{unique_id}"
+
+                                    self.channel_layer = get_channel_layer()
+                                    await self.channel_layer.group_add(
+                                        self.game_name,
+                                        self.channel_name
+                                    )
+                                    self.player = "player1"
+                                    # self.player1 = await self.get_user()
+                                await self.send_initial_state(type)
+                                if not hasattr(self, "game_task"):
+                                        print("Game loop running...")
+                                        self.game_task = asyncio.create_task(self.game_loop())
                             else:
                                 await self.send(text_data=json.dumps({"error": "user doesn't exist"}))
                         except jwt.ExpiredSignatureError:
@@ -127,45 +168,118 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.channel_name
         )
         self.connected = False
-        if(GameConsumer.start_play):
-            GameConsumer.start_play  -=1
+        print("discooonected==>",self.start_game)
+        if(self.start_game):
             await self.channel_layer.group_send(
             self.game_name,
             {
-                "type"   : "opponent_disconnected",
                 'state': 'You Win!',
+                "type"   : "opponent_disconnected",
                 "message": f"Your opponent {self.user_id} has disconnected.",
             })
         await self.close()
 
     async def opponent_disconnected(self, event):
-        message = event['message']
-        state = event['state']
+      
         await self.send(text_data=json.dumps({
             "action" : "opponent_disconnected",
-            "message": message,
-            "state":state,
+            "message":event.get('message'),
+            "state":event.get('state'),
 
         }))
 
 
+    @sync_to_async
+    def get_user(self, match_instance):
+        # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> player is : ", user_id)
+        # user_instance = User.objects.get(id=user_id)
+        # print(">>>>>>>>>>>>>>>>>>>>>>>> player1 user's ", match_instance.player1.user)
+        player1 = User.objects.get(id = match_instance.player1.user.id)
+        # print(">>>>>>>>>>>>>>>>>> player 1 is ", player1)
+        player2 = User.objects.get(id = match_instance.player2.user.id)
+        # print(">>>>>>>>>>>>>>>>>> player 2 is ", player2)
+        # print("=======================> user instance : ", user_instance)
+        return player1, player2
+    @sync_to_async
+    def get_match(self, match_id):
+        try:
+        # print(">>>>>>>>>>>>>>>>>>>>>>>> match id is : ", match_id)
+            match_instance = Match.objects.filter(id=match_id).first()
+            return match_instance
+        except Match.DoesNotExist:
+            return None
 
-    async def send_initial_state(self):
-      
+        # print(">>>>>>>>>>>>------->>>>>>> match instance : ", match_instance)
+
+    
+    async def send_initial_state(self,type):
+        if type == 'online':
+           await self.send(text_data=json.dumps({
+                'action':'init_game',
+                'paddle1Y': self.paddle1Y,
+                'paddle2Y': self.paddle2Y,
+                'paddleHeight': self.paddleHeight,
+                'paddleWidth': self.paddleWidth,
+                'paddleSpeed': self.paddleSpeed,
+                'ballX': self.ballX,
+                'ballY': self.ballY,
+                'radius': self.radius,
+                'player' : self.player,
+                'player1Score':self.player1Score,
+                'player2Score':self.player2Score,
+                'userId':self.user_id,
+                'player1' : UserSerializer(self.player1, fields={'id', 'username', 'picture'}).data,
+                'player2' : UserSerializer(self.player2, fields={'id', 'username', 'picture'}).data,
+            }))
+        else:
+            await self.send(text_data=json.dumps({
+                'action':'init_game',
+                'paddle1Y': self.paddle1Y,
+                'paddle2Y': self.paddle2Y,
+                'paddleHeight': self.paddleHeight,
+                'paddleWidth': self.paddleWidth,
+                'paddleSpeed': self.paddleSpeed,
+                'ballX': self.ballX,
+                'ballY': self.ballY,
+                'radius': self.radius,
+                'player' : self.player,
+                'player1Score':self.player1Score,
+                'player2Score':self.player2Score,
+                'userId':self.user_id,
+                'player1' : {},
+                'player2' : {},
+            }))
+
+    
+    async def check_winner(self):
+        if(self.player1Score == self.maxScore or  self.player2Score == self.maxScore):
+            self.connected = False
+            self.start_game = False
+            await self.channel_layer.group_send(
+                self.game_name,
+                {
+                    'type': 'announce_winner',
+                    'action':'game_over',
+                    'player1Score':self.player1Score,
+                    'player2Score':self.player2Score,
+                    'Winner':self.player,
+                })
+        else:
+            self.ballX = self.tableWidth / 2
+            self.ballY = random.randint(100, self.tableHeight - 100)
+            self.speedXBall *= -1
+            self.speedYBall = random.choice([7, -7])
+            await self.broadcast_game_state()
+
+
+    
+    async def announce_winner(self,event):
+
         await self.send(text_data=json.dumps({
-            'action':'init_game',
-            'paddle1Y': self.paddle1Y,
-            'paddle2Y': self.paddle2Y,
-            'paddleHeight': self.paddleHeight,
-            'paddleWidth': self.paddleWidth,
-            'paddleSpeed': self.paddleSpeed,
-            'ballX': self.ballX,
-            'ballY': self.ballY,
-            'radius': self.radius,
-            'player' : self.player,
-            'player1Score':self.player1Score,
-            'player2Score':self.player2Score,
-            'userId':self.user_id,
+            'action':event.get('action'),
+            'Winner':event.get('Winner'),
+            'player1Score':event.get('player1Score'),
+            'player2Score':event.get('player2Score'),
         }))
 
 
@@ -184,43 +298,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.ballX = self.tableWidth - self.paddleWidth - self.radius
       
 
-
-    
-    async def check_winner(self):
-        if(self.player1Score == self.maxScore or  self.player2Score == self.maxScore):
-            self.connected = False
-            await self.channel_layer.group_send(
-                self.game_name,
-                {
-                    'type': 'announce_winner',
-                    'action':'game_over',
-                    'player1Score':self.player1Score,
-                    'player2Score':self.player2Score,
-                    'Winner':self.player,
-                })
-        else:
-            self.ballX = self.tableWidth / 2
-            self.ballY = random.randint(100, self.tableHeight - 100)
-            self.speedXBall *= -1
-            self.speedYBall = random.choice([7, -7])
-
-            
-
-
-
-    
-    async def announce_winner(self,event):
-
-        await self.send(text_data=json.dumps({
-            'action':event.get('action'),
-            'Winner':event.get('Winner'),
-            'player1Score':event.get('player1Score'),
-            'player2Score':event.get('player2Score'),
-        }))
-
-
-
     async def update_ball(self):
+        # print('update',self.player,"|",self.ballX,self.ballY)
         self.ballX += self.speedXBall
         self.ballY += self.speedYBall
 
@@ -241,20 +320,21 @@ class GameConsumer(AsyncWebsocketConsumer):
                 self.player2Score +=1
                 await self.check_winner()
 
+        await self.broadcast_game_state()
+
     
 
 
     async def game_loop(self):
-
+        # print("game loop=>",self.player,"|",self.connected)
         while self.connected:
-            await self.update_ball()
-            await self.broadcast_game_state()
+            # if(self.player == "player1"):
+            if(self.player == "player1"):
+                await self.update_ball()
             await asyncio.sleep(0.02)
 
 
     async def paddleCollison(self):
-
-
         if(self.paddle1Y <= 0):
             self.paddle1Y = 0
         if(self.paddle1Y + self.paddleHeight >= self.tableHeight):
@@ -288,7 +368,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         
         
-
+    
 
     async def broadcast_game_state(self):
         await self.channel_layer.group_send(
@@ -305,14 +385,21 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'radius': self.radius,
                 'player1Score':self.player1Score,
                 'player2Score':self.player2Score,
-            }
-    )
+            })
+
+  
+
 
     async def update_data(self,data):
+        
         self.paddle1Y = data['data']['paddle1Y']
         self.paddle2Y = data['data']['paddle2Y']
         self.ballX = data['data']['ballX']
         self.ballY = data['data']['ballY']
+        if data['data']['player1Score'] > self.player1Score :
+            self.player1Score = data['data']['player1Score']
+        if data['data']['player2Score'] >  self.player2Score:
+            self.player2Score = data['data']['player2Score']
 
 
 
@@ -333,7 +420,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 
 
-
     async def game_state(self, event):
 
         await self.send(text_data=json.dumps({
@@ -347,8 +433,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             'radius': event.get('radius'),
             'player1Score':event.get('player1Score'),
             'player2Score':event.get('player2Score'),
-
-
         }))
 
 

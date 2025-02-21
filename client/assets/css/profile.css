@@ -17,6 +17,21 @@
     src: url(../fonts/Playground.ttf);
 }
 
+/* .active {
+    color: red; 
+} */
+
+
+/* .icon {
+    font-size: 30px;
+    color: gray; 
+    cursor: pointer;
+    transition: color 0.3s;
+} */
+
+/* .active {
+    color: red !important;
+} */
 /* .container nav .search input{
     font-size: 16px;
     font-family: myFont;

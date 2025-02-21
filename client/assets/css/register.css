@@ -127,16 +127,23 @@ color: #A1AEC6;
 
     
 }
+
+/* TO CHANGE */
+
 .register .registerForm #first_name,
 .register .registerForm #last_name,
 .register .registerForm #username,
 .register .registerForm #email,
-.register .registerForm #password
+.register .registerForm #password,
+.register .registerForm #New_password
 
 {
     background-color: rgba(255, 0, 0, 0.2);
     border-color: red;
 }
+
+
+
 .register .registerForm input::placeholder {
     font-size: 15px;
     /* color:  rgba(255, 255, 255, 0.63); */
