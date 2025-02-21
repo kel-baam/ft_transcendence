@@ -131,8 +131,8 @@ class PlayerTournament(models.Model):
 
 class Match(models.Model):
     tournament    = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
-    player1       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
-    player2       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+    player1       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1', null=True, blank=True)
+    player2       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2', null=True, blank=True)
     room_name     = models.CharField(max_length=50, null=True)
     player1_score = models.PositiveIntegerField(default=0)
     player2_score = models.PositiveIntegerField(default=0)
@@ -146,7 +146,7 @@ class Match(models.Model):
 
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
-        return f"Match: {self.player1.user.username} vs {self.player2.user.username} ({tournament_info})"
+        return f"Match: ({tournament_info})"
     
     class Meta:
         db_table = 'Match'

@@ -147,7 +147,7 @@ export const OnlineHierarchy = defineComponent({
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
-                                            src: './images/people_14024721.png'
+                                            src: `https://${window.env.IP}:3000/media${match.avatar1}`
                                         }),
                                         h('h2', {}, [match.player1])
                                     ]),
@@ -156,7 +156,7 @@ export const OnlineHierarchy = defineComponent({
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
-                                            src: './images/people_14024721.png'
+                                            src: `https://${window.env.IP}:3000/media${match.avatar2}`
                                         }),
                                         h('h2', {}, [match.player2])
                                     ])

@@ -37,7 +37,9 @@ class TournamentAPIView(APIView):
 
             participants_data = []
             notification_data = []
+
             creator_player    = Player.objects.get(user_id=creator.id)
+            
             creator_data      = {
                 'tournament': tournament.id,
                 'player'    : creator_player.id,

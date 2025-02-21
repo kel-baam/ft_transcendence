@@ -15,11 +15,10 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Override the default validation to handle custom checks"""
-
-        print("<<<<<<<<<<<< ", data)
-        status = data.get('status')
-
+        
+        status   = data.get('status')
         nickname = data.get('nickname')
+        
         if status == 'accepted' and not nickname:
             raise ValidationError({'nickname': 'Nickname cannot be empty.'})
         avatar = data.get('avatar')

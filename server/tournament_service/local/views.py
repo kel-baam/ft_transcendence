@@ -23,50 +23,46 @@ class TournamentAPIView(APIView):
             tournament = None
 
             tournament_data = {
-                'creator'   : creator.id,
-                'name'      : request.data.get("tournament_name"),
-                'type'      : "public",
+                'creator' : creator.id,
+                'name'    : request.data.get("tournament_name"),
+                'type'    : "public",
+                'mode'    : "local",
             }
-
-            print("tournament : ", tournament_data)
 
             serializer = TournamentSerializer( data = tournament_data)
             if serializer.is_valid(raise_exception = True):
                 tournament = serializer.save()
 
-            print("here")
-
             players = []
 
             for key in request.data:
-                if key.startswith('players'):
-                    parts = key.split('[')
-                    index = int(parts[1].split(']')[0])
-                    field = parts[2].split(']')[0]
+                print("Processing key:", key)
+                if key.startswith('player'):
+                    index = int(key[6]) - 1
 
                     while len(players) <= index:
                         players.append({'nickname': '', 'avatar': None})
 
-                    players[index][field] = request.data[key]
+                    if 'nickname' in key:
+                        players[index]['nickname'] = request.data[key]
+                    elif 'image' in key:
+                        players[index]['avatar'] = request.FILES.get(f'player{index + 1}_image', None)
 
             for player_data in players:
                 nickname = player_data.get('nickname', '')
                 avatar   = request.FILES.get(f'player{players.index(player_data) + 1}_image', None)
 
-                player_tournament, created = PlayerTournament.objects.get_or_create(
-                    tournament_id=tournament.id,
-                    defaults={
-                        'nickname': nickname,
-                        'avatar'  : avatar,
-                        'status'  : 'accepted',
-                    }
-                )
-            
-                print("-------> ", player_tournament)
+                player_tournament_data = {
+                    'nickname'  : nickname,
+                    'avatar'    : avatar,
+                    'status'    : 'accepted',
+                    'tournament': tournament.id,
+                }
 
-                serializer = PlayerTournamentSerializer(data = player_tournament)
-                if serializer.is_valid(raise_exception = True):
+                serializer = PlayerTournamentSerializer(data=player_tournament_data)
+                if serializer.is_valid(raise_exception=True):
                     serializer = serializer.save()
+
             return Response(
                 {"message": "Tournament and players created successfully"},
                 status=status.HTTP_201_CREATED,
@@ -96,75 +92,14 @@ class TournamentAPIView(APIView):
                 tournament.delete()
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        #     validation_result   = validate_form(
-        #         tournament_name = request.data.get('name'),
-        #         players         = players,
-        #         user            = user
-        #     )
-        #     if validation_result != "Form is valid!":
-        #         return Response({
-        #             'errors'    : validation_result
-        #         },  status      = status.HTTP_400_BAD_REQUEST)
-
-     
-        #     data = {
-        #         'creator'   : user.id,
-        #         'name'      : request.data.get('name'),
-        #     }
-        #     print("here")
-
-        #     serializer = TournamentSerializer(data=data)
-        #     if not serializer.is_valid():
-        #         raise ValidationError(
-        #             {"tournament_errors": serializer.errors}
-        #         )
-            
-        #     tournament = serializer.save()
-
-        #     participants_data = [
-        #         {
-        #             'tournament': tournament.id,
-        #             'nickname'  : player['nickname'],
-        #             'avatar'    : player['avatar'],
-        #             'score'     : 0,
-        #         }
-        #         for player in players
-        #     ]
-
-        #     serializer = PlayerSerializer(data=participants_data, many=True)
-        #     serializer.is_valid(raise_exception=True)
-        #     serializer.save()
-
-        #     return Response(
-        #         {"message": "Tournament and players created successfully"},
-        #         status=status.HTTP_201_CREATED,
-        #     )
-
-        # except ValidationError as e:
-        #     if tournament:
-        #         tournament.delete()
-        #     return Response(
-        #         {"errors": serializer.errors},
-        #         status=status.HTTP_400_BAD_REQUEST
-        #     )
-        # except Exception as e:
-        #     if tournament:
-        #         tournament.delete()
-        #     return Response(
-        #         {"errors": str(e)},
-        #         status=status.HTTP_400_BAD_REQUEST,
-        #     )
-
-
-
     def get(self, request):
-
         try:
-            username=request.META.get('HTTP_X_AUTHENTICATED_USER')
-            user = User.objects.get(username=username)
+            username = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            user     = User.objects.get(username=username)
 
-            tournaments = Tournament.objects.filter(creator=user)
+            tournaments      = Tournament.objects.filter(creator=user, mode='local')
             tournaments_data = [{'id': tournament.id, 'name': tournament.name} for tournament in tournaments]
+
             return Response({
                 'status'        : 'success',
                 'tournaments'   : tournaments_data
@@ -175,10 +110,15 @@ class TournamentAPIView(APIView):
         
     def delete(self, request):
         try:
+            username        = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            user            = User.objects.get(username=username)
+
             tournament_id   = request.data.get('tournamentId')
             tournament      = Tournament.objects.get(id=tournament_id)
             
-            tournament.delete()
+            if tournament.creator_id == user.id:
+                tournament.delete()
+
             return Response({
                 "message": "Tournament deleted successfully"},
                 status=204)
