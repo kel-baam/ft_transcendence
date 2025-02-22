@@ -40,8 +40,8 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True, 
         required=False, 
-        allow_null=True, 
-        allow_blank=True
+        # allow_null=True, 
+        # allow_blank=True
     )
 
     registration_type = serializers.ChoiceField(required=False, choices=['api', 'form'])

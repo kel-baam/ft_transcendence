@@ -74,8 +74,11 @@ class Matchmaking(AsyncWebsocketConsumer):
         user           = await self.get_user(self.user_id)
         if existing_match:
             opponent_user = await self.get_opponent_user(existing_match, self.user_id)
+            
             print("+++>>> :", self.is_redirected)
+
             if not self.is_redirected:
+                self.is_redirected = False # to re-check 
                 await self.mark_match_exited(existing_match)
             if opponent_user and not self.is_redirected:
                 await self.channel_layer.group_send(
@@ -85,7 +88,6 @@ class Matchmaking(AsyncWebsocketConsumer):
                         "message": f"Your opponent {user.username} has disconnected.",
                     }
                 )
-
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name

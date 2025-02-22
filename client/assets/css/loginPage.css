@@ -308,9 +308,12 @@
     text-decoration: none;
     font-family: 'Josefin Sans';
 }
-.login-page-content .down .login #username,
-.login-page-content .down .login #password
 
+
+
+.login-page-content .down .login #username,
+.login-page-content .down .login #password,
+.login-page-content .down .login #verification
 {
     background-color: rgba(255, 0, 0, 0.2);
     border-color: red;
