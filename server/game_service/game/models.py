@@ -23,8 +23,8 @@ class User(AbstractBaseUser):
 )                                           ])
     email          = models.EmailField(max_length=50, unique=True)
     phone_number   = models.CharField(
-        max_length = 15,
-        validators = [
+        max_length =15,
+        validators =[
             RegexValidator(
                 regex  =r'^\+?1?\d{9,15}$',
                 message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
@@ -50,11 +50,11 @@ class User(AbstractBaseUser):
     secret        = models.CharField(max_length=255,null=True)
     tmp_secret    = models.CharField(max_length=255,null=True)
 
+    def __str__(self):
+        return self.username
     class Meta:
         db_table = 'User'
 
-    def __str__(self):
-        return self.username
 
 class Player(models.Model):
     user  = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -99,15 +99,25 @@ class Player(models.Model):
             player.rank = current_rank
             player.save()
 
+
 class Tournament(models.Model):
     creator         = models.ForeignKey(User, on_delete = models.CASCADE,related_name='online_tournament_creator')
     name            = models.CharField(max_length = 50, unique = True, validators=[MinLengthValidator(3)], blank=True)
+    
     type_choices    = [
         ('public', 'Public'),
         ('private', 'Private')
     ]
     type            = models.CharField(max_length=50, choices=type_choices, default='private')
+    
+    mode_choices    = [
+        ('online', 'Online'),
+        ('local', 'Local')
+    ]
+    mode            = models.CharField(max_length=10, choices=mode_choices, default='online')
+    
     created_at      = models.DateTimeField(auto_now_add=True)
+    
     STATUS_CHOICES  = [
             ('pending', 'Pending'),
             ('matchmaking', 'Matchmaking Done'),
@@ -154,8 +164,8 @@ class PlayerTournament(models.Model):
 
 class Match(models.Model):
     tournament    = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
-    player1       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
-    player2       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
+    player1       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1', null=True, blank=True)
+    player2       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2', null=True, blank=True)
     room_name     = models.CharField(max_length=50, null=True)
     player1_score = models.PositiveIntegerField(default=0)
     player2_score = models.PositiveIntegerField(default=0)
@@ -170,7 +180,7 @@ class Match(models.Model):
 
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
-        return f"Match: {self.player1.user.username} vs {self.player2.user.username} ({tournament_info})"
+        return f"Match: ({tournament_info})"
     
     class Meta:
         db_table = 'Match'
@@ -241,4 +251,4 @@ class Notification(models.Model):
         return f"Notification from {self.sender} to {self.receiver} - Type: {self.type}"
 
     class Meta:
-        db_table = 'Notification'
+        db_table = 'Online_Notification'

@@ -206,7 +206,7 @@ export const Game = defineComponent(
                             })
                         }
                                 
-                        if(data.action && (data.action == "game_state" || data.action == "paddle_move"))
+                        if(data.action && (data.action == "game_state"))
                         {
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
                             draw_game(data)

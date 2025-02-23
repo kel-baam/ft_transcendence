@@ -35,8 +35,8 @@ ball ={
     'ballX': 200,
     'ballY': 200,
     'radius':18,
-    'speedX' :10,
-    'speedY':10,
+    'speedX' :7,
+    'speedY':7,
     'maxScore':8,
 }
 
@@ -316,8 +316,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.speedXBall *= -1
             self.speedYBall  = random.choice([7, -7])
             
-            await self.broadcast_game_state()
-
     async def announce_winner(self,event):
         await self.send(text_data=json.dumps({
             'action'      : event.get('action'),
@@ -386,9 +384,10 @@ class GameConsumer(AsyncWebsocketConsumer):
     
     async def game_loop(self):
         while self.connected:
-            if(self.player == "player1"):
-                await self.update_ball()
-            await asyncio.sleep(0.02)
+            # if(self.player == "player1"):
+            await self.update_ball()
+            await self.broadcast_game_state()
+            await asyncio.sleep(0.016)
 
     async def update_ball(self):
         # print('update',self.player,"|",self.ballX,self.ballY)
@@ -405,12 +404,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         if(self.ballX >= self.tableWidth):
                 self.player1Score +=1
                 await self.check_winner()
+                return
 
         if(self.ballX <= 0):
                 self.player2Score +=1
                 await self.check_winner()
+                return
 
-        await self.broadcast_game_state()
 
     async def paddleCollison(self):
         if(self.paddle1Y <= 0):
@@ -439,6 +439,20 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.paddleCollison()
         await self.broadcast_game_state()
 
+    async def update_data(self,data):
+        self.paddle1Y = data['data']['paddle1Y']
+        self.paddle2Y = data['data']['paddle2Y']
+        self.ballX = data['data']['ballX']
+        self.ballY = data['data']['ballY']
+        self.speedXBall =  data['data']['speedXBall']
+        self.speedYBall = data['data']['speedYBall']
+
+        if data['data']['player1Score'] > self.player1Score :
+            self.player1Score = data['data']['player1Score']
+
+        if data['data']['player2Score'] >  self.player2Score:
+            self.player2Score = data['data']['player2Score']
+
     async def broadcast_game_state(self):
         await self.channel_layer.group_send(
             self.game_name,
@@ -452,23 +466,14 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'ballX': self.ballX,
                 'ballY': self.ballY,
                 'radius': self.radius,
+                'speedXBall':self.speedXBall,
+                'speedYBall':self.speedYBall,
                 'player1Score':self.player1Score,
                 'player2Score':self.player2Score,
             })
 
-    async def update_data(self,data):
-        
-        self.paddle1Y = data['data']['paddle1Y']
-        self.paddle2Y = data['data']['paddle2Y']
-        self.ballX    = data['data']['ballX']
-        self.ballY    = data['data']['ballY']
-
-        if data['data']['player1Score'] > self.player1Score :
-            self.player1Score = data['data']['player1Score']
-        if data['data']['player2Score'] >  self.player2Score:
-            self.player2Score = data['data']['player2Score']
-
     async def game_state(self, event):
+
         await self.send(text_data=json.dumps({
             'action':event.get('action'),
             'paddle1Y': event.get('paddle1Y'),
@@ -478,6 +483,8 @@ class GameConsumer(AsyncWebsocketConsumer):
             'ballX': event.get('ballX'),
             'ballY':event.get('ballY'),
             'radius': event.get('radius'),
+            'speedXBall':event.get('speedXBall'),
+            'speedYBall':event.get('speedYBall'),
             'player1Score':event.get('player1Score'),
             'player2Score':event.get('player2Score'),
         }))
