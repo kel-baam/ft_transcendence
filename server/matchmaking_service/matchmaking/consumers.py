@@ -14,7 +14,8 @@ from .exceptions                        import CustomAPIException
 import json
 import asyncio
 import jwt
-
+import random
+import string
 
 class Matchmaking(AsyncWebsocketConsumer):
     waiting_player = None
@@ -73,7 +74,9 @@ class Matchmaking(AsyncWebsocketConsumer):
         user           = await self.get_user(self.user_id)
         if existing_match:
             opponent_user = await self.get_opponent_user(existing_match, self.user_id)
+            
             print("+++>>> :", self.is_redirected)
+
             if not self.is_redirected:
                 await self.mark_match_exited(existing_match)
             if opponent_user and not self.is_redirected:
@@ -84,7 +87,6 @@ class Matchmaking(AsyncWebsocketConsumer):
                         "message": f"Your opponent {user.username} has disconnected.",
                     }
                 )
-
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name
@@ -102,8 +104,6 @@ class Matchmaking(AsyncWebsocketConsumer):
     @database_sync_to_async
     def mark_match_exited(self, match):
         """Update match status to 'exited' when a player disconnects."""
-
-        print("match exited")
         match.status = "exited"
         match.save()
         
@@ -118,6 +118,8 @@ class Matchmaking(AsyncWebsocketConsumer):
             await self.pair_pvp_players()
         if action == 'online_tournament':
             await self.pair_online_tournament_players(data.get('tournamentId'))
+        if action == 'local_tournament':
+            await self.pair_local_tournament_players(data.get('tournamentId'))
         if action == 'start_match':
             await self.start_tournament_match(data.get('matchId'))
         if action == 'ready_for_redirect':
@@ -307,7 +309,6 @@ class Matchmaking(AsyncWebsocketConsumer):
             sorted_players = sorted(players_with_mmv, key=lambda x: x[1])
 
             group_name   = await self.add_players_to_group(sorted_players, id)
-            print("group_name : ", group_name)
             content_type = await sync_to_async(ContentType.objects.get_for_model)(tournament)
             creator_id   = await sync_to_async(lambda: tournament.creator.id)()
             notif_data   = {
@@ -395,14 +396,12 @@ class Matchmaking(AsyncWebsocketConsumer):
             else:
                 return {"error": "Failed to create match", "details": serializer.errors}
 
-
     @database_sync_to_async
     def get_playerTournament(self, player, tournament_id):
         try:
             return PlayerTournament.objects.get(player=player, tournament_id=tournament_id)
         except PlayerTournament.DoesNotExist:
             return None
-
 
     @database_sync_to_async
     def get_online_tournament_players(self, id):        
@@ -505,12 +504,10 @@ class Matchmaking(AsyncWebsocketConsumer):
 
     async def send_json(self, data):
         """Helper function to send JSON messages"""
-
         await self.send(text_data=json.dumps(data))
 
 
     async def start_tournament_match(self, match_id):
-        print("-----------------------> ", match_id, self.user_id)
 
         match           = await sync_to_async(Match.objects.select_related('player1__user', 'player2__user').get)(id=match_id)
         player1_user_id = match.player1.user.id
@@ -518,7 +515,7 @@ class Matchmaking(AsyncWebsocketConsumer):
 
         if self.user_id == player1_user_id or self.user_id == player2_user_id:
             await self.send_json({
-                'is_user'  : True,
+                'is_user' : True,
                 'match_id': match_id,
             })
         else:
@@ -528,130 +525,142 @@ class Matchmaking(AsyncWebsocketConsumer):
 
 # ----------------------------LOCAL--------------------------------------------------------------------
 
-    # async def pair_local_tournament_players(self, id):
-    #     if not id:
-    #         await self.send(text_data=json.dumps({
-    #             'success'   : False,
-    #             'error'     : 'Tournament ID is required'
-    #         }))
-    #         return
+    async def pair_local_tournament_players(self, id):
+        if not id:
+            await self.send_json(({
+                'success' : False,
+                'error'   : 'Tournament ID is required'
+            }))
+            return
 
-    #     try:
-    #         tournament = await self.get_local_tournament(id)
+        try:
+            tournament   = await self.get_local_tournament(id)
+            participants = await self.get_local_players(id)
 
-    #         if tournament.status == 'matchmaking':
-    #             matches = await self.get_matches_for_local_tournament(id)
-    #             await self.send(text_data=json.dumps({
-    #                 'success': True,
-    #                 'matches': matches,
-    #             }))
-    #             return
+            if tournament.status == 'matchmaking':
+                matches      = await self.get_local_match(id)
+                matches_list = []
+                match_index  = 0
 
-    #         players = await self.get_local_players(id)
+                for i in range(0, len(participants) - 1, 2):
+                    if match_index >= len(matches):
+                        break
 
-    #         if not players:
-    #             await self.send(text_data=json.dumps({
-    #                 'success': False,
-    #                 'error'  : 'No players found in the tournament'
-    #             }))
-    #             return
+                    player1 = participants[i]
+                    player2 = participants[i + 1]
+                    match   = matches[match_index]
 
-    #         random.shuffle(players)
-    #         room_1  = players[:len(players) // 2]
-    #         room_2  = players[len(players) // 2:]
-    #         matches = []
+                    matches_list.append({
+                        'player1' : player1.nickname,
+                        'player2' : player2.nickname,
+                        'avatar1' : player1.avatar.url if player1.avatar else None,
+                        'avatar2' : player2.avatar.url if player2.avatar else None,
+                        'status'  : match.status,
+                        'match_id': match.id
+                    })
+                    match_index += 1
 
-    #         for player1, player2 in zip(room_1, room_2):
-    #             match = await self.create_local_match(tournament, player1, player2)
-    #             if match:
-    #                 matches.append({
-    #                     'player1_id': match.player1.id,
-    #                     'player1'   : match.player1.nickname,
-    #                     'player2_id': match.player2.id,
-    #                     'player2'   : match.player2.nickname,
-    #                     'avatar1'   : match.player1.avatar.url if match.player1.avatar else None,
-    #                     'avatar2'   : match.player2.avatar.url if match.player2.avatar else None,
-    #                     'status'    : match.status,
-    #                     'match_id'  : match.id
-    #                 })
+                await self.send_json(({
+                    'success': True,
+                    'matches': matches_list
+                }))
 
-    #         await self.send(text_data=json.dumps({
-    #             'success': True,
-    #             'matches': matches
-    #         }))
-    #         await self.update_local_tournament_status(id, 'matchmaking')
+            print(len(participants))
+            if len(participants) < 2:
+                await self.send_json(({
+                    'success': False,
+                    'error'  : 'No participants found in the tournament'
+                }))
+                return
 
-    #     except LocalTournament.DoesNotExist:
-    #         await self.send(text_data=json.dumps({
-    #             'success': False,
-    #             'error'  : 'Tournament not found'
-    #         }))
-    #     except Exception as e:
-    #         raise CustomAPIException("An error occurred during matchmaking: " + str(e))
+            matches = []
+            for i in range(0, len(participants) - 1, 2):
 
-    # @database_sync_to_async
-    # def get_local_players(self, tournament_id):
-    #     try:
-    #         tournament  = LocalTournament.objects.get(id=tournament_id)
-    #         players     = list(tournament.participants.all())
-    #         return players
-    #     except LocalTournament.DoesNotExist:
-    #         return []
+                player1   = participants[i]
+                player2   = participants[i + 1]
+                room_name = await self.generate_unique_room_code()
 
-    # @database_sync_to_async
-    # def get_local_tournament(self, tournament_id):
-    #     try:
-    #         tournament = LocalTournament.objects.get(id=tournament_id)
-    #         return tournament
-    #     except LocalTournament.DoesNotExist:
-    #         raise CustomAPIException(f"Tournament with ID {tournament_id} does not exist.", code=404)
+                match = await self.create_local_match(tournament, room_name)
+                matches.append({
+                    'player1'  : player1.nickname,
+                    'player2'  : player2.nickname,
+                    'avatar1'  : player1.avatar.url if player1.avatar else None,
+                    'avatar2'  : player2.avatar.url if player2.avatar else None,
+                    'status'   : match['status'],
+                    'match_id' : match['id']
+                })
+
+                await self.send_json(({
+                    'success': True,
+                    'matches': matches
+                }))
+
+            await self.update_local_tournament_status(id, 'matchmaking')
+
+        except Tournament.DoesNotExist:
+            await self.send_json(({
+                'success': False,
+                'error'  : 'Tournament not found'
+            }))
+        except Exception as e:
+            raise CustomAPIException("An error occurred during matchmaking: " + str(e))
+
+    @database_sync_to_async
+    def generate_unique_room_code(self):
+        while True:
+            code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
+            if not Match.objects.filter(room_name=code, status="pending").exists():
+                return code
+
+    @database_sync_to_async
+    def get_local_tournament(self, tournament_id):
+        try:
+            tournament = Tournament.objects.get(id=tournament_id)
+            return tournament
+        except Tournament.DoesNotExist:
+            raise CustomAPIException(f"Tournament with ID {tournament_id} does not exist.", code=404)
 
 
-    # @database_sync_to_async
-    # def update_local_tournament_status(self, tournament_id, status):
-    #     try:
-    #         tournament          = LocalTournament.objects.get(id=tournament_id)
-    #         tournament.status   = status
+    @database_sync_to_async
+    def update_local_tournament_status(self, tournament_id, status):
+        try:
+            tournament          = Tournament.objects.get(id=tournament_id)
+            tournament.status   = status
 
-    #         tournament.save()
-    #     except LocalTournament.DoesNotExist:
-    #         raise CustomAPIException(f"Tournament with ID {tournament_id} does not exist.", code=404)
+            tournament.save()
+        except Tournament.DoesNotExist:
+            raise CustomAPIException(f"Tournament with ID {tournament_id} does not exist.", code=404)
 
-
-    # @database_sync_to_async
-    # def create_local_match(self, tournament, player1, player2):
-    #     try:
-    #         match = LocalMatch(
-    #             player1     = player1,
-    #             player2     = player2,
-    #             tournament  = tournament,
-    #             status      = 'pending',
-    #         )
-    #         match.save()
-    #         return match
-    #     except Exception as e:
-    #         print(f"Error creating match: {e}")
-    #         return None
-
-    # @database_sync_to_async
-    # def get_matches_for_local_tournament(self, tournament_id):
-    #     try:
-    #         tournament  = LocalTournament.objects.get(id=tournament_id)
-    #         matches     = LocalMatch.objects.select_related('player1', 'player2').filter(tournament=tournament)
-    #         match_data  = [
-    #             {
-    #                 'player1_id': match.player1.id,
-    #                 'player1'   : match.player1.nickname,
-    #                 'player2_id': match.player2.id,
-    #                 'player2'   : match.player2.nickname,
-    #                 'avatar1'   : match.player1.avatar.url if match.player1.avatar else None,
-    #                 'avatar2'   : match.player2.avatar.url if match.player2.avatar else None,
-    #                 'status'    : match.status,
-    #                 'match_id'  : match.id
-    #             }
-    #             for match in matches
-    #         ]
-    #         return match_data
-    #     except LocalTournament.DoesNotExist:
-    #         return []
+    @sync_to_async
+    def create_local_match(self, tournament, room_name):
+        try:
+            match_data = {
+                "tournament" : tournament.id,
+                "status"     : 'pending',
+                "room_name"  : room_name
+            }
+            serializer = MatchSerializer(data=match_data)
+            if serializer.is_valid():
+                match = serializer.save()
+                return MatchSerializer(match).data
+            else:
+                return {"error": "Failed to create match", "details": serializer.errors}
+        except Exception as e:
+            print(f"Error creating match: {e}")
+            return None
         
+    @sync_to_async
+    def get_local_players(self, tournament_id):
+        try:
+            participants = PlayerTournament.objects.filter(tournament_id=tournament_id)
+            return list(participants)
+        except PlayerTournament.DoesNotExist:
+            return []
+
+    @sync_to_async
+    def get_local_match(self, tournament_id):
+        try:
+            match = Match.objects.filter(tournament_id=tournament_id)
+            return list(match)
+        except Match.DoesNotExist:
+            return []

@@ -84,11 +84,9 @@ export const JoinedTournaments = defineComponent({
             h('div', { class: 'tournaments' },
                 (this.props.tournaments && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
                     h('div', { class: 'available' }, [
-                        h('img', { src:  `https://${window.env.IP}:8002${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
+                        h('img', { src:  `https://${window.env.IP}:3000${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
                         h('a', {
-                            on        : {
-                                click : () => this.startTournament(tournament.id)
-                            }
+                            on : { click : () => this.startTournament(tournament.id) }
                         }, [tournament.name]),
                         h('i', {
                             class     : "fa-regular fa-circle-xmark icon", 

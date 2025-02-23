@@ -219,8 +219,8 @@ def storeIntraData(intraData):
                         'first_name' : intraData.get('first_name'),
                         'email' :intraData.get('email'),
                         'phone_number': phone_number,
-                        'registration_type':'api',
                         # 'password': '4475588@kdjndjfjjdfnbhf',
+                        'registration_type': 'api',
                         'player' : {
                                 'rank' : '0',
                                 'level':'0',
@@ -265,7 +265,7 @@ def intra_callback(request):
                         response = handle_state(state,user,user_info)
                         #  TODO maybe before setting coookie i should check access id is exist if note set it if yes decode it if i snot valid set new one
                         
-                        if((state == 'login' and user) or (state == 'register' and not user)):         
+                        if((state == 'login' and user) or (state == 'register' and not user))  :         
                                 response = set_tokens_in_cookies_with_OAuth(request,user_info.get("email"),response)
                         return response
         return JsonResponse({'message': 'error'}, status = 404)
@@ -290,11 +290,7 @@ def login(request):
         response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)
 
         response = set_tokens_in_login(request,user.email,response)
-
-
         return response
-
-
 
 def generate_verification_token(username):
     payload = {
@@ -321,12 +317,12 @@ def  registerForm(request):
                         'email': email,
                         'password': password,
                         'verify_token':token,
+                        'registration_type':'form',
                         'player' : {
                                'score':'0',
                                'rank' : '0',
                                'level' : '0'
-                        },
-                        'registration_type':'form',
+                        }
                 }
                 response = requests.post('http://user-service:8001/api/user',json=data)
                 if(response.status_code == 200):
@@ -389,7 +385,7 @@ def password_reset_request(request):
         if not user:
             return Response({'email':"invalid email"},status=status.HTTP_400_BAD_REQUEST)
         if user.is_verify == False:
-            return Response({'email':"please verify your account first"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'email':"please verify email"},status=status.HTTP_400_BAD_REQUEST)
         token = generate_verification_token(user.username)
         uid = urlsafe_base64_encode(str(user.username).encode())
         user.verify_token = token
@@ -425,8 +421,8 @@ def password_reset_confirm(request):
                 data ={
                         'new_password':newPassword,
                         'confirm_password':confirmPassword
-                }
 
+                }
                 if(user):
                         if  token == user.verify_token:
                                 serialize = UserSerializer(user,data=data,partial=True)
@@ -435,7 +431,6 @@ def password_reset_confirm(request):
                                         return Response({'password':"password reset succssefylly"},status=200)
                         return Response({'password':"something wrong"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-
                 return Response({key: value[0] for key, value in serialize.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
                 
    

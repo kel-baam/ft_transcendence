@@ -70,8 +70,6 @@ def desactive2FA(request):
         return  JsonResponse({'active2FA':user.enabled_twoFactor},status=200)
 
 # @accessTokenRequired
-
-# TO CHANGE
 @csrf_exempt
 def verify_code(request):
         if(request.method =='POST'):

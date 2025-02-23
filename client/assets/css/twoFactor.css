@@ -1,23 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
 
-
+/* *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+#content
+{
+    padding: 0;
+    background-color:#161C40;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  } */
 .twoFactor{
+    /* background-color:#161C40; */
     width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    /* border: 1px solid #721c24; */
 }
  
 
 .twoFactorForm
 {
+    /* border: 1px solid #FFEEBF; */
+
     width: 100%;
+    /* height: 100%; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;           
+    /* padding: 50px;      */
 }
 
 .twoFactor .title{
@@ -33,6 +55,7 @@
   width:100%;
   height: 50%;
   justify-content: center;
+  /* border: 1px solid #D44444; */
 }
 .twoFactor #qrCode img{
   padding: 15px;
@@ -42,6 +65,7 @@
 }
 .twoFactorForm input
 {
+  /* border: 1px solid #721c24; */
   margin-bottom: 30px;
   width: 250px;
   height: 40px;
@@ -63,6 +87,7 @@
 
 }
 
+
 .twoFactor form   #active
 {
     width: 120px;
@@ -74,6 +99,7 @@
     color: #FFEEBF;
     background-color: #D44444;
 }
+
 
 .notification-container {
     position: fixed;
@@ -161,19 +187,15 @@
 
 #twoFactor .twoFactorCard #input
 {
+   /* margin-bottom: 30px; */
    color: black;
    width: 75%;
    height: 50px;
-   font-size: 25px;
-   letter-spacing: 5px;
    border: none;
    border-radius: 10PX;
    padding-left: 30px;
-   /* font-weight: bold; */
 
 }
-
-
 #twoFactor .twoFactorCard input:focus
 {
    margin-bottom: 30px;
@@ -188,7 +210,6 @@
 {
     color: grey;
     font-size: 15px;
-   letter-spacing: 1px;
   
 }
 #twoFactor .twoFactorCard form   #submit

@@ -79,7 +79,7 @@ class UserInfoView(APIView):
     def post(self, request):
         try:
             data = request.data.copy()
-            print(">>>>>>>>>>>>>>>>>>>>> data comes from kaoutar : ", data)
+            # print(">>>>>>>>>>>>>>>>>>>>> data comes from kaoutar : ", data)
             if data.get('picture'):
                 # print(">>>>>>>>>>>>>>>>>>>>> heeeeeeere ")
                 response = requests.get(data['picture'], stream=True)

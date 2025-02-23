@@ -4,36 +4,37 @@ import { header } from '../../../components/header.js'
 import { sidebarLeft } from '../../../components/sidebar-left.js'
 
 
+let socket = null;
+
 export const LocalHierarchy = defineComponent({
 
     state(){
         return {
-            matcheRounds    : [],
-            socket: null,
-            currentMatch    : null,
-            matchIndex      : 0
+            matcheRounds : [],
+            currentMatch : null,
+            matchIndex   : 0
         }
     },
 
     async matchmake_players()
     {
-        if (!this.state.socket || this.state.socket.readyState !== WebSocket.OPEN) {
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
 
-            this.state.socket   = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
+            socket              = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
             const tournamentId  = this.appContext.router.params.id;
 
             console.log("---> : ", tournamentId)
 
-            this.state.socket.onopen = () => {
+            socket.onopen = () => {
                 console.log('WebSocket connection established');
                 
-                this.state.socket.send(JSON.stringify({
-                    action          : 'local_tournament',
-                    tournamentId    : tournamentId
+                socket.send(JSON.stringify({
+                    action       : 'local_tournament',
+                    tournamentId : tournamentId
                 }));
             };
 
-            this.state.socket.onmessage = (event) => {
+            socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 
                 console.log('WebSocket Data:', data);
@@ -44,15 +45,13 @@ export const LocalHierarchy = defineComponent({
                     this.updateState({
                         matcheRounds : data.matches
                     })
-                    setTimeout(() => {
-                        this.announceMatch(0)
-                    }, 2000);
+                    // setTimeout(() => {
+                    //     this.announceMatch(0)
+                    // }, 2000);
                 }
-                else
-                    this.appContext.router.navigateTo(`/404`);
             };
 
-            this.state.socket.onerror = (error) => {
+            socket.onerror = (error) => {
                 console.error('WebSocket error:', error);
             };
         }
@@ -76,13 +75,6 @@ export const LocalHierarchy = defineComponent({
             matchIndex   : index
         });
 
-        setTimeout(() => {
-            const tournamentId  = this.appContext.router.params.id;
-            const player1Id     = matches.player1Id;
-            const player2Id     = matches.player2Id;
-    
-            this.appContext.router.navigateTo(`/match/${tournamentId}/${player1Id}/${player2Id}`);
-        }, 3000);
     },
 
     onMounted()
@@ -94,13 +86,11 @@ export const LocalHierarchy = defineComponent({
 
     onUnmounted()
     {
-        if (this.state.socket) {
+        if (socket) {
             console.log('WebSocket connection closed');
-            this.state.socket.close();
+            socket.close();
         }
     },
-
-    //onUnmounted 
 
     render()
     {
@@ -118,7 +108,7 @@ export const LocalHierarchy = defineComponent({
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
-                                            src: match.avatar1 ? `https://${window.env.IP}:8002${match.avatar1}` : './default-avatar.png' 
+                                            src: `https://${window.env.IP}:3000/media${match.avatar1}`
                                         }),
                                         h('h2', {}, [match.player1])
                                     ]),
@@ -127,7 +117,7 @@ export const LocalHierarchy = defineComponent({
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
-                                            src: match.avatar2 ? `https://${window.env.IP}:8002${match.avatar2}` : './default-avatar.png' 
+                                            src: `https://${window.env.IP}:3000/media${match.avatar2}`
                                         }),
                                         h('h2', {}, [match.player2])
                                     ])

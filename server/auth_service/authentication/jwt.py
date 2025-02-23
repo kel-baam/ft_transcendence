@@ -40,10 +40,7 @@ def generateToken(user,level):
 def token_required(request):
         try:              
                 access_token = request.COOKIES.get("access_token","default")
-                print("==>",access_token)
                 payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
-                print("==>",payload)
-
                 user = (User.objects.filter(email=payload["email"]).first)()
 
                 if user:

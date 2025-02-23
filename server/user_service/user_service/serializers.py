@@ -60,7 +60,13 @@ class UserSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name, None)
 
     def validate(self, attrs):
+        # print(">>>>>>>>>>>>>>>>>>>>> picture in validate stage : ", attrs.get('picture'))
+        # if 'picture' in attrs:
+        #     picture = attrs.get('picture')
 
+        # # Ensure file is open
+        #     if picture.closed:
+        #         raise ValidationError({"picture": "The file is closed, cannot read."})
         if attrs.get('registration_type') == 'form' and not attrs.get('password'):
             raise serializers.ValidationError({"password" : "Password is required !!!"})
         if self.instance is not None:
@@ -92,9 +98,7 @@ class UserSerializer(serializers.ModelSerializer):
         if 'password' in attrs:
             password = attrs.get('password')
             try:
-                print(">>>>>>>>>>>>>>>>> password is empty ")
                 validate_password(password)
-
                 attrs['password']=make_password(attrs['password'])
             except ValidationError as e:
                 raise serializers.ValidationError({"New_password": e.messages[0]})

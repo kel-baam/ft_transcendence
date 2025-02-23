@@ -86,10 +86,13 @@ export const OnlinePvp = defineComponent({
                 }
                 else if (data.action === "redirect_players")
                 {
+                    console.log("----------> player redirected")
+                    
                     this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                 }
                 else if (data.action === "opponent_disconnected")
                 {
+                    console.log("------------------------------------------------------------")
                     showErrorNotification(data.message);
                     this.appContext.router.navigateTo('/pvp');
                     clearTimeout(redirectTimeout);

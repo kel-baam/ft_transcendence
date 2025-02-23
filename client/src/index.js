@@ -19,10 +19,10 @@ import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js
 import { LocalHierarchy } from './pages/tournaments/local/LocalHierarchy.js';
 import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
 import { OnlinePvp } from './pages/pvp/online.js';
-import {OnlineHierarchy} from './pages/tournaments/online/OnlineHierarchy.js'
+import { OnlineHierarchy } from './pages/tournaments/online/OnlineHierarchy.js'
 
 window.env = {
-  IP: "10.14.3.3",
+  IP: "10.13.5.2",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -32,14 +32,13 @@ document.addEventListener('DOMContentLoaded', function() {
       link.addEventListener('click', function(event) {
           event.preventDefault();
 
-          const targetId = link.getAttribute('href').substring(1);
-
+          const targetId      = link.getAttribute('href').substring(1);
           const targetElement = document.getElementById(targetId);
 
           if (targetElement) {
               targetElement.scrollIntoView({
-                  behavior: 'smooth',  
-                  block: 'start',      
+                  behavior: 'smooth',
+                  block   : 'start',
               });
           }
       });
@@ -119,7 +118,6 @@ const router = new HashRouter([
     { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy, beforeEnter:isAuthenticated},
     { path: '/pvp', component: PlayerVsPlayer, beforeEnter:isAuthenticated},
     { path: '/pvp_online', component: OnlinePvp, beforeEnter:isAuthenticated},
-
   ])
 
 

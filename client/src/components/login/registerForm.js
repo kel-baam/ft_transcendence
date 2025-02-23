@@ -25,8 +25,8 @@ export const RegisterForm = defineComponent({
             if (!res.ok) {
                 
                 const errors = await res.json();
-                console.log("errror=>",errors)
                 showErrorNotification(Object.values(errors)[0])
+                console.log("ook",errors)
                 this.updateState({errors:errors})
             }
             else
@@ -50,7 +50,7 @@ export const RegisterForm = defineComponent({
             ]),
             h('input',{class:'inputInfo input',type:'text' ,id:this.getErrorMessage('username'),name:'username',placeholder:'Username'}),
             h('input',{class:'inputInfo input',type:'text' ,id:this.getErrorMessage('email'),name:'email',placeholder:'Email'}),
-            h('input',{class:'inputInfo input',type:'password' ,id:this.getErrorMessage('password') || this.getErrorMessage('New_password') ,name:'password',placeholder:'Password'}),
+            h('input',{class:'inputInfo input',type:'password' ,id:this.getErrorMessage('password') || this.getErrorMessage('New_password'),name:'password',placeholder:'Password'}),
             h('button',{class:'register-btn'},['Sign Up']),
 
         ])

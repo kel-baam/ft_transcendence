@@ -60,15 +60,3 @@ put in plac of the leaderboard and top 5 the content when no user play a match
 =>here was an error ''if hasattr(user, 'enabled_twoFactor') and user.enabled_twoFactor:'' i change it with this one 
 
 =>duplicate email in intra should display error (kaoutar's mission)
-
-
-
-
-
-kawtar
-
-
-
-after verification email i should distroy the link validition
-
-reset password (verify ==none) and color it the red in case of errors
