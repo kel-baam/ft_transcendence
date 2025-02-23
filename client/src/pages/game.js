@@ -63,7 +63,7 @@ export const Game = defineComponent(
 
         createConfetti() {
             for (let i = 0; i < 200; i++) {
-                const size = Math.random() * 10 + 5;  // Random size of confetti
+                const size = Math.random() * 10 + 5;
                 const x = Math.random() * canvas.width;
                 const y = Math.random() * canvas.height / 2;
                 const speedX = Math.random() * 4 - 2;  // Horizontal speed
@@ -113,25 +113,22 @@ export const Game = defineComponent(
             winText.textContent = message;
             winMessageContainer.appendChild(winText);
 
-            // Append the message container to the game area (canvas)
             document.getElementById('tableGame').parentElement.appendChild(winMessageContainer);
 
-            // Trigger the confetti (if you have this functionality)
-            if(message == 'You Win!')
+            if(message == 'You Won!')
                 this.createConfetti();
             else
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 
             setTimeout(function () {
-            // Apply the transition effect for scaling and fading
-            winMessageContainer.style.transition = 'transform 2s ease, opacity 2s ease'; // Slow scale and fade
-            winMessageContainer.style.transform = 'scale(0)'; // Shrinks the container
-            winMessageContainer.style.opacity = '0'; // Fades the message
+                winMessageContainer.style.transition = 'transform 2s ease, opacity 2s ease';
+                winMessageContainer.style.transform = 'scale(0)';
+                winMessageContainer.style.opacity = '0';
 
-            setTimeout(function() {
-                winMessageContainer.style.display = 'none'; // Hide the element from the DOM
-            }, 1000);
+                setTimeout(function() {
+                    winMessageContainer.style.display = 'none';
+                }, 1000);
             }, 3000);
         },
 
@@ -197,20 +194,26 @@ export const Game = defineComponent(
                     
                         if(data.action && data.action == "init_game")
                         {
-                            console.log(">>>>>>>>>>>>>>>>>>>>>> data : in initial state ", data)
+                            console.log("--->data", data)
                             draw_game(data)
                             if(data.player)
                                 player = data.player
-                            this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
-                                player1: data.player1, player2:data.player2})
+                            this.updateState({
+                                player1Score: data.player1Score,
+                                player2Score: data.player2Score,
+                                player1     : data.player1,
+                                player2     : data.player2
+                            })
                         }
                                 
                         if(data.action && (data.action == "game_state" || data.action == "paddle_move"))
                         {
-                            // console.log("this is my ball data==================>",data)
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
                             draw_game(data)
-                            socket.send(JSON.stringify({ update: 'update_data', data: data}));
+                            socket.send(JSON.stringify({
+                                update: 'update_data',
+                                data  : data
+                            }));
                         }
 
                         if(data.action && data.action == 'opponent_disconnected')
@@ -219,7 +222,11 @@ export const Game = defineComponent(
 
                             showErrorNotification(data.message)
                             this.announce_winner(data.state)
-                            socket.close()
+                            socket.close();
+
+                            setTimeout(() => {
+                                this.appContext.router.navigateTo(data.redirect_to);
+                            }, 7000);
                         }
 
                         if (data.action && data.action === 'match not found')
@@ -236,18 +243,31 @@ export const Game = defineComponent(
 
                             this.updateState({error: "unauthorized"})
                             socket.close()
-
                         }
 
-                        if(data.action && data.action == 'game_over')
+                        if (data.action && data.action === 'game_over')
                         {
-                            if(player == data.Winner)
-                                this.announce_winner('You Win!')
+                            console.log("kher")
+                            if (player === data.Winner)
+                                { this.announce_winner('You Won!'); }
                             else
-                                this.announce_winner('You Lose!')
+                                { this.announce_winner('You Lose!');  }
 
+                            console.log("redirect to --> ", data.redirect_to);
+
+                            socket.close();
+                            setTimeout(() => {
+                                this.appContext.router.navigateTo(data.redirect_to);
+                            }, 7000);
+                        }
+
+                        if (data.action && data.action === "match_exited")
+                        {
+                            this.appContext.router.navigateTo(data.redirect_to);
+                            showErrorNotification(data.message)
                             socket.close()
                         }
+                        draw_game(data)
                             
                     }.bind(this);
 
@@ -286,13 +306,14 @@ export const Game = defineComponent(
                         }
                     });
 
-                    socket.onclose = function(e) {
-                        console.log("WebSocket is closed now.",e);
+                    socket.onclose = (event) => {
+                        console.log('WebSocket connection closed:', event);
+                    }
+
+                    socket.onerror = (event) => {
+                        console.log('WebSocket error:', event);
                     };
 
-                    socket.onerror = function(e) {
-                        console.log("WebSocket error",e);
-                    };
             }
         },
 

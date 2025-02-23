@@ -58,13 +58,46 @@ class User(AbstractBaseUser):
 
 class Player(models.Model):
     user  = models.OneToOneField(User, on_delete=models.CASCADE)
-    score = models.FloatField(default=0)
-    level = models.FloatField(default=0.0)
-    rank  = models.BigIntegerField(default=0)
+    score = models.IntegerField(default=0)
+    level = models.IntegerField(default=0)
+    rank = models.IntegerField(default=0)
+    # grade = models.CharField(_(""), max_length=50, )#silver...
+
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
+
     class Meta:
         db_table = 'Player'
+
+    def update_score(self, score):
+        """Update the player's score based on the match result."""
+        self.score += score
+        self.save()
+
+    def update_level(self):
+        """Update the player's level based on their score."""
+        if self.score >= 1000:
+            self.level = 5
+        elif self.score >= 200:
+            self.level = 4
+        elif self.score >= 150:
+            self.level = 3
+        elif self.score >= 50:
+            self.level = 2
+        else:
+            self.level = 1
+        self.save()
+
+    @staticmethod
+    def update_all_ranks():
+        """Update ranks for all players based on their scores."""
+        players = Player.objects.all().order_by('-score')
+        current_rank = 1
+        for i, player in enumerate(players):
+            if i > 0 and player.score < players[i - 1].score:
+                current_rank = i + 1
+            player.rank = current_rank
+            player.save()
 
 class Tournament(models.Model):
     creator         = models.ForeignKey(User, on_delete = models.CASCADE,related_name='online_tournament_creator')
@@ -129,6 +162,7 @@ class Match(models.Model):
 
     status_choices = [
         ('pending', 'Pending'),
+        ('started', 'Started'),
         ('completed', 'Completed'),
         ('exited', 'Exited')
     ]
