@@ -62,7 +62,8 @@ def generate_new_token(request):
     refreshToken = request.COOKIES.get("refresh_token")
     try:
         payload = jwt.decode(refreshToken, settings.SECRET_KEY, algorithms=["HS256"])
-
+        
+        user = (User.objects.filter(email=payload["email"]).first)()
 
         if (user.enabled_twoFactor and payload['login_level'] == 1):
                 return JsonResponse({'message': '2fa required'},status = 401)

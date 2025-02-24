@@ -149,7 +149,7 @@ class PlayerTournament(models.Model):
 
     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
     
-    nickname        = models.CharField(max_length=50, null=True, blank=True)
+    nickname        = models.CharField(max_length=50, null=True, blank=True, unique = True)
     avatar          = models.ImageField(upload_to='player_images/', null=True, blank=True)
     
     invited_at      = models.DateTimeField(auto_now_add=True)
@@ -169,6 +169,8 @@ class Match(models.Model):
     room_name     = models.CharField(max_length=50, null=True)
     player1_score = models.PositiveIntegerField(default=0)
     player2_score = models.PositiveIntegerField(default=0)
+    player1_nickname = models.CharField(max_length=50, null=True, blank=True)
+    player2_nickname = models.CharField(max_length=50, null=True, blank=True)
 
     status_choices = [
         ('pending', 'Pending'),

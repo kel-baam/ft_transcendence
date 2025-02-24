@@ -32,6 +32,19 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
     class Meta:
         model   = PlayerTournament
         fields  = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        fields  = kwargs.pop('fields', None)
+        exclude = kwargs.pop('exclude', None)
+        super().__init__(*args, **kwargs)
+        if fields:
+            allowed  = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+        if exclude:
+            for field_name in exclude:
+                self.fields.pop(field_name, None)
 
     def validate(self, data):
         """Override the default validation to handle custom checks"""
@@ -80,9 +93,7 @@ class MatchSerializer(serializers.ModelSerializer):
 
     def validate_room_name(self, value):
         """Ensure the room_name is unique only for active matches (pending)."""
-        print("Validating room_name:", value)  # Debug print to check if the method is reached
         if Match.objects.filter(room_name=value, status='pending').exists():
-            print("Room name is already in use for an active match.")
             raise serializers.ValidationError("Room name is already in use for an active match.")
         return value
     

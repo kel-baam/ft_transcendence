@@ -5,14 +5,15 @@ import { sidebarLeft } from '../../../components/sidebar-left.js'
 
 
 let socket = null;
-
+let redirectTimeout = null;
 export const LocalHierarchy = defineComponent({
 
     state(){
         return {
             matcheRounds : [],
             currentMatch : null,
-            matchIndex   : 0
+            matchIndex   : 0,
+            winners      :[]
         }
     },
 
@@ -38,16 +39,32 @@ export const LocalHierarchy = defineComponent({
                 const data = JSON.parse(event.data);
                 
                 console.log('WebSocket Data:', data);
-                console.log(data.error !== "Matchmaking already done")
                 
                 if (data.success)
                 {
                     this.updateState({
-                        matcheRounds : data.matches
+                        matcheRounds : data.matches,
+                        winners      : data.winners
                     })
-                    // setTimeout(() => {
-                    //     this.announceMatch(0)
-                    // }, 2000);
+                    if (data.rounds != undefined)
+                    {
+                       redirectTimeout = setTimeout(() => {
+                            if (socket.readyState === WebSocket.OPEN) {
+                                this.appContext.router.navigateTo(`/game?id=${data.rounds}&type=local`);
+                            } else {
+                                console.log('WebSocket is closed. Redirection canceled.');
+                            }
+                        }, 5000); 
+                    }
+                }
+            };
+
+            socket.onclose = () => {
+                console.log('WebSocket connection closed.');
+
+                if (redirectTimeout) {
+                    clearTimeout(redirectTimeout);
+                    console.log('Redirect timeout cleared.');
                 }
             };
 
@@ -55,26 +72,6 @@ export const LocalHierarchy = defineComponent({
                 console.error('WebSocket error:', error);
             };
         }
-    },
-
-    announceMatch(index) {
-        const matches = this.state.matcheRounds;
-
-        if (index >= matches.length) {
-            this.updateState({
-                currentMatch : null,
-                matchIndex   : 0
-            });
-            return;
-        }
-        
-        console.log("---> : ", matches[index])
-        
-        this.updateState({
-            currentMatch : matches[index],
-            matchIndex   : index
-        });
-
     },
 
     onMounted()
@@ -94,7 +91,7 @@ export const LocalHierarchy = defineComponent({
 
     render()
     {
-
+        console.log("------------> this.state.winners :", this.state.winners)
         return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
             [h(sidebarLeft, {}),
                 this.state.currentMatch === null ?
@@ -104,7 +101,7 @@ export const LocalHierarchy = defineComponent({
                     ]),
                     h('div', { class: 'rounds' }, [
                         h('div', { class: 'round1' }, 
-                            (this.state.matcheRounds || []).map((match, i) =>
+                            (this.state.matcheRounds.slice(0, 2)).map((match, i) =>
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
@@ -123,24 +120,35 @@ export const LocalHierarchy = defineComponent({
                                     ])
                                 ])
                             )
-                        ),                        
+                        ),                       
                         h('div', { class: 'round2' }, [
-                            
                             h('div', { class: 'player1' }, [
-                                h('img', { src: './images/people_14024721.png' }),
-                                h('h2', {}, ['username'])
+                                h('img', { 
+                                    src: this.state.winners && this.state.winners[0] && this.state.winners[0]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[0]['avatar']}` 
+                                        : './images/people_14024721.png'
+                                }),
+                                h('h2', {}, [this.state.winners && this.state.winners[0] && this.state.winners[0]['nickname'] || 'nickname'])
                             ]),
                             h('div', { class: 'vs' }, [
                                 h('img', { src: './images/vs.png' })
                             ]),
                             h('div', { class: 'player2' }, [
-                                h('img', { src: './images/people_14024721.png' }),
-                                h('h2', {}, ['username'])
+                                h('img', { 
+                                    src: this.state.winners && this.state.winners[1] && this.state.winners[1]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[1]['avatar']}` 
+                                        : './images/people_14024721.png'
+                                }),
+                                h('h2', {}, [this.state.winners && this.state.winners[1] && this.state.winners[1]['nickname'] || 'nickname'])
                             ])
                         ]),
                         h('div', { class: 'round3' }, [
-                            h('img', { src: './images/people_14024721.png' }),
-                            h('h2', {}, ['username'])
+                            h('img', { 
+                                src: this.state.winners && this.state.winners[2] && this.state.winners[2]['avatar'] 
+                                    ? `https://${window.env.IP}:3000/media${this.state.winners[2]['avatar']}` 
+                                    : './images/people_14024721.png'
+                            }),
+                            h('h2', {}, [this.state.winners && this.state.winners[2] && this.state.winners[2]['nickname'] || 'nickname'])
                         ]),
                         h('div', { class: 'trophy' }, [
                             h('img', { src: './images/gold-cup-removebg-preview.png' })

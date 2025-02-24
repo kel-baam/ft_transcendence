@@ -22,7 +22,7 @@ import { OnlinePvp } from './pages/pvp/online.js';
 import { OnlineHierarchy } from './pages/tournaments/online/OnlineHierarchy.js'
 
 window.env = {
-  IP: "10.13.5.5",
+  IP: "10.14.3.2",
 }
 
 document.addEventListener('DOMContentLoaded', function() {

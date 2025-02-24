@@ -138,14 +138,13 @@
 
 .rank-info .info
 {
-    /* border: 1px solid yellow; */
     overflow-y: scroll;
     overflow-x: hidden;
     width: 900px;
-    height: 370px;
+    height: fit-content;
+    max-height: 370px;
     background-color: #D0D2D9;
     background-color: #FFEEBF;
-
     border-radius:0 0 10px 10px ;
 }
 
@@ -166,4 +165,46 @@
 ::-webkit-scrollbar-thumb{
     background: #F45250;
     border-radius: 10px;
+}
+
+
+
+.home-content .empty {
+    height: 700px;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    align-items: center;
+}
+
+.home-content .empty .leaderboard-title h1
+{
+    /* border: 1px solid red; */
+
+    font-size: 40px;
+    color: #FFEEBF;
+    font-weight: 300px ;
+    font-family: 'Lemon',serif;
+}
+
+
+.home-content .empty .trophy-pic{
+    margin-top: 100px;
+    /* padding: 50px; */
+    width: 300px;
+    /* border: 1px solid red; */
+
+    object-fit: contain;
+    /* height: auto; */
+}
+
+
+
+.home-content .empty h1{
+    /* margin-top: 100px; */
+    font-size: 27px;
+    letter-spacing: 2px;
+    font-family: myFont;    
+
 }

@@ -38,22 +38,23 @@ CHANNEL_LAYERS = {
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'ignore_channel_capacity_logs': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: 'channels over capacity in group' not in record.getMessage(),
+        },
+    },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
+            'filters': ['ignore_channel_capacity_logs'],
             'class': 'logging.StreamHandler',
         },
     },
     'loggers': {
-        'django': {
+        '': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': True,
-        },
-        'channels': {
-            'handlers': ['console'],
-            'level': 'WARNING',  # Set to WARNING to suppress INFO messages
-            'propagate': False,
         },
     },
 }

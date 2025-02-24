@@ -8,7 +8,7 @@ from channels.layers                    import get_channel_layer
 from django.contrib.contenttypes.models import ContentType
 
 from .models                            import Player, User, Match, Tournament, PlayerTournament
-from .serializers                       import UserSerializer, MatchSerializer, NotificationSerializers
+from .serializers                       import *
 from .exceptions                        import CustomAPIException
 
 import json
@@ -78,7 +78,7 @@ class Matchmaking(AsyncWebsocketConsumer):
             print("+++>>> :", self.is_redirected)
 
             if not self.is_redirected:
-                self.is_redirected = False # to re-check 
+                # self.is_redirected = False # to re-check 
                 await self.mark_match_exited(existing_match)
             if opponent_user and not self.is_redirected:
                 await self.channel_layer.group_send(
@@ -539,8 +539,10 @@ class Matchmaking(AsyncWebsocketConsumer):
             participants = await self.get_local_players(id)
 
             if tournament.status == 'matchmaking':
+                print("*************** in matchmaking")
                 matches      = await self.get_local_match(id)
                 matches_list = []
+                winners      = []
                 match_index  = 0
 
                 for i in range(0, len(participants) - 1, 2):
@@ -559,14 +561,57 @@ class Matchmaking(AsyncWebsocketConsumer):
                         'status'  : match.status,
                         'match_id': match.id
                     })
+
+                    if match.status == "completed":
+                        winner            = await self.determine_winner(match)
+                        winner_tournament = await self.get_player_tournament(tournament, winner)
+                        if winner:
+                            winners.append(PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data,)
+
                     match_index += 1
 
-                await self.send_json(({
-                    'success': True,
-                    'matches': matches_list
-                }))
+                print("update_tournament_hierarchy")
 
-            print(len(participants))
+                await self.update_tournament_hierarchy(tournament, matches)
+                matches  = await self.get_local_match(id)
+                while match_index < len(matches):
+                    match = matches[match_index]
+                    matches_list.append({
+                        'player1' : player1.nickname,
+                        'player2' : player2.nickname,
+                        'avatar1' : player1.avatar.url if player1.avatar else None,
+                        'avatar2' : player2.avatar.url if player2.avatar else None,
+                        'status'  : match.status,
+                        'match_id': match.id
+                    })
+                    match_index += 1
+                print("---------------------------------------------")
+                matches  = await self.get_local_match(id)
+                index    = 0
+                match_id = None
+                winners  = []
+                while index < len(matches):
+                    match = matches[index]
+                    if match.status == "completed":
+                        winner = await self.determine_winner(match)
+                        winner_tournament = await self.get_player_tournament(tournament, winner)
+                        if winner:
+                            winners.append(PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data,)
+
+                    if match.status == 'pending' or match.status == 'started':
+                        match_id = matches_list[index]['match_id'] if matches_list else None
+                        break
+                    index += 1
+                print("send----+++++++++++++++++++++----")
+
+                await self.send_json(({
+                    'success' : True,
+                    'matches' : matches_list,
+                    'rounds'  : match_id,
+                    'winners' : winners,
+                }))
+                return
+
             if len(participants) < 2:
                 await self.send_json(({
                     'success': False,
@@ -575,13 +620,13 @@ class Matchmaking(AsyncWebsocketConsumer):
                 return
 
             matches = []
+        
             for i in range(0, len(participants) - 1, 2):
-
                 player1   = participants[i]
                 player2   = participants[i + 1]
                 room_name = await self.generate_unique_room_code()
 
-                match = await self.create_local_match(tournament, room_name)
+                match = await self.create_local_match(tournament, room_name, player1.nickname, player2.nickname)
                 matches.append({
                     'player1'  : player1.nickname,
                     'player2'  : player2.nickname,
@@ -591,10 +636,11 @@ class Matchmaking(AsyncWebsocketConsumer):
                     'match_id' : match['id']
                 })
 
-                await self.send_json(({
-                    'success': True,
-                    'matches': matches
-                }))
+            await self.send_json(({
+                'success' : True,
+                'matches' : matches,
+                'rounds'  : matches[0]['match_id'],
+            }))
 
             await self.update_local_tournament_status(id, 'matchmaking')
 
@@ -605,6 +651,28 @@ class Matchmaking(AsyncWebsocketConsumer):
             }))
         except Exception as e:
             raise CustomAPIException("An error occurred during matchmaking: " + str(e))
+
+    @sync_to_async
+    def get_player_tournament(self, tournament, nickname):
+        return PlayerTournament.objects.get(tournament=tournament, nickname=nickname)
+
+    @sync_to_async
+    def determine_winner(self, match):
+        if match.player1_score > match.player2_score:
+            return match.player1_nickname
+        elif match.player2_score > match.player1_score:
+            return match.player2_nickname
+
+    async def update_tournament_hierarchy(self, tournament, matches):
+        winners = []
+        for match in matches:
+            if match.status == "completed":
+                winner = await self.determine_winner(match)
+                if winner:
+                    winners.append(winner)
+        if len(winners) == 2:
+            room_name = await self.generate_unique_room_code()
+            await self.create_local_match(tournament, room_name, winners[0], winners[1])
 
     @database_sync_to_async
     def generate_unique_room_code(self):
@@ -633,18 +701,21 @@ class Matchmaking(AsyncWebsocketConsumer):
             raise CustomAPIException(f"Tournament with ID {tournament_id} does not exist.", code=404)
 
     @sync_to_async
-    def create_local_match(self, tournament, room_name):
+    def create_local_match(self, tournament, room_name, player1_nickname, player2_nickname):
         try:
             match_data = {
-                "tournament" : tournament.id,
-                "status"     : 'pending',
-                "room_name"  : room_name
+                "tournament"       : tournament.id,
+                "status"           : 'pending',
+                "room_name"        : room_name,
+                "player1_nickname" : player1_nickname,
+                "player2_nickname" : player2_nickname
             }
             serializer = MatchSerializer(data=match_data)
             if serializer.is_valid():
                 match = serializer.save()
                 return MatchSerializer(match).data
             else:
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", serializer.errors)
                 return {"error": "Failed to create match", "details": serializer.errors}
         except Exception as e:
             print(f"Error creating match: {e}")

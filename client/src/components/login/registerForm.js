@@ -26,6 +26,7 @@ export const RegisterForm = defineComponent({
                 
                 const errors = await res.json();
                 showErrorNotification(Object.values(errors)[0])
+                console.log("ook",errors)
                 this.updateState({errors:errors})
             }
             else
