@@ -87,6 +87,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     payload           = jwt.decode(cookies.get("access_token").encode("utf-8"), settings.SECRET_KEY, algorithms=["HS256"])
                     self.access_token = cookies.get("access_token")
                     user              = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
+
                     if user:
                         self.scope['user_id'] = user
                         self.user_id          = user.id
@@ -97,9 +98,9 @@ class GameConsumer(AsyncWebsocketConsumer):
                         
                         await self.accept()
 
-                        self.redirect_to   = ""
-                        self.type     = query_params.get('type', [None])[0]
-                        self.match_id = query_params.get('id', [None])[0]
+                        self.redirect_to = ""
+                        self.type        = query_params.get('type', [None])[0]
+                        self.match_id    = query_params.get('id', [None])[0]
 
                         if (self.type != "local" and self.type !=  "online") or (self.type == "online"  and self.match_id == "undefined") or \
                             ( self.match_id != "undefined"  and not self.match_id.isdigit()):
@@ -111,9 +112,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                             # for handel tournament(local/online) and pvp(online)
 
                             print("----> match id : ", self.match_id)
-                            match_instance = await self.get_match(self.match_id)
+                            match_instance = await self.get_match_instance(self.match_id)
 
                             if match_instance is None:
+                                print(" match_instance is None ---------------------------------")
                                 await self.send(text_data=json.dumps({"action": "match not found"}))
                                 return
                             
@@ -133,10 +135,12 @@ class GameConsumer(AsyncWebsocketConsumer):
 
                                 self.player1, self.player2 =  await self.get_user(match_instance)
                                 if self.user_id != self.player1.id and self.user_id != self.player2.id:
-                                    await self.send(text_data=json.dumps({"action": "unauthorized"}))
+                                    await self.send(text_data=json.dumps({
+                                        "action"     : "unauthorized",
+                                        "redirect_to": self.redirect_to,}))
                                     return
 
-                                self.game_name = match_instance.room_name
+                                self.game_name     = match_instance.room_name
                                 self.channel_layer = get_channel_layer()
                                 await self.channel_layer.group_add(
                                     self.game_name,
@@ -151,13 +155,28 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     self.player = "spectator"
 
                             else:       
-                                print("in tournament part")
-                                print("----- in get tournament instance", match_instance.tournament.id)
+                                print("IN Tournament PART")
+                                print("+++ >> in get tournament instance", match_instance.tournament.id)
                                 
-                                tournament_instance, creator_id = await self.get_tournament_and_creator(match_instance.tournament.id)
-                                if not tournament_instance:
+                                tournament_data = await self.get_tournament_and_creator(match_instance.tournament.id)
+
+                                if tournament_data == "finished":
+                                    if self.type == "local":
+                                        self.redirect_to = f"/tournament/local/local_hierachy/{match_instance.tournament.id}"
+                                    else:
+                                        self.redirect_to = f"/tournament/online/online_hierachy/{match_instance.tournament.id}"
+                                    await self.send(text_data=json.dumps({
+                                        "action": "tournament finished",
+                                        "message": "Tournament finished",
+                                        "redirect_to": self.redirect_to
+                                    }))
+                                    return
+
+                                if not tournament_data:  
                                     await self.send(text_data=json.dumps({"action": "tournament not found"}))
                                     return
+
+                                tournament_instance, creator_id = tournament_data
 
                                 if self.type != tournament_instance.mode:
                                     await self.send(text_data=json.dumps({"action": "match not found"}))
@@ -167,7 +186,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     await self.send(text_data=json.dumps({"action": "unauthorized"}))
                                     return
                                 
-                                self.game_name = match_instance.room_name
+                                self.game_name     = match_instance.room_name
                                 self.channel_layer = get_channel_layer()
                                 await self.channel_layer.group_add(
                                     self.game_name,
@@ -176,6 +195,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
                                 if self.type == "local":
                                     print("-------> on local tournament")
+
                                     player1_tournament = await self.get_player_tournament(tournament_instance, match_instance.player1_nickname)
                                     player2_tournament = await self.get_player_tournament(tournament_instance, match_instance.player2_nickname)
 
@@ -183,13 +203,14 @@ class GameConsumer(AsyncWebsocketConsumer):
                                         await self.send(text_data=json.dumps({"action": "player not found"}))
                                         return
 
-                                    self.player1 = player1_tournament
-                                    self.player2 = player2_tournament
-
-                                    self.player = "player1"
-                                    self.type   = "local_tournament"
+                                    self.player1     = player1_tournament
+                                    self.player2     = player2_tournament
+                                    self.player      = "player1"
+                                    self.type        = "local_tournament"
                                     self.redirect_to = f"/tournament/local/local_hierachy/{tournament_instance.id}"
                                 else:
+                                    print("-------> on online tournament")
+
                                     if self.player1.id == self.user_id:
                                         self.player = "player1"
                                     elif self.player2.id == self.user_id:
@@ -198,12 +219,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                                         self.player = "spectator"
                                     self.redirect_to = f"/tournament/online/online_hierachy/{tournament_instance.id}"
                                     self.type = "online_tournament"
-                                #to update  
-                                #self.type will decide if local or onlinw tour 
 
                         else:
                             print("---- in local pvp room creation ----")
-                            unique_id = uuid.uuid4().hex[:6]
+
+                            unique_id      = uuid.uuid4().hex[:6]
                             self.game_name = f"game_room_{unique_id}"
 
                             self.channel_layer = get_channel_layer()
@@ -213,7 +233,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                             )
                             self.player = "player1"
 
-                        print("at end -----------------------------------")
                         await self.send_initial_state(self.type)
 
                         if not hasattr(self, "game_task"):
@@ -236,8 +255,9 @@ class GameConsumer(AsyncWebsocketConsumer):
     #i have two cases in disconnect the first is the match status is pending and the other is completed
 
     async def disconnect(self, close_code):
-            print("---------------GAME disconnectED ---------------")
-
+        print("---------------GAME disconnectED ---------------")
+        
+        try:
             await self.channel_layer.group_discard(
                 self.game_name,
                 self.channel_name
@@ -246,29 +266,34 @@ class GameConsumer(AsyncWebsocketConsumer):
             
             print("TYPE : -----> ", self.type)
 
-            if self.type != "local":
-                if self.player ==  'player1':
+            if self.type == "local":
+                if self.player == 'player1':
                     self.player1Score = 8
-                elif self.player ==  'player2':
+                elif self.player == 'player2':
                     self.player2Score = 8
-                match = await self.get_match_status(self.match_id)
-                if match.status != "completed":
-                    print("match.status != completed")
-                    await self.handel_match_result('exited')
-            
-            user = await self.get_username(self.user_id)
 
-            if(self.start_game):
+            match = await self.get_match_instance(self.match_id)
+            if match and match.status != "completed":
+                print("match.status IN DISCONNECT")
+                await self.handel_match_result('exited')
+
+            user = await self.get_username(self.user_id)
+            print(" -- redirect to ", self.redirect_to)
+            if self.start_game:
                 await self.channel_layer.group_send(
-                self.game_name,
-                {
-                    'state'       : 'You Won!',
-                    "type"        : "opponent_disconnected",
-                    'redirect_to' : self.redirect_to,
-                    "message"     : f"Your opponent {user.username} has disconnected.",
-                })
+                    self.game_name,
+                    {
+                        'state'      : 'You Won!',
+                        "type"       : "opponent_disconnected",
+                        'redirect_to': self.redirect_to,
+                        "message"    : f"Your opponent {user.username} has disconnected.",
+                    }
+                )
             await self.close()
 
+        except Exception as e:
+            print(f"An error occurred while handling disconnect: {e}")
+            # You can handle additional logic here, e.g., log the error or handle specific cases.
 
     async def opponent_disconnected(self, event):
         await self.send(text_data=json.dumps({
@@ -282,9 +307,13 @@ class GameConsumer(AsyncWebsocketConsumer):
     def get_tournament_and_creator(self, tournament_id):
         try:
             tournament_instance = Tournament.objects.get(id=tournament_id)
-            return tournament_instance, tournament_instance.creator.id
+            if tournament_instance.status != 'finished':
+                return tournament_instance, tournament_instance.creator.id
+            else:
+                return "finished"
         except ObjectDoesNotExist:
-            return None
+            return None  # Tournament not found
+
 
     @sync_to_async
     def get_player_tournament(self, tournament, nickname):
@@ -324,12 +353,12 @@ class GameConsumer(AsyncWebsocketConsumer):
             return None
 
     @sync_to_async
-    def get_match_status(self, match_id):
+    def get_match_instance(self, match_id):
         try:
-            match_instance = Match.objects.filter(id=match_id).first()
-            print("in get_match_status ===== > ", match_instance)
-            return match_instance
-        except Match.DoesNotExist:
+            match = Match.objects.get(id=match_id)
+            print("---> ", match)
+            return match
+        except ObjectDoesNotExist:
             return None
 
 
@@ -397,7 +426,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.connected  = False
             self.start_game = False
 
-            match = await self.get_match(self.match_id)
+            # match = await self.get_match_instance(self.match_id)
             await self.handel_match_result('completed')
 
             if (self.player1Score > self.player2Score):
@@ -432,37 +461,59 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def handel_match_result(self, status):
         print("----------------> in handel_match_result")
-        match_data = {
-            'player1_score': self.player1Score,
-            'player2_score': self.player2Score,
-            'status'       : status
-        }
-        match = await self.get_match(self.match_id)
-        match = await self.update_match(match, match_data)
+        try:
+            match_data = {
+                'player1_score': self.player1Score,
+                'player2_score': self.player2Score,
+                'status': status
+            }
+            match = await self.get_match_instance(self.match_id)
+            if match is None:
+                print("----handel_match_result-----------------------------")
+                print("Match not found for match_id:", self.match_id)
+                return
 
-        if match.get('player1') is not None:
-            if match.get('player1_score') > match.get('player2_score'):
-                winner = match.get('player1')
-                loser  = match.get('player2')
-            else:
-                winner = match.get('player2')
-                loser  = match.get('player1')
-            await self.update_player_scores(winner, loser, match.get('player1_score'), match.get('player2_score'))
-        if match.get('tournament') is not None:
-            print("handel_match_result in ")
-            tournament_id = match.get('tournament')
-            tournament    = await self.get_tournament_instance(tournament_id)
-            
-            if status == "completed":
-                print("update_tournament completed")
-                all_matches_completed = await self.check_all_matches_completed(tournament)
-                if all_matches_completed:
-                    tournament.status = "finished"
+            match = await self.update_match(match, match_data)
+            if match is None:
+                print("Failed to update match.")
+                return
+
+            if match.get('player1') is not None:
+                if match.get('player1_score') > match.get('player2_score'):
+                    winner = match.get('player1')
+                    loser = match.get('player2')
+                else:
+                    winner = match.get('player2')
+                    loser = match.get('player1')
+
+                await self.update_player_scores(winner, loser, match.get('player1_score'), match.get('player2_score'))
+
+            if match.get('tournament') is not None:
+                print("handel_match_result in tournament")
+
+                tournament_id = match.get('tournament')
+                tournament    = await self.get_tournament_instance(tournament_id)
+                
+                if tournament is None:
+                    print("Tournament not found for tournament_id:", tournament_id)
+                    return
+
+                if status == "completed":
+                    print("update_tournament completed")
+                    all_matches_completed = await self.check_all_matches_completed(tournament)
+                    print(f"Number of completed matches: {len(all_matches_completed)}")  # This prints the length of completed matches
+
+                    if len(all_matches_completed) == 3:
+                        print("dkhel------")
+                        tournament.status = "finished"
+                        await self.update_tournament(tournament)
+
+                elif status == "exited":
+                    print("update_tournament exited")
                     await self.update_tournament(tournament)
-            elif status == "exited":
-                print("update_tournament exited")
-                tournament.status = "finished"
-                await self.update_tournament(tournament)
+
+        except Exception as e:
+            print(f"An error occurred in handel_match_result: {e}")
 
     @sync_to_async
     def get_tournament_instance(self, tournament_id):
@@ -474,12 +525,19 @@ class GameConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def check_all_matches_completed(self, tournament):
         matches = Match.objects.filter(tournament=tournament)
-        return all(match.status in ["completed", "exited"] for match in matches)
+        completed_matches = [match for match in matches if match.status in ["completed", "exited"]]
+        return completed_matches
+
 
     @sync_to_async
     def update_tournament(self, tournament):
-        print("---> save tournament")
-        tournament.save()
+        try:
+            print("---> Updating tournament status")
+            tournament.status = "finished"
+            tournament.save()
+            print("Tournament status updated to 'finished'")
+        except Exception as e:
+            print(f"Error updating tournament status: {e}")
 
     @sync_to_async
     def update_match(self, match, match_data):

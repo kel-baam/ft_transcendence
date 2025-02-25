@@ -46,7 +46,8 @@ export const LocalHierarchy = defineComponent({
                         matcheRounds : data.matches,
                         winners      : data.winners
                     })
-                    if (data.rounds != undefined)
+
+                    if (data.rounds != undefined && data.tournament_status != "finished")
                     {
                        redirectTimeout = setTimeout(() => {
                             if (socket.readyState === WebSocket.OPEN) {
