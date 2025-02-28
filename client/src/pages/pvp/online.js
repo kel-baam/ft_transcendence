@@ -74,21 +74,11 @@ export const OnlinePvp = defineComponent({
                 else if (data.action === "match_found")
                 {
                     this.updateState({ player_data: data.opponent });
-
+                    
                     clearTimeout(redirectTimeout);
                     redirectTimeout = setTimeout(() => {
-                        socket.send(JSON.stringify({
-                            action   : 'ready_for_redirect',
-                            match_id : data.id,
-                            room_name: data.room_name
-                        }));
-                    }, 10000);
-                }
-                else if (data.action === "redirect_players")
-                {
-                    console.log("----------> player redirected")
-                    
-                    this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
+                        this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
+                    }, 3000);
                 }
                 else if (data.action === "opponent_disconnected")
                 {

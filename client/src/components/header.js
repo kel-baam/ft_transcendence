@@ -20,21 +20,24 @@ export const header = defineComponent({
         this.initWebSocket();
     },
 
-    initWebSocket() {
+    async initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/notification/`);
+            
             socket.onopen = () => {console.log('WebSocket connection established'); };
-            socket.onmessage = async (event) => {
-
-                console.log('Message received in notif : ');
-                
+            
+            socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
+
+                console.log('Message received in notif : ', data);
+
                 this.updateState({
                     icon_notif : true,
                 })
             };
     
             socket.onerror = (error) => { console.error('WebSocket error:', error); };
+
             socket.onclose = () => { console.log('WebSocket connection closed'); };
         }
     },
@@ -72,13 +75,13 @@ export const header = defineComponent({
         catch (error) {  console.log(error);  }
     },
 
-
     async handleInvitationAction(objectId, action)
     {
         const formData = new FormData();
-
+        
         formData.append("tournament_id", objectId);
         formData.append("status", action);
+        console.log("------------------------------> ",formData)
         try
         {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
@@ -160,19 +163,30 @@ export const header = defineComponent({
                                         },
                                     }, },
                                     ["[Accept]"]),
-                            h( "a", { class: "decline",  onclick: () =>
-                                        this.handleInvitationAction(
-                                            notification.object_id,
-                                            "declined"
-                                        ),  },
-                                        ["[Decline]"] ),
-                                    ];
+                            h( "a", {
+                                class: "decline", 
+                                on:{
+                                    click: () => {
+                                            this.handleInvitationAction(
+                                                notification.object_id,
+                                                "declined"
+                                            )
+                                        }
+                                    }
+                                },
+                                ["[Decline]"] ),
+                         ];
                         break;
                     case "enter_tournament":
                         content = `${notification.message}`;
                         actions =
                         [
-                            h( "a", { onclick: () => this.enterTournament(notification.object_id)}, ["[Enter]"] ),
+                            h( "a", {
+                                on: {
+                                    click: () => this.enterTournament(notification.object_id)
+                                }
+                            },
+                            ["[Enter]"] ),
                         ]
                         break;
                     default:

@@ -158,14 +158,20 @@ class TournamentAPIView(APIView):
     def put(self, request):
 
         try:
+
+            print("---------------------------------------------------,,,, -")
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
             user     = User.objects.get(username=username)
             player   = Player.objects.get(user_id=user.id)
+
+            print("player id ", player.id, user.id)
 
             tournament_id = request.data.get("tournament_id")
             avatar        = request.FILES.get("player_avatar", None)
             nickname      = request.data.get("nickname", None)
             status_value  = request.data.get("status")
+            
+            print("----------------- ", tournament_id)
 
             try:
                 tournament = Tournament.objects.get(id=tournament_id)
@@ -197,13 +203,23 @@ class TournamentAPIView(APIView):
                         status=status.HTTP_400_BAD_REQUEST
                     )
 
-                player_tournament.nickname = nickname
-                player_tournament.avatar   = avatar
-                player_tournament.status   = status_value
+                player_tournament_data = {
+                    'tournament' : tournament.id,
+                    'nickname'   : nickname,
+                    'avatar'     : avatar,
+                    'status'     : status_value,
+                }
                 
-                serializer = PlayerTournamentSerializer(player_tournament, data=request.data)
+                serializer = PlayerTournamentSerializer(player_tournament, data=player_tournament_data)
                 if serializer.is_valid():
+                    print("serializer is valid()")
                     serializer.save()
+                else:
+                    print("erializer.errors", serializer.errors)
+                    return Response(
+                        {"error": "Invalid data provided.", "details": serializer.errors},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
 
             serializer   = PlayerTournamentSerializer(player_tournament)
             creator_id   = tournament.creator.id
@@ -310,7 +326,6 @@ class TournamentAPIView(APIView):
 
             tournament    = self.get_tournament(tournament_id, user)
             total_players = self.check_participants(tournament)
-
             return Response(
                 {
                     "success": True,
@@ -328,9 +343,8 @@ class TournamentAPIView(APIView):
     def get_tournament(self, tournament_id, user):
         try:
             tournament = Tournament.objects.get(id=tournament_id)
-
-            if tournament.creator != user:
-                if tournament.status != 'started':
+            if tournament.creator.id != user.id:
+                if tournament.status == 'pending':
                     print("tournament status: ", tournament.status)
                     raise Exception("The tournament hasn't started yet!")
             return tournament
@@ -351,7 +365,7 @@ class TournamentAPIView(APIView):
 
             if total_players != 4:
                 raise Exception(f"Not enough participants. {needed_players} more participants are needed.")
-            
+            print(total_players)
             return total_players
         except Exception as e:
             raise Exception(f"{str(e)}")

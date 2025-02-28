@@ -119,6 +119,16 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 await self.send(text_data=json.dumps({"action": "match not found"}))
                                 return
                             
+                            if self.type != "local":
+                                self.player1, self.player2 = await self.get_user(match_instance) #added 
+                                print ("===>  ")
+                                if self.user_id != self.player1.id and self.user_id != self.player2.id:
+                                    print("=-======================----------------------------------")
+                                    await self.send(text_data=json.dumps({
+                                        "action"     : "unauthorized",
+                                        "redirect_to": self.redirect_to,}))
+                                    return
+                            
                             print("in connect  match_instance.tournament ---------------------------> ", match_instance.tournament)
                             
                             if match_instance.tournament is None:
@@ -133,12 +143,12 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     }))
                                     return
 
-                                self.player1, self.player2 =  await self.get_user(match_instance)
-                                if self.user_id != self.player1.id and self.user_id != self.player2.id:
-                                    await self.send(text_data=json.dumps({
-                                        "action"     : "unauthorized",
-                                        "redirect_to": self.redirect_to,}))
-                                    return
+                                # self.player1, self.player2 = await self.get_user(match_instance)
+                                # if self.user_id != self.player1.id and self.user_id != self.player2.id:
+                                #     await self.send(text_data=json.dumps({
+                                #         "action"     : "unauthorized",
+                                #         "redirect_to": self.redirect_to,}))
+                                #     return
 
                                 self.game_name     = match_instance.room_name
                                 self.channel_layer = get_channel_layer()
@@ -161,6 +171,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 tournament_data = await self.get_tournament_and_creator(match_instance.tournament.id)
 
                                 if tournament_data == "finished":
+                                    print("in tournament finished ")
                                     if self.type == "local":
                                         self.redirect_to = f"/tournament/local/local_hierachy/{match_instance.tournament.id}"
                                     else:
@@ -182,9 +193,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     await self.send(text_data=json.dumps({"action": "match not found"}))
                                     return
                                 
-                                if self.user_id != creator_id:
-                                    await self.send(text_data=json.dumps({"action": "unauthorized"}))
-                                    return
+                                #here i need to check if 
+
+                                # if self.user_id != creator_id: #deleted cause i need to check about all users 
+                                #     await self.send(text_data=json.dumps({"action": "unauthorized"}))
+                                #     return
                                 
                                 self.game_name     = match_instance.room_name
                                 self.channel_layer = get_channel_layer()
@@ -208,6 +221,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     self.player      = "player1"
                                     self.type        = "local_tournament"
                                     self.redirect_to = f"/tournament/local/local_hierachy/{tournament_instance.id}"
+
                                 else:
                                     print("-------> on online tournament")
 
@@ -217,8 +231,9 @@ class GameConsumer(AsyncWebsocketConsumer):
                                         self.player = "player2"
                                     else:
                                         self.player = "spectator"
+
                                     self.redirect_to = f"/tournament/online/online_hierachy/{tournament_instance.id}"
-                                    self.type = "online_tournament"
+                                    self.type = "online"
 
                         else:
                             print("---- in local pvp room creation ----")
@@ -241,7 +256,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 match      = await self.get_match(self.match_id)
                                 match      = await self.update_match(match, match_data)
 
-                            print("-----> ", match_instance.status)
+                                print("-----> ", match_instance.status)
                             self.game_task = asyncio.create_task(self.game_loop())
                     else:
                         await self.send(text_data=json.dumps({"error": "user doesn't exist"}))
@@ -363,6 +378,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 
     async def send_initial_state(self, type):
+        print ("send_initial_state ----> ", type)
         if type == 'online':
             print("for online ----------------------------- ")
             await self.send(text_data=json.dumps({
@@ -608,17 +624,17 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def paddleCollison(self):
         if(self.paddle1Y <= 0):
             self.paddle1Y = 0
-        elif(self.paddle1Y + self.paddleHeight >= self.tableHeight):
+        if(self.paddle1Y + self.paddleHeight >= self.tableHeight):
             self.paddle1Y = self.tableHeight - self.paddleHeight
-        elif(self.paddle2Y <= 0):
+        if(self.paddle2Y <= 0):
             self.paddle2Y = 0
-        elif(self.paddle2Y + self.paddleHeight>= self.tableHeight):
+        if(self.paddle2Y + self.paddleHeight>= self.tableHeight):
             self.paddle2Y = self.tableHeight - self.paddleHeight
         
     async def move_leftPaddle(self,move):
         if(move == 'up'):
             self.paddle1Y -= self.paddleSpeed
-        elif(move == 'down'):
+        if(move == 'down'):
             self.paddle1Y += self.paddleSpeed
 
         await self.paddleCollison()
@@ -627,7 +643,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def move_rightPaddle(self,move):
         if(move == 'up'):
             self.paddle2Y -= self.paddleSpeed
-        elif(move == 'down'):
+        if(move == 'down'):
             self.paddle2Y += self.paddleSpeed
 
         await self.paddleCollison()
