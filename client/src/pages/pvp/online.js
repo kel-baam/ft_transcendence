@@ -74,7 +74,7 @@ export const OnlinePvp = defineComponent({
                 else if (data.action === "match_found")
                 {
                     this.updateState({ player_data: data.opponent });
-                    
+                    print("match_found-----------------------")
                     clearTimeout(redirectTimeout);
                     redirectTimeout = setTimeout(() => {
                         this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);

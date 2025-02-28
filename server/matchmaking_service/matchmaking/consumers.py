@@ -75,49 +75,54 @@ class Matchmaking(AsyncWebsocketConsumer):
                 except Exception as e:
                         await self.send_json({"error": "token expired"})
 
+
     async def disconnect(self, close_code):
-        print(f"Disconnected: {self.user_id}")
+        try:
+            print(f"Disconnected: {self.user_id}")
 
-        if Matchmaking.waiting_player and Matchmaking.waiting_player['user_id'] == self.user_id:
-            Matchmaking.waiting_player = None
+            if Matchmaking.waiting_player and Matchmaking.waiting_player['user_id'] == self.user_id:
+                Matchmaking.waiting_player = None
 
-        existing_match = await self.get_existing_match(self.user_id)
-        user           = await self.get_user(self.user_id)
 
-        if existing_match: #for pvp 
-            opponent_user = await self.get_opponent_user(existing_match, self.user_id)
-            
-            if not self.is_redirected:
-                await self.mark_match_exited(existing_match)
+            existing_match = await self.get_existing_match(self.user_id)
+            if existing_match:  # for PVP
+                user           = await self.get_user(self.user_id)
+                opponent_user  = await self.get_opponent_user(existing_match, self.user_id)
 
-            if opponent_user and not self.is_redirected:
-                await self.channel_layer.group_send(
-                    f"{existing_match.room_name}",
-                    {
-                        "type"   : "opponent_disconnected",
+                if not self.is_redirected:
+                    await self.mark_match_exited(existing_match)
+    
+                print(not self.is_redirected, self.is_redirected)
+                if opponent_user and not self.is_redirected:
+                    await self.send(text_data=json.dumps({
+                        "action" : "opponent_disconnected",
                         "message": f"Your opponent {user.username} has disconnected.",
-                    }
+                    }))
+
+            if self.notification_group_name:
+                await self.channel_layer.group_discard(
+                    self.notification_group_name,
+                    self.channel_name
                 )
 
-        if self.notification_group_name:
             await self.channel_layer.group_discard(
-                self.notification_group_name,
+                self.group_name,
                 self.channel_name
             )
 
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
+            await self.close()
 
-        await self.close()
+        except Exception as e:
+            print(f"Error in disconnect method: {e}")
 
-    async def opponent_disconnected(self, event):
-        message = event['message']
-        await self.send(text_data=json.dumps({
-            "action" : "opponent_disconnected",
-            "message": message, 
-        }))
+
+
+    # async def opponent_disconnected(self, event):
+    #     message = event['message']
+    #     await self.send(text_data=json.dumps({
+    #         "action" : "opponent_disconnected",
+    #         "message": message, 
+    #     }))
 
     @database_sync_to_async
     def mark_match_exited(self, match):
@@ -142,36 +147,8 @@ class Matchmaking(AsyncWebsocketConsumer):
 
         if action == 'start_match':
             print("start_match +++++++++++++++++++++++++++++++++++")
+
             await self.start_tournament_match(data.get('match_id'))
-
-        # if action == 'ready_for_redirect':
-        #     print("in redirect player action")
-
-        #     self.is_redirected = True
-
-        #     match_id  = data.get('match_id')
-        #     room_name = data.get('room_name')
-
-        #     print("room name: ", room_name, match_id)
-
-        #     await self.channel_layer.group_send(
-        #         room_name,
-        #         {   
-        #             "type"     : "redirect_player",
-        #             "id"       : match_id,
-        #             "room_name": room_name,
-        #         }
-        #     )
-        
-
-    async def redirect_player(self, event):
-        print("redirect_player handler ========================================")
-
-        await self.send_json({
-            "action"   : "redirect_players",
-            "id"       : event['id'],
-            "room_name": event['room_name']
-        })
 
 # ------------------------------------------PVP----------------------------
 
@@ -227,7 +204,7 @@ class Matchmaking(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.group_name,
                 {
-                    "type"     : "match_found_broadcast",
+                    "type"     : "broadcast_pvp",
                     "match_id" : match["id"],
                     "user_1"   : UserSerializer(user, fields=["id", "username", "picture"]).data,
                     "user_2"   : UserSerializer(opponent, fields=["id", "username", "picture"]).data,
@@ -235,7 +212,7 @@ class Matchmaking(AsyncWebsocketConsumer):
                 }
             )
 
-    async def match_found_broadcast(self, event):
+    async def broadcast_pvp(self, event):
         self.is_redirected = True
         if self.user_id == event["user_1"]["id"]:
             opponent = event["user_2"] 
@@ -264,6 +241,8 @@ class Matchmaking(AsyncWebsocketConsumer):
         player1, _ = Player.objects.get_or_create(user_id=player1_id)
         player2, _ = Player.objects.get_or_create(user_id=player2_id)
 
+        print("---> ", player1_id, player2_id)
+        
         match_data = {
             "player1"  : player1.id,
             "player2"  : player2.id,
@@ -273,20 +252,20 @@ class Matchmaking(AsyncWebsocketConsumer):
         serializer = MatchSerializer(data=match_data)
         if serializer.is_valid():
             match = serializer.save()
+            print("=======> ", MatchSerializer(match).data)
             return MatchSerializer(match).data
         else:
             return {"error": "Failed to create match", "details": serializer.errors}
 
-
     @database_sync_to_async
     def get_existing_match(self, user_id):
-        """Check if the user is already in an active match (pending status) with a null tournament."""
+        """Check if the user is already in an active match (pending or started) with a null tournament."""
 
         try:
             player = Player.objects.get(user_id=user_id)
-            match  = Match.objects.filter(
+            match = Match.objects.filter(
                 (models.Q(player1=player) | models.Q(player2=player)) &
-                models.Q(status="pending") &
+                models.Q(status__in=["pending", "started"]) &  # Check both statuses
                 models.Q(tournament__isnull=True)
             ).first()
             return match
@@ -320,7 +299,6 @@ class Matchmaking(AsyncWebsocketConsumer):
 
     async def start_tournament_match(self, match_id):
         try:
-            # match      = await sync_to_async(Match.objects.select_related('player1__user', 'player2__user').get)(id=match_id)
             match = await sync_to_async(Match.objects.select_related('player1__user', 'player2__user').filter(id=match_id, status__in=['pending', 'started']).first)()
 
             print(match.room_name, match_id)
@@ -346,7 +324,7 @@ class Matchmaking(AsyncWebsocketConsumer):
     
     async def match_found_broadcast(self, event):
         print("here match_found_broadcast ------------------------------------")
-
+        print("-------------> event : ", event)
         match_id = event["match_id"]
         match    = await sync_to_async(Match.objects.select_related('player1__user', 'player2__user').get)(id=match_id)
 
@@ -485,6 +463,7 @@ class Matchmaking(AsyncWebsocketConsumer):
                 'error'  : e.message,
                 'code'   : e.code
             })
+
         except Exception as e:
             print(f"Unexpected error during matchmaking: {str(e)}")
             raise CustomAPIException(f"An unexpected error occurred during matchmaking: {str(e)}")

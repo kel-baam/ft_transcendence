@@ -10,7 +10,7 @@ export const OnlineHierarchy = defineComponent({
 
     state(){
         return {
-            first_round        : [],
+            matcheRounds        : [],
             notificationActive : false,
             isBlur             : false,
             notification_data  : null,
@@ -72,7 +72,7 @@ export const OnlineHierarchy = defineComponent({
                 {
                     console.log(" ==--> ", data.matches);
                     this.updateState({
-                        first_round : data.matches,
+                        matcheRounds : data.matches,
                         winners     : data.winners
                     });
                     if (data.tournament_status === "started")
@@ -150,7 +150,7 @@ export const OnlineHierarchy = defineComponent({
                     ]),
                     h('div', { class: 'rounds' }, [
                         h('div', { class: 'round1' }, 
-                            (this.state.first_round || []).map((match, i) =>
+                            (this.state.matcheRounds.slice(0, 2)).map((match, i) =>
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 

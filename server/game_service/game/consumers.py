@@ -95,7 +95,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
                         query_string = self.scope['query_string'].decode()
                         query_params = parse_qs(query_string)
-                        
+
                         await self.accept()
 
                         self.redirect_to = ""
@@ -135,6 +135,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 print("in connect PVP")
 
                                 self.redirect_to = "/pvp"
+                                print("------> ", match_instance.status)
                                 if match_instance.status == "exited":
                                     await self.send(text_data=json.dumps({
                                         "action"     : "match_exited",
@@ -327,7 +328,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             else:
                 return "finished"
         except ObjectDoesNotExist:
-            return None  # Tournament not found
+            return None
 
 
     @sync_to_async
@@ -371,7 +372,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     def get_match_instance(self, match_id):
         try:
             match = Match.objects.get(id=match_id)
-            print("---> ", match)
+            # print("---> ", match)
             return match
         except ObjectDoesNotExist:
             return None
@@ -392,6 +393,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'ballY': self.ballY,
                 'radius': self.radius,
                 'player' : self.player,
+                'speedXBall':self.speedXBall,
+                'speedYBall':self.speedYBall,
                 'player1Score':self.player1Score,
                 'player2Score':self.player2Score,
                 'userId':self.user_id,
@@ -413,6 +416,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'player' : self.player,
                 'player1Score':self.player1Score,
                 'player2Score':self.player2Score,
+                'speedXBall':self.speedXBall,
+                'speedYBall':self.speedYBall,
                 'userId':self.user_id,
                 'player1' : {},
                 'player2' : {},
@@ -432,6 +437,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'player' : self.player,
                 'player1Score':self.player1Score,
                 'player2Score':self.player2Score,
+                'speedXBall':self.speedXBall,
+                'speedYBall':self.speedYBall,
                 'userId':self.user_id,
                 'player1' : PlayerTournamentSerializer(self.player1, fields={'nickname', 'avatar'}).data,
                 'player2' : PlayerTournamentSerializer(self.player2, fields={'nickname', 'avatar'}).data,
@@ -549,8 +556,10 @@ class GameConsumer(AsyncWebsocketConsumer):
     def update_tournament(self, tournament):
         try:
             print("---> Updating tournament status")
+
             tournament.status = "finished"
             tournament.save()
+
             print("Tournament status updated to 'finished'")
         except Exception as e:
             print(f"Error updating tournament status: {e}")
@@ -598,7 +607,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.ballX += self.speedXBall
         self.ballY += self.speedYBall
 
-        if(self.ballY - self.radius <=0 or self.ballY + self.radius >= self.tableHeight):
+        if(self.ballY - self.radius <= 0 or self.ballY + self.radius >= self.tableHeight):
             self.speedYBall *=-1
             
         self.ball_paddle_collison()
@@ -615,6 +624,15 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def game_loop(self):
         while self.connected:
+            # match_instance = await self.get_match_instance(self.match_id)
+            # if match_instance and match_instance.status == "exited":
+            #     await self.send(text_data=json.dumps({
+            #         "action"     : "match_exited",
+            #         "redirect_to": self.redirect_to,
+            #         "message"    : "Match exited."
+            #     }))
+            #     return
+            
             await self.update_ball()
             # await self.paddleCollison()
             await self.broadcast_game_state()
@@ -665,11 +683,13 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.player2Score = data['data']['player2Score']
 
     async def broadcast_game_state(self):
+        print(f"broadcast_game_state Received event") 
+
         await self.channel_layer.group_send(
             self.game_name,
             {
-                'action':'game_state',
                 'type' :'game_state',
+                'action':'game_state',
                 'paddle1Y' : self.paddle1Y,
                 'paddle2Y': self.paddle2Y,
                 'paddleHeight': self.paddleHeight,
@@ -684,7 +704,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             })
 
     async def game_state(self, event):
-
+        # print(f"Received event: {event}") 
         await self.send(text_data=json.dumps({
             'action':event.get('action'),
             'paddle1Y': event.get('paddle1Y'),
