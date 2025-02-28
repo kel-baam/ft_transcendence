@@ -206,6 +206,7 @@ export const header = defineComponent({
                             const suggestions = document.getElementById('suggestions')
                             if (searchBox.value.trim() !== '') {
                                 suggestions.style.display = 'block';
+                                suggestions.style.zIndex = 100;
                             } else {
                                 suggestions.style.display = 'none';
                             }
@@ -261,7 +262,7 @@ export const header = defineComponent({
                         })
                     ]),
                     h('a', { href: '#/settings' }, [
-                        h('i', { class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false' })
+                        h('i', {id:'settings-icon',class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false' })
                     ]),
                     h('a', {on :{click: async (event)=> {
                         event.preventDefault()

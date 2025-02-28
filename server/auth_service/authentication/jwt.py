@@ -42,37 +42,45 @@ def token_required(request):
                 access_token = request.COOKIES.get("access_token","default")
                 payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
                 user = (User.objects.filter(email=payload["email"]).first)()
-
                 if user:
 
                         if (user.enabled_twoFactor  and payload.get('login_level') == 1 and request.query_params.get('2fa') == "false"):
                                 return JsonResponse({'message': 'Invalid user'},status = 401)
                         response = JsonResponse({'message':'valid token'})
+                        if (user.enabled_twoFactor  and payload.get('login_level') == 2 and request.query_params.get('2fa') == "true"):
+                                response=JsonResponse({'message': 'valid','redirect':'home'},status = 200)
                         response['X-Authenticated-User'] = payload['username']
                         request.user = payload['username']
                         return response
                 
                 return JsonResponse({'message': 'Invalid user'},status = 401)
         except Exception as e:
-                return JsonResponse({'message': 'Invalid token'},status = 401)
+                print("token required access endd=========>")
+                return JsonResponse({'message': 'token expired'},status = 401)
 
 
-@refreshTokenRequired
+
+# @refreshTokenRequired
 def generate_new_token(request):
-    refreshToken = request.COOKIES.get("refresh_token")
     try:
+        refreshToken = request.COOKIES.get("refresh_token")
+        print("refresh token")
         payload = jwt.decode(refreshToken, settings.SECRET_KEY, algorithms=["HS256"])
+        print("refresh token",payload,payload["email"])
 
+        
+        user = User.objects.filter(email=payload["email"]).first()
 
         if (user.enabled_twoFactor and payload['login_level'] == 1):
                 return JsonResponse({'message': '2fa required'},status = 401)
-        accessToken = generateAccessToken(request.user,payload['login_level'])
+        accessToken = generateAccessToken(user,payload['login_level'])
         response = JsonResponse({'message':"valid access token"},status =200)
         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
         response.set_cookie("access_token",accessToken,httponly=True, max_age=accessTokenLifeTime)
         return response
     except Exception as e:
-                return JsonResponse({'message': 'Invalid token'},status = 401)
+                print("refresh expired why==>",e)
+                return JsonResponse({'message': 'token expired'},status = 401)
 
 
 

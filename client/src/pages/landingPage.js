@@ -13,6 +13,7 @@ import { LandingPageHeader } from '../components/landing/LandingHeader.js'
             return {
                 isLoading : true,
         }
+        
         },
         render(){
             return h('div',{id:"all"},

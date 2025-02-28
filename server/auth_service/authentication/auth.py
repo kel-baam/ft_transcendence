@@ -428,6 +428,8 @@ def password_reset_confirm(request):
                                 serialize = UserSerializer(user,data=data,partial=True)
                                 if serialize.is_valid(raise_exception=True):
                                         serialize.save()
+                                        user.verify_token = "None"
+                                        user.save()
                                         return Response({'password':"password reset succssefylly"},status=200)
                         return Response({'password':"something wrong"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:

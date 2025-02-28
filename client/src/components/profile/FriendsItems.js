@@ -12,7 +12,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
     {
   
       const {isExpanded, key} = this.props
-      console.log(">>>>>>>>>>>>>>>>>>>> key here : ", key)
+      // console.log(">>>>>>>>>>>>>>>>>>>> key here : ", key)
       // console.log('>>>>>>>>>>>>>>> this state of friends : ', this.state)
       const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
       return h('div', {class : 'friends-scope-item',

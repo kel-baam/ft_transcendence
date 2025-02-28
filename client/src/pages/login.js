@@ -25,35 +25,43 @@ export const Login = defineComponent({
         const error = this.state.errors[id];
         return error ? id : undefined;
     },
-
+    
     async loginForm(event)
     {
-        event.preventDefault()
-        const response = await fetch(`https://${window.env.IP}:3000/auth/login/`,{
-            method:'POST',
-            body:new FormData(document.querySelector(".loginForm")),
-        })
-
-        // TO CHANGE
-        if(!response.ok)
-            {   
+        try{
+            event.preventDefault()
+            console.log("=>beforrrre over")
+            
+            const response = await fetch(`https://${window.env.IP}:3000/auth/login/`,{
+                method:'POST',
+                body:new FormData(document.querySelector(".loginForm")),
+            })
+            if(!response.ok)
+            { 
                 const errors = await response.json();
-                console.log("errrrors",errors)
                 showErrorNotification(Object.values(errors)[0])
                 this.updateState({errors: errors });
             }
-        else
-        {
-            const res = await response.json();
-            if(res.message === "2fa active")
-                this.appContext.router.navigateTo('/2FA')
             else
-                this.appContext.router.navigateTo('/home')
+            {
+                const res = await response.json();
+                if(res.message === "2fa active")
+                    this.appContext.router.navigateTo('/2FA')
+                else
+                    this.appContext.router.navigateTo('/home')
+            }
+
         }
+        catch (e)
+        {
+            console.log("yeees")
+        }
+    
+        // console.clear();  
+
     },
     
         // TO CHANGE
-
     render(){
         return h ('div',{id:"global"},[
             h('div',{class:"login-page-content"},[

@@ -8,7 +8,9 @@ const KEY_UP = 87;
 const KEY_DOWN = 83;
 const KEY_UP2 = 38;
 const KEY_DOWN2 = 40;
-const confettiParticles = []; 
+const confettiParticles = [];
+let keyDownHandler;
+let keyUpHandler;
 // const keyPressed ={};
 let canvas;
 let ctx;
@@ -28,18 +30,70 @@ export const Game = defineComponent(
             }
         },
 
-        onMounted()
-        {
-            this.initWebSocket();
-        },
+        onMounted() {
 
+            this.initWebSocket();
+            this.EventListener();
+        },
+        keyDownHandler(e)
+        {
+            let keyPressed;
+                const { id, type } = this.appContext.router.query;
+                const state = this.state;
+                
+                if (e.keyCode === KEY_UP || e.keyCode === KEY_DOWN || e.keyCode === KEY_UP2 || e.keyCode === KEY_DOWN2) {
+                    e.preventDefault();
+                    keyPressed = e.keyCode;
+                    
+                    if (keyPressed === KEY_UP) {
+                        // console.log("---------------> here the event exists 1: ", keyPressed);
+                        // console.log("-----------------------> here the player 1  : ", state.player)
+                        socket.send(JSON.stringify({ move: 'up', player: state.player }));
+                    }
+                    else if (keyPressed === KEY_DOWN) {
+                        // console.log("---------------> here the event exists 2: ", keyPressed);
+                        // console.log("-----------------------> here the player 2 : ", state.player)
+                        socket.send(JSON.stringify({ move: 'down', player: state.player }));
+                    }
+        
+                    if (type === "local") {
+                        if (keyPressed === KEY_UP2) {
+                            socket.send(JSON.stringify({ move: 'up', player: 'player2' }));
+                        }
+                        else if (keyPressed === KEY_DOWN2) {
+                            socket.send(JSON.stringify({ move: 'down', player: 'player2' }));
+                        }
+                    } 
+                }
+        },
+        keyUpHandler(e)
+        {
+            // console.log(">>>>>>>>>>>>>>>>>>>>> the keyUp ", e.keyCode)
+
+            let keyPressed;
+                if (e.keyCode === KEY_UP || e.keyCode === KEY_DOWN || e.keyCode === KEY_UP2 || e.keyCode === KEY_DOWN2) {
+                    console.log(">>>>>>>>>>>>>>>>>> here the event : ", e.keyCode);
+                    e.preventDefault();
+                    keyPressed = '';
+                }
+        },
+        EventListener() {
+            keyDownHandler = this.keyDownHandler.bind(this);
+            keyUpHandler = this.keyUpHandler.bind(this) ;
+         
+            window.addEventListener('keydown',keyDownHandler);
+            window.addEventListener('keyup', keyUpHandler);
+        },
+        
         onUnmounted() {
+            window.removeEventListener('keydown', keyDownHandler);
+            window.removeEventListener('keyup', keyUpHandler);
+        
             if (socket) {
-                console.log('WebSocket connection closed');
+                console.log('=======> WebSocket connection closed');
                 socket.close();
             }
         },
-
         Ball()
         {
             return {
@@ -181,43 +235,6 @@ export const Game = defineComponent(
                     console.log("WebSocket Game is open now.");
                 };
 
-                const EventListener = function ()
-                {
-                    let keyPressed;
-                    window.addEventListener('keydown', function(e) {  
-                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN || e.keyCode == KEY_UP2 || e.keyCode  == KEY_DOWN2)
-                        {
-                            e.preventDefault();
-                            keyPressed = e.keyCode
-                            
-                            if (keyPressed == KEY_UP) {
-                                socket.send(JSON.stringify({ move: 'up' ,player : this.state.player}));
-                            }
-                            else if (keyPressed == KEY_DOWN) {
-                                socket.send(JSON.stringify({ move: 'down',player: this.state.player}));
-                            }
-
-                            if(type == "local")
-                            {
-                                if (keyPressed == KEY_UP2) {
-                                    socket.send(JSON.stringify({ move: 'up' ,player :'player2'}));
-                                }
-                                else if (keyPressed == KEY_DOWN2) {
-                                    socket.send(JSON.stringify({ move: 'down',player: 'player2'}));
-                                }
-                            } 
-                        }                   
-                    }.bind(this))
-
-                    window.addEventListener('keyup', function(e) {
-                        if(e.keyCode == KEY_UP || e.keyCode  == KEY_DOWN || e.keyCode == KEY_UP2 || e.keyCode  == KEY_DOWN2)
-                        {
-                            e.preventDefault();
-                            keyPressed = '';
-                        }
-                    
-                    }.bind(this));
-                }.bind(this);
 
                 socket.onmessage = function(e) {
                     const data = JSON.parse(e.data);
@@ -250,12 +267,15 @@ export const Game = defineComponent(
 
                         setTimeout(() => {
                             this.appContext.router.navigateTo(data.redirect_to);
-                        }, 7000);
+                        }, 5000);
                     }
 
                     if (data.action && data.action === 'game_over')
                     {
-                        this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
+                        this.updateState({
+                            player1Score: data.player1Score,
+                            player2Score: data.player2Score
+                        })
                         console.log("tssss game obver=>",this.state.player,data.Winner)
                         if (this.state.player === data.Winner)
                             { this.announce_winner('You Won!'); }
@@ -265,12 +285,20 @@ export const Game = defineComponent(
 
                         setTimeout(() => {
                             this.appContext.router.navigateTo(data.redirect_to);
-                        }, 7000);
+                        }, 5000);
+                    }
+
+                    if (data.action && data.action === 'tournament finished')
+                    {
+                        showErrorNotification(data.message)
+                        this.appContext.router.navigateTo(data.redirect_to);
                     }
 
                     if (data.action && data.action === 'match not found')
                     {
                         this.updateState({error:"match not found"})
+                        // this.appContext.router.navigateTo(data.redirect_to);
+
                         socket.close()
                     }
 
@@ -289,8 +317,6 @@ export const Game = defineComponent(
                     }
 
                 }.bind(this);
-
-                EventListener()
 
                 socket.onclose = function(e) {
                     console.log("WebSocket is closed now.",e);
@@ -328,10 +354,11 @@ export const Game = defineComponent(
                         h('div',{class:'firstPlayer'},[
                            h('div',{class:'info'},[
                            
-                            JSON.stringify(player1) !== "{}" ? h('img',{src:`https://${window.env.IP}:3000/media${player1.picture}`,class:'playerPicture', style : {
+                            JSON.stringify(player1) !== "{}" ? h('img',{src: `${player1.picture}` === undefined ? `https://${window.env.IP}:3000/media${player1.picture}` : 
+                                `https://${window.env.IP}:3000/media${player1.avatar}`,class:'playerPicture', style : {
                                     'object-fit': 'cover'
                                 }}) : null,
-                               h('h4',{class:'playerName'},[player1.username]) ]),
+                               h('h4',{class:'playerName'}, `${player1.username}` ===  undefined ? [player1.username] : [player1.nickname]) ]),
                            h('div',{class:'scoreCard'},[
                             h('h4',{},[`${this.state.player1Score}`])
                            ])
@@ -342,10 +369,11 @@ export const Game = defineComponent(
                             h('div',{class:'scoreCard'},[ h('h4',{},[`${this.state.player2Score}`])]),
                             h('div',{class:'info'},  [
                                
-                                JSON.stringify(player2) !== "{}"? h('img',{src:`https://${window.env.IP}:3000/media${player2.picture}`,class:'playerPicture', style : {
+                                JSON.stringify(player2) !== "{}"? h('img',{src:`${player2.picture}` === undefined ? `https://${window.env.IP}:3000/media${player2.picture}` : 
+                                `https://${window.env.IP}:3000/media${player2.avatar}`,class:'playerPicture', style : {
                                     'object-fit': 'cover'
                                 }}) : null,
-                               h('h4',{class:'playerName'},[player2.username]) ]),
+                               h('h4',{class:'playerName'},`${player2.username}` ===  undefined ? [player2.username] : [player2.nickname]) ]),
                          ])
                     ]),
                    

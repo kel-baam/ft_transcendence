@@ -11,8 +11,7 @@ import { settings } from './pages/settings.js';
 import { Profile } from './pages/profile.js';
 import { ResetPassword } from './pages/resetPassword.js';
 import { Game } from './pages/game.js';
-
-
+import { Unauthorized } from './components/errorPages/401.js';
 import { Tournament } from './pages/tournaments/tournament.js';
 import { LocalTournament } from './pages/tournaments/local/LocalTournament.js'
 import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js';
@@ -20,10 +19,12 @@ import { LocalHierarchy } from './pages/tournaments/local/LocalHierarchy.js';
 import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
 import { OnlinePvp } from './pages/pvp/online.js';
 import { OnlineHierarchy } from './pages/tournaments/online/OnlineHierarchy.js'
-
+import { NotFound } from './components/errorPages/404.js';
 window.env = {
-  IP: "10.13.5.2",
+  IP: "10.14.3.3",
 }
+
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -45,11 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-const NotFound = defineComponent({
-      render() {
-        return h('div',{},[h('div',{},["404 THIS PAGE NotFound "])]) 
-      }
-})
+
+
+
+
+
+
 
 
 
@@ -63,12 +65,22 @@ async function isAuthenticated(currentLocation)
       if(result)
       {
         if(!result.ok)
-          { 
+        { 
 
-            if(result.status == 401)
-                return '/login'
+          if(result.status == 401)
+              return '/login'
+        }
+        else
+        {
+          const data = await result.json()
+          if(result.status == 200)
+          {
+            if(data['redirect'] && data['redirect'] == "home")
+              return '/home'
+
           }
-      }
+        }
+    }
 }
 
 const router = new HashRouter([
@@ -92,7 +104,10 @@ const router = new HashRouter([
 
     },
 
-    { path: '/401',  component: NotFound },
+    { path: '/404',  component: NotFound },
+    { path: '/401',  component: Unauthorized },
+
+    
     {path : '/settings', component: settings,
       beforeEnter:isAuthenticated
 
@@ -102,11 +117,11 @@ const router = new HashRouter([
 
     },
     {path:'/user/:username', component: Profile,
-      beforeEnter:isAuthenticated
-
+      beforeEnter:isAuthenticated},
+    {
+      path: '*',  component: NotFound
     },
-
-    { path: '/password/reset',  component: ResetPassword },
+    { path: '/password/reset',component: ResetPassword },
 
     {path:'/tournament',component: Tournament, beforeEnter:isAuthenticated},
     {path:'/tournament/local', component: LocalTournament, beforeEnter:isAuthenticated},

@@ -13,17 +13,23 @@ import { sidebarLeft } from '../components/sidebar-left.js'
                     'picture':'./images/kel-baam.png',
                     'score':4,
                     'level':7,
-                },
-
-                {
-                    'username':'niboukha',
-                    'picture':'./images/niboukha.png',
-                    'score':4,
-                    'level':7,
                 }
             ]
 
     }
+    },
+    onMounted()
+    {
+      const userIcon = document.getElementById('leaderboard-icon');
+      console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
+  
+      if (userIcon) {
+          userIcon.style.color = "#F45250";
+          userIcon.style.transform = "scale(1.1)";
+          userIcon.style.webkitTransform = "scale(1.1)";
+          userIcon.style.filter = "blur(0.5px)";
+          userIcon.style.transition = "0.5s";
+      }
     },
     createPlayerEntry(rank, name, score, level, badgeSrc) {
         // console.log("yyyy",rank,name)
@@ -58,18 +64,27 @@ import { sidebarLeft } from '../components/sidebar-left.js'
                                         h('img',{class:'crown-pic', src:'./images/crown-removebg-preview.png'}),
                                         h('img',{class:'first-pic', src:`${data[0].picture}`}),
                                         h('h4',{},[`${data[0].username}`])
-                                    ]:[h('h1',{},['?'])]),
+                                    ]:[h('img',{class:'crown-pic', src:'./images/crown-removebg-preview.png'}),
+                                        h('img',{class:'first-pic',src:'./images/accountUser.png',alt:'third player picture'}),
+                                        h('h1',{},['?'])
+                                    ]),
                                     h('div',{class:'second-third-place'},[
                                         h('div',{class:'second-place'},playersLen >= 2?[
                                             h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
                                             h('img',{class:'second-pic',src:`${data[1].picture}`,alt:'second player picture'}),
                                             h('h4',{},[`${data[1].username}`])
-                                        ]:[h('h1',{},['?'])]),
+                                        ]:[h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
+                                            h('img',{class:'second-pic',src:'./images/accountUser.png',alt:'third player picture'}),
+                                            h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])]
+                                        ),
                                         h('div',{class:'third-place'},playersLen >= 3?[
                                             h('img',{class:'third-symbol',src:'./images/third.png'}),
                                             h('img',{class:'third-pic',src:`${data[2].picture}`,alt:'third player picture'}),
                                             h('h4',{},[`${data[1].username}`])
-                                        ]:[h('h1',{},['?'])])
+                                        ]:[h('img',{class:'third-symbol',src:'./images/third.png'}),
+                                            h('img',{class:'third-pic',src:'./images/accountUser.png',alt:'third player picture'}),
+                                            h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])
+                                        ])
                                     ])
                                 ]),
                                 h('div',{class:'rank-info'},[

@@ -825,6 +825,7 @@ progress::-moz-progress-bar {
     border-radius: 27px;
     background: #CBCBCB;
     padding-left: 50px;
+    z-index: 5;
 }
 
 .search input{

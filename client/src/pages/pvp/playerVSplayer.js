@@ -12,7 +12,19 @@ export const PlayerVsPlayer = defineComponent({
             notification_data: null,
         }
     },
-
+    onMounted()
+    {
+      const userIcon = document.getElementById('pvp-icon');
+      console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
+  
+      if (userIcon) {
+          userIcon.style.color = "#F45250";
+          userIcon.style.transform = "scale(1.1)";
+          userIcon.style.webkitTransform = "scale(1.1)";
+          userIcon.style.filter = "blur(0.5px)";
+          userIcon.style.transition = "0.5s";
+      }
+    },
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);

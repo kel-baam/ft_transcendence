@@ -1,6 +1,6 @@
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../package/index.js'
-import { sidebarLeft } from './sidebar-left.js'
+// import { sidebarLeft } from './sidebar-left.js'
 
 // let onLineFriendsSocket = new WebSocket("ws://10.14.3.1:8001/ws/test?username=shicham");
 
