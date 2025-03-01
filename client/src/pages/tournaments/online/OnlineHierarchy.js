@@ -171,34 +171,33 @@ export const OnlineHierarchy = defineComponent({
                             )
                         ),                        
                         h('div', { class: 'round2' }, [
-                            
                             h('div', { class: 'player1' }, [
                                 h('img', {
-                                    src: this.state.winners && this.state.winners[0] && this.state.winners[0]['avatar'] 
-                                        ? `https://${window.env.IP}:3000/media${this.state.winners[0]['avatar']}` 
+                                    src: this.state.winners && this.state.winners[0] && this.state.winners[0][0] && this.state.winners[0][0]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[0][0].avatar}` 
                                         : './images/people_14024721.png'
                                 }),
-                                h('h2', {}, [this.state.winners && this.state.winners[0] && this.state.winners[0]['nickname'] || 'nickname'])
+                                h('h2', {}, [this.state.winners && this.state.winners[0] && this.state.winners[0][0] && this.state.winners[0][0]['nickname'] || 'nickname'])
                             ]),
                             h('div', { class: 'vs' }, [
                                 h('img', { src: './images/vs.png' })
                             ]),
                             h('div', { class: 'player2' }, [
                                 h('img', {
-                                    src: this.state.winners && this.state.winners[1] && this.state.winners[1]['avatar'] 
-                                        ? `https://${window.env.IP}:3000/media${this.state.winners[1]['avatar']}` 
+                                    src: this.state.winners && this.state.winners[1] && this.state.winners[1][0] && this.state.winners[1][0]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[1][0].avatar}` 
                                         : './images/people_14024721.png'
                                 }),
-                                h('h2', {}, [this.state.winners && this.state.winners[1] && this.state.winners[1]['nickname'] || 'nickname'])
+                                h('h2', {}, [this.state.winners && this.state.winners[1] && this.state.winners[1][0] && this.state.winners[1][0]['nickname'] || 'nickname'])
                             ])
                         ]),
                         h('div', { class: 'round3' }, [
                             h('img', {
-                                src: this.state.winners && this.state.winners[2] && this.state.winners[2]['avatar'] 
-                                    ? `https://${window.env.IP}:3000/media${this.state.winners[2]['avatar']}` 
+                                src: this.state.winners && this.state.winners[2] && this.state.winners[2][0] && this.state.winners[2][0]['avatar'] 
+                                    ? `https://${window.env.IP}:3000/media${this.state.winners[2][0].avatar}` 
                                     : './images/people_14024721.png'
                             }),
-                            h('h2', {}, [this.state.winners && this.state.winners[2] && this.state.winners[2]['nickname'] || 'nickname'])
+                            h('h2', {}, [this.state.winners && this.state.winners[2] && this.state.winners[2][0] && this.state.winners[2][0]['nickname'] || 'nickname'])
                         ]),
                         h('div', { class: 'trophy' }, [
                             h('img', { src: './images/gold-cup-removebg-preview.png' })

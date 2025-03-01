@@ -242,6 +242,7 @@ export const Game = defineComponent(
                     if(data.action && data.action == "init_game")
                     {
                         console.log(">>>>>>>>>>>>>>>>>>>>>> data : in initial state ", data)
+
                         draw_game(data);
                         if(data.player)
                             this.updateState({player:data.player,player1Score:data.player1Score,player2Score:data.player2Score, 
@@ -255,6 +256,7 @@ export const Game = defineComponent(
                     {
                         this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
                         draw_game(data);
+
                         socket.send(JSON.stringify({ update: 'update_data', data: data}));
                     }
                     if(data.action && data.action == 'opponent_disconnected')
@@ -263,11 +265,14 @@ export const Game = defineComponent(
 
                         showErrorNotification(data.message)
                         this.announce_winner(data.state)
-                        socket.close();
+
+                        if (socket) {
+                            socket.close();
+                        }
 
                         setTimeout(() => {
                             this.appContext.router.navigateTo(data.redirect_to);
-                        }, 5000);
+                        }, 3000);
                     }
 
                     if (data.action && data.action === 'game_over')
@@ -281,45 +286,67 @@ export const Game = defineComponent(
                             { this.announce_winner('You Won!'); }
                         else
                             { this.announce_winner('You Lose!');  }
-                        socket.close();
+
+                        if (socket) {
+                            socket.close();
+                        }
 
                         setTimeout(() => {
                             this.appContext.router.navigateTo(data.redirect_to);
-                        }, 5000);
+                        }, 3000);
                     }
 
                     if (data.action && data.action === 'tournament finished')
                     {
                         showErrorNotification(data.message)
+                        if (socket) {
+                            socket.close();
+                        }
                         this.appContext.router.navigateTo(data.redirect_to);
                     }
 
                     if (data.action && data.action === 'match not found')
                     {
                         this.updateState({error:"match not found"})
+                        
                         // this.appContext.router.navigateTo(data.redirect_to);
 
-                        socket.close()
+                        if (socket) {
+                            socket.close();
+                        }
                     }
 
                     if (data.action && data.action === 'unauthorized')
                     {
                         this.updateState({error: "unauthorized"})
-                        socket.close()
 
+                        if (socket) {
+                            socket.close();
+                        }
                     }
 
                     if (data.action && data.action === "match_exited")
                     {
-                        this.appContext.router.navigateTo(data.redirect_to);
+                        this.announce_winner('You Lose!');
+
+                        if (socket) {
+                            socket.close();
+                        }
+
+                        setTimeout(() => {
+                            this.appContext.router.navigateTo(data.redirect_to);
+                        }, 3000);
+
                         showErrorNotification(data.message)
-                        socket.close()
                     }
 
                 }.bind(this);
 
                 socket.onclose = function(e) {
-                    console.log("WebSocket is closed now.",e);
+                    console.log("WebSocket is closed now in onclose.",e);
+                    if (socket) {
+                        socket.close();
+                    }
                 };
 
                 socket.onerror = function(e) {
