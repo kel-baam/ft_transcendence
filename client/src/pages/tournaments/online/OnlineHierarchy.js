@@ -4,28 +4,34 @@ import { header } from '../../../components/header.js'
 import { sidebarLeft } from '../../../components/sidebar-left.js'
 
 let socket = null
+let redirectTimeout = null;
+
 export const OnlineHierarchy = defineComponent({
 
     state(){
         return {
-            first_round : [],
-            notificationActive: false,
-            isBlur:false,
-            notification_data: null,
+            first_round        : [],
+            notificationActive : false,
+            isBlur             : false,
+            notification_data  : null,
+            winners      :[]
+
         }
     },
 
     async submitForm(event) {
         event.preventDefault();
+
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
+                method      : 'PUT',
+                body        : formData,
+                credentials : 'include',
             });
 
             if (!response.ok) {
@@ -35,32 +41,26 @@ export const OnlineHierarchy = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
-            this.updateState({ isBlur: false });
-        } catch (error) {
-            showErrorNotification(error);
-            this.updateState({
-                isBlur: false,
-            })
         }
+        catch (error) { showErrorNotification(error); }
+        this.updateState({ isBlur: false })
     },
 
 
     matchmake_players()
     {
-        if (!socket || socket.readyState !== WebSocket.OPEN) {
-            
-            socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
+        if (!socket || socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
             const tournamentId = this.appContext.router.params.id;
-        
-            console.log("---> : ", tournamentId)
             
+            socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/?tournamentId=${tournamentId}`);
+
+            console.log("---> : ", tournamentId)
+
             socket.onopen = () => {
                 console.log('WebSocket connection established');
 
                 socket.send(JSON.stringify({
-                    action       : 'online_tournament',
-                    tournamentId : tournamentId
+                    action : 'online_tournament',
                 }));
             };
 
@@ -72,13 +72,17 @@ export const OnlineHierarchy = defineComponent({
                 {
                     console.log(" ==--> ", data.matches);
                     this.updateState({
-                        first_round: data.matches
+                        first_round : data.matches,
+                        winners     : data.winners
                     });
-                    this.startMatches(data.matches);
+                    if (data.tournament_status === "started")
+                        this.startMatches(data.matches);
                 }
-                else if (data.is_user)
+                else if (data.action === "redirect_match")
                 {
-                    this.appContext.router.navigateTo(`/game/${data.match_id}`);
+                    console.log("----------> player redirected")
+                    
+                    this.appContext.router.navigateTo(`/game?id=${data.match_id}&type=online`);
                 }
                 else
                 {
@@ -100,14 +104,12 @@ export const OnlineHierarchy = defineComponent({
             if (socket.readyState === WebSocket.OPEN) {
                 socket.send(JSON.stringify({
                     action  : 'start_match',
-                    matchId : match.match_id
+                    match_id : match.match_id
                 }));
-            } 
-            
+            }
             console.log("here");
         });
     },
-    
 
     onMounted()
     {
@@ -152,7 +154,7 @@ export const OnlineHierarchy = defineComponent({
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
-                                            src: './images/people_14024721.png'
+                                            src: `https://${window.env.IP}:3000/media${match.avatar1}`
                                         }),
                                         h('h2', {}, [match.player1])
                                     ]),
@@ -161,7 +163,7 @@ export const OnlineHierarchy = defineComponent({
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
-                                            src: './images/people_14024721.png'
+                                            src: `https://${window.env.IP}:3000/media${match.avatar2}`
                                         }),
                                         h('h2', {}, [match.player2])
                                     ])
@@ -171,20 +173,32 @@ export const OnlineHierarchy = defineComponent({
                         h('div', { class: 'round2' }, [
                             
                             h('div', { class: 'player1' }, [
-                                h('img', { src: './images/people_14024721.png' }),
-                                h('h2', {}, ['username'])
+                                h('img', {
+                                    src: this.state.winners && this.state.winners[0] && this.state.winners[0]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[0]['avatar']}` 
+                                        : './images/people_14024721.png'
+                                }),
+                                h('h2', {}, [this.state.winners && this.state.winners[0] && this.state.winners[0]['nickname'] || 'nickname'])
                             ]),
                             h('div', { class: 'vs' }, [
                                 h('img', { src: './images/vs.png' })
                             ]),
                             h('div', { class: 'player2' }, [
-                                h('img', { src: './images/people_14024721.png' }),
-                                h('h2', {}, ['username'])
+                                h('img', {
+                                    src: this.state.winners && this.state.winners[1] && this.state.winners[1]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[1]['avatar']}` 
+                                        : './images/people_14024721.png'
+                                }),
+                                h('h2', {}, [this.state.winners && this.state.winners[1] && this.state.winners[1]['nickname'] || 'nickname'])
                             ])
                         ]),
                         h('div', { class: 'round3' }, [
-                            h('img', { src: './images/people_14024721.png' }),
-                            h('h2', {}, ['username'])
+                            h('img', {
+                                src: this.state.winners && this.state.winners[2] && this.state.winners[2]['avatar'] 
+                                    ? `https://${window.env.IP}:3000/media${this.state.winners[2]['avatar']}` 
+                                    : './images/people_14024721.png'
+                            }),
+                            h('h2', {}, [this.state.winners && this.state.winners[2] && this.state.winners[2]['nickname'] || 'nickname'])
                         ]),
                         h('div', { class: 'trophy' }, [
                             h('img', { src: './images/gold-cup-removebg-preview.png' })

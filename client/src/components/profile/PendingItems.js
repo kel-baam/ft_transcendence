@@ -12,18 +12,23 @@ const PendingItems = defineComponent({
     // },
     render()
     {
-        const {isExpanded} = this.props
+        const {isExpanded, searchedUser} = this.props
         const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
         return h('div', {class : 'pending-friends-items',
             style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%',justifyContent : 'center'} : {}
-            }, data.map((userPendingrequest, i)=>
-            h(PendingItem, {
-              isExpanded : isExpanded,
-              id : userPendingrequest.id,
-              user : userPendingrequest.user,
-              i,
-              on : {remove : (id) => this.emit('remove', {id, i})}
-            })
+            }, data.map((user, i)=>
+            {
+              
+              if ((searchedUser != "" && user.username.startsWith(searchedUser)) || 
+                searchedUser == "")
+                return h(PendingItem, {
+                  isExpanded : isExpanded,
+                  id : user.request_id,
+                  user,
+                  i,
+                  on : {remove : (id) => this.emit('remove', {id, i})}
+                })
+            }
             ))
     }
 })
@@ -38,6 +43,7 @@ const PendingItem = defineComponent({
     {
      
       const {id, user, isExpanded} = this.props 
+      console.log("---------------------------------> user kkkkkkkkkkkkkkkkk: ",this.props   )
       return h('div', { class: 'pending-friend-item' , 
           style : isExpanded ? 
           { backgroundColor : '#CBCBCB', 'border-radius' : '15px',
@@ -48,8 +54,8 @@ const PendingItem = defineComponent({
               h('img', { src: `https://${window.env.IP}:3000${user.picture}`, alt: 'profile picture', class : 'picture-item', style : {'object-fit': 'cover'} })
             ]),
             h('div', { class: 'data-user' }, [
-              h('span', {}, [user.first_name + ' ' + user.last_name]),
-              h('span', { style:{ color: '#A7A4A4'} }, ['@' + user.username])
+              h('span', {style: {fontFamily : 'myFont'}}, [user.first_name + ' ' + user.last_name]),
+              h('span', { style:{ color: '#A7A4A4',fontFamily : 'myFont'} }, ['@' + user.username])
             ]),
             h('div', { class: 'cancel-icon' }, [
                 h('i', { class: 'fa fa-close', style: { fontSize: '24px', color: '#D44444'} ,

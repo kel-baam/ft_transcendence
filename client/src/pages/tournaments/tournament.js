@@ -9,12 +9,24 @@ export const Tournament = defineComponent({
     
     state(){
         return {
-            notificationActive  : false,
-            notification_data   : null,
-            isBlur              : false,
+            notificationActive : false,
+            notification_data  : null,
+            isBlur             : false,
         }
     },
-
+    onMounted()
+    {
+      const userIcon = document.getElementById('tournament-icon');
+      console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
+  
+      if (userIcon) {
+          userIcon.style.color = "#F45250";
+          userIcon.style.transform = "scale(1.1)";
+          userIcon.style.webkitTransform = "scale(1.1)";
+          userIcon.style.filter = "blur(0.5px)";
+          userIcon.style.transition = "0.5s";
+      }
+    },
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -46,9 +58,9 @@ export const Tournament = defineComponent({
     {
         return h('div', {id:'global'}, [h(header, {
             icon_notif: this.state.notificationActive,
-            on: {
-                iconClick: () => this.updateState({ notificationActive: !this.state.notificationActive }),
-                blur: (notification_data) => this.updateState({
+            on        : {
+                iconClick : () => this.updateState({ notificationActive: !this.state.notificationActive }),
+                blur      : (notification_data) => this.updateState({
                     isBlur: true,
                     notification_data,
                 })
@@ -66,24 +78,28 @@ export const Tournament = defineComponent({
                     h('div', { class: 'content-body' }, [
                         h('div', { class: 'online' }, [
                             h('button', {
-                                type    : 'button',
-                                class   : 'btn',
-                                on :{click:()=>{
-                                    this.appContext.router.navigateTo('/tournament/online')
-                                }}
-                                
-                             }, ['Online'])
+                                type  : 'button',
+                                class : 'btn',
+                                on    :{
+                                    click:() => {
+                                        this.appContext.router.navigateTo('/tournament/online')
+                                    }
+                                }    
+                            }, ['Online'])
                         ]),
                         h('div', { class: 'or' }, [
                             h('h2', {}, ['Or'])
                         ]),
                         h('div', { class: 'local' }, [
                             h('button', {
-                                type    : 'button',
-                                class   : 'btn',
-                                on :{click:()=> {
-                                    this.appContext.router.navigateTo('/tournament/local')
-                                }}
+                                type  : 'button',
+                                class : 'btn',
+                                on    : {
+                                    click:() =>
+                                    {
+                                        this.appContext.router.navigateTo('/tournament/local')
+                                    }
+                                }
                             }, ['Local'])
                         ])
                     ])
@@ -108,14 +124,14 @@ export const Tournament = defineComponent({
                 }, [
                     h('div', { class: 'avatar' }, [
                         h('img', { 
-                            class   : 'createAvatar', 
-                            src     : './images/people_14024721.png', 
-                            alt     : 'Avatar' 
+                            class : 'createAvatar', 
+                            src   : './images/people_14024721.png', 
+                            alt   : 'Avatar' 
                         }),
                         h('div', { 
-                            class   : 'editIcon', 
-                            on      : {
-                                click: () => { document.getElementById(`file-upload1`).click(); }
+                            class : 'editIcon', 
+                            on    : {
+                                click : () => { document.getElementById(`file-upload1`).click(); }
                             }
                         }, [
                             h('input', {
@@ -123,7 +139,7 @@ export const Tournament = defineComponent({
                                 id      : 'file-upload1',
                                 name    : 'player_avatar',
                                 accept  : 'image/*',
-                                style   :{
+                                style   : {
                                     display         : 'none',
                                     pointerEvents   : 'none'
                                 },

@@ -2,6 +2,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../package/index.js'
 
 import { customFetch } from '../package/fetch.js'
+import { translations } from './languages.js';
 
 let socket = null;
 
@@ -10,6 +11,7 @@ export const header = defineComponent({
     {
         return {
             suggestions : [],
+            username :"",
             notif       : false,
             notification: null,
             icon_notif  : false
@@ -189,20 +191,21 @@ export const header = defineComponent({
     },
 
     render(){
-        const {suggestions} = this.state
+        const {suggestions, username} = this.state
 
         return h('header', { class: 'container' }, [
             h('nav', {}, [
                 h('a', { href: '/home' }, [
                     h('img', { src: './images/logo.png', class: 'logo' })
                 ]),
-                h('div', { class: 'search' }, [
+                h('div', { class: 'search' , style :{ 'z-index' : 100}}, [
                     h('a', {  }, [
                         h('i', { class: 'fa-solid fa-magnifying-glass icon', 'aria-hidden': 'false' })
                     ]),
-                    h('input', { type: 'text', placeholder: 'Search...', id:'searchBox', on : {
-                        input : ()=>
+                    h('input', { type: 'text', placeholder: 'Search...', id:'searchBox', value : `${username}`,on : {
+                        input : (e)=>
                         {
+                            const username = e.target.value
                             const suggestions = document.getElementById('suggestions')
                             if (searchBox.value.trim() !== '') {
                                 suggestions.style.display = 'block';
@@ -216,7 +219,7 @@ export const header = defineComponent({
                                 switch(result.status)
                                 {
                                     case 401:
-                                        console.log(">>>>>>>>>>>>> here ")
+                                        // console.log(">>>>>>>>>>>>> here ")
                                         this.appContext.router.navigateTo('/login')
                                         break;
                                     // case 404:
@@ -227,9 +230,10 @@ export const header = defineComponent({
                                 return result.json()
                             })
                             .then((res)=>{
-                                console.log(">>>>>>>>>>>>>>> here the suggestions ", res)
+                                // console.log(">>>>>>>>>>>>>>> here the suggestions ", res)
                                 this.updateState({
-                                    suggestions:res
+                                    suggestions:res,
+                                    username: username
                                 })
 
                             })
@@ -237,21 +241,49 @@ export const header = defineComponent({
                         }
                     } }),
                     // <div class="suggestions" id="suggestions">
-                    h('div', {class : 'suggestions', id : 'suggestions'},  suggestions.map(suggestion => 
+                    h('div', {class : 'suggestions', id : 'suggestions'},  suggestions.length > 0 ? suggestions.map(suggestion => 
                         h('div', { class: 'suggestion-item', on : {
                             click : ()=>
                             {
                                 // this.updateState({suggestion:[]})
                                 this.appContext.router.navigateTo(`/user/${suggestion.username}`)
+                                const suggestions = document.getElementById('suggestions')
+                                suggestions.style.display = 'none';
+                                this.updateState({
+                                    username:""
+                                })
                             }
                                 
                         }}, [
                             h('img', { src: `https://${window.env.IP}:3000${suggestion.picture}`, alt: 'User picture', style : {'object-fit': 'cover' }}),
                             ` ${suggestion.username}`
-                        ])
-                ))
+                        ]) 
+
+                ) : 
+                [
+                    h('div' , {class: 'suggestion-item'}, ['No suggestions available...'])
+                ]
+            )
                 ]),
+         
+        
                 h('div', { class: 'left-side' }, [
+                    h('select', { id : "language-selector" , on : {
+                        change : (e)=>
+                        {
+                            const language = e.target.value
+                            localStorage.setItem('language', language);
+                            document.querySelectorAll("[data-translate]").forEach(element => {
+                                const key = element.getAttribute("data-translate");
+                                element.textContent = translations[language][key];
+                            })
+                        }
+                    }}, [
+                        h('option', {value : 'en'}, ['EN']),
+                        h('option', {value:'fr'}, ['FR']),
+                        h('option', {value:'ar'}, ['AR'])
+                    ])
+                    ,
                     h('a', {}, [
                         h('i', {
                             className: `fa-regular fa-bell ${this.props.icon_notif || this.state.icon_notif ? 'icon_notif' : 'icon'}`,
@@ -261,7 +293,21 @@ export const header = defineComponent({
                         })
                     ]),
                     h('a', { href: '#/settings' }, [
-                        h('i', { class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false' })
+                        h('i', {id:'settings-icon', class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false', 
+                            on : {
+                                click :(e)=>
+                                {
+                                    e.preventDefault()
+
+                                    const target = e.currentTarget;
+                                    // target.style.removeProperty('color'); 
+                                    target.style.color = '#F45250';
+                                    // console.log(">>>>>>>>>>>the target icon : ", target)
+                                    this.appContext.router.navigateTo('/settings/edit-info')
+                                    
+                                }
+                            }
+                         })
                     ]),
                     h('a', {on :{click: async (event)=> {
                         event.preventDefault()

@@ -3,12 +3,6 @@ from . import consumers
 
 websocket_urlpatterns = [
     path("ws/notification/", consumers.Notification.as_asgi()),
+    path("ws/friends-status/", consumers.OnlineFriends.as_asgi()),
 ]
-
-
-# websocket_urlpatterns = [
-#     # path('requests/', RequestUpdateConsumer.as_asgi()),
-#     path('ws/test', TestConsumer.as_asgi())
-
-# ]
 

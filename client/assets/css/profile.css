@@ -55,34 +55,6 @@ initial-value: 70;
 inherits: false;
 } */
 
-.suggestions {
-    position: absolute;
-    top: 40px;
-    width: 100%;
-    background-color: #1A2553;
-    border-radius: 10px;
-    display: none;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    max-height: 150px;
-    overflow-y: auto;
-}
-
-.suggestion-item {
-    padding: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    color: white;
-}
-.suggestion-item img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-.suggestion-item:hover {
-    background-color: #2D3E77;
-}
 
 
 .circular-container{
@@ -148,35 +120,12 @@ inherits: false;
 
 }
 
-.profile-info > div
-{
-    border-radius: 50px;
-    /* background-color: #FFEEBF; */
-    /* border: 2px solid rgb(234, 0, 255); */
-
-}
-
-.infos
-{
-    display: grid;
-    grid-template-columns: 66.18% 32.32%;
-    padding: 10px;
-    column-gap: 1.5%;
-    /* border: 2px solid red; */
-    background-color: #FFEEBF;
-}
-
-.other-cards
-{
-    display: grid;
-    grid-template-columns: 32.32% 32.32% 32.32%;
-    column-gap:1.5%;
-}
 
 /*************************what i add **********************/
 .profile-container h1 , .profile-container span, 
 .profile-container input, .profile-container h2, 
-.profile-container button
+.profile-container button , .picture-item span , .match-result span,
+.title-item h1
 {
     font-family: myFont;
     /* text-shadow: 0px 2px 2px rgba(145, 126, 126, 0.5); */
@@ -188,19 +137,14 @@ inherits: false;
     /* font-size: 24px; */
 
 }
+
 .profile-container h1 , .profile-container h2
 {
     text-shadow: 0px 2px 2px rgba(145, 126, 126, 0.5);
     color: #33518F;
 }
+
 .profile-container {
-    /* background-color: rgba(217, 217, 217, 0.05);
-    display: flex;
-    flex-direction: column;  
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%; */
     width: 100%;
     border-radius: 56px;
     background-color: rgba(217, 217, 217, 0.05);
@@ -340,10 +284,6 @@ inherits: false;
     padding-top: 2px;
 }
 
-/* .title-item span {
-    border: 2px solid red;
-
-} */
 
 .view-all-match
 {
@@ -351,6 +291,7 @@ inherits: false;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: myFont;
     /* border: 2px solid red; */
 
 }
@@ -560,6 +501,7 @@ inherits: false;
 .view-all-link-fr a, .view-all-match a{
     text-decoration: none;
     color: #14397C;
+    font-family: myFont;
 
 }
 

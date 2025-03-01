@@ -59,7 +59,7 @@ export const Form = defineComponent({
                             event.preventDefault()
                          
                             for (let [key, value] of formData.entries()) {
-                                console.log(`${key}:`, value);
+                                // console.log(`${key}:`, value);
                             }
                             customFetch(`https://${window.env.IP}:3000/api/user`, {
                                 method : 'PUT',
@@ -72,7 +72,7 @@ export const Form = defineComponent({
                                     this.appContext.router.navigateTo('/login')
                                 if (!result.ok) {
                                     return result.json().then(errs => {
-                                        console.log(">>>>>>>>>>>>>> err : ", errs)
+                                        // console.log(">>>>>>>>>>>>>> err : ", errs)
                                         // this.updateState({
                                         //     isLoading: false,
                                         //     // data: null, // Clear data in case of an error
@@ -80,13 +80,13 @@ export const Form = defineComponent({
                                         // });
                                         document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                         for (const [field, messages] of Object.entries(errs)) {
-                                            console.log(">>>>>>>>>>>>>>>>>> here  : ", `${field}_error`)
+                                            // console.log(">>>>>>>>>>>>>>>>>> here  : ", `${field}_error`)
                                             const errorElement = document.getElementById(`${field}_error`);
                                             if (errorElement) {
-                                                console.log(">>>>>>>>>>>>>>> here the element", errorElement)
+                                                // console.log(">>>>>>>>>>>>>>> here the element", errorElement)
                                                 errorElement.style.color = '#D44444'
                                                 errorElement.textContent = '* ' + messages;
-                                                console.log(">>>>>>>>>>>>> errorElement.textContent : ", errorElement.textContent)
+                                                // console.log(">>>>>>>>>>>>> errorElement.textContent : ", errorElement.textContent)
                                             }
                                         }
                                         throw new Error(`HTTP Error: ${result.status}`); // To exit the chain
@@ -159,7 +159,7 @@ export const Form = defineComponent({
                             h('div', {},[
                                     h('div',{},
                                         [
-                                            h('label', { for: 'fname' }, ['First name:']),
+                                            h('label', { for: 'fname', 'data-translate' : 'First name' }, ['First name']),
                                             h('small', {class : 'error', id : "first_name_error"}),
                                             h('input', { type: 'text', id: 'fname', name: 'first_name', value: `${data.first_name}`,
                                                 on : {
@@ -167,7 +167,7 @@ export const Form = defineComponent({
                                                 }
                                             }),
                                             h('br'),
-                                            h('label', { for: 'Username' }, ['Username:']),
+                                            h('label', { for: 'Username', 'data-translate' : 'Username'}, ['Username']),
                                             h('small', {class : 'error', id : "username_error"}),
                                             h('input', { type: 'text', id: 'username', name: 'username', value: `${data.username}` ,
                                                 on : {
@@ -175,7 +175,7 @@ export const Form = defineComponent({
                                                 } 
                                             }),
                                             h('br'),
-                                            h('label', { for: 'pnumber' }, ['Phone number:']),
+                                            h('label', { for: 'pnumber', 'data-translate' :'Phone number' }, ['Phone number']),
                                             h('small', {class : 'error', id : "phone_number_error"}),
                                             h('input', { type: 'text', id: 'pnumber', name: 'phone_number', value: `${data.phone_number}`,
                                                 on : {
@@ -183,7 +183,7 @@ export const Form = defineComponent({
                                                 } 
                                             }),
                                             h('br'),
-                                            h('label', { for: 'email' }, ['E-mail:']),
+                                            h('label', { for: 'email', 'data-translate' : 'E-mail' }, ['E-mail']),
                                             h('small', {class : 'error', id : "email_error"}),
                                             h('input', { type: 'text', id: 'email', name: 'email', value: `${data.email}` ,
                                                 on : {
@@ -195,7 +195,7 @@ export const Form = defineComponent({
                                     ),
                                     h('div',{},
                                         [
-                                            h('label', { for: 'lname' }, ['Last name:']),
+                                            h('label', { for: 'lname', 'data-translate' : 'Last name'}, ['Last name']),
                                             h('small', {class : 'error', id : "last_name_error"}),
                                             h('input', { type: 'text', id: 'last_name', name: 'last_name', value: `${data.last_name}` ,
                                                 on : {
@@ -203,7 +203,7 @@ export const Form = defineComponent({
                                                 } 
                                             }),
                                             h('br'),
-                                            h('label', { for: 'age' }, ['Age:']),
+                                            h('label', { for: 'age' , 'data-translate' : 'Age'}, ['Age']),
                                             h('small', {class : 'error', id : "age_error", }),
                                             h('input', { type: 'text', id: 'age', name: 'age', value: `${data.age}`,
                                                 on : {
@@ -211,7 +211,7 @@ export const Form = defineComponent({
                                                 } 
                                             }),
                                             h('br'),
-                                            h('label', { for: 'nationality' }, ['Nationality:']),
+                                            h('label', { for: 'nationality', 'data-translate' : 'Nationality'}, ['Nationality']),
                                             h('small', {class : 'error', id : "nationality_error"}),
                                             h('select',
                                                 { name: 'nationality', id: 'nationality', value : `${data.nationality}` ,
@@ -224,7 +224,7 @@ export const Form = defineComponent({
                                             )
                                             ),
                                             h('br'),
-                                            h('label', { for: 'gender' }, ['Gender:']),
+                                            h('label', { for: 'gender', 'data-translate' : 'Gender'}, ['Gender']),
                                             h('small', {class : 'error', id : "gender_error"}),
                                             h('select',
                                                 { name: 'gender', id: 'gender', value:`${data.gender}` ,
@@ -233,8 +233,8 @@ export const Form = defineComponent({
                                                 } 
                                             },
                                             [
-                                                h('option', { value: 'Female' }, ['Female']),
-                                                h('option', { value: 'Male' }, ['Male'])
+                                                h('option', { value: 'Female', 'data-translate' : 'Female'}, ['Female']),
+                                                h('option', { value: 'Male' , 'data-translate' : 'Male'}, ['Male'])
                                             ]
                                             ),
                                             h('br')
@@ -244,7 +244,7 @@ export const Form = defineComponent({
                             ),
                             h('div',{},
                                 [
-                                    h('button', { type : 'submit'}, ['Submit'])
+                                    h('button', { type : 'submit', 'data-translate' : 'Submit'}, ['Submit'])
                                 ]
                             )
                         ])

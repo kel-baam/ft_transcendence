@@ -187,29 +187,33 @@
 
 #twoFactor .twoFactorCard #input
 {
-   /* margin-bottom: 30px; */
-   color: black;
-   width: 75%;
-   height: 50px;
-   border: none;
-   border-radius: 10PX;
-   padding-left: 30px;
+  color: black;
+  width: 75%;
+  height: 50px;
+  border: none;
+  border-radius: 10PX;
+  padding-left: 30px;
+  letter-spacing: 3px;
+  font-size: 21px;
 
 }
+
+
 #twoFactor .twoFactorCard input:focus
 {
-   margin-bottom: 30px;
-   border: none;
-   /* color: black; */
-
+  margin-bottom: 30px;
+  border: none;
+  letter-spacing: normal;
 }
 
 
 
 #twoFactor .twoFactorCard #input::placeholder
 {
-    color: grey;
-    font-size: 15px;
+  color: grey;
+  font-size: 15px;
+  letter-spacing: normal;
+
   
 }
 #twoFactor .twoFactorCard form   #submit

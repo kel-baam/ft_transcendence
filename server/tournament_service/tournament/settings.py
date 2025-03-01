@@ -40,6 +40,8 @@ CHANNEL_LAYERS = {
     },
 }
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Application definition

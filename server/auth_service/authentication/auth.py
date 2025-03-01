@@ -286,15 +286,11 @@ def login(request):
         if not check_password(password,user.password):
                 return Response({'password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
         if (user.is_verify == False):
-                return Response({'verification':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'verification':'please verify your account first'}, status=status.HTTP_400_BAD_REQUEST)
         response = Response({'message': 'user successfully loged'},status=status.HTTP_200_OK)
 
         response = set_tokens_in_login(request,user.email,response)
-
-
         return response
-
-
 
 def generate_verification_token(username):
     payload = {
@@ -432,6 +428,8 @@ def password_reset_confirm(request):
                                 serialize = UserSerializer(user,data=data,partial=True)
                                 if serialize.is_valid(raise_exception=True):
                                         serialize.save()
+                                        user.verify_token = "None"
+                                        user.save()
                                         return Response({'password':"password reset succssefylly"},status=200)
                         return Response({'password':"something wrong"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:

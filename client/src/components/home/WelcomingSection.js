@@ -12,6 +12,7 @@ export const WelcomingSection = defineComponent({
 
     render(){
         const {isLoading, data} = this.state
+        console.log("-------------------------> data : ", data)
         if (isLoading)
             return h('div', { class: 'welcoming-section' })
         return (h('div', { class: 'welcoming-section' }, [

@@ -19,13 +19,27 @@ export const Home = defineComponent({
             homeActive :false
         }
     },
+    onMounted()
+    {
+        const userIcon = document.getElementById('home-icon');
+        console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
 
+        if (userIcon) {
+            userIcon.style.color = "#F45250";
+            userIcon.style.transform = "scale(1.1)";
+            userIcon.style.webkitTransform = "scale(1.1)";
+            userIcon.style.filter = "blur(0.5px)";
+            userIcon.style.transition = "0.5s";
+        }
+
+    },
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
+        // print("--------------------> submit form ", formData)
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
@@ -49,7 +63,6 @@ export const Home = defineComponent({
             })
         }
     },
-
 
     render()
     {

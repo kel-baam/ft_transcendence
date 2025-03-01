@@ -136,27 +136,26 @@ export const UserCard = defineComponent({
                     [h('div', {},
                         [
                             // h('span', {},[ `${data.level}` + 'Xps']),
-                            h('span', {},[ '8.88' + 'Xps']),
+                            h('span', {},[ `${data.level}` + 'xps']),
 
                         h('div', {},
                             [
-                                h('span', {}, ['level']),
-                                // h('progress', { max: '100', value: `${data.level}`, style: {width: '593px' }, id: 'progress-level' })]
-                                h('progress', { max: '100', value: '8', style: {width: '593px' }, id: 'progress-level' })]
+                                h('span', {'data-translate' : 'Level'}, ['Level']),
+                                h('progress', { max: '5', value: `${data.level}`, style: {width: '593px' }, id: 'progress-level' })]
                         )]
                     ),
                     h('div', {},
                         [
                             h('div', {},
                                 [
-                                    h('span', {}, ['Rank : ']),
-                                    h('span', { style: {color: '#0B42AF'} }, [`${data.rank}`])
+                                    h('span', {'data-translate' : 'Rank'}, ['Rank']),
+                                    h('span', { style: {color: '#0B42AF'} }, [' ' + `${data.rank}`])
                                 ]
                             ),
                             h('div', {},
                                 [
-                                    h('span', {}, ['Score : ']),
-                                    h('span', { style: {color: '#0B42AF' }}, [`${data.score}`])
+                                    h('span', {'data-translate' : 'Score'}, ['Score']),
+                                    h('span', { style: {color: '#0B42AF' }}, [' ' +`${data.score}`])
                                 ]
                             ),
                             h('div', { style: {color: '#FBCA35',fontSize: '16px' }, class: 'achievement-item' },
@@ -173,28 +172,40 @@ export const UserCard = defineComponent({
         )
     },
 
-   onMounted()
+    onMounted()
     {
-        const {key} = this.props
-        const  endPoint  = !key ? `https://${window.env.IP}:3000/api/user?fields=first_name,last_name,username,picture,score,rank`:
+        const {key, on} = this.props
+        const  endPoint  = !key ? `https://${window.env.IP}:3000/api/user?fields=first_name,last_name,username,picture,score,rank,level`:
         `https://${window.env.IP}:3000/api/user?username=${key}&
             fields=first_name,last_name,username,picture,score,rank`
        
         customFetch(endPoint)
         .then(result =>{
-                switch(result.status)
+            console.log("------------------------> res.status : ", result.status)
+                 switch(result.status)
                 {
                     case 401:
                         this.appContext.router.navigateTo('/login')
                         break;
-                    // case 404:
+                    case 404:
+                        // console.log(">>>>>>>>>>>> user not found here ")
+                        // if (response.status === 404) {
+                            // on.NotFound(); 
                     //     console.log(">>>>>>>----------- 404 >>>>>> here ")
-                    //     h('h1', {}, ['404 not found'])
-                    //     break;
+                        // this.emit("NotFound")
+                        throw Error("404 User not found")
+                        // return this.appContext.router.navigateTo("/404")
+                        // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> this.appContext.router.navigateTo) ", this.appContext.router.navigateTo("/404"))
+                        // return this.appContext.router.navigateTo("/404")
+                        // return h('div', {}, ["404 user not found "])
+                    break;
                 }
             return result.json()
         })
         .then(res =>{
+            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> res : ", res)
+            // if (res.error)
+            //     return this.appContext.router.navigateTo("/404")
             this.updateState({
                     isLoading: false,  
                     data: res,   
@@ -202,9 +213,10 @@ export const UserCard = defineComponent({
             });
 
         })
-        // .catch(error => {
-        //     console.log(">>>>>>>>>>>> error : ", error)
-        // })
+        .catch(error => {
+            console.log(">>>>>>>>>>>> error : ", error)
+            this.appContext.router.navigateTo("/404")
+        })
       
     },
     handleFileChange(event)

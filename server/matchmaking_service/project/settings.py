@@ -26,8 +26,6 @@ SECRET_KEY = 'django-insecure-1mpj)ud(wiuuvgy6dpm42h@o27ztef$ag%k!k33#r%97jrtflp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

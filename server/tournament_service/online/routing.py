@@ -2,5 +2,5 @@ from django.urls import path
 from . import consumers
 
 websocket_urlpatterns = [
-    path("ws/online/", consumers.Tournaments.as_asgi()),
+    path("ws/tournament/online/", consumers.Tournaments.as_asgi()),
 ]

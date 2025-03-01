@@ -1,6 +1,5 @@
 
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../../package/index.js'
+import{defineComponent, h} from '../../package/index.js'
 import { customFetch } from '../../package/fetch.js'
 
 export const EnableTwoFactor =  defineComponent({

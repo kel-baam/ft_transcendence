@@ -30,7 +30,31 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [('redis-service', 6379)],
-            
+            'capacity': 200,
+        },
+    },
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'ignore_channel_capacity_logs': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: 'channels over capacity in group' not in record.getMessage(),
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['ignore_channel_capacity_logs'],
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
         },
     },
 }

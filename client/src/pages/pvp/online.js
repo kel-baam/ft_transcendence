@@ -9,25 +9,27 @@ let redirectTimeout = null;
 export const OnlinePvp = defineComponent({
     state() {
         return {
-            player_data: {},
-            user_data  : {},
+            player_data       : {},
+            user_data         : {},
             notificationActive: false,
-            isBlur:false,
-            notification_data: null,
-            isLoading : true
+            isBlur            :false,
+            notification_data : null,
+            isLoading         : true
         }
     },
 
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
-        try {
+        try
+        {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
+                method     : 'PUT',
+                body       : formData,
                 credentials: 'include',
             });
 
@@ -39,15 +41,11 @@ export const OnlinePvp = defineComponent({
 
             const successData = await response.json();
             console.log("Player added:", successData.message);
-            this.updateState({ isBlur: false });
-        } catch (error) {
-            showErrorNotification(error);
-            this.updateState({
-                isBlur: false,
-            })
         }
+        catch (error)
+        { showErrorNotification(error); }
+        this.updateState({ isBlur: false });
     },
-
 
     async initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
@@ -64,33 +62,34 @@ export const OnlinePvp = defineComponent({
                 
                 console.log('WebSocket Data:', data);
     
-                if (data.action === "match_not_found") {
+                if (data.action === "match_not_found")
+                {
                     showErrorNotification(data.message);
                     this.appContext.router.navigateTo('/pvp');
                 } 
-                else if (data.action === "user_data") {
-
+                else if (data.action === "user_data")
+                {
                     this.updateState({ user_data: data.user, isLoading: false });
                 } 
-                else if (data.action === "match_found") {
-                    console.log("in match found ========> :", data);
-    
+                else if (data.action === "match_found")
+                {
                     this.updateState({ player_data: data.opponent });
-                    // clearTimeout(redirectTimeout);
+                    
+                    clearTimeout(redirectTimeout);
                     redirectTimeout = setTimeout(() => {
                         this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
-                    }, 10000);
-                } 
-                else if (data.action === "opponent_disconnected") {
+                    }, 3000);
+                }
+                else if (data.action === "opponent_disconnected")
+                {
+                    console.log("------------------------------------------------------------")
                     showErrorNotification(data.message);
                     this.appContext.router.navigateTo('/pvp');
                     clearTimeout(redirectTimeout);
                 }
             };
     
-            socket.onerror = (error) => {
-                console.error('WebSocket error:', error);
-            };
+            socket.onerror = (error) => { console.error('WebSocket error:', error); };
         }
     },
     
@@ -100,20 +99,16 @@ export const OnlinePvp = defineComponent({
     },
     
     onUnmounted() {
-        if (socket) {
+        clearTimeout(redirectTimeout);
+        if (socket)
+        {
             socket.close();
             socket = null;
         }
-        clearTimeout(redirectTimeout);
     },
     
     render() {
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> pvp data : ", this.state.user_data)
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>> picture path " , this.state.user_data.picture)
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> data of the opponent : ",this.state.player_data)
         const {isLoading} = this.state
-        // if (isLoading)
-        //     return h('h1', {}, ['hello world '])
         return h('div', { id: 'global' }, [
             h(header, {
                 icon_notif: this.state.notificationActive,

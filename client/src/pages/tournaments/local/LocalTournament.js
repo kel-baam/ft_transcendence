@@ -14,59 +14,29 @@ export const LocalTournament = defineComponent({
     async submitForm(event) {
         event.preventDefault();
 
-        const formElement   = document.querySelector('form');
-        const formData      = new FormData(formElement);
-        const dataFormData  = new FormData();
+        const formElement = event.target;
+        const formData    = new FormData(formElement);
 
-        dataFormData.append('name', formData.get('tournament_name'));
-
-        for (let i = 1; i <= 4; i++)
-        {
-            const playerName    = formData.get(`player${i}`);
-            const playerImage   = formData.get(`player${i}_image`);
-        
-            if (playerName && playerImage)
-            {
-                dataFormData.append(`players[${i - 1}][nickname]`, playerName);
-                dataFormData.append(`players[${i - 1}][avatar]`, playerImage);
-            }
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
         }
-        
-        // console.log("formData contents:");
-        // formData.forEach((value, key) => {
-        //     console.log(key, value);
-        // });
-
-        // console.log("dataFormData contents:");
-        // dataFormData.forEach((value, key) => {
-        //     console.log(key, value);
-        // });
 
         try
         {
             const response  = await customFetch(`https://${window.env.IP}:3000/api/tournament/local/tournaments/`, {
                 method      : 'POST',
-                body        : dataFormData,
+                body        : formData,
                 credentials : 'include'
             });
 
-            console.log("========> : ", response);
-
-            if (!response.ok)
-            {
+            if (!response.ok) {
                 const errorText = await response.json();
-                console.log("--: ", errorText);
-                // if(errorText === 401)
-                //     this.appContext.router.navigateTo('/login')
                 
-                if (errorText?.errors?.name?.[0] === undefined)
-                {
-                    console.error("Error response:", errorText.errors);
-                    throw new Error(errorText.errors);
-                }
-                console.error("Error response :", errorText.errors.name[0]);
-
-                throw new Error(errorText.errors.name[0]);
+                if(response.status === 401)
+                    this.appContext.router.navigateTo('/login')
+                console.error("Error response:", errorText);
+                const firstError = Object.values(errorText)[0];
+                throw new Error(firstError);
             }
 
             const successData = await response.json();
@@ -93,9 +63,7 @@ export const LocalTournament = defineComponent({
         {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/local/tournaments/`, {
                 method      : 'GET',
-                headers     : {
-                    'Content-Type' : 'application/json'
-                },
+                headers     : { 'Content-Type' : 'application/json' },
                 credentials : 'include'
             });
     
@@ -176,8 +144,7 @@ export const LocalTournament = defineComponent({
             });
             
         }
-        catch (error)
-        { console.log('Error while deleting tournament:', error); }
+        catch (error) { console.log('Error while deleting tournament:', error); }
     },
 
     render() {
@@ -199,9 +166,9 @@ export const LocalTournament = defineComponent({
                                         h('a', {
                                             on: {
                                                 click: () => {
-                                                    const tournamentId = tournament.id;
+                                                    const id = tournament.id;
                                                     
-                                                    this.appContext.router.navigateTo(`/tournament/local/local_hierachy/${tournamentId}`);
+                                                    this.appContext.router.navigateTo(`/tournament/local/local_hierachy/${id}`);
                                                 }}
                                             }, [tournament.name]),
                                         h('i', {
@@ -231,7 +198,7 @@ export const LocalTournament = defineComponent({
                                             h('div', { class: 'section' }, [
                                                 h('input', {
                                                     type: 'text',
-                                                    name: `player${i}`,
+                                                    name: `player${i}_nickname`,
                                                     class: `player${i}`,
                                                     placeholder: 'Enter player name...'
                                                 }),

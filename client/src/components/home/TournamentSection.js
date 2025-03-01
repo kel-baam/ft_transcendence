@@ -9,7 +9,7 @@ export const TournamentSection = defineComponent({
 
     render(){
         return h('div', { class: 'tournament' }, [
-            h('h1', {}, ['Tournament']),
+            h('h1', {'data-translate' : 'Tournament'}, ['Tournament']),
             h('div', { class: 'hierarchy' }, [
                 h('div', { class: 'col1' }, [
                     h('div', { class: 'girl-div' }, [
@@ -46,6 +46,7 @@ export const TournamentSection = defineComponent({
             h('button', {
                 type: 'button',
                 class: 'btn',
+                'data-translate' : 'PLAY',
                 on :{ click:()=>{ this.appContext.router.navigateTo('/tournament') } } }, ['PLAY'])
         ]);        
     }

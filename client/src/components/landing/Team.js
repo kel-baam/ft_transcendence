@@ -64,19 +64,20 @@ import{defineComponent,h} from '../../package/index.js'
         return h('div',{id:"team-section"},[
             h('div',{id:"team-title"},[
                 h('h2',{},[
-                    "The team",
-                    h('span',{},[
-                        h('br',{}),
+                    h('span', {'data-translate': 'TEAM_HEADER'}, ["The team"]),
+                    h('br',{}),
+                    h('span',{'data-translate': 'magic'},[
                         "behind the magic"
                     ])
                 ]),
-                h('p',{},[
-                    "Our developers work tirelessly to bring the ping pong website to life,",
-                    h('br',{}),
-                    "ensuring every user enjoys a seamless and unforgettable experience.",
-                    h('br',{}),
-                    "Meet the team behind the magic!"
+                h('p', { }, [
+                    h('span', { 'data-translate': 'TEAM_LINE_1' }, ["Our developers work tirelessly to bring the ping pong website to life,"]),
+                    h('br', {}),
+                    h('span', { 'data-translate': 'TEAM_LINE_2' }, ["ensuring every user enjoys a seamless and unforgettable experience."]),
+                    h('br', {}),
+                    h('span', { 'data-translate': 'TEAM_LINE_3' }, ["Meet the team behind the magic!"])
                 ])
+                
             ]
             ),
              
@@ -84,7 +85,7 @@ import{defineComponent,h} from '../../package/index.js'
                 h(TeamCards,{name:'KAOUTAR EL BAAMRANI',githubLink:"https://github.com/kel-baam",linkdenLink:"",emailLink:"kaoutarelbaamrani@gmail.com",picture:"./images/kel-baam.png"}),
                 h(TeamCards,{name:'NISIN BOUKHARI',githubLink:"https://github.com/niboukha",linkdenLink:"",emailLink:"nisrinboukhari19@gmail.com",picture:"./images/niboukha.jpeg"}),
                 h(TeamCards,{name:'SOUAD HICHAM',githubLink:"https://github.com/s-hicham",linkdenLink:"",emailLink:"",picture:"./images/shicham.jpeg"}),
-                h(TeamCards,{name:'KARIMA JARMOUMI',githubLink:"https://github.com/karimajarmoumi",linkdenLink:"",emailLink:"",picture:"./images/kjarmoum.jpg"}),
+                // h(TeamCards,{name:'KARIMA JARMOUMI',githubLink:"https://github.com/karimajarmoumi",linkdenLink:"",emailLink:"",picture:"./images/kjarmoum.jpg"}),
             ]),
         ])
     }

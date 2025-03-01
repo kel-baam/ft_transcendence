@@ -182,6 +182,7 @@ export class HashRouter {
     }
   }
 
+
   #pushState(path) {
     window.history.pushState({}, '', `#${path}`)
   }
@@ -206,8 +207,8 @@ export class HashRouter {
       }
     }
 
-    
-    const result = await guard(currentLocation.route.path)
+    console.log("canChangeRoute=>",currentLocation)
+    const result = await guard(currentLocation)
 
     if (result === false) {
 

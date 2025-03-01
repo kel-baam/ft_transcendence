@@ -21,15 +21,15 @@ let socket = null;
 export const OnlineTournament = defineComponent({
     state() {
         return {
-            data    : {
+            data : {
                 joinedTournaments   : [],
                 availableTournaments: [],
             },
-            isBlur  : false,
-            id      : null,
-            notificationActive: false,
-            notif_blur: false,
-            notification_data: null,
+            isBlur             : false,
+            id                 : null,
+            notificationActive : false,
+            notif_blur         : false,
+            notification_data  : null,
         };
     },
 
@@ -47,27 +47,28 @@ export const OnlineTournament = defineComponent({
     initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/tournament/online/`);
+
             socket.onopen = () => {
                 console.log('WebSocket connection established');
+
                 socket.send(JSON.stringify({ action: 'get_joined_tournaments' }));
                 socket.send(JSON.stringify({ action: 'get_available_tournaments' }));
             };
             socket.onmessage = async (event) => {
                 const data = JSON.parse(event.data);
+
                 console.log('Parsed WebSocket Data:', data);
 
-                if (data.error === "token expired") {
-                    const refreshAccessToken = await fetch(`https://${window.env.IP}:3000/auth/refreshToken`, {
-                        method: 'GET',
-                        credentials: 'include',
-                    });
-                    console.log("Token refreshed", refreshAccessToken);
-                }
+                // if (data.error === "token expired") {
+                //     const refreshAccessToken = await fetch(`https://${window.env.IP}:3000/auth/refreshToken`, {
+                //         method     : 'GET',
+                //         credentials: 'include',
+                //     });
+                // }
 
                 if (data.joined_tournaments) {
                     this.updateState({ joinedTournaments: data.joined_tournaments });
                 }
-
                 if (data.available_tournaments) {
                     this.updateState({ availableTournaments: data.available_tournaments });
                 }
@@ -79,9 +80,8 @@ export const OnlineTournament = defineComponent({
 
     async submitForm(event) {
         event.preventDefault();
-        const formData = new FormData(event.target);
 
-        // console.log(this.state.notification_data.object_id ,this.state.id)
+        const formData = new FormData(event.target);
 
         if (this.state.notification_data)
             formData.append( 'tournament_id',  JSON.stringify(this.state.notification_data.object_id))
@@ -90,7 +90,8 @@ export const OnlineTournament = defineComponent({
 
         formData.append('status', 'accepted');
         
-        try {
+        try
+        {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method      : 'PUT',
                 body        : formData,
@@ -104,16 +105,14 @@ export const OnlineTournament = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
             this.updateState({
-                notif_blur: false,
-                isBlur: false,
-                notification_data:null,
-                id:null
+                notif_blur        : false,
+                isBlur            : false,
+                notification_data : null,
+                id                : null
             });
-        } catch (error) {
-            showErrorNotification(error);
         }
+        catch (error) { showErrorNotification(error); }
     },
 
     render() {
@@ -121,28 +120,32 @@ export const OnlineTournament = defineComponent({
             h('div', { class: 'join-player-form' }, [
                 h('i', {
                     class: 'fa-regular fa-circle-xmark icon',
-                    on: { click: () => this.updateState({
-                        notif_blur: false,
-                        isBlur: false,
-                    }) }
+                    on   : {
+                        click: () => this.updateState({
+                            notif_blur : false,
+                            isBlur     : false,
+                        }) 
+                    }
                 }),
                 h('form', {
                     class: 'form1',
-                    on: { submit: this.submitForm.bind(this) }
+                    on   : { submit: (event) => this.submitForm(event) }
                 }, [
                     h('div', { class: 'avatar' }, [
                         h('img', { class: 'createAvatar', src: './images/people_14024721.png', alt: 'Avatar' }),
                         h('div', {
                             class: 'editIcon',
-                            on: { click: () => document.getElementById('file-upload1').click() }
+                            on   : {
+                                click: () => document.getElementById('file-upload1').click()
+                            }
                         }, [
                             h('input', {
-                                type: 'file',
-                                id: 'file-upload1',
-                                name: 'player_avatar',
-                                accept: 'image/*',
-                                style: { display: 'none' },
-                                on: {
+                                type   : 'file',
+                                id     : 'file-upload1',
+                                name   : 'player_avatar',
+                                accept : 'image/*',
+                                style  : { display: 'none' },
+                                on     : {
                                     change: (event) => {
                                         const file = event.target.files[0];
                                         if (file) {
@@ -169,10 +172,10 @@ export const OnlineTournament = defineComponent({
         return h('div', { id: 'global' }, [
             h(header, {
                 icon_notif: this.state.notificationActive,
-                on: {
+                on        : {
                     iconClick: () => this.updateState({ notificationActive: !this.state.notificationActive }),
-                    blur: (notification_data) => this.updateState({
-                        notif_blur: true,
+                    blur     : (notification_data) => this.updateState({
+                        notif_blur        : true,
                         notification_data : notification_data,
                     })
                 }
@@ -184,14 +187,14 @@ export const OnlineTournament = defineComponent({
                     style: this.state.isBlur || this.state.notif_blur ? { filter: 'blur(4px)', pointerEvents: 'none' } : {}
                 }, [
                     h(AvailableTournaments, {
-                        tournaments: this.state.availableTournaments,
-                        on: {
+                        tournaments : this.state.availableTournaments,
+                        on          : {
                             join: (id) => this.updateState({ isBlur: true, id })
                         }
                     }),
                     h(JoinedTournaments, {
-                        tournaments: this.state.joinedTournaments,
-                        on: {
+                        tournaments : this.state.joinedTournaments,
+                        on          : {
                             start_the_tournament: (id) =>
                                 this.appContext.router.navigateTo(`/tournament/online/online_hierachy/${id}`)
                         }

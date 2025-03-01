@@ -11,19 +11,25 @@ import{createApp, defineComponent, DOM_TYPES, h,
     render()
     {
   
-      const {isExpanded, key} = this.props
-      console.log(">>>>>>>>>>>>>>>>>>>> key here : ", key)
+      const {isExpanded, key, searchedUser} = this.props
+      console.log(">>>>>>>>>>>>>>>>>>>> searchedUser here : ", searchedUser)
       // console.log('>>>>>>>>>>>>>>> this state of friends : ', this.state)
       const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
+      console.log("------------------------------------> data : ", data)
       return h('div', {class : 'friends-scope-item',
           style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
             ,justifyContent : 'center'} : {}
-        }, data.map((userFriend) =>
-          h(FriendItem, {
-            user : userFriend.user,
-            isExpanded : isExpanded,
-            key
-          })
+        }, data.map((user) =>
+        {
+
+          if ((searchedUser != "" && user.username.startsWith(searchedUser)) 
+            || searchedUser == "")
+            return h(FriendItem, {
+              user,
+              isExpanded : isExpanded,
+              key,
+            })
+        }
         )
     )
     }
@@ -38,7 +44,9 @@ import{createApp, defineComponent, DOM_TYPES, h,
     // },
     render()
     {
+      console.log("------------------>props here : ", this.props)
       const {user, isExpanded, key} = this.props
+      // console.log("---------------------------> user : ", user)
       return  h('div', { class: 'friend-item', style : isExpanded ? 
         {
           backgroundColor : '#CBCBCB', 'border-radius' : '15px',
@@ -54,8 +62,8 @@ import{createApp, defineComponent, DOM_TYPES, h,
           ),
           h('div', { class: 'data-user' },
             [
-              h('span', {}, [user.first_name + ' ' + user.last_name]),
-              h('span', { style: { color: '#A7A4A4'} }, ['@' + user.username])
+              h('span', {style: {fontFamily : 'myFont'}}, [user.first_name + ' ' + user.last_name]),
+              h('span', { style: { color: '#A7A4A4', fontFamily : 'myFont'} }, ['@' + user.username])
             ]
           ),
           h('div', { class: 'chat-icon' },!key ?

@@ -7,33 +7,32 @@ import { sidebarLeft } from '../components/sidebar-left.js'
         return {
             socket : null,
             errors :{},
-            state : [
-                            {
-                                "id": 1,
-                                "name": "Alice",
-                                "rank": 1,
-                                "score": 95,
-                                "level": 5
-                            },
-                            {
-                                "id": 2,
-                                "name": "Bob",
-                                "rank": 2,
-                                "score": 90,
-                                "level": 4
-                            },
-                            {
-                                "id": 3,
-                                "name": "Charlie",
-                                "rank": 3,
-                                "score": 85,
-                                "level": 4
-                            },
+            data :[
+                {
+                    'username':'salma',
+                    'picture':'./images/kel-baam.png',
+                    'score':4,
+                    'level':7,
+                }
             ]
 
     }
     },
+    onMounted()
+    {
+      const userIcon = document.getElementById('leaderboard-icon');
+      console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
+  
+      if (userIcon) {
+          userIcon.style.color = "#F45250";
+          userIcon.style.transform = "scale(1.1)";
+          userIcon.style.webkitTransform = "scale(1.1)";
+          userIcon.style.filter = "blur(0.5px)";
+          userIcon.style.transition = "0.5s";
+      }
+    },
     createPlayerEntry(rank, name, score, level, badgeSrc) {
+        // console.log("yyyy",rank,name)
         return h("div", { className: "space" },
             [
                 h("div", {}, [h("p", {}, [rank])]),
@@ -44,35 +43,49 @@ import { sidebarLeft } from '../components/sidebar-left.js'
             ]
         );
         },
-
+// style:{'overflow-y': 'hidden'}
     render(){
+        const {data} = this.state
+        const playersLen = Object.keys(data).length
+
+        // console.log("this.state.data",Object.keys(data).length 
         return(
                 h('div',{id:'global'},[
                     h(header, {}),
-                    h('div', {class:'content' ,style:{'overflow-y': 'hidden'}}, 
+                    h('div', {class:'content',style:{'overflow-y': 'hidden'} }, 
                         [h(sidebarLeft, {}),
-                            h('div',{class:'home-content'},[
+                            h('div',{class:'home-content'}, playersLen > 0?[
+                                
                                 h('div',{class:'leaderboard-title'},[
                                     h('h1',{},['Leaderboard'])
                                 ]),
                                 h('div',{class: 'pics-rank'},[
-                                    h('div',{class:'first-place'},[
+                                    h('div',{class:'first-place'},playersLen >= 1?[
                                         h('img',{class:'crown-pic', src:'./images/crown-removebg-preview.png'}),
-                                        h('img',{class:'first-pic', src:'./images/kel-baam.png'}),
-                                        h('h4',{},['kel-baam'])
+                                        h('img',{class:'first-pic', src:`${data[0].picture}`}),
+                                        h('h4',{},[`${data[0].username}`])
+                                    ]:[h('img',{class:'crown-pic', src:'./images/crown-removebg-preview.png'}),
+                                        h('img',{class:'first-pic',src:'./images/accountUser.png',alt:'third player picture'}),
+                                        h('h1',{},['?'])
                                     ]),
                                     h('div',{class:'second-third-place'},[
-                                            h('div',{class:'second-place'},[
-                                                h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
-                                                h('img',{class:'second-pic',src:'./images/niboukha.png',alt:'second player picture'}),
-                                                h('h4',{},['niboukha'])
-                                            ]),
-                                            h('div',{class:'third-place'},[
-                                                h('img',{class:'third-symbol',src:'./images/third.png'}),
-                                                h('img',{class:'third-pic',src:'./images/niboukha.png',alt:'third player picture'}),
-                                                h('h4',{},['niboukha'])
-                                            ])
-                                            ])
+                                        h('div',{class:'second-place'},playersLen >= 2?[
+                                            h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
+                                            h('img',{class:'second-pic',src:`${data[1].picture}`,alt:'second player picture'}),
+                                            h('h4',{},[`${data[1].username}`])
+                                        ]:[h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
+                                            h('img',{class:'second-pic',src:'./images/accountUser.png',alt:'third player picture'}),
+                                            h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])]
+                                        ),
+                                        h('div',{class:'third-place'},playersLen >= 3?[
+                                            h('img',{class:'third-symbol',src:'./images/third.png'}),
+                                            h('img',{class:'third-pic',src:`${data[2].picture}`,alt:'third player picture'}),
+                                            h('h4',{},[`${data[1].username}`])
+                                        ]:[h('img',{class:'third-symbol',src:'./images/third.png'}),
+                                            h('img',{class:'third-pic',src:'./images/accountUser.png',alt:'third player picture'}),
+                                            h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])
+                                        ])
+                                    ])
                                 ]),
                                 h('div',{class:'rank-info'},[
                                     h('div',{class:'players-info'},[
@@ -81,7 +94,7 @@ import { sidebarLeft } from '../components/sidebar-left.js'
                                                 h('p',{},['Rank']),
                                             ]),
                                             h('div',{},[
-                                                h('p',{},['Name']),
+                                                h('p',{},['UserName']),
                                             ]),
                                             h('div',{},[
                                                 h('p',{},['Score']),
@@ -94,19 +107,25 @@ import { sidebarLeft } from '../components/sidebar-left.js'
                                             ]),
                                         ]),
                                         h('div',{class:'info'},
-                                            [
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                                this.createPlayerEntry('#1',"ffff","fffff","5","./images/diamond.png"),
-                                            ]
-                                        )
+                                                data.map((player, index) => {
+                                                    
+                                                    return this.createPlayerEntry(index + 1, player.username,player.score,player.level,"./images/diamond.png")
+
+                                                }),
+                                            )
+                                              
+                                        // )
+                                            
                                     ])
+                                ])
+                            ] : [
+                                h('div',{class:'empty'},[
+                                    h('div',{class:'leaderboard-title'},[
+                                        h('h1',{},['Leaderboard'])
+                                    ]),
+                                    h('img',{class:'trophy-pic', src:'./images/gold-cup-removebg-preview.png'}),
+                                    h('h1',{},['No matches played yet'])
+
                                 ])
                             ])
                     ]),

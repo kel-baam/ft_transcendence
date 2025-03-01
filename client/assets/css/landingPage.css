@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
 
 @font-face {
-    ont-family: 'Ubuntu Sans';
+    font-family: 'Ubuntu Sans';
     src: url('./fonts/UbuntuSans-Regular.ttf') format('truetype');
     font-family: myFont;
     src: url(../fonts/Season\ Prime.otf);
@@ -26,6 +26,7 @@ html{
 
 #landing-header{
     height: 100vh;
+
 }
 
 .logo{
@@ -482,5 +483,23 @@ html{
 ::-webkit-scrollbar-track{
     /* background-color: #FFEEBF; */
     /* background-color: #7F7D7D; */
+
+}
+
+
+.container .NotFound h1{
+    font-family:  myFont;
+
+}
+
+
+
+.container .NotFound{
+    font-family: myFont;
+}
+
+
+.container .oops{
+    font-family: myFont;
 
 }
