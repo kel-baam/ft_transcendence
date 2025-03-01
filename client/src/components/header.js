@@ -12,6 +12,8 @@ export const header = defineComponent({
         return {
             suggestions : [],
             username :"",
+            language : 'en',
+
             notif       : false,
             notification: null,
             icon_notif  : false
@@ -191,7 +193,7 @@ export const header = defineComponent({
     },
 
     render(){
-        const {suggestions, username} = this.state
+        const {suggestions, username, language} = this.state
 
         return h('header', { class: 'container' }, [
             h('nav', {}, [
@@ -219,18 +221,12 @@ export const header = defineComponent({
                                 switch(result.status)
                                 {
                                     case 401:
-                                        // console.log(">>>>>>>>>>>>> here ")
                                         this.appContext.router.navigateTo('/login')
                                         break;
-                                    // case 404:
-                                    //     console.log(">>>>>>>----------- 404 >>>>>> here ")
-                                    //     h('h1', {}, ['404 not found'])
-                                    //     break;
                                 }
                                 return result.json()
                             })
                             .then((res)=>{
-                                // console.log(">>>>>>>>>>>>>>> here the suggestions ", res)
                                 this.updateState({
                                     suggestions:res,
                                     username: username
@@ -240,12 +236,10 @@ export const header = defineComponent({
 
                         }
                     } }),
-                    // <div class="suggestions" id="suggestions">
                     h('div', {class : 'suggestions', id : 'suggestions'},  suggestions.length > 0 ? suggestions.map(suggestion => 
                         h('div', { class: 'suggestion-item', on : {
                             click : ()=>
                             {
-                                // this.updateState({suggestion:[]})
                                 this.appContext.router.navigateTo(`/user/${suggestion.username}`)
                                 const suggestions = document.getElementById('suggestions')
                                 suggestions.style.display = 'none';
@@ -268,14 +262,18 @@ export const header = defineComponent({
          
         
                 h('div', { class: 'left-side' }, [
-                    h('select', { id : "language-selector" , on : {
+                    h('select', { id : "language-selector" ,on : {
                         change : (e)=>
                         {
                             const language = e.target.value
+                            document.getElementById('language-selector').value  = language
                             localStorage.setItem('language', language);
                             document.querySelectorAll("[data-translate]").forEach(element => {
-                                const key = element.getAttribute("data-translate");
+                            const key = element.getAttribute("data-translate");
                                 element.textContent = translations[language][key];
+                                // this.updateState({
+                                //     language:language
+                                // })
                             })
                         }
                     }}, [

@@ -11,7 +11,7 @@ export const sidebarLeft = defineComponent({
                 class: 'fa-regular fa-circle-user icon',
                 on :{ click:(e)=>{ 
                     const target = e.currentTarget;
-                    console.log("====>  Color before navigation:", target);           
+                    // console.log("====>  Color before navigation:", target);           
                     target.style.color = "#F45250";
                     this.appContext.router.navigateTo('/user');
             }
@@ -35,7 +35,6 @@ export const sidebarLeft = defineComponent({
             }),
             h('i', {
                 id:'pvp-icon',
-
                 class: 'fa-solid fa-network-wired fa-rotate-90 icon',
                 on :{ click:()=>{ this.appContext.router.navigateTo('/pvp')} }
             }),

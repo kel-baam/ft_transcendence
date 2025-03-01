@@ -14,24 +14,19 @@ export const sidebarRight = defineComponent(
         },
         render()
         {
-            // console.log('>>>>>>>>>>>>>>> here where is the problem ')
-            // return h('h1', {style : {color : 'red'}}, ['here online friends '])
-        //     <div class="friends-right-sidebar">
-        //     <ul id="friends-list">
-        //         <!-- Friends will be added dynamically here -->
-        //     </ul>
-        // </div>
+       
             const {friends} = this.state
             console.log("-------------------------> friends : ", friends )
             return h('div', {class:'friends-right-sidebar'}, [
                 h('ul', {class:"friends-list"}, friends.map(friend=>(
                     h('li', {class : 'friend', style : {'list-style-type': 'none'}},
                         [
-                            h('div', {style :{
+                            h('div', { style :{
                                 position : "relative"
                             }}, 
                                 [
-                                    h('img', {class:'friend-img', src:`https://${window.env.IP}:3000${friend.picture}`, alt:'', style : {'object-fit': 'cover'}}),
+                                    h('img', {class:'friend-img', src:`https://${window.env.IP}:3000${friend.picture}`, 
+                                    alt:'', style : {'object-fit': 'cover'}}),
                                     h('div', {class : `status-indicator ${friend.status ? 'onlineFriend' : 'offlineFriend'}`, style :{
                                         position :'absolute',
                                         right:'80%'

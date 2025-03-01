@@ -20,9 +20,11 @@ from validate_email_address import validate_email
 # logger = logging.getLogger(__name__)
 
 class PlayerSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', required=False)
+    picture = serializers.ImageField(source='user.picture', required=False)
     class Meta():
         model = Player
-        fields = ['score', 'level', 'rank']
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)

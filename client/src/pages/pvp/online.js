@@ -4,8 +4,6 @@ import { sidebarLeft } from '../../components/sidebar-left.js'
 import { showErrorNotification } from '../utils/errorNotification.js'
 
 let socket = null;
-let redirectTimeout = null;
-
 export const OnlinePvp = defineComponent({
     state() {
         return {
@@ -74,18 +72,13 @@ export const OnlinePvp = defineComponent({
                 else if (data.action === "match_found")
                 {
                     this.updateState({ player_data: data.opponent });
-                    
-                    clearTimeout(redirectTimeout);
-                    redirectTimeout = setTimeout(() => {
-                        this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
-                    }, 3000);
+                    this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                 }
                 else if (data.action === "opponent_disconnected")
                 {
                     console.log("------------------------------------------------------------")
                     showErrorNotification(data.message);
                     this.appContext.router.navigateTo('/pvp');
-                    clearTimeout(redirectTimeout);
                 }
             };
     
@@ -94,12 +87,10 @@ export const OnlinePvp = defineComponent({
     },
     
     onMounted() {
-        clearTimeout(redirectTimeout);
         this.initWebSocket();
     },
     
     onUnmounted() {
-        clearTimeout(redirectTimeout);
         if (socket)
         {
             socket.close();

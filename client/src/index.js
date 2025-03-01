@@ -30,7 +30,7 @@ import { Unauthorized } from './components/errorPages/401.js';
 
 
 window.env = {
-  IP: "10.14.3.1",
+  IP: "10.14.3.4",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -52,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       });
     });
+    const storedLanguage = localStorage.getItem('language');
+    // console.log(">>>>>>>>>>>>>>>>>>>> stored language ", storedLanguage)
   });
   
   // window.onload = function() {

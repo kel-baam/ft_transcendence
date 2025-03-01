@@ -10,7 +10,7 @@ from django.conf import settings
 # from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
-from django.db.models import OuterRef, Exists, Q
+from django.db.models import OuterRef, Exists, Q, F
 import os
 import requests
 # import DNS
@@ -296,18 +296,21 @@ class FriendshipView(APIView):
         
 class UserRankingView(APIView):
     def get(self, request):
-        top = request.query_params.get('top', None)
-        if top is not None and top.isdigit():
-            limit = int(top)
-            players = list(Player.objects.order_by('rank')[:limit].values('username', 'rank'))
-        else:
-            players = list(Player.objects.order_by('rank').values('username', 'rank'))
-        results = [
-            UserSerializer(player, fields={'id', 'username', 'rank',}).data
-            for player in players
-        ]
+        try:
+            top = request.query_params.get('top', None)
+            if top is not None and top.isdigit():
+                limit = int(top)
+                players = list(User.objects.select_related('player').order_by('player__rank')[:limit]
+                            .annotate(rank=F('player__rank'), score =F('player__score'), level =F('player__level') ))
+            else:
+                players = list(User.objects.select_related('player').order_by('player__rank').
+                            annotate(rank=F('player__rank'), score =F('player__score'), level =F('player__level') ))
+                
+            results = UserSerializer(players, many=True, fields={'username', 'picture', 'score', 'rank', 'level'}).data 
 
-        return Response(results, status=status.HTTP_200_OK)
+            return Response(results, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
 class SearchUsersView(APIView):

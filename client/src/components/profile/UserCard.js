@@ -1,14 +1,13 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../../package/index.js'
+import{defineComponent,h} from '../../package/index.js'
 import { customFetch } from '../../package/fetch.js'
-// import { config } from '../../config.js'
-const statusIcons = {
-    sent: { icon: '<i class="fa fa-user-clock"></i>', action: "Cancel Request" },  // Request sent, waiting for acceptance
-    received: { icon: '<i class="fa fa-user-check"></i>', action: "Accept / Decline" }, // Request received
-    blocked: { icon: '<i class="fa fa-user-slash"></i>', action: "Unblock User" },  // User is blocked
-    accepted: { icon: '<i class="fa fa-user-friends"></i>', action: "Remove Friend" }, // Already friends
-    none: { icon: '<i class="fa fa-user-plus"></i>', action: "Send Request" }, // No relationship (send request)
-};
+
+// const statusIcons = {
+//     sent: { icon: '<i class="fa fa-user-clock"></i>', action: "Cancel Request" },  // Request sent, waiting for acceptance
+//     received: { icon: '<i class="fa fa-user-check"></i>', action: "Accept / Decline" }, // Request received
+//     blocked: { icon: '<i class="fa fa-user-slash"></i>', action: "Unblock User" },  // User is blocked
+//     accepted: { icon: '<i class="fa fa-user-friends"></i>', action: "Remove Friend" }, // Already friends
+//     none: { icon: '<i class="fa fa-user-plus"></i>', action: "Send Request" }, // No relationship (send request)
+// };
 
 export const UserCard = defineComponent({
     state(){
@@ -25,7 +24,6 @@ export const UserCard = defineComponent({
     render(){
 
         const {data, isLoading} = this.state
-        // console.log('>>>>>>>>>>>>>>>>>>>>>> data content : ', data )
         const {key} = this.props
         if (isLoading) 
             return h('div', { class: 'infos-user-container' });
@@ -181,31 +179,19 @@ export const UserCard = defineComponent({
        
         customFetch(endPoint)
         .then(result =>{
-            console.log("------------------------> res.status : ", result.status)
                  switch(result.status)
                 {
                     case 401:
                         this.appContext.router.navigateTo('/login')
                         break;
                     case 404:
-                        // console.log(">>>>>>>>>>>> user not found here ")
-                        // if (response.status === 404) {
-                            // on.NotFound(); 
-                    //     console.log(">>>>>>>----------- 404 >>>>>> here ")
-                        // this.emit("NotFound")
                         throw Error("404 User not found")
-                        // return this.appContext.router.navigateTo("/404")
-                        // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> this.appContext.router.navigateTo) ", this.appContext.router.navigateTo("/404"))
-                        // return this.appContext.router.navigateTo("/404")
-                        // return h('div', {}, ["404 user not found "])
-                    break;
+                        break;
                 }
             return result.json()
         })
         .then(res =>{
-            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> res : ", res)
-            // if (res.error)
-            //     return this.appContext.router.navigateTo("/404")
+           
             this.updateState({
                     isLoading: false,  
                     data: res,   
@@ -214,7 +200,6 @@ export const UserCard = defineComponent({
 
         })
         .catch(error => {
-            console.log(">>>>>>>>>>>> error : ", error)
             this.appContext.router.navigateTo("/404")
         })
       
@@ -224,7 +209,6 @@ export const UserCard = defineComponent({
         const file = event.target.files[0];
         const formData = new FormData();
         formData.append('picture', file);
-        console.log(">>>>>>>>>>>>>>-------------------------------> file : ", file)
         customFetch(`https://${window.env.IP}:3000/api/user`, {
             method : 'PUT',
             body : formData
@@ -266,8 +250,6 @@ export const UserCard = defineComponent({
     sendRequest()
     {
         const {data} = this.state
-        // console.log(">>>>>>>>>>>>>>>>>>>>>>>> data ")
-        console.log(">>>>>>>>>>>>>>>>>> here in sent function : ")
         customFetch(`https://${window.env.IP}:3000/api/user/friendships`, {
             method : 'POST',
             headers: {
@@ -304,7 +286,6 @@ export const UserCard = defineComponent({
         {
             if (res.status == 200)
             {
-                console.log(">>>>>>>>>>>>> here blocked nisrin ")
                 this.updateState({
                     data : {
                         ...this.state.data,
