@@ -21,7 +21,7 @@ import { sidebarLeft } from '../components/sidebar-left.js'
     onMounted()
     {
       const userIcon = document.getElementById('leaderboard-icon');
-      console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
+    //   console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
   
       if (userIcon) {
           userIcon.style.color = "#F45250";

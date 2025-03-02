@@ -12,6 +12,7 @@ export const WelcomingSection = defineComponent({
 
     render(){
         const {isLoading, data} = this.state
+        // console.log("-------------------------> data : ", data)
         if (isLoading)
             return h('div', { class: 'welcoming-section' })
         return (h('div', { class: 'welcoming-section' }, [
@@ -56,8 +57,8 @@ export const WelcomingSection = defineComponent({
             return result.json()
         })
         .then(res =>{
-            console.log("res is okey")
-            console.log(">>>>>>>>>>>>>>>> here the data----> comes from backend : ", res)
+            // console.log("res is okey")
+            // console.log(">>>>>>>>>>>>>>>> here the data----> comes from backend : ", res)
             this.updateState({
                     isLoading: false,  
                     data: res,   

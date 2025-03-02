@@ -5,7 +5,23 @@ export const LeaderboardHome = defineComponent({
     state(){
         return {
             data:[
-                  
+                {
+                    'username':'salma',
+                    'picture':'./images/kel-baam.png',
+                    'score':4,
+                    'level':7,
+                },
+                {
+                    'username':'salma',
+                    'picture':'./images/kel-baam.png',
+                    'score':4,
+                    'level':7,
+                }, {
+                    'username':'salma',
+                    'picture':'./images/kel-baam.png',
+                    'score':4,
+                    'level':7,
+                }
             ]
         }
     },
@@ -60,10 +76,10 @@ export const LeaderboardHome = defineComponent({
                         h('img', { src: './images/fa6-solid_ranking-star.png', class: 'rank' })
                     ]),
                     h('div', { class: 'user' }, [
-                        h('h2', {}, ['Username'])
+                        h('h2', {'data-translate' : 'Username'}, ['Username'])
                     ]),
                     h('div', { class: 'score-div' }, [
-                        h('h2', {}, ['Score'])
+                        h('h2', {'data-translate' : 'Score'}, ['Score'])
                     ])
                 ]),
                 h('div', { class: 'board' }, [

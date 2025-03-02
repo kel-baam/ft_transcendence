@@ -20,7 +20,7 @@ export const settings = defineComponent({
     onMounted()
     {
         const userIcon = document.getElementById('settings-icon');
-  
+        console.log(userIcon)
         if (userIcon)
         {
             userIcon.style.color = "#F45250";

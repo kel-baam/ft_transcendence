@@ -22,7 +22,7 @@ export const Home = defineComponent({
     onMounted()
     {
         const userIcon = document.getElementById('home-icon');
-        console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
+        // console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
 
         if (userIcon) {
             userIcon.style.color = "#F45250";
@@ -39,6 +39,7 @@ export const Home = defineComponent({
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
+        // print("--------------------> submit form ", formData)
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
@@ -53,7 +54,7 @@ export const Home = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
+            // console.log("Player added:", successData.message);
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
@@ -63,10 +64,8 @@ export const Home = defineComponent({
         }
     },
 
-
     render()
     {
-        console.log("render ==>=================================>home")
         return h('div', {id:'global'}, [h(header, {
                 icon_notif: this.state.notificationActive,
                 on          : {

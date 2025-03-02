@@ -4,29 +4,18 @@ import{createApp, defineComponent, DOM_TYPES, h,
 export const sidebarLeft = defineComponent({
     render()
     {
-        console.log(">>>>>>>>>>>>>>>>>> here render side bar left ")
+        // console.log(">>>>>>>>>>>>>>>>>> here render side bar left ")
         return h('div', { class: 'side-bar', key : 'side-bar'},
             [h('i', {
                 id:'user-icon',
                 class: 'fa-regular fa-circle-user icon',
                 on :{ click:(e)=>{ 
                     const target = e.currentTarget;
-                    console.log("====>  Color before navigation:", target);           
+                    // console.log("====>  Color before navigation:", target);           
                     target.style.color = "#F45250";
                     this.appContext.router.navigateTo('/user');
             }
             }}),
-            h('i', {
-
-                class: 'fa-regular fa-message icon',
-                on :{ click:(e)=>{ 
-                    e.currentTarget.style.color  = 'red'
-                    
-                    // console.log(">>>>>>>>>>>>>>>>>. event e : ", e)
-                    // e.target.classList.toggle('active')
-                    this.appContext.router.navigateTo('/chat')
-                } }
-            }),
             h('i', {
                 id:'home-icon',
                 class: 'fa-sharp fa-solid fa-house-chimney icon',

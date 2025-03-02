@@ -7,24 +7,31 @@ import { customFetch } from './package/fetch.js';
 import { Register } from './pages/register.js';
 import { Home } from './pages/home.js';
 import { Leaderboard } from './pages/leaderboard.js';
-import { settings } from './pages/settings.js';
+// import { settings } from './pages/settings.js';
 import { Profile } from './pages/profile.js';
 import { ResetPassword } from './pages/resetPassword.js';
 import { Game } from './pages/game.js';
-import { Unauthorized } from './components/errorPages/401.js';
+
+
 import { Tournament } from './pages/tournaments/tournament.js';
 import { LocalTournament } from './pages/tournaments/local/LocalTournament.js'
 import { OnlineTournament } from './pages/tournaments/online/OnlineTournament.js';
 import { LocalHierarchy } from './pages/tournaments/local/LocalHierarchy.js';
 import { PlayerVsPlayer } from './pages/pvp/playerVSplayer.js';
 import { OnlinePvp } from './pages/pvp/online.js';
-import { OnlineHierarchy } from './pages/tournaments/online/OnlineHierarchy.js'
+import {OnlineHierarchy} from './pages/tournaments/online/OnlineHierarchy.js'
+import { EditInfoForm } from './pages/EditInfoForm.js';
+import { SecuritySettings } from './pages/SecuritySettings.js';
+import { BlockedFriendsList } from './pages/BlockedFriendsList.js';
+
 import { NotFound } from './components/errorPages/404.js';
+import { Unauthorized } from './components/errorPages/401.js';
+
+
+
 window.env = {
-  IP: "10.14.3.3",
+  IP: "10.14.4.2",
 }
-
-
 
 document.addEventListener('DOMContentLoaded', function() {
   const links = document.querySelectorAll('.scroll-link');
@@ -33,56 +40,88 @@ document.addEventListener('DOMContentLoaded', function() {
       link.addEventListener('click', function(event) {
           event.preventDefault();
 
-          const targetId      = link.getAttribute('href').substring(1);
+          const targetId = link.getAttribute('href').substring(1);
+
           const targetElement = document.getElementById(targetId);
 
           if (targetElement) {
               targetElement.scrollIntoView({
-                  behavior: 'smooth',
-                  block   : 'start',
+                  behavior: 'smooth',  
+                  block: 'start',      
               });
           }
       });
+    });
   });
-});
 
 
+  // document.addEventListener('click',(e)=>{
+  //   const notif = document.querySelector('.notification-content')
+  //   // console.log("==================>",e,"||")
+  //   const icon = document.querySelector('.icon_notif')
 
-
-
-
-
-
+  
+  //   if(notif)
+  //       notif.style.display = 'none'
+  //   // if(icon)
+  //   // {
+  //   //   icon.style.color = "#5293CB"
+    
+  //   // }
+    
+  // })
+  
+ 
 
 
 
 async function isAuthenticated(currentLocation)
 {
-      let query = false
-      if(currentLocation == '/2FA')
-        query = true
-      const result = await customFetch(`https://${window.env.IP}:3000/isAuthenticated?2fa=${query}`)
-      if(result)
-      {
-        if(!result.ok)
+    // console.log("==================>",currentLocation,currentLocation.route.path)
+    // console.log("==================>test",currentLocation.getMusic())
+    const path = currentLocation.getMusic()
+    // console.log("==================>i'm smart",currentLocation.extractParams(path))
+
+
+    // console.log("thiiiiiis =>===",this)
+    let query = false
+    if(currentLocation.route.path == '/2FA')
+      query = true
+    console.log("whyyyy",query)
+    const result = await customFetch(`https://${window.env.IP}:3000/isAuthenticated?2fa=${query}`)
+    if(result)
+    {
+      if(!result.ok)
         { 
 
           if(result.status == 401)
               return '/login'
-        }
-        else
-        {
-          const data = await result.json()
-          if(result.status == 200)
-          {
-            if(data['redirect'] && data['redirect'] == "home")
-              return '/home'
-
-          }
-        }
+        } 
     }
 }
 
+// async function isUserExists(currentLocation)
+// {
+//   // console.log("==================>",currentLocation,currentLocation.route.path)
+//   // console.log("==================>test",currentLocation.getMusic())
+//   const path = currentLocation.getMusic()
+//   const username = currentLocation.extractParams(path).username
+//   // console.log("<<<<<<<<<<<<<<<<<<<<<<<<< username : ",username)
+//   const result = await customFetch(`https://${window.env.IP}:3000/api/user?username=${username}`)
+//   if(result)
+//   {
+//     if(!result.ok)
+//       { 
+
+//         if(result.status == 404)
+//         {
+//           document.body.innerText = 'yees not found';
+//           // return `/user/${username}`
+
+//         }
+//       }
+//   }
+// }
 const router = new HashRouter([
 
     { path: '/', component: LandingPage 
@@ -106,35 +145,35 @@ const router = new HashRouter([
 
     { path: '/404',  component: NotFound },
     { path: '/401',  component: Unauthorized },
-
-    
-    {path : '/settings', component: settings,
-      beforeEnter:isAuthenticated
-
-    },
-    {path:'/user', component: Profile,
-      beforeEnter:isAuthenticated
-
-    },
-    {path:'/user/:username', component: Profile,
-      beforeEnter:isAuthenticated},
     {
-      path: '*',  component: NotFound
+      path:'/user', component: Profile,
+      beforeEnter:isAuthenticated
+
     },
-    { path: '/password/reset',component: ResetPassword },
+    {
+      path:'/user/:username', component: Profile,  beforeEnter:isAuthenticated
+
+    },
+
+    { path: '/password/reset',  component: ResetPassword },
 
     {path:'/tournament',component: Tournament, beforeEnter:isAuthenticated},
     {path:'/tournament/local', component: LocalTournament, beforeEnter:isAuthenticated},
     { path:'/game', component: Game, beforeEnter:isAuthenticated},
-    { path:'/game/:id', component: Game, beforeEnter:isAuthenticated},
+    // { path:'/game/:id', component: Game, beforeEnter:isAuthenticated},
     { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy, beforeEnter:isAuthenticated},
     { path:'/tournament/online', component: OnlineTournament,
       beforeEnter:isAuthenticated },
     { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy, beforeEnter:isAuthenticated},
     { path: '/pvp', component: PlayerVsPlayer, beforeEnter:isAuthenticated},
     { path: '/pvp_online', component: OnlinePvp, beforeEnter:isAuthenticated},
-  ])
+    {path : '/settings/edit-info', component : EditInfoForm, beforeEnter:isAuthenticated},
+    {path : '/settings/security', component : SecuritySettings,beforeEnter:isAuthenticated},
+    {path: '/settings/blocked-friends', component: BlockedFriendsList,beforeEnter:isAuthenticated},
+    {path:'/404', component : NotFound},
+    {path :  '*', component : NotFound}
 
+  ])
 
 const RootComponent = defineComponent({
     render() {
@@ -142,7 +181,9 @@ const RootComponent = defineComponent({
     }
   })
 
-
 export const app = createApp(RootComponent,{}, { router })
 
 app.mount(document.body,{})
+
+
+

@@ -24,8 +24,6 @@
 //         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 //     }
 
-
-
 merge 
 => models 
 
@@ -60,3 +58,30 @@ put in plac of the leaderboard and top 5 the content when no user play a match
 =>here was an error ''if hasattr(user, 'enabled_twoFactor') and user.enabled_twoFactor:'' i change it with this one 
 
 =>duplicate email in intra should display error (kaoutar's mission)
+
+
+new tasks for last push ===>
+{
+    gmail field doesn't check errors for valid gmail
+    password doesnt check id id strong or not
+
+
+    check incons and 404 eroors 
+    dlete volume add .ignore fro .env
+
+
+    check ports if everyone didi 3000
+
+    check settings update 
+    delete badges n leaderboard
+    winner announce in loal game
+
+    time for match history
+    lokced badges
+    check settings icon
+
+    duplicate username and email
+    
+
+
+}

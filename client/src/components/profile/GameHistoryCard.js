@@ -7,7 +7,7 @@ export const GameHistoryCard = defineComponent({
     {
       return {
         isLoading : true,
-        shownOnviewAll : false,
+        isExpanded:false,
         data : [
         ]
       }
@@ -15,38 +15,57 @@ export const GameHistoryCard = defineComponent({
     render()
     {
       const {data, isLoading} = this.state
+      const {isExpanded} = this.props
       if (isLoading)
-        return  h('div', { class: 'match-history-container'})
-      if (this.props.viewAll)
-      {
-        this.state.shownOnviewAll = this.props.viewAll
-      }
-      return h('div', { class: 'match-history-container' , 
-        style : this.state.shownOnviewAll ? {
+        return  h('div', { class: 'match-history-container', style : isExpanded ? {
           position :  'absolute', top : '17%', left: '30%',
-          backgroundColor: '#161C40', width:'800px', height : '700px', 'grid-template-rows': '10% 80% 10%'
+          backgroundColor: '#161C40', width:'800px', height : '700px', 'grid-template-rows': '10% 80% 10%',
+          fontFamily:'myFont',
+          backdropFilter: 'blur(5px)',
+          'z-index': '1001',
+          '-webkit-backdrop-filter': 'blur(5px)'
+        } : {}})
+      return h('div', { class: 'match-history-container' , 
+          style : isExpanded ? {
+          position :  'absolute', top : '17%', left: '30%',
+          backgroundColor: '#161C40', width:'800px', height : '700px', 'grid-template-rows': '10% 80% 10%',
+          fontFamily:'myFont',
+          backdropFilter: 'blur(5px)',
+          'z-index': '1001',
+          '-webkit-backdrop-filter': 'blur(5px)'
+
+
         } : {}},
         [
-           h('div', { class: 'title-item', style : this.state.shownOnviewAll ? {justifyContent: 'space-between',paddingTop:'50px'}: {}},
+           h('div', { class: 'title-item', style : isExpanded ? {justifyContent: 'space-between',paddingTop:'50px'}: {}},
             [
                h('span', {}, 
                 [
-                  h('h1', {style : this.state.shownOnviewAll ? {color : '#FFEEBF', paddingLeft:'300px'} : {}}, ['Matches history'])
+                  h('h1', {style : isExpanded ? {color : '#FFEEBF', paddingLeft:'300px'} : {}, 
+                    'data-translate' : 'Matches history'}, ['Matches history'])
                 ]
-              ),this.state.shownOnviewAll ?
+              ),isExpanded ?
               h('i', { 
                 class: 'fa fa-close', 
                 style: {fontSize:'34px', color:'#D44444', 'border-radius':'5px', paddingRight:'50px', paddingBottom:'45px'},
-                on : { click : () => this.emit('removeBlurProfile', {MatchHistory:false})}
+                on : { click : () => this.emit('removeBlurProfile', {Expanded:null})}
               }): null
             ]
           ),
-          h(GameHistoryItems, {data : data, shownOnviewAll : this.state.shownOnviewAll ? true : false})
+          h(GameHistoryItems, {data : data, isExpanded : isExpanded})
           ,
             h('div', { class: 'view-all-match' },
-            data.length >= 4  && !this.state.shownOnviewAll ? 
+            data.length >= 4  && !isExpanded ? 
             [
-              h('a', { on : {click : () => this.emit('blurProfile', {MatchHistory:true})}}, ['View all'])
+              h('a', { on : {click : () => 
+                this.emit('blurProfile', {Expanded:'MatchesHistory'})
+                // h(GameHistoryItems, {})
+                // {
+                //   console.log(">>>>>>>>>>>>> here the div rendred ")
+                //   h('div', {style :{color : 'red'}}, ["hello from div "])
+                // }
+                // this.updateState({isExpanded:true})
+              }, 'data-translate' : 'View all'}, ['View all'])
             ]: []
           )
         ]
@@ -54,12 +73,7 @@ export const GameHistoryCard = defineComponent({
     },
     onMounted()
     {
-      // var  endPoint  = `https://${window.env.IP}:3000/api/user/matches`
-      // if(JSON.stringify(this.appContext.router.params) !== '{}')
-      // {
-      //     console.log('>>>>>>>>>>>>>>>>>>>>>>>> here enpoint changed ')
-      //     endPoint = `https://${window.env.IP}:3000/api/user/matches?username=${this.appContext.router.params.username}`
-      // }
+    
       const {key} = this.props
       const endPoint = !key ?  `https://${window.env.IP}:3000/api/user/matches` :
       `https://${window.env.IP}:3000/api/user/matches?username=${key}`
@@ -76,7 +90,7 @@ export const GameHistoryCard = defineComponent({
               return result.json()
           })
           .then(res => {
-              console.log("res is okey")
+              // console.log("res is okey")
               this.updateState({
                       isLoading: false,  
                       data: res,   
@@ -93,29 +107,29 @@ export const GameHistoryCard = defineComponent({
     state()
     {
       return {
-       shownOnviewAll : false
+      //  shownOnviewAll : false
       }
     },
     render()
     {
-      this.state.shownOnviewAll = this.props.shownOnviewAll
-      const data = this.state.shownOnviewAll ? this.props.data : this.props.data.slice(0,4)
-      console.log(">>>>>>>>>>>>> data  of matches history : ", data)
+      const {isExpanded} = this.props
+      const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
+      // console.log(">>>>>>>>>>>>> data  of matches history : ", data)
       return h('div', {class:'center-div', 
-        style : this.state.shownOnviewAll ?  {'row-gap' :'0%', 'grid-auto-rows': '16.7%'} : {}},
+        style : isExpanded ?  {'row-gap' :'0%', 'grid-auto-rows': '16.7%'} : {}},
         data.map((item)=> h('div', { class: 'match-result-item',
-           style : this.state.shownOnviewAll ?  { width :'700px' , height: '75px'} : {}},
+           style : isExpanded ?  { width :'700px' , height: '75px'} : {}},
           [
             h('div', { class: 'picture-item' },
               [
                 h('img', { src: `https://${window.env.IP}:3000${item.player1.picture}`, alt: 'profile picture' ,  style : {'object-fit': 'cover'}}),
-                this.state.shownOnviewAll ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}},
-                 [ `${item.player1.username}`]) : null
+                isExpanded ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}},
+                [ `${item.player1.username}`]) : null
               ]
             ),
             h('div', { class: 'match-result' },
               [
-                this.state.shownOnviewAll ? hFragment([h('span', {style: {color: '#0B42AF', fontSize:'20px'}}, [`${item.date}`]), 
+                isExpanded ? hFragment([h('span', {style: {color: '#0B42AF', fontSize:'20px'}}, [`${item.date}`]), 
                 h('br')]): null,
                 h('span', { class: 'user-score', style: {color: `${item.player1_score < item.player2_score ? '#D44444' : '#0AA989'}`} },
                    [`${item.player1_score}`]),
@@ -126,7 +140,7 @@ export const GameHistoryCard = defineComponent({
             ),
             h('div', { class: 'picture-item' },
               [
-                this.state.shownOnviewAll ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}}, [`${item.player2.username}`]) : null,
+                isExpanded ? h('span', {style : {color : '#A7A4A4', fontSize:'18px'}}, [`${item.player2.username}`]) : null,
                 h('img', { src: `https://${window.env.IP}:3000${item.player2.picture}`, alt: 'profile picture',  style : {'object-fit': 'cover'} }),
   
               ]

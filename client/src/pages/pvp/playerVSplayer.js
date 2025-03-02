@@ -15,7 +15,7 @@ export const PlayerVsPlayer = defineComponent({
     onMounted()
     {
       const userIcon = document.getElementById('pvp-icon');
-      console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
+    //   console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
   
       if (userIcon) {
           userIcon.style.color = "#F45250";

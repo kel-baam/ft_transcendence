@@ -43,34 +43,33 @@ from jwt import decode , ExpiredSignatureError, InvalidTokenError
 # logging.basicos.getenv(level=logging.DEBUG)
 # logger = logging.getLogger(__name__)
 
-
+# change 1
 def set_tokens_in_cookies_with_OAuth(request,email,response):
         try:
-                # domain = os.getenv('DOMAIN')
                 domain = os.getenv('DOMAIN')
-
+                print("=======================================>",request.COOKIES.get("access_token"))
                 user = User.objects.filter(email=email).first()
-                # print('>>')
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
                         response = redirect(f"{domain}/#/2FA")  
-                if(email != payload.get("email")):
+                print("yees here==>",user.username,"||",payload.get("username"))
+                if(email != payload.get("email") or user.username != payload.get("username")):
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
-                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
-                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime,path='/')
+                        response.set_cookie('refresh_token',token.get('refresh'),httponly=True,max_age=refreshTokenLifeTime, path='/')
                 return response
         except (ExpiredSignatureError, InvalidTokenError):
                 try:
                         payload = decode(request.COOKIES.get("refresh_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
-                        if(email!= payload.get("email")):
+                        if(email!= payload.get("email") or user.username != payload.get("username")):
                                 raise InvalidTokenError("Custom error message")
                         if(user.enabled_twoFactor and payload['login_level'] == 1):
                                 response = redirect(f"{domain}/#/2FA")
                         newAccessToken = generateAccessToken(user,payload["login_level"])
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
-                        response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime)
+                        response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime, path='/')
                         return response
                 except (ExpiredSignatureError, InvalidTokenError) as e:
 
@@ -79,46 +78,50 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
-                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
-                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime, path='/')
+                        response.set_cookie('refresh_token',token.get('refresh'), httponly=True,max_age=refreshTokenLifeTime,  path='/')
                         return response
-              
+# change2           
 def set_tokens_in_login(request,email,response):
         try:
                 domain = os.getenv('DOMAIN')
                 user = User.objects.filter(email=email).first()
+                print("=====================>first",user)
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
 
 
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
                         response = JsonResponse({'message': "2fa active"}, status=200)
 
-                if(email != payload.get("email")):
+                if(email != payload.get("email") or user.username != payload.get("username")):
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
-                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
-                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime,secure=True)
+                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime,secure=True, httponly=True)
                 return response
         except (ExpiredSignatureError, InvalidTokenError):
                 try:
                         payload = decode(request.COOKIES.get("refresh_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
-                        if(email!= payload.get("email")):
+                        print("=====================>first",user)
+                        if(email!= payload.get("email")  or user.username != payload.get("username")):
                                 raise InvalidTokenError("Custom error message")
                         if(user.enabled_twoFactor and payload['login_level'] == 1):
                                 response = JsonResponse({'message': "2fa active"}, status=200)
                         newAccessToken = generateAccessToken(user,payload["login_level"])
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
-                        response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime)
+                        response.set_cookie('access_token',newAccessToken,httponly=True, max_age=accessTokenLifeTime,secure=True)
                         return response
                 except (ExpiredSignatureError, InvalidTokenError) as e:
+
                         if(user.enabled_twoFactor):
                                 response = JsonResponse({'message': "2fa active"}, status=200)
                         token = generateToken(user,1)
+                        print("=====================>first",token)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
-                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
-                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                        response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime,secure=True)
+                        response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime,secure=True, httponly=True)
                         return response
         
 # ----------------------------------------------------------------------------------------google login and register-----------------------------------
@@ -144,12 +147,15 @@ def storeGoogleData(data):
                         'first_name' : data.get('given_name'),
                         'email' :       data.get('email'),
                         'phone_number': '',
-                        'password': '4475588@kdjndxxxxjfjjdfnbhf',
                         'player' : {
                                 'rank' : '0',
                                 'level':'0',
                                 'score':'0',
                         },
+                        # 'registration_type': 'form',
+                        'registration_type': 'api',
+
+
                 }
                 response = requests.post('http://user-service:8001/api/user', json=data)
                 if response.status_code == 200:
@@ -178,13 +184,14 @@ def callback_google(request):
         code = request.GET.get('code','none')
         state = request.GET.get('state', None)
         domain = os.getenv('DOMAIN')
-
         if code :
                 validateCode = exchange_code_with_token(code,os.getenv('GOOGLE_TOKEN_URL'),os.getenv('GOOGLE_CLIENT_ID'),os.getenv('GOOGLE_SECRET_KEY'),os.getenv('GOOGLE_REDIRECT_URI'))
+                
                 if validateCode["status_code"] == 200:
                         user_info = get_user_info(validateCode['accessToken'],os.getenv('GOOGLE_API'))
                         user = User.objects.filter(email=user_info.get("email")).first()
                         response = handle_google_state(state,user,user_info)
+                        print("=============>response",response)
                         if((state == 'login' and user) or (state == 'register' and not user)) :                    
                                 response = set_tokens_in_cookies_with_OAuth(request,user_info.get("email"),response)
                         return response
@@ -219,7 +226,7 @@ def storeIntraData(intraData):
                         'first_name' : intraData.get('first_name'),
                         'email' :intraData.get('email'),
                         'phone_number': phone_number,
-                        # 'password': '4475588@kdjndjfjjdfnbhf',
+                        'password': '4475588@kdjndjfjjdfnbhf',
                         'registration_type': 'api',
                         'player' : {
                                 'rank' : '0',

@@ -16,7 +16,7 @@ export const UserAchievementsCard = defineComponent({
         return  h('div', { class : 'achievements-container' })
       return h('div', { class : 'achievements-container' }, [
           h('div', { class : 'achievements-title-elt' }, [
-            h('h1', {}, ['Achievements'])
+            h('h1', {'data-translate' : 'Achievements'}, ['Achievements'])
           ]),
           h('div', { class : 'badges-container' }, [
             h('div', { class : 'badge-item' }, [
@@ -72,7 +72,7 @@ export const UserAchievementsCard = defineComponent({
                   switch(result.status)
                   {
                       case 401:
-                          console.log(">>>>>>>>>>>>> here ")
+                          // console.log(">>>>>>>>>>>>> here ")
                           this.appContext.router.navigateTo('/login')
                           break;
                       // case 404:

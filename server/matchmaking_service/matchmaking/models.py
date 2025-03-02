@@ -157,7 +157,7 @@ class PlayerTournament(models.Model):
     def __str__(self):
         player_id = self.player.id if self.player else "Unknown Player"
         return f"Invitation for {player_id} to {self.tournament.name} - Status: {self.status}" 
-    
+
     class Meta:
         db_table    = 'PlayerTournament'
 

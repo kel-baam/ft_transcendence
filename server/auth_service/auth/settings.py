@@ -64,8 +64,8 @@ SITE_ID =1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -208,7 +208,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(minutes=70),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -232,10 +232,12 @@ CORS_ALLOW_CREDENTIALS = True
 # pip install pyjwt
 # CSRF_COOKIE_SAMESITE = 'None'
 CSRF_TRUSTED_ORIGINS = [
-    'http://10.14.3.3:3000',
+    'https://localhost:3000',
+    "https://10.14.4.2:3000",
     # 'http://127.0.0.1:3000',
 
-    # "http://10.14.3.1:8000",
+
+
     # "ws://10.14.3.1:8000",
     # "http://10.14.3.1:8000",
     # "http://10.14.3.1:3000",

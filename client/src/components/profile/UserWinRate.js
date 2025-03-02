@@ -17,7 +17,7 @@ export const UserWinRate =  defineComponent({
             return h('div', { class: 'wining-rate-container' },[
               h('div', { class: 'title' }, [
                 h('span', {}, [
-                  h('h2', {}, ['Wining rate'])
+                  h('h1', {'data-translate' : 'Winning rate' }, ['Winning rate'])
                 ])
               ]),
             ]);
@@ -25,7 +25,7 @@ export const UserWinRate =  defineComponent({
         return h('div', { class: 'wining-rate-container' }, [
             h('div', { class: 'title' }, [
               h('span', {}, [
-                h('h1', {}, ['Wining rate'])
+                h('h1', {'data-translate' : 'Winning rate'}, ['Winning rate'])
               ])
             ]),
             h('div', { class: 'circle-and-buttons' }, [
@@ -49,7 +49,9 @@ export const UserWinRate =  defineComponent({
                   on : {
                     click : () => {
                         this.updateState({activateSection:'win'})
-                  }}}, [
+                  }}, 
+                  // 'data-translate' : 'Win'
+                }, [
                     'Win',
                     h('br'),
                     `${data.wins}` + '/' + `${data.total_matches}`
@@ -60,7 +62,8 @@ export const UserWinRate =  defineComponent({
                   on : {
                     click : ()=> {
                       this.updateState({activateSection:'lose'})
-                  }}
+                  }},
+                  // 'data-translate':'Loss'
                   }, [
                     'Loss',
                     h('br'),
