@@ -135,9 +135,14 @@ class  UserStatsView(APIView):
                 "losses": losses
             }, status=status.HTTP_200_OK)
         except User.DoesNotExist:
+            # print("-----------------------> here external server issue : ", str(e))
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+<<<<<<< HEAD
             print("--------------------------> here the internal server in stats ", str(e))
+=======
+            print("---------------1--------> here external server issue : ", str(e))
+>>>>>>> origin/souad
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class MatchHistoryView(APIView):
@@ -161,7 +166,11 @@ class MatchHistoryView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+<<<<<<< HEAD
             print("--------------------------> here the internal server in game history  ", str(e))
+=======
+            print("---------------1--------> here external server issue : ", str(e))
+>>>>>>> origin/souad
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in matches.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -173,7 +182,7 @@ class MatchHistoryView(APIView):
                 serializer.save()
                 return Response({"message" : "the match was created"}, status=status.HTTP_201_CREATED)
         except Exception as e:
-
+            print("-----------2------------> here external server issue : ", str(e))
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -244,6 +253,7 @@ class FriendshipView(APIView):
         except serializers.ValidationError:
              return  Response({key: value[0] for key, value in serializers.ValidationError.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print("---------------2--------> here external server issue : ", str(e))
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)

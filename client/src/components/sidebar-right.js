@@ -50,6 +50,7 @@ export const sidebarRight = defineComponent(
             };
         
             socket.onmessage =  (event) =>{
+<<<<<<< HEAD
             const oldFriends = this.state.friends; 
             const newFriends = JSON.parse(event.data); 
             const friendsMap = new Map();
@@ -74,6 +75,13 @@ export const sidebarRight = defineComponent(
             this.updateState({
                 friends: updatedFriends
             });
+=======
+               
+                const mergedFriends = [...this.state.friends, ...JSON.parse(event.data)];
+                this.updateState({
+                    friends : Array.from(new Map(mergedFriends.map(friend => [friend.id, friend])).values())// sometimes error raised here
+                })
+>>>>>>> origin/souad
             };
         
            socket.onclose = ()=> {
