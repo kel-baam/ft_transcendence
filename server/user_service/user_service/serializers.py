@@ -24,11 +24,7 @@ class PlayerSerializer(serializers.ModelSerializer):
     # picture = serializers.ImageField(source='user.picture', required=False)
     class Meta():
         model = Player
-<<<<<<< HEAD
         fields = ['score', 'rank', 'level']
-=======
-        fields = ['score', 'level',  'rank']
->>>>>>> origin/souad
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)

@@ -30,11 +30,7 @@ import { ComingSoon } from './components/errorPages/coming_soon.js';
 
 
 window.env = {
-<<<<<<< HEAD
   IP: "10.14.3.1",
-=======
-  IP: "10.14.4.4",
->>>>>>> origin/souad
 }
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -207,11 +207,7 @@ class Match(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
-<<<<<<< HEAD
     created_at = models.DateField(auto_now_add=True)  # When the match is created
-=======
-    created_at = models.DateTimeField(default=timezone.now)  # When the match is created
->>>>>>> origin/souad
 
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"

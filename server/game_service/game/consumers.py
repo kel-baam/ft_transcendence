@@ -259,7 +259,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }))
             else:
                 match = await self.get_match_instance(self.match_id)
-<<<<<<< HEAD
                 print("-----------------", self.type)
                 if match and match.status != "completed" and match.status != "exited":
                     print("-===", self.player)
@@ -268,14 +267,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                         self.player1Score = 8
                     elif self.type == "online" and self.player == 'player2':
                         print("_____________________++")
-=======
-                print("-----------------")
-                if match and match.status != "completed":
-                    print("-===")
-                    if self.type == "online" and self.player == 'player1':
-                        self.player1Score = 8
-                    elif self.type == "online" and self.player == 'player2':
->>>>>>> origin/souad
                         self.player2Score = 8
                     print("---------------------------------")
                     await self.handel_match_result('exited')

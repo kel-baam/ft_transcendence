@@ -5,14 +5,10 @@ import { translations } from '../languages.js'
             state(){
                 return {
                     isLoading : true,
-<<<<<<< HEAD
                     home:false,
                     about:false,
                     team:false
             }
-=======
-                }
->>>>>>> origin/souad
             },
             render(){
                 // console.log("=========================================>activation",this.state.home)

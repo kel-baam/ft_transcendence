@@ -62,3 +62,5 @@ put in plac of the leaderboard and top 5 the content when no user play a match
 =>duplicate email in intra should display error (kaoutar's mission)
 
 => fix when the player exits in online pvp images, nickname
+
+=> if the match exists and type is online so the match shold not found not exited (tested with local match)
