@@ -5,7 +5,7 @@ import { translations } from '../languages.js'
             state(){
                 return {
                     isLoading : true,
-            }
+                }
             },
             render(){
                 return   h('div',{id:"landing-header"},[

@@ -20,6 +20,7 @@ export const Home = defineComponent({
             homeActive :false
         }
     },
+    
     onMounted()
     {
         const userIcon = document.getElementById('home-icon');
@@ -33,6 +34,7 @@ export const Home = defineComponent({
         }
 
     },
+
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);

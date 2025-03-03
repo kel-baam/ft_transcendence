@@ -65,12 +65,6 @@ class Matchmaking(AsyncWebsocketConsumer):
         """Helper function to send JSON messages"""
         await self.send(text_data=json.dumps(data))
 
-    async def game_state(self, event):
-        pass
-
-    async def announce_winner(self,event):
-        pass
-
     async def disconnect(self, close_code):
         print(f"Disconnected: {self.user_id}")
         try:
@@ -180,7 +174,7 @@ class Matchmaking(AsyncWebsocketConsumer):
         })
 
 
-    @database_sync_to_async #changed
+    @database_sync_to_async
     def get_opponent_user(self, existing_match):
         """Get the user object of the opponent player from the existing match."""
 
@@ -261,6 +255,7 @@ class Matchmaking(AsyncWebsocketConsumer):
             participants = await self.get_all_player_tournament(self.tournament_id)
 
             if tournament.status == 'matchmaking' or tournament.status == 'finished':
+
                 print("*************** in Local matchmaking")
 
                 matches      = await self.get_all_tournament_matches(self.tournament_id)
@@ -292,18 +287,19 @@ class Matchmaking(AsyncWebsocketConsumer):
                 matches     = await self.get_all_tournament_matches(self.tournament_id)
                 match_index = 0
                 match_id    = None
-                winners     = [None] * len(matches)
+                winners     = []
 
                 print(">>>>> ,", len(matches))
 
                 while match_index < len(matches):
                     match = matches[match_index]
-
+                    print("match_index ---> ", match_index)
                     if match.status == "completed":
                         winner            = await self.determine_winner(match)
                         winner_tournament = await self.get_player_tournament(tournament, winner)
                         if winner:
-                            winners[match_index] = PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data
+                            print("----> winner ", winner)
+                            winners.append(PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data)
 
                     if match_id is None and (match.status == 'pending' or match.status == 'started'):
                         match_id = match.id
@@ -363,13 +359,15 @@ class Matchmaking(AsyncWebsocketConsumer):
         try:
             print("in get_player_tournament ===> ", tournament, nickname)
             return PlayerTournament.objects.get(tournament=tournament, nickname=nickname)
-        except PlayerTournament.DoesNotExist:
+        except PlayerTournament.DoesNotExist as e:
+            print("----------------------------------->>> ", str(e))
             return None
 
     @sync_to_async
     def determine_winner(self, match):
 
         print("in determine_winner ---> ", match.player1_score , match.player2_score)
+        print("in determine_winner ---> ", match.player1_nickname , match.player2_nickname)
 
         if match.player1_score > match.player2_score:
             return match.player1_nickname
@@ -381,18 +379,24 @@ class Matchmaking(AsyncWebsocketConsumer):
         print("IN ----- > update_tournament_hierarchy")
 
         try:
-            winners = [None] * len(matches)
-            for index, match in enumerate(matches):
+            winners = []
+            match_index = 0
+
+            while match_index < len(matches):
+                match = matches[match_index]
+                print("match_index ---> ", match_index)
                 if match.status == "completed":
-                    winner = await self.determine_winner(match)
-                if winner:
-                    winners[index] = winner
-
-            if winners[0] is not None and winners[1] is not None:
-                print("LOCAL --- >> ", winners[0], winners[1])
+                    winner            = await self.determine_winner(match)
+                    winner_tournament = await self.get_player_tournament(tournament, winner)
+                    if winner:
+                        print("----> winner ", winner)
+                        winners.append(PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data)
+                match_index += 1
+            
+            if len(winners) == 2:
                 room_name = await self.generate_unique_room_code()
-
-                await self.create_local_match(tournament, room_name, winners[0], winners[1])
+                print("in matchmaking up toyur", winners[0]['nickname'], winners[1]['nickname'])
+                await self.create_local_match(tournament, room_name, winners[0]['nickname'], winners[1]['nickname'])
 
         except Exception as e:
             print(f"An error occurred while updating tournament hierarchy: {e}")
@@ -452,7 +456,7 @@ class Matchmaking(AsyncWebsocketConsumer):
             return []
         
     
-    @database_sync_to_async #get tour +(can i use it in local and online)
+    @database_sync_to_async
     def get_tournament(self, tournament_id):
         try:
             tournament = Tournament.objects.get(id=tournament_id)

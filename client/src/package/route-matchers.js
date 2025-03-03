@@ -50,7 +50,6 @@ function makeMatcherWithoutParams(route) {
       },
       getMusic()
       {
-        console.log("musiiiic yeeees")
         return music
       },
       extractParams() {
@@ -106,7 +105,6 @@ function makeMatcherWithoutParams(route) {
       },
       getMusic()
       {
-        console.log("musiiiic yeeees")
         return music
       },
       extractParams(path) {

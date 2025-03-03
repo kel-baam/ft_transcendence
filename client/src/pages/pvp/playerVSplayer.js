@@ -3,6 +3,8 @@ import{defineComponent,h}  from '../../package/index.js'
 import { header }               from '../../components/header.js'
 import { sidebarLeft }          from '../../components/sidebar-left.js'
 import { sidebarRight } from '../../components/sidebar-right.js'
+import { customFetch } from '../../package/fetch.js'
+import { showErrorNotification } from '../utils/errorNotification.js'
 
 export const PlayerVsPlayer = defineComponent({
     state(){

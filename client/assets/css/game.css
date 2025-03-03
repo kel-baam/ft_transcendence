@@ -126,6 +126,18 @@
     font-family: myFont;
     letter-spacing: 1px;
 
+    width: 70px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+
     /* border: 1px solid yellow; */
 
 
@@ -136,6 +148,17 @@
     font-size: 15px;
     font-family: myFont;
     letter-spacing: 1px;
+
+    width: 70px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     /* border: 1px solid yellow; */
 
 }

@@ -80,15 +80,20 @@ export const LeaderboardHome = defineComponent({
                     )
                 ])
             ])
-        ]:[
-            h('div',{class:'empty-leader-board'},[
-                h('img',{class:'trophy-pic', src:'./images/gold-cup-removebg-preview.png'}),
-                h('h1',{},['No matches played yet'])
-
-            ])
-
-        
-        ]
+        ]:  [
+                h('div',{class:'empty-leader-board'},[
+                    
+                    h('img',{class:'trophy-pic', src:'./images/gold-cup-removebg-preview.png'}),
+                    h('h1',{},['No matches played yet'])
+                ])
+            ]
     );        
     }
 })
+
+// [
+//     h('div',{class:'empty-leader-board'},[
+//         h('img',{class:'trophy-pic', src:'./images/gold-cup-removebg-preview.png'}),
+//         h('h1',{},['No matches played yet'])
+//     ])
+// ]

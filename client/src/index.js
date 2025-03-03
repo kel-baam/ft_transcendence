@@ -26,11 +26,12 @@ import { BlockedFriendsList } from './pages/BlockedFriendsList.js';
 
 import { NotFound } from './components/errorPages/404.js';
 import { Unauthorized } from './components/errorPages/401.js';
+import { ComingSoon } from './components/errorPages/coming_soon.js';
 
 
 
 window.env = {
-  IP: "10.14.3.4",
+  IP: "10.14.4.4",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -147,6 +148,7 @@ const router = new HashRouter([
     },
 
     { path: '/404',  component: NotFound },
+    { path: '/coming_soom', component: ComingSoon },
     { path: '/401',  component: Unauthorized },
     {
       path:'/user', component: Profile,

@@ -22,9 +22,6 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
         print("acccccccccccccccccccccccccccccccccccccc")
         if status == 'accepted' and not nickname:
             raise ValidationError({'nickname': 'Nickname cannot be empty.'})
-        avatar = data.get('avatar')
-        if status == 'accepted' and not avatar:
-            raise ValidationError({'avatar': 'Avatar cannot be empty.'})
         return data
 
 

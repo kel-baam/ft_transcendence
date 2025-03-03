@@ -206,8 +206,6 @@ export class HashRouter {
         redirectPath: null,
       }
     }
-
-    console.log("canChangeRoute=>",currentLocation)
     const result = await guard(currentLocation)
 
     if (result === false) {

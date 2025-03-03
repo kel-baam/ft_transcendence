@@ -10,7 +10,7 @@ import { SocialCard } from '../components/profile/SocialCard.js'
 import {sidebarRight} from '../components/sidebar-right.js'
 import { customFetch } from '../package/fetch.js'
 import { NotFound } from '../components/errorPages/404.js'
-
+import { showErrorNotification } from './utils/errorNotification.js'
 
 
 export const Profile = defineComponent({

@@ -53,8 +53,6 @@ export const sidebarRight = defineComponent(
             socket.onmessage =  (event) =>{
                
                 const mergedFriends = [...this.state.friends, ...JSON.parse(event.data)];
-                console.log("----------------------> JSON.parse(event.data): ", JSON.parse(event.data))
-                console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> mergedFRiends : ", mergedFriends)
                 this.updateState({
                     friends : Array.from(new Map(mergedFriends.map(friend => [friend.id, friend])).values())// sometimes error raised here
                 })

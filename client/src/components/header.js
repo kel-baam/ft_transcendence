@@ -3,6 +3,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
 
 import { customFetch } from '../package/fetch.js'
 import { translations } from './languages.js';
+import { showErrorNotification } from '../package/utils.js';
 
 let socket = null;
 
@@ -11,8 +12,8 @@ export const header = defineComponent({
     {
         return {
             suggestions : [],
-            username :"",
-            language : 'en',
+            username    :"",
+            language    : 'en',
 
             notif       : false,
             notification: null,
@@ -176,7 +177,12 @@ export const header = defineComponent({
                         content = `${notification.message}`;
                         actions =
                         [
-                            h( "a", { onclick: () => this.enterTournament(notification.object_id)}, ["[Enter]"] ),
+                            h( "a", { 
+                                on : {
+                                    click: () => this.enterTournament(notification.object_id)
+                                }
+                            }
+                            , ["[Enter]"] ),
                         ]
                         break;
                     default:
@@ -197,7 +203,13 @@ export const header = defineComponent({
 
         return h('header', { class: 'container' }, [
             h('nav', {}, [
-                h('a', { href: '/home' }, [
+                h('a', {
+                    on :{ click:(event)=>{
+                        event.preventDefault();
+
+                        this.appContext.router.navigateTo('/home')}
+                    }
+                }, [
                     h('img', { src: './images/logo.png', class: 'logo' })
                 ]),
                 h('div', { class: 'search' , style :{ 'z-index' : 100}}, [
