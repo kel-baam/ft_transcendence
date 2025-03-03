@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db.models import  Q
+from validate_email_address import validate_email
 
 # # import os
 # import requests
@@ -19,9 +20,11 @@ from django.db.models import  Q
 # logger = logging.getLogger(__name__)
 
 class PlayerSerializer(serializers.ModelSerializer):
+    # username = serializers.CharField(source='user.username', required=False)
+    # picture = serializers.ImageField(source='user.picture', required=False)
     class Meta():
         model = Player
-        fields = ['score', 'level', 'rank']
+        fields = ['score', 'level',  'rank']
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)
@@ -31,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
     Current_password = serializers.CharField(write_only=True, required=False)
     New_password = serializers.CharField(write_only=True, required=False)
     Confirm_password = serializers.CharField(write_only=True, required=False)
+
     player = PlayerSerializer()
 
     picture = serializers.ImageField(max_length=None, required=False, allow_null=True)
@@ -43,8 +47,10 @@ class UserSerializer(serializers.ModelSerializer):
         # allow_null=True, 
         # allow_blank=True
     )
-
+    
     registration_type = serializers.ChoiceField(required=False, choices=['api', 'form'])
+
+    request_id = serializers.IntegerField(read_only=True, required=False,)
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
@@ -103,14 +109,8 @@ class UserSerializer(serializers.ModelSerializer):
             except ValidationError as e:
                 raise serializers.ValidationError({"New_password": e.messages[0]})
         
-        # else:
-        #     password = None
-        # if 'first_name'in attrs and len(attrs.get('first_name')) < 2 :
-        #     raise serializers.ValidationError({"first_name": "First name must be longer than 2 characters."})
-        # if 'last_name' in attrs and len(attrs.get('last_name')) < 2:
-        #     raise serializers.ValidationError({"last_name": "Last name must be longer than 2 characters."})
-        # if 'username' in attrs and len(attrs.get('username')) < 2:
-        #     raise serializers.ValidationError({"username": "username must be longer than 2 characters."})
+        # if 'email' in attrs and  not validate_email(attrs['email'], verify=True):
+        #     raise ValidationError(f"The email '{attrs['email']}' is not valid or does not exist.")
         if 'registration_type' in attrs:
             attrs.pop('registration_type')
 
@@ -135,8 +135,11 @@ class UserSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         # user.set_unusable_password()
         user.save()
+        print("----------------------> player_data : ", player_data)
         if player_data:
-            Player.objects.create(user=user,**player_data)
+            player = Player.objects.create(user=user,**player_data)
+            player.save()
+
         print(">>>>>>>>>>>>>>>> user was created ||| ")
         return user
     

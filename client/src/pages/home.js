@@ -9,6 +9,7 @@ import { TournamentSection } from '../components/home/TournamentSection.js'
 import { PlayerVsPlayer } from '../components/home/PlayerVsPlayer.js'
 import { customFetch } from '../package/fetch.js'
 import { showErrorNotification } from './utils/errorNotification.js'
+import { sidebarRight } from '../components/sidebar-right.js'
 
 export const Home = defineComponent({
     state(){
@@ -18,6 +19,20 @@ export const Home = defineComponent({
             notification_data: null,
             homeActive :false
         }
+    },
+    
+    onMounted()
+    {
+        const userIcon = document.getElementById('home-icon');
+
+        if (userIcon) {
+            userIcon.style.color = "#F45250";
+            userIcon.style.transform = "scale(1.1)";
+            userIcon.style.webkitTransform = "scale(1.1)";
+            userIcon.style.filter = "blur(0.5px)";
+            userIcon.style.transition = "0.5s";
+        }
+
     },
 
     async submitForm(event) {
@@ -53,7 +68,8 @@ export const Home = defineComponent({
 
     render()
     {
-        return h('div', {id:'global'}, [h(header, {
+        return h('div', {id:'global'}, [
+            h(header, {
                 icon_notif: this.state.notificationActive,
                 on          : {
                     iconClick :()=>{
@@ -65,10 +81,11 @@ export const Home = defineComponent({
                             notification_data : notification_data
                         })
                     },
-                }
+                },
+                key : 'header'
             }),
             h('div', {class:'content'},[
-                h(sidebarLeft, {}), h('div', 
+                h(sidebarLeft, {key: 'left-bar'}), h('div', 
                     {
                         class :'home-content' ,
                         style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
@@ -80,6 +97,9 @@ export const Home = defineComponent({
                         h('div', { class: 'home-down'},
                             [h(TrainingBoot, {}), h(TournamentSection, {}), h(PlayerVsPlayer, {}) ]
                         )
+                    ]),
+                    h('div', { class: 'friends-bar' }, [
+                              h(sidebarRight, {})
                     ]),
             ]),
             this.state.isBlur ? 

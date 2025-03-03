@@ -50,16 +50,27 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                 domain = os.getenv('DOMAIN')
 
                 user = User.objects.filter(email=email).first()
-                # print('>>')
+                resp = requests.put('http://user-service:8001/api/user', json={
+                   "status": True
+                },
+                headers={
+                       "X-Authenticated-User":user.username
+                }
+                )
+                print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
+                # user.status = True
+                # user.save(update_fields=['status'])#to change
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
-                        response = redirect(f"{domain}/#/2FA")  
+                        response = redirect(f"{domain}/#/2FA")
+
                 if(email != payload.get("email")):
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
                         response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
                         response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
+                
                 return response
         except (ExpiredSignatureError, InvalidTokenError):
                 try:
@@ -82,11 +93,20 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                         response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
                         response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
                         return response
-              
+
+# TO CHANGE
+
 def set_tokens_in_login(request,email,response):
         try:
-                domain = os.getenv('DOMAIN')
                 user = User.objects.filter(email=email).first()
+                resp = requests.put('http://user-service:8001/api/user', json={
+                   "status": True
+                }, headers={
+                       "X-Authenticated-User":user.username
+                })
+                print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
+                # user.status = True
+                # user.save()
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
 
 
@@ -120,6 +140,7 @@ def set_tokens_in_login(request,email,response):
                         response.set_cookie('access_token',token.get('access'),httponly=True, max_age=accessTokenLifeTime)
                         response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
                         return response
+        
         
 # ----------------------------------------------------------------------------------------google login and register-----------------------------------
 def google_login(request):
@@ -343,12 +364,28 @@ def  registerForm(request):
 
 
 
+
+
+
 @csrf_exempt
 @api_view(['POST'])                 
 def logout(request):
         try:
             refresh_token = request.COOKIES.get('refresh_token')
             token = RefreshToken(refresh_token)
+            payload = decode(refresh_token, settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
+            user = User.objects.filter(email=payload.get("email")).first()
+            resp = requests.put('http://user-service:8001/api/user',json= {
+                   "status": False
+                }
+            ,
+            headers={
+                   "X-Authenticated-User":user.username
+            }
+            )
+            print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
+        #     user.status = False
+        #     user.save(update_fields=['status'])
             response = Response(status=status.HTTP_205_RESET_CONTENT)
             response.delete_cookie('refresh_token')
             response.delete_cookie('access_token')
@@ -428,6 +465,8 @@ def password_reset_confirm(request):
                                 serialize = UserSerializer(user,data=data,partial=True)
                                 if serialize.is_valid(raise_exception=True):
                                         serialize.save()
+                                        user.verify_token = "None"
+                                        user.save()
                                         return Response({'password':"password reset succssefylly"},status=200)
                         return Response({'password':"something wrong"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:

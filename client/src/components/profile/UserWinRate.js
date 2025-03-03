@@ -17,7 +17,7 @@ export const UserWinRate =  defineComponent({
             return h('div', { class: 'wining-rate-container' },[
               h('div', { class: 'title' }, [
                 h('span', {}, [
-                  h('h2', {}, ['Wining rate'])
+                  h('h1', {'data-translate' : 'Winning rate' }, ['Winning rate'])
                 ])
               ]),
             ]);
@@ -25,7 +25,7 @@ export const UserWinRate =  defineComponent({
         return h('div', { class: 'wining-rate-container' }, [
             h('div', { class: 'title' }, [
               h('span', {}, [
-                h('h1', {}, ['Wining rate'])
+                h('h1', {'data-translate' : 'Winning rate'}, ['Winning rate'])
               ])
             ]),
             h('div', { class: 'circle-and-buttons' }, [
@@ -49,10 +49,12 @@ export const UserWinRate =  defineComponent({
                   on : {
                     click : () => {
                         this.updateState({activateSection:'win'})
-                  }}}, [
-                    'Win',
+                  }}, 
+                  // 'data-translate' : 'Win'
+                }, [
+                    h('span', {}, ['Win']),
                     h('br'),
-                    `${data.wins}` + '/' + `${data.total_matches}`
+                    h('span', {}, [`${data.wins}` + '/' + `${data.total_matches}`])
                   ]),
                   h('button', { class: 'lose-button', style: {color: '#D44444',
                     backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
@@ -60,11 +62,13 @@ export const UserWinRate =  defineComponent({
                   on : {
                     click : ()=> {
                       this.updateState({activateSection:'lose'})
-                  }}
+                  }},
+                  // 'data-translate':'Loss'
                   }, [
-                    'Loss',
+                    h('span', {}, ['Loss']),
                     h('br'),
-                    `${data.losses}` + '/' + `${data.total_matches}`
+                    h('span', {}, [`${data.losses}` + '/' + `${data.total_matches}`])
+                    
                   ])
               ])
             ])
@@ -80,17 +84,10 @@ export const UserWinRate =  defineComponent({
         .then(result =>{
 
             if (!result.ok)
-            {
-                // console.log("res isn't okey ," , " | ", this)
-                
                 this.appContext.router.navigateTo('/login')
-            }
-
             return result.json()
         })
         .then(res => {
-            // console.log(">>>>>>>>>>>>>>> in win  res : ", res,"|",res.status)
-            // console.log("res is okey")
             this.updateState({
                     isLoading: false,  
                     data: res,   
@@ -99,7 +96,6 @@ export const UserWinRate =  defineComponent({
 
         })
         .catch(error => {
-            // console.log(">>>>>>>>>>>> error in win  : ", error)
         })
   }
 })

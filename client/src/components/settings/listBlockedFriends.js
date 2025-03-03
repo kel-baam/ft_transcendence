@@ -2,13 +2,14 @@ import { customFetch } from '../../package/fetch.js'
 import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString,RouterOutlet} from '../../package/index.js'
 
-let allUsers;
+// let allUsers;
  export const listBlockedFriends = defineComponent({
     state()
     {
         return { 
         data : [],
-        isLoadnig: true
+        isLoadnig: true,
+        searchedUser:""
         
     }
     },
@@ -16,7 +17,7 @@ let allUsers;
     render()
     {
         // console.log(">>>>>>>>>>>>>>>> here ")
-        const {isLoading, data} = this.state
+        const {isLoading, data, searchedUser} = this.state
         if(isLoading)
             return h('div',{ class: 'blocked-friends-container' })
         return h('div',
@@ -38,27 +39,32 @@ let allUsers;
                         h('input', {
                             type: 'text',
                             placeholder: 'Search...',
+                            value : `${searchedUser}`,
                             on : {
-                                input : (event) =>
+                                input : (e) =>
                                 {
-                                    if (event.target.value)
-                                    {
-                                        const filtredData =   data.filter((item) =>
-                                            item.user.username.toLowerCase().startsWith(event.target.value.toLowerCase())
-                                        )
-                                        this.updateState({data: filtredData, isLoading:false})
+                                    if(e.target.value.trim()!= "")
+                                        this.updateState({
+                                            searchedUser:e.target.value
+                                        })
+                                    // if (event.target.value)
+                                    // {
+                                    //     const filtredData =   data.filter((item) =>
+                                    //         item.user.username.toLowerCase().startsWith(event.target.value.toLowerCase())
+                                    //     )
+                                    //     this.updateState({data: filtredData, isLoading:false})
 
-                                    }
-                                    else
-                                        this.updateState({data : [...allUsers], isLoading:false})
+                                    // }
+                                    // else
+                                    //     this.updateState({data : [...allUsers], isLoading:false})
                                 }
                             }
                         }),
                     ]
                 ),
                 ...data.map((item, i ) => {
-                    
-                    return h('div',{ class: 'profile-item' },
+                    if ((searchedUser != "" && item.username.startsWith(searchedUser)) || searchedUser == "")
+                        return h('div',{ class: 'profile-item' },
                             [
                                 h('div', {},
                                     [
@@ -106,7 +112,7 @@ let allUsers;
                                                             isLoading: false,  
                                                             data: data,   
                                                         });
-                                                        allUsers = data
+                                                        // allUsers = data
                                                     })
                                                 }
                                             }})
@@ -140,7 +146,7 @@ let allUsers;
                 isLoading: false,  
                 data: res,   
             });
-            allUsers = res;
+            // allUsers = res;
         })
 
     

@@ -1,5 +1,6 @@
 import{defineComponent,h} from '../../package/index.js'
 
+// change
 
 export const Footer = defineComponent({
     state(){
@@ -20,7 +21,7 @@ export const Footer = defineComponent({
                     ]),
                     h('div',{className:"media-bg"},[
                         h('li',{},[
-                            h('a',{href:"www.linkedin.com/in/kaoutar-el-baamrani-a99235271"},[
+                            h('a',{href:"https://www.linkedin.com/in/kaoutarbm/"},[
                                 h('i',{className:"fa-brands fa-linkedin-in"})
                             ])
                         ])
@@ -46,7 +47,12 @@ export const Footer = defineComponent({
                         h('a',{href:"#team-section",className:'scroll-link'},['Our Team']),
                     ]),
                     h('li',{},[
-                        h('a',{href:"#",className:'scroll-link'},['Join us']),
+                        h('a',{href:"#",className:'scroll-link',
+                            onclick:(e)=>{
+                                e.preventDefault()
+                                this.appContext.router.navigateTo('/login?key=value')
+                            }
+                        },['Join us']),
                     ]),
 
                 ])

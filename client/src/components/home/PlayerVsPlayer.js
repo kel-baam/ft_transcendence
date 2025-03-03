@@ -11,7 +11,7 @@ export const PlayerVsPlayer = defineComponent({
         return h('div', { class: 'player-vs-player' }, [
             h('div', { class: 'player-vs-player' }),
             h('div', { class: 'player-vs-player' }, [
-                h('h1', {}, ['Lets Play']),
+                h('h1', {'data-translate' : 'Lets Play'}, ['Lets Play']),
                 h('div', { class: 'players' }, [
                     h('div', { class: 'play-girl' }, [
                         h('img', { src: './images/bnt-removebg-preview.png', class: 'girlplay' })
@@ -24,8 +24,19 @@ export const PlayerVsPlayer = defineComponent({
                     ])
                 ])
             ]),
-            h('a', { href: '/playerVSplayer' }, [
-                h('button', { type: 'button', class: 'btn', onclick: this.handleButtonClick }, ['PLAY'])
+            h('a', {  }, [
+                h('button', {
+                    type: 'button',
+                    class: 'btn',
+                    on : {
+                        click : (event) => {
+                            event.preventDefault();
+                            this.appContext.router.navigateTo('/pvp');
+                        }
+                    } ,
+                    'data-translate' : 'PLAY'},
+                    ['PLAY']
+                )
             ])
         ]);
         

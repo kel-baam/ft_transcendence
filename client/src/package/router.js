@@ -182,6 +182,7 @@ export class HashRouter {
     }
   }
 
+
   #pushState(path) {
     window.history.pushState({}, '', `#${path}`)
   }
@@ -205,9 +206,7 @@ export class HashRouter {
         redirectPath: null,
       }
     }
-
-    
-    const result = await guard(currentLocation.route.path)
+    const result = await guard(currentLocation)
 
     if (result === false) {
 

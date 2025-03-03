@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
 
+
+/* change */
 @font-face {
-    ont-family: 'Ubuntu Sans';
+    font-family: 'Ubuntu Sans';
     src: url('./fonts/UbuntuSans-Regular.ttf') format('truetype');
     font-family: myFont;
     src: url(../fonts/Season\ Prime.otf);
@@ -26,6 +28,7 @@ html{
 
 #landing-header{
     height: 100vh;
+
 }
 
 .logo{
@@ -130,6 +133,14 @@ html{
 .active{
     border-radius: 30px;
     background: #D44444;
+    /* border: 1px solid red; */
+}
+
+#active{
+    /* -webkit-transform: scale(1.1); */
+    transform: scale(1.1);
+    /* transition: 0.5s; */
+    color:#D44444;
 }
 /* ---------------------------HEADER-INTRODUCTION-------------------------------------------------- */
 
@@ -154,7 +165,19 @@ html{
 }
 
 
-.intro h1{
+.intro h1 {
+    font-family: 'Lemon',serif;
+    text-shadow: 10px 10px 20px rgba(0, 0, 0,0.3);
+    font-size: 120px;
+    margin-top: 100px;
+    line-height: 8rem;
+    max-width: 1000px;
+
+    /* border: 1px solid red; */
+}
+
+
+.intro h1 span{
     font-family: 'Lemon',serif;
     text-shadow: 10px 10px 20px rgba(0, 0, 0,0.3);
     font-size: 120px;
@@ -162,9 +185,18 @@ html{
     line-height: 8rem;
 }
 
-.intro h1 span{
+.intro .pingpong{
+
     font-family: 'Lemon',serif;
     color: #FFEEBF;
+}
+
+.intro  p span{
+    text-align: center;
+    font-family: 'Lemon',serif;
+    font-size: 17px;
+    margin-top: 5px;
+    padding:35px 20px;
 }
 
 .intro  p{
@@ -256,7 +288,7 @@ html{
     width: 100%;
 }
 
-.about-text p{
+.about-text p {
     width: 100%;
     font-family: 'Lemon',serif;
     font-size: 15px;
@@ -264,36 +296,59 @@ html{
     line-height: 2rem;
     color: #FFF;
     padding: 20px;
+    
 }
 
+.about-text p span {
+    font-family: 'Lemon',serif;
+    color: #FFF;
+}
 /* ---------------------------------------------TEAM-SECTION------------------------ */
 
 #team-section{ 
     width: 100%;
     height: 100vh;
     text-align: center;
-    margin-top: 300px;
+    margin-top: 30px;
 }
 
-#team-section h2{
+
+#team-section #team-title
+{
+    padding-top: 100px;
+    /* border: 1px solid rgb(17, 0, 255); */
+    /* border: 1px solid red; */
+  
+}
+
+
+#team-section h2 .team{
     font-family: 'Lemon',serif;
     font-size: 100px;
-    padding-top: 200px;
-    line-height: 2rem;
+
+    /* padding-top: 500px; */
 }
 
-#team-section h2 span{
+
+
+#team-section h2 .magic{
+
     font-family: 'Lemon',serif;
     color: #FFEEBF;
     font-size: 27px;
-}
+    }
 
 #team-section p{
     font-size: 17px;
     font-family: 'Lemon',serif;
-    padding: 20px;
+    padding: 40px;
 }
 
+
+#team-section p span{
+    font-size: 17px;
+    font-family: 'Lemon',serif;
+}
 
 .team-pics{
     position: relative;
@@ -462,6 +517,8 @@ html{
 
 .footer-services ul li a{
     color: #7F7D7D;
+    font-family: myFont;
+    /* border: 1px solid red;  */
 }
 
 .footer-services ul li a:hover{
@@ -476,11 +533,31 @@ html{
 
 .footer-copy-right p{
     font-size: 15px;
+    font-family: myFont;
+
 }
 
 
 ::-webkit-scrollbar-track{
     /* background-color: #FFEEBF; */
     /* background-color: #7F7D7D; */
+
+}
+
+
+.container .NotFound h1{
+    font-family:  myFont;
+
+}
+
+
+
+.container .NotFound{
+    font-family: myFont;
+}
+
+
+.container .oops{
+    font-family: myFont;
 
 }

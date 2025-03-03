@@ -35,22 +35,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("localhost", 6379)],
-#             "channel_capacity": {
-#                 "http.request": 200,
-#                 "http.response!*": 200,
-#                 "websocket.send!*": 200,
-#             },
-#             "group_expiry": 3600,  # Group expiry time in seconds
-#             "expiry": 10,  # Connection expiry time in seconds
-#         },
-#     },
-# }
-
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 

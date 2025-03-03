@@ -5,10 +5,11 @@ from .models import User
 from django.conf import settings
 import jwt
 from asgiref.sync   import async_to_sync
-from channels.layers import get_channel_layer
-from .models import *
-from django.db.models import Q
+from .serializers import *
+# from .signals import *
 
+
+# Notification container's WebSocket consumer
 class Notification(AsyncWebsocketConsumer):
     async def connect(self):
         print("--------> WebSocket connection opened")
@@ -79,3 +80,53 @@ class Notification(AsyncWebsocketConsumer):
             'notification': notification_data
         }))
 
+
+
+
+
+class OnlineFriends(AsyncWebsocketConsumer):
+    async def connect(self):        
+        self.user = None
+        for header_name, header_value in self.scope["headers"]:
+            if header_name == b'cookie':
+                cookies_str = header_value.decode("utf-8")
+                cookies = {key: value for key, value in (cookie.split("=", 1) for cookie in cookies_str.split("; ") if "=" in cookie)}
+
+                try:
+                    payload = jwt.decode(cookies.get("access_token").encode("utf-8"), settings.SECRET_KEY, algorithms=["HS256"])
+                    self.user = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
+                    
+                    if self.user:
+                        self.group_name = f"user_{self.user.id}"  
+                        await self.channel_layer.group_add(self.group_name, self.channel_name) 
+                        await self.accept()
+
+                        friends = await self.get_friends(self.user)
+                        await self.send(text_data=json.dumps(friends))
+                except Exception as e:
+                    await self.close()
+
+    @sync_to_async
+    def get_friends(self, user):
+        """Retrieve accepted friends"""
+        friends = User.objects.filter(
+            models.Q(sent_request__status='accepted', sent_request__reciever=user) |
+            models.Q(received_request__status='accepted', received_request__sender=user)
+        )
+        return [{'id': f.id, 'picture': f.picture.url if f.picture else None, 'status': f.status} for f in friends]
+
+    async def disconnect(self, close_code):
+        """Remove the user from the WebSocket group on disconnect"""
+        if self.user:
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+            await self.close()
+
+            
+        print(f"❌ Disconnected: {self.user.email if self.user else 'Unknown User'}")
+
+    async def friend_status_update(self, event):
+        """Handles incoming status update messages"""
+        print(f"📨 Received status update: {event}")        
+        await self.send(text_data=json.dumps(
+            [event["friend"]]
+        ))

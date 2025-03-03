@@ -128,7 +128,8 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 0.8em;
+    /* align-content: space-evenly; */
+    gap: 1.2em;
     /* border: 1px solid yellow; */
 }
 
@@ -154,41 +155,62 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 2em;
     /* border: 1px solid rgb(234, 1, 255); */
 }
 
 /* -----------Icons------------------ */
+#language-selector
+{
+    font-family: myFont;
+    background :  none ;
+    border :  none ;
+    outline:  none ;
+    color: #5293CB ;
+}
 
+#language-selector option
+{
+    background: transparent; 
+    color: inherit; 
+    border: none;
+    font-family: inherit;
+}
 .icon{
     color: #5293CB;
-    cursor: pointer;
+    /* cursor: pointer; */
     font-size: 24px;
+    /* text-decoration: none; */
     transition: color 0.4s ease, filter 0.4s ease;
 }
 
-.icon:hover{
+.active-icon {
+    color: #F45250 !important;
+}
+
+/* .icon:hover{
     color: #F45250;
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
     filter: blur(0.5px);
     transition: 0.5s;
-} 
+}  */
 
-.icon.clicked{
+/* .icon.clicked{
     color: #F45250;
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
     transition: 0.5s;
     filter: blur(0.75px);
-}
+} */
 
-.icon.active{
+/* .icon.active{
     color: #F45250;
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
     transition: 0.5s;
     filter: blur(0.75px);
-}
+} */
 
 .icon_notif{
     color: #F45250;
@@ -293,4 +315,102 @@ font-family: myFont;
 .notification-content .notifications-container::-webkit-scrollbar {
     display: none;
   }
+
+/******************** online friends ******************/
+.friends-right-sidebar {
+    height: 25%;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scrollbar-width: 10px;
+    max-height: 25%;
+    /* background: #1c2340; */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    /* gap: 15px; */
+    gap: 2em;
+}
+
+/* Friends List */
+#friends-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Friend Item */
+.friend {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+/* Avatar */
+.friend-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    border: 2px solid #ffffff33; 
+}
+
+/* Status Indicator */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 5px;
+    right: -2px;
+    border: 2px solid #1c2340; 
+}
+
+/* Online and Offline Colors */
+.onlineFriend {
+    background-color: green;
+}
+
+.offlineFriend {
+    background-color: red;
+}
+/**************suggestions *************/
+
+.suggestions {
+    position: absolute;
+    left:0;
+    top: 40px;
+    width: 100%;
+    background-color: #1A2553;
+    border-radius: 10px;
+    display: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    max-height: 150px;
+    overflow-y: auto;
+    /* overflow: hidden; */
+    /* overflow: visible !important; */
+    z-index: 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 10px;
+    /* cursor: pointer; */
+    display: flex;
+    align-items: center;
+    color: white;
+    font-family: myFont;
+    letter-spacing: 1px;
+    z-index: 2000;
+    /* z-index: 10; */
+
+
+}
+
+.suggestion-item img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.suggestion-item:hover {
+    background-color: #2D3E77;
+}
 

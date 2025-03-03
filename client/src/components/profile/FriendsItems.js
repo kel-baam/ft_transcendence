@@ -1,29 +1,26 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../../package/index.js' 
-// import { customFetch } from '../../package/fetch.js'
+import{ defineComponent, h} from '../../package/index.js' 
 
  export const FriendsItems = defineComponent({
-    // state()
-    // {
-    //   return{
-    //   }
-    // },
+   
     render()
     {
   
-      const {isExpanded, key} = this.props
-      console.log(">>>>>>>>>>>>>>>>>>>> key here : ", key)
-      // console.log('>>>>>>>>>>>>>>> this state of friends : ', this.state)
+      const {isExpanded, key, searchedUser} = this.props
       const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
       return h('div', {class : 'friends-scope-item',
           style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
             ,justifyContent : 'center'} : {}
-        }, data.map((userFriend) =>
-          h(FriendItem, {
-            user : userFriend.user,
-            isExpanded : isExpanded,
-            key
-          })
+        }, data.map((user) =>
+        {
+
+          if ((searchedUser != "" && user.username.startsWith(searchedUser)) 
+            || searchedUser == "")
+            return h(FriendItem, {
+              user,
+              isExpanded : isExpanded,
+              key,
+            })
+        }
         )
     )
     }
@@ -31,11 +28,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
   })
   
   const FriendItem = defineComponent({
-    // state()
-    // {
-    //   return {
-    //   }
-    // },
+  
     render()
     {
       const {user, isExpanded, key} = this.props
@@ -54,8 +47,8 @@ import{createApp, defineComponent, DOM_TYPES, h,
           ),
           h('div', { class: 'data-user' },
             [
-              h('span', {}, [user.first_name + ' ' + user.last_name]),
-              h('span', { style: { color: '#A7A4A4'} }, ['@' + user.username])
+              h('span', {style: {fontFamily : 'myFont'}}, [user.first_name + ' ' + user.last_name]),
+              h('span', { style: { color: '#A7A4A4', fontFamily : 'myFont'} }, ['@' + user.username])
             ]
           ),
           h('div', { class: 'chat-icon' },!key ?

@@ -31,12 +31,14 @@ function makeMatcherWithoutParams(route) {
 
     const regex = makeRouteWithoutParamsRegex(route)
     const isRedirect = typeof route.redirect === 'string'
-
+    let music;
     return {
       route,
       isRedirect,
-      checkMatch(path) {        
+      checkMatch(path) {      
+        music = path  
         const index = path.indexOf('?')
+
         if(index != - 1)
         {
           const  tmpPath= path.slice(0,index);
@@ -45,6 +47,10 @@ function makeMatcherWithoutParams(route) {
         }
           
         return regex.test(path)
+      },
+      getMusic()
+      {
+        return music
       },
       extractParams() {
         return {}
@@ -88,12 +94,18 @@ function makeMatcherWithoutParams(route) {
   function makeMatcherWithParams(route) {
     const regex = makeRouteWithParamsRegex(route)
     const isRedirect = typeof route.redirect === 'string'
-  
+    let music;
     return {
       route,
       isRedirect,
       checkMatch(path) {
+        music = path  
+
         return regex.test(path)
+      },
+      getMusic()
+      {
+        return music
       },
       extractParams(path) {
         const { groups } = regex.exec(path)

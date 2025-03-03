@@ -15,6 +15,7 @@ import { JoinedTournaments } from '../../../components/tournament/JoinedTourname
 import { AvailableTournaments } from '../../../components/tournament/AvailableTournaments.js';
 import { showErrorNotification, highlightInvalidInput } from '../../utils/errorNotification.js';
 import { customFetch } from '../../../package/fetch.js';
+import { ComingSoon } from '../../../components/errorPages/coming_soon.js';
 
 let socket = null;
 
@@ -30,6 +31,7 @@ export const OnlineTournament = defineComponent({
             notificationActive : false,
             notif_blur         : false,
             notification_data  : null,
+            coming_soon        : false
         };
     },
 
@@ -58,13 +60,6 @@ export const OnlineTournament = defineComponent({
                 const data = JSON.parse(event.data);
 
                 console.log('Parsed WebSocket Data:', data);
-
-                // if (data.error === "token expired") {
-                //     const refreshAccessToken = await fetch(`https://${window.env.IP}:3000/auth/refreshToken`, {
-                //         method     : 'GET',
-                //         credentials: 'include',
-                //     });
-                // }
 
                 if (data.joined_tournaments) {
                     this.updateState({ joinedTournaments: data.joined_tournaments });
@@ -116,6 +111,13 @@ export const OnlineTournament = defineComponent({
     },
 
     render() {
+        console.log(this.state.coming_soon)
+        if (this.state.coming_soon)
+        {
+            console.log("sdfsdfsdfsdfrds")
+            return h(ComingSoon, {});
+        }
+
         const renderForm = (isBlur) =>
             h('div', { class: 'join-player-form' }, [
                 h('i', {
@@ -196,7 +198,9 @@ export const OnlineTournament = defineComponent({
                         tournaments : this.state.joinedTournaments,
                         on          : {
                             start_the_tournament: (id) =>
-                                this.appContext.router.navigateTo(`/tournament/online/online_hierachy/${id}`)
+                                this.updateState({
+                                    coming_soon: true,
+                                })
                         }
                     }),
                     h(CreateTournament)

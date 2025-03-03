@@ -39,6 +39,24 @@ export const Tournament = defineComponent({
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            this.updateState({
+                isBlur: false,
+            })
+        }
+    },
+
+    onMounted ()
+    {
+        
+        const userIcon = document.getElementById('tournament-icon');
+  
+        if (userIcon)
+        {
+            userIcon.style.color = "#F45250";
+            userIcon.style.transform = "scale(1.1)";
+            userIcon.style.webkitTransform = "scale(1.1)";
+            userIcon.style.filter = "blur(0.5px)";
+            userIcon.style.transition = "0.5s";
         }
     },
 

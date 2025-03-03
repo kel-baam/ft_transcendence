@@ -12,6 +12,7 @@ export const SocialCard = defineComponent({
           activateSection : null,
           isLoading:true,
           data:[],
+          searchedUser:""
         }
     },
     render()
@@ -21,7 +22,7 @@ export const SocialCard = defineComponent({
         if (!this.state.activateSection)
           this.state.activateSection = this.props.activateSection
        
-        const {activateSection, isLoading, data} = this.state
+        const {activateSection, isLoading, data, searchedUser} = this.state
        
         return h('div', { class: 'friends-and-requetes-container',
           style : isExpanded ? {
@@ -41,9 +42,11 @@ export const SocialCard = defineComponent({
                 activateSection === 'friends' && !key ?'rgba(95, 114, 125, 0.08)' : 'transparent'},
               on : { click : () => 
                 this.fetch(`https://${window.env.IP}:3000/api/user/friendships?status=accepted`,'friends')
-              } }, [
-                h('h1', {}, ['Friends'])
-              ]): h('h1', {}, ['Friends'])
+              } }, 
+              [
+                h('h1', {'data-translate' : 'Friends'}, ['Friends'])
+              ]
+              ): h('h1', {'data-translate' : 'Friends'}, ['Friends'])
             ]),
 
             h('div', { style : key ? {display : 'none'}:{}}, [
@@ -54,7 +57,7 @@ export const SocialCard = defineComponent({
                     this.fetch(`https://${window.env.IP}:3000/api/user/friendships?status=recieved`,'requests' )
                     }
               } }, [
-                h('h1', {}, ['Requests'])
+                h('h1', {'data-translate' : 'Requests'}, ['Requests'])
               ])
             ]),
 
@@ -68,17 +71,22 @@ export const SocialCard = defineComponent({
                   {
                     this.fetch(`https://${window.env.IP}:3000/api/user/friendships?status=sent`,'pending' )
                   }
-                }}, [h('h1', {}, ['Pending'])
+                }}, [h('h1', {'data-translate' : 'Pending'}, ['Pending'])
               ])
             ])
-          ] : [h('div', { class: 'header'}, [
+          ] : [
+            h('div', { class: 'header'}, [
             h('div', { class: 'search' }, [
                 h('a', { href: '#' }, [
                     h('i', { class: 'fa-solid fa-magnifying-glass icon' })
                 ]),
-                h('input', { type: 'text', placeholder: 'Search...', on :{
-                  input : (target) => {
-                  console.log("********************> target : ", target)
+                h('input', { type: 'text', placeholder: 'Search...', value : `${searchedUser}`,on :{
+                  input : (e) => {
+                  console.log("********************> target : ", e.target.value)
+                  if (e.target.event.trim() != "")
+                    this.updateState({
+                      searchedUser: e.target.value
+                    })
                 }} }), 
             ]),
             h('div', { class: 'close-icon' }, [
@@ -95,17 +103,21 @@ export const SocialCard = defineComponent({
             ])
         ])])
           ,
-          (activateSection === 'friends' && h(FriendsItems, {data: data, isExpanded: isExpanded, key})) ||
+          (activateSection === 'friends' && h(FriendsItems, {data: data, isExpanded: isExpanded, key,
+            searchedUser:searchedUser
+          })) ||
           (activateSection === 'requests' && h(RequestsItems, {data: data, isExpanded: isExpanded,
             on : {
               remove : this.removeRequest,
               accept : this.acceptRequest
             },
+            searchedUser:searchedUser
           })) ||
           (this.state.activateSection === 'pending' && h(PendingItems, {data: data, isExpanded: isExpanded,
             on : {
               remove : this.removeRequest
             },
+            searchedUser:searchedUser
           })),
 
           h('div', { class: 'view-all-link-fr', style : {color : '#14397C'} },
@@ -116,10 +128,10 @@ export const SocialCard = defineComponent({
                   {
                     this.emit('blurProfile', {activateSection : activateSection, 
                       isBlured:true, Expanded:'socialCard'})
-                    // this.updateState({isExpanded:true, activateSection : activateSection})
+                    this.updateState({isExpanded:true, activateSection : activateSection})
                   }
-              }}, ['View all'])
-            ]: [])
+              }, 'data-translate' : 'View all'}, ['View all'])
+            ] : [])
         ])
     },
     removeRequest({id, i})
@@ -168,6 +180,8 @@ export const SocialCard = defineComponent({
 
             if (!result.ok)
             {
+              // if (result.status == 404)
+              //     this.appContext.router.navigateTo('/404')
                 
                 this.appContext.router.navigateTo('/login')
             }
@@ -194,8 +208,7 @@ export const SocialCard = defineComponent({
 
             if (!result.ok)
             {
-                
-                this.appContext.router.navigateTo('/login')
+              this.appContext.router.navigateTo('/login')
             }
 
             return result.json()

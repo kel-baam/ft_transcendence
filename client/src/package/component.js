@@ -247,6 +247,7 @@ export function defineComponent({
   
         const vdom = this.render()
         this.#vdom = patchDOM(this.#vdom, vdom, this.#hostEl, this)
+        
       }
     }
   

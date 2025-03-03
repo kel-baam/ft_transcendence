@@ -9,10 +9,10 @@ export const TrainingBoot = defineComponent({
 
     render(){
         return h('div', { class: 'training-boot' }, [
-            h('h1', {}, ['Training']),
+            h('h1', {'data-translate' : 'Training'}, ['Training']),
             h('img', { src: './images/paddles-removebg-preview.png' }),
             h('a', { href: '/waitPlayerJoin' }, [
-                h('button', { type: 'button', class: 'btn' }, ['PLAY'])
+                h('button', { type: 'button', class: 'btn', 'data-translate' : 'PLAY' }, ['PLAY'])
             ])
         ]);   
     }

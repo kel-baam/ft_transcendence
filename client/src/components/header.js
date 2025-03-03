@@ -2,6 +2,8 @@ import{createApp, defineComponent, DOM_TYPES, h,
     hFragment, hSlot, hString} from '../package/index.js'
 
 import { customFetch } from '../package/fetch.js'
+import { translations } from './languages.js';
+import { showErrorNotification } from '../package/utils.js';
 
 let socket = null;
 
@@ -10,6 +12,9 @@ export const header = defineComponent({
     {
         return {
             suggestions : [],
+            username    :"",
+            language    : 'en',
+
             notif       : false,
             notification: null,
             icon_notif  : false
@@ -20,24 +25,21 @@ export const header = defineComponent({
         this.initWebSocket();
     },
 
-    async initWebSocket() {
+    initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/notification/`);
-            
             socket.onopen = () => {console.log('WebSocket connection established'); };
-            
-            socket.onmessage = (event) => {
+            socket.onmessage = async (event) => {
+
+                console.log('Message received in notif : ');
+                
                 const data = JSON.parse(event.data);
-
-                console.log('Message received in notif : ', data);
-
                 this.updateState({
                     icon_notif : true,
                 })
             };
     
             socket.onerror = (error) => { console.error('WebSocket error:', error); };
-
             socket.onclose = () => { console.log('WebSocket connection closed'); };
         }
     },
@@ -75,13 +77,13 @@ export const header = defineComponent({
         catch (error) {  console.log(error);  }
     },
 
+
     async handleInvitationAction(objectId, action)
     {
         const formData = new FormData();
-        
+
         formData.append("tournament_id", objectId);
         formData.append("status", action);
-        console.log("------------------------------> ",formData)
         try
         {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
@@ -163,30 +165,24 @@ export const header = defineComponent({
                                         },
                                     }, },
                                     ["[Accept]"]),
-                            h( "a", {
-                                class: "decline", 
-                                on:{
-                                    click: () => {
-                                            this.handleInvitationAction(
-                                                notification.object_id,
-                                                "declined"
-                                            )
-                                        }
-                                    }
-                                },
-                                ["[Decline]"] ),
-                         ];
+                            h( "a", { class: "decline",  onclick: () =>
+                                        this.handleInvitationAction(
+                                            notification.object_id,
+                                            "declined"
+                                        ),  },
+                                        ["[Decline]"] ),
+                                    ];
                         break;
                     case "enter_tournament":
                         content = `${notification.message}`;
                         actions =
                         [
-                            h( "a", {
-                                on: {
+                            h( "a", { 
+                                on : {
                                     click: () => this.enterTournament(notification.object_id)
                                 }
-                            },
-                            ["[Enter]"] ),
+                            }
+                            , ["[Enter]"] ),
                         ]
                         break;
                     default:
@@ -203,20 +199,27 @@ export const header = defineComponent({
     },
 
     render(){
-        const {suggestions} = this.state
+        const {suggestions, username, language} = this.state
 
         return h('header', { class: 'container' }, [
             h('nav', {}, [
-                h('a', { href: '/home' }, [
+                h('a', {
+                    on :{ click:(event)=>{
+                        event.preventDefault();
+
+                        this.appContext.router.navigateTo('/home')}
+                    }
+                }, [
                     h('img', { src: './images/logo.png', class: 'logo' })
                 ]),
-                h('div', { class: 'search' }, [
+                h('div', { class: 'search' , style :{ 'z-index' : 100}}, [
                     h('a', {  }, [
                         h('i', { class: 'fa-solid fa-magnifying-glass icon', 'aria-hidden': 'false' })
                     ]),
-                    h('input', { type: 'text', placeholder: 'Search...', id:'searchBox', on : {
-                        input : ()=>
+                    h('input', { type: 'text', placeholder: 'Search...', id:'searchBox', value : `${username}`,on : {
+                        input : (e)=>
                         {
+                            const username = e.target.value
                             const suggestions = document.getElementById('suggestions')
                             if (searchBox.value.trim() !== '') {
                                 suggestions.style.display = 'block';
@@ -230,42 +233,67 @@ export const header = defineComponent({
                                 switch(result.status)
                                 {
                                     case 401:
-                                        console.log(">>>>>>>>>>>>> here ")
                                         this.appContext.router.navigateTo('/login')
                                         break;
-                                    // case 404:
-                                    //     console.log(">>>>>>>----------- 404 >>>>>> here ")
-                                    //     h('h1', {}, ['404 not found'])
-                                    //     break;
                                 }
                                 return result.json()
                             })
                             .then((res)=>{
-                                console.log(">>>>>>>>>>>>>>> here the suggestions ", res)
                                 this.updateState({
-                                    suggestions:res
+                                    suggestions:res,
+                                    username: username
                                 })
 
                             })
 
                         }
                     } }),
-                    // <div class="suggestions" id="suggestions">
-                    h('div', {class : 'suggestions', id : 'suggestions'},  suggestions.map(suggestion => 
+                    h('div', {class : 'suggestions', id : 'suggestions'},  suggestions.length > 0 ? suggestions.map(suggestion => 
                         h('div', { class: 'suggestion-item', on : {
                             click : ()=>
                             {
-                                // this.updateState({suggestion:[]})
                                 this.appContext.router.navigateTo(`/user/${suggestion.username}`)
+                                const suggestions = document.getElementById('suggestions')
+                                suggestions.style.display = 'none';
+                                this.updateState({
+                                    username:""
+                                })
                             }
                                 
                         }}, [
                             h('img', { src: `https://${window.env.IP}:3000${suggestion.picture}`, alt: 'User picture', style : {'object-fit': 'cover' }}),
                             ` ${suggestion.username}`
-                        ])
-                ))
+                        ]) 
+
+                ) : 
+                [
+                    h('div' , {class: 'suggestion-item'}, ['No suggestions available...'])
+                ]
+            )
                 ]),
+         
+        
                 h('div', { class: 'left-side' }, [
+                    h('select', { id : "language-selector" ,on : {
+                        change : (e)=>
+                        {
+                            const language = e.target.value
+                            document.getElementById('language-selector').value  = language
+                            localStorage.setItem('language', language);
+                            document.querySelectorAll("[data-translate]").forEach(element => {
+                            const key = element.getAttribute("data-translate");
+                                element.textContent = translations[language][key];
+                                // this.updateState({
+                                //     language:language
+                                // })
+                            })
+                        }
+                    }}, [
+                        h('option', {value : 'en'}, ['EN']),
+                        h('option', {value:'fr'}, ['FR']),
+                        h('option', {value:'ar'}, ['AR'])
+                    ])
+                    ,
                     h('a', {}, [
                         h('i', {
                             className: `fa-regular fa-bell ${this.props.icon_notif || this.state.icon_notif ? 'icon_notif' : 'icon'}`,
@@ -275,7 +303,21 @@ export const header = defineComponent({
                         })
                     ]),
                     h('a', { href: '#/settings' }, [
-                        h('i', { class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false' })
+                        h('i', {id:'settings-icon', class: 'fa-solid fa-sliders icon', 'aria-hidden': 'false', 
+                            on : {
+                                click :(e)=>
+                                {
+                                    e.preventDefault()
+
+                                    const target = e.currentTarget;
+                                    // target.style.removeProperty('color'); 
+                                    target.style.color = '#F45250';
+                                    // console.log(">>>>>>>>>>>the target icon : ", target)
+                                    this.appContext.router.navigateTo('/settings/edit-info')
+                                    
+                                }
+                            }
+                         })
                     ]),
                     h('a', {on :{click: async (event)=> {
                         event.preventDefault()

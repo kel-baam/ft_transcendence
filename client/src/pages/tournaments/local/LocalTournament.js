@@ -162,7 +162,7 @@ export const LocalTournament = defineComponent({
                             (this.state.tournaments.length > 0
                                 ? this.state.tournaments.map((tournament) =>
                                     h('div', { class: 'created' }, [
-                                        h('img', { src: './images/ping-pong-equipment-.png' }),
+                                        h('img', { src: './images/gold-cup-removebg-preview.png' }),
                                         h('a', {
                                             on: {
                                                 click: () => {

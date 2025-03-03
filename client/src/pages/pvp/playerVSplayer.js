@@ -1,8 +1,10 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString}  from '../../package/index.js'
+import{defineComponent,h}  from '../../package/index.js'
 
 import { header }               from '../../components/header.js'
 import { sidebarLeft }          from '../../components/sidebar-left.js'
+import { sidebarRight } from '../../components/sidebar-right.js'
+import { customFetch } from '../../package/fetch.js'
+import { showErrorNotification } from '../utils/errorNotification.js'
 
 export const PlayerVsPlayer = defineComponent({
     state(){
@@ -12,7 +14,18 @@ export const PlayerVsPlayer = defineComponent({
             notification_data: null,
         }
     },
-
+    onMounted()
+    {
+      const userIcon = document.getElementById('pvp-icon');
+  
+      if (userIcon) {
+          userIcon.style.color = "#F45250";
+          userIcon.style.transform = "scale(1.1)";
+          userIcon.style.webkitTransform = "scale(1.1)";
+          userIcon.style.filter = "blur(0.5px)";
+          userIcon.style.transition = "0.5s";
+      }
+    },
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -151,8 +164,12 @@ export const PlayerVsPlayer = defineComponent({
                         ]),
                         h('button', { type: 'submit' }, ['Submit'])
                     ])
-                ]) : null
-            ]) 
+                ]) : null,
+                h('div', { class: 'friends-bar' }, [
+                    h(sidebarRight, {})
+                ]),
+            ])
+              
         ])
     }                    
 })

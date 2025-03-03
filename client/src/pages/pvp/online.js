@@ -4,8 +4,6 @@ import { sidebarLeft } from '../../components/sidebar-left.js'
 import { showErrorNotification } from '../utils/errorNotification.js'
 
 let socket = null;
-let redirectTimeout = null;
-
 export const OnlinePvp = defineComponent({
     state() {
         return {

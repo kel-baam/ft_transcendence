@@ -18,3 +18,6 @@ channels_redis
 psycopg2-binary
 asgiref >= 3.6.0
 faker
+watchfiles
+validate-email-address==1.0.0
+dnspython
