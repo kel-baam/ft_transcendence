@@ -1,5 +1,4 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../../../package/index.js'
+import{defineComponent,h} from '../../../package/index.js'
 import { header } from '../../../components/header.js'
 import { sidebarLeft } from '../../../components/sidebar-left.js'
 
@@ -13,7 +12,7 @@ export const LocalHierarchy = defineComponent({
             matcheRounds : [],
             currentMatch : null,
             matchIndex   : 0,
-            winners      :[]
+            winners      : []
         }
     },
 
@@ -92,7 +91,6 @@ export const LocalHierarchy = defineComponent({
 
     render()
     {
-        console.log("------------> this.state.winners :", this.state.winners)
         return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
             [h(sidebarLeft, {}),
                 this.state.currentMatch === null ?
@@ -106,7 +104,9 @@ export const LocalHierarchy = defineComponent({
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
-                                            src: `https://${window.env.IP}:3000/media${match.avatar1}`
+                                            src: match.avatar1 
+                                                ? `https://${window.env.IP}:3000/media${match.avatar1}` 
+                                                : './images/people_14024721.png'
                                         }),
                                         h('h2', {}, [match.player1])
                                     ]),
@@ -115,7 +115,9 @@ export const LocalHierarchy = defineComponent({
                                     ]),
                                     h('div', { class: 'player2' }, [
                                         h('img', { 
-                                            src: `https://${window.env.IP}:3000/media${match.avatar2}`
+                                            src: match.avatar2 
+                                                ? `https://${window.env.IP}:3000/media${match.avatar2}` 
+                                                : './images/people_14024721.png'
                                         }),
                                         h('h2', {}, [match.player2])
                                     ])
@@ -158,7 +160,7 @@ export const LocalHierarchy = defineComponent({
                 ]) : h('div', { class: 'game-content' },
                     [
                         h('div', { class: 'user-profile' }, [
-                            h('img', { src: `https://${window.env.IP}:8002${this.state.currentMatch.avatar1}` }),
+                            h('img', { src: `https://${window.env.IP}:3000${this.state.currentMatch.avatar1}` }), // /media kkk
                             h('h3', {}, [this.state.currentMatch.player1])
                         ]),
                         h('div', { class: 'vs' }, [
@@ -167,7 +169,7 @@ export const LocalHierarchy = defineComponent({
                         
                         h('div', { class: 'invited' },
                             [
-                                h('img', { src: `https://${window.env.IP}:8002${this.state.currentMatch.avatar1}` }),
+                                h('img', { src: `https://${window.env.IP}:3000${this.state.currentMatch.avatar1}` }),
                                 h('h3', {}, [this.state.currentMatch.player2])
                             ]
                         )

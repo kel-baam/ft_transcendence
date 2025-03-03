@@ -1,13 +1,17 @@
 import{defineComponent,h} from '../../package/index.js'
 import { translations } from '../languages.js'
-
+// change
     export const  LandingPageHeader = defineComponent({
             state(){
                 return {
                     isLoading : true,
+                    home:false,
+                    about:false,
+                    team:false
             }
             },
             render(){
+                // console.log("=========================================>activation",this.state.home)
                 return   h('div',{id:"landing-header"},[
                     h('nav',{ class: 'landing-nav' },[
                     h('img', { class: 'logo', src: './images/logo.png', alt: 'logo'}),
@@ -27,13 +31,32 @@ import { translations } from '../languages.js'
                             h('option', {value:'ar'}, ['AR'])
                         ]),
                         h('li',{},[
-                                h('a',{ href: '#header-intro', class: 'navLink scroll-link' , 'data-translate' : 'Home'},['Home'])
+                                h('a',{id:this.state.home?'active':undefined,href: '#header-intro', class: 'navLink scroll-link' , 'data-translate' : 'Home',
+                                onclick:(e)=>{
+                                e.preventDefault()
+                                this.updateState({about:false,home:true,team:false})
+
+                                }},['Home'])
                         ]),
                         h('li',{},[
-                            h('a', { href: '#about-section', class: 'navLink' ,class:'scroll-link','data-translate' :'About' },['About'])
+                            h('a', {id:this.state.about?'active':undefined ,href: '#about-section', class: 'navLink' ,class:'scroll-link','data-translate' :'About',
+                                onclick:(e)=>{
+                                    e.preventDefault()
+                                    this.updateState({about:true,home:false,team:false})
+    
+                                    }
+                            },['About']
+                                
+                            )
                         ]),
                         h('li',{},[
-                            h('a',{href: '#team-section', class: 'navLink scroll-link','data-translate' : 'Our Team'},['Our Team'])
+                            h('a',{id:this.state.team?'active':undefined,href: '#team-section', class: 'navLink scroll-link','data-translate' : 'Our Team',
+                                onclick:(e)=>{
+                                    e.preventDefault()
+                                    this.updateState({about:false,home:false,team:true})
+    
+                                    }
+                            },['Our Team'])
                         ]),
                         h('a',{href: '', class: 'btn' ,onclick:(e)=>{
                             e.preventDefault()
@@ -57,7 +80,7 @@ import { translations } from '../languages.js'
                             h('span', { 'data-translate': 'dive' }, ['Dive into our']),
                             h('br', {}),
                             '\u00A0\u00A0\u00A0',
-                            h('span', { 'data-translate': 'pingpong' }, ['ping pong']),
+                            h('span', {class:'pingpong','data-translate': 'pingpong' }, ['ping pong']),
                             h('br', {}),
                             '\u00A0\u00A0\u00A0',
                             h('span', { 'data-translate': 'universe' }, ['universe!'])

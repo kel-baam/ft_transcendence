@@ -1,4 +1,4 @@
-import{createApp, defineComponent, DOM_TYPES, h} from '../package/index.js'
+import{ defineComponent, h} from '../package/index.js'
 
 import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
@@ -20,6 +20,7 @@ export const Home = defineComponent({
             homeActive :false
         }
     },
+    
     onMounted()
     {
         const userIcon = document.getElementById('home-icon');
@@ -33,6 +34,7 @@ export const Home = defineComponent({
         }
 
     },
+
     async submitForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);

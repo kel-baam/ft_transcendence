@@ -1,5 +1,4 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString,RouterOutlet} from '../package/index.js'
+import{ defineComponent, h} from '../package/index.js'
 import {showErrorNotification} from '../package/utils.js'
 
 

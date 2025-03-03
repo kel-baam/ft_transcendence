@@ -1,5 +1,4 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../package/index.js'
+import{defineComponent, h} from '../package/index.js'
 import { showErrorNotification } from '../package/utils.js';
 
 
@@ -46,13 +45,9 @@ export const Game = defineComponent(
                     keyPressed = e.keyCode;
                     
                     if (keyPressed === KEY_UP) {
-                        // console.log("---------------> here the event exists 1: ", keyPressed);
-                        // console.log("-----------------------> here the player 1  : ", state.player)
                         socket.send(JSON.stringify({ move: 'up', player: state.player }));
                     }
                     else if (keyPressed === KEY_DOWN) {
-                        // console.log("---------------> here the event exists 2: ", keyPressed);
-                        // console.log("-----------------------> here the player 2 : ", state.player)
                         socket.send(JSON.stringify({ move: 'down', player: state.player }));
                     }
         
@@ -68,11 +63,8 @@ export const Game = defineComponent(
         },
         keyUpHandler(e)
         {
-            // console.log(">>>>>>>>>>>>>>>>>>>>> the keyUp ", e.keyCode)
-
             let keyPressed;
                 if (e.keyCode === KEY_UP || e.keyCode === KEY_DOWN || e.keyCode === KEY_UP2 || e.keyCode === KEY_DOWN2) {
-                    console.log(">>>>>>>>>>>>>>>>>> here the event : ", e.keyCode);
                     e.preventDefault();
                     keyPressed = '';
                 }
@@ -241,8 +233,6 @@ export const Game = defineComponent(
                     
                     if(data.action && data.action == "init_game")
                     {
-                        console.log(">>>>>>>>>>>>>>>>>>>>>> data : in initial state ", data)
-
                         draw_game(data);
                         if(data.player)
                             this.updateState({player:data.player,player1Score:data.player1Score,player2Score:data.player2Score, 
@@ -251,7 +241,8 @@ export const Game = defineComponent(
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
                                 player1: data.player1, player2:data.player2})
                     }
-                            
+
+                    
                     if(data.action && (data.action == "game_state") )
                     {
                         this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
@@ -281,11 +272,22 @@ export const Game = defineComponent(
                             player1Score: data.player1Score,
                             player2Score: data.player2Score
                         })
-                        console.log("tssss game obver=>",this.state.player,data.Winner)
-                        if (this.state.player === data.Winner)
-                            { this.announce_winner('You Won!'); }
+                        let message = "You Won!" 
+
+                        if(type == "local")
+                        {
+                            const name1 =  (this.state.player1.nickname).substring(0, 10)
+                            const name2 =  (this.state.player2.nickname).substring(0, 10)
+                            if(data.Winner =="player1")
+                                message = name1 + " Won!"
+                            else
+                                message = name2 +" Won!"
+
+                        }
+                        if (this.state.player === data.Winner || type == "local")
+                            this.announce_winner(message);
                         else
-                            { this.announce_winner('You Lose!');  }
+                            this.announce_winner('You Lose!');
 
                         if (socket) {
                             socket.close();
@@ -294,6 +296,16 @@ export const Game = defineComponent(
                         setTimeout(() => {
                             this.appContext.router.navigateTo(data.redirect_to);
                         }, 3000);
+                    }
+                    if (data.action && data.action === 'local_finished')
+                    {
+                        showErrorNotification("local finished")
+
+                        this.appContext.router.navigateTo('/pvp');
+
+                        if (socket) {
+                            socket.close();
+                        }
                     }
 
                     if (data.action && data.action === 'tournament finished')
@@ -308,8 +320,6 @@ export const Game = defineComponent(
                     if (data.action && data.action === 'match not found')
                     {
                         this.updateState({error:"match not found"})
-                        
-                        // this.appContext.router.navigateTo(data.redirect_to);
 
                         if (socket) {
                             socket.close();
@@ -340,10 +350,19 @@ export const Game = defineComponent(
                         showErrorNotification(data.message)
                     }
 
+                    if (data.action && data.action === "match_ends")
+                    {
+                        if (socket) {
+                            socket.close();
+                        }
+                        this.appContext.router.navigateTo(data.redirect_to);
+                        showErrorNotification(data.message)
+                    }
+
                 }.bind(this);
 
                 socket.onclose = function(e) {
-                    console.log("WebSocket is closed now in onclose.",e);
+                    console.log("WebSocket is closed now in onclose.");
                     if (socket) {
                         socket.close();
                     }
@@ -353,6 +372,10 @@ export const Game = defineComponent(
                     console.log("WebSocket error",e);
                 };
             }
+        },
+
+        async exit_game() {
+            socket.send(JSON.stringify({ action: 'exit_game' }));
         },
 
         render()
@@ -369,11 +392,21 @@ export const Game = defineComponent(
             }
             return h('div',{id:'game'},[
                 h('nav',{id:'header'},[
-                    h('a', { href: '/home' }, [
+                    h('a', {
+                        // on :{ click:()=>{ this.appContext.router.navigateTo('/home')} }
+                    }, [
                         h('img', { src: './images/logo.png', class: 'logo' })
                     ]),
-                    h('div',{id:'exitIcon'},[
-                        h('i',{class:'fa-solid fa-arrow-right-from-bracket', 'aria-hidden': 'false' })
+                    h('div',{ id:'exitIcon' },
+                    [
+                        h('i',{
+                            class:'fa-solid fa-arrow-right-from-bracket', 'aria-hidden': 'false',
+                            on: { click:() => 
+                                {
+                                    this.exit_game()
+                                }
+                            }
+                        })
                     ])
                 ]),
                 h('div',{class:'gameSpace'},[
@@ -381,11 +414,20 @@ export const Game = defineComponent(
                         h('div',{class:'firstPlayer'},[
                            h('div',{class:'info'},[
                            
-                            JSON.stringify(player1) !== "{}" ? h('img',{src: `${player1.picture}` === undefined ? `https://${window.env.IP}:3000/media${player1.picture}` : 
-                                `https://${window.env.IP}:3000/media${player1.avatar}`,class:'playerPicture', style : {
+                            h('img', {
+                                src: this.state.player1.picture
+                                ? `https://${window.env.IP}:3000/media${this.state.player1.picture}`
+                                : this.state.player1.avatar
+                                ? `https://${window.env.IP}:3000/media${this.state.player1.avatar}`
+                                : './images/playervs-removebg-preview.png',
+                                class:'playerPicture', style : {
                                     'object-fit': 'cover'
-                                }}) : null,
-                               h('h4',{class:'playerName'}, `${player1.username}` ===  undefined ? [player1.username] : [player1.nickname]) ]),
+                                }}),
+                               h('h4',{class:'playerName'},  [this.state.player1.nickname
+                                ? this.state.player1.nickname
+                                : this.state.player1.username
+                                ? this.state.player1.username
+                                : 'Host']) ]),
                            h('div',{class:'scoreCard'},[
                             h('h4',{},[`${this.state.player1Score}`])
                            ])
@@ -395,12 +437,21 @@ export const Game = defineComponent(
                         h('div',{class:'secondPlayer'},[
                             h('div',{class:'scoreCard'},[ h('h4',{},[`${this.state.player2Score}`])]),
                             h('div',{class:'info'},  [
-                               
-                                JSON.stringify(player2) !== "{}"? h('img',{src:`${player2.picture}` === undefined ? `https://${window.env.IP}:3000/media${player2.picture}` : 
-                                `https://${window.env.IP}:3000/media${player2.avatar}`,class:'playerPicture', style : {
+                                h('img',{ src: this.state.player2.picture
+                                    ? `https://${window.env.IP}:3000/media${this.state.player2.picture}`
+                                    : this.state.player2.avatar
+                                    ? `https://${window.env.IP}:3000/media${this.state.player2.avatar}`
+                                    : './images/playervs-removebg-preview.png',
+                                    class:'playerPicture', style : {
                                     'object-fit': 'cover'
-                                }}) : null,
-                               h('h4',{class:'playerName'},`${player2.username}` ===  undefined ? [player2.username] : [player2.nickname]) ]),
+                                }}),
+                                h('h4',{class:'playerName'},
+                                    [this.state.player2.nickname
+                                        ? this.state.player2.nickname
+                                        : this.state.player2.username
+                                        ? this.state.player2.username
+                                        : 'Guest']) 
+                            ]),
                          ])
                     ]),
                    

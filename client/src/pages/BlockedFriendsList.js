@@ -1,9 +1,7 @@
 import{ defineComponent, h,} from '../package/index.js'
 import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
-// import { Form } from '../components/settings/form.js'
 import { listBlockedFriends } from '../components/settings/listBlockedFriends.js'
-// import {SecuritySettings} from '../components/settings/Security.js'
 import { sidebarRight } from '../components/sidebar-right.js'
 
 export const BlockedFriendsList = defineComponent({

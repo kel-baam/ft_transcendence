@@ -20,11 +20,11 @@ from validate_email_address import validate_email
 # logger = logging.getLogger(__name__)
 
 class PlayerSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', required=False)
-    picture = serializers.ImageField(source='user.picture', required=False)
+    # username = serializers.CharField(source='user.username', required=False)
+    # picture = serializers.ImageField(source='user.picture', required=False)
     class Meta():
         model = Player
-        fields = '__all__'
+        fields = ['score', 'rank', 'level']
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)
@@ -34,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
     Current_password = serializers.CharField(write_only=True, required=False)
     New_password = serializers.CharField(write_only=True, required=False)
     Confirm_password = serializers.CharField(write_only=True, required=False)
+
     player = PlayerSerializer()
 
     picture = serializers.ImageField(max_length=None, required=False, allow_null=True)
@@ -50,7 +51,8 @@ class UserSerializer(serializers.ModelSerializer):
     registration_type = serializers.ChoiceField(required=False, choices=['api', 'form'])
 
     request_id = serializers.IntegerField(read_only=True, required=False,)
-
+    status = serializers.BooleanField(required=False)
+    
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
         exclude = kwargs.pop('exclude', None)
@@ -115,31 +117,33 @@ class UserSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def update(self, instance, validated_data):
-        player_data = validated_data.pop('player', {})
-        for field in validated_data:
-            setattr(instance, field, validated_data[field])
-        instance.save()
-        player = getattr(instance, 'player', None)
-        if player:
-            player.score = player_data.get('score', player.score)
-            player.rank = player_data.get('rank', player.rank)
-            player.level = player_data.get('level', player.level)
-            player.save()
-        return instance
+    # def update(self, instance, validated_data):
+    #     print(">>>>>>>>>>>>>>>> instance : ", instance.status )
+    #     print(">>>>>>>>>>>>>>>>>>>> validated_data : ", validated_data['status'])
+    #     player_data = validated_data.pop('player', {})
+    #     for field in validated_data:
+    #         setattr(instance, field, validated_data[field])
+        
+    #     instance.save()
+    #     print(">>>>>>>>>>>>>>>> instance : ", instance.status  )
+
+    #     player = getattr(instance, 'player', None)
+    #     if player:
+    #         player.score = player_data.get('score', player.score)
+    #         player.rank = player_data.get('rank', player.rank)
+    #         player.level = player_data.get('level', player.level)
+    #         player.save()
+    #     return instance
     
     def create(self, validated_data):
-        print(">>>>>>>>>>>>>> here in create fucntion ")
         player_data = validated_data.pop('player', {})
         user = User(**validated_data)
         # user.set_unusable_password()
         user.save()
-        print("----------------------> player_data : ", player_data)
         if player_data:
             player = Player.objects.create(user=user,**player_data)
             player.save()
 
-        print(">>>>>>>>>>>>>>>> user was created ||| ")
         return user
     
 
@@ -208,7 +212,19 @@ class MatchSerializer(serializers.ModelSerializer):
     player2_id = serializers.PrimaryKeyRelatedField(
         queryset=Player.objects.all(), source='player2', write_only=True
     )
-
+    created_at = serializers.DateField()
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        exclude = kwargs.pop('exclude', None)
+        super().__init__(*args, **kwargs)
+        if fields:
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+        if exclude:
+            for field_name in exclude:
+                self.fields.pop(field_name, None)
     # def validate(self, attrs):
     #     print(">>>>>>>>>> attrs : ", attrs)
     #     return attrs

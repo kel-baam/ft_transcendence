@@ -13,8 +13,7 @@ from io import BytesIO
 from django.db.models import OuterRef, Exists, Q, F
 import os
 import requests
-# import DNS
-
+from django.core.cache import cache
 
 
 class UserInfoView(APIView):
@@ -41,25 +40,36 @@ class UserInfoView(APIView):
             return Response({key: value[0] for key, value in Userserializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
 
         
-
     def put(self, request):
         try:
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
+            print(">>>>>>>>>>>>>>>>>>>>> the username : ", username )
             user_instatnce = User.objects.get(username=username)
+            user_instatnce.refresh_from_db()
+            print("*****************************> request.data : ", request.data)
             data = request.data.copy()
+            print(">>>>>>>>>>>>>>>>>> data coming : ", data)
             if 'picture' in request.FILES:
                 data['picture'] = request.FILES.get('picture', None)
+            
             userSerializer = UserSerializer(user_instatnce, data=data, partial=True)
+            print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
             if userSerializer.is_valid(raise_exception=True):
                 userSerializer.save()
+                # cache.clear()
+                # updated_user.refresh_from_db()  # Force reload directly from DB
+                update_user =  User.objects.get(username=username)
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> updated_user.status : ",  update_user.status,update_user.id)
+                user_instatnce.refresh_from_db()
+                # user_instatnce.status = data['status']
                 return Response(userSerializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in userSerializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print("------------------------> here 500 internal server : ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
-   
 
     def post(self, request):
         try:
@@ -106,12 +116,12 @@ class  UserStatsView(APIView):
             else :
                 username = request.META.get('HTTP_X_AUTHENTICATED_USER')
                 user = User.objects.get(username=username)
-            
-            matches_as_player1 = Match.objects.filter(player1=Player.objects.get(user=user), status='completed')
+
+            matches_as_player1 = Match.objects.filter(player1=Player.objects.get(user=user), status__in=['completed', 'exited'])
             player1_wins = matches_as_player1.filter(player1_score__gt=models.F('player2_score')).count()
             player1_losses = matches_as_player1.filter(player1_score__lt=models.F('player2_score')).count()
 
-            matches_as_player2 = Match.objects.filter(player2=Player.objects.get(user=user), status='completed')
+            matches_as_player2 = Match.objects.filter(player2=Player.objects.get(user=user), status__in=['completed', 'exited'])
             player2_wins = matches_as_player2.filter(player2_score__gt=models.F('player1_score')).count()
             player2_losses = matches_as_player2.filter(player2_score__lt=models.F('player1_score')).count()
             
@@ -127,6 +137,7 @@ class  UserStatsView(APIView):
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print("--------------------------> here the internal server in stats ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class MatchHistoryView(APIView):
@@ -137,19 +148,20 @@ class MatchHistoryView(APIView):
             if request.query_params.get('username', None) :
                 user = User.objects.get(username=request.query_params.get('username'))
             else :
-               
                 username = request.META.get('HTTP_X_AUTHENTICATED_USER')
                 user = User.objects.get(username=username)
             matches = Match.objects.filter(
-                (models.Q(player1=Player.objects.get(user=user)) | models.Q(player2=Player.objects.get(user=user))  
-                 & models.Q(status='completed'))
-                # & models.Q(status='completed')
+                (models.Q(player1=Player.objects.get(user=user)) | models.Q(player2=Player.objects.get(user=user)) )
+                 & (models.Q(status='completed') | models.Q(status='exited'))
             )
-            matches = MatchSerializer(matches, many=True).data
+            print("-----------------------> matches : ", matches)
+            matches = MatchSerializer(matches, many=True, fields={'player1', 'player2','player1_score',  'player2_score', 'created_at'}).data
+            print("------------>>>>>>>>>>>>>>>>>>>>>>-----------> matches : ", matches)
             return Response(matches, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print("--------------------------> here the internal server in game history  ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in matches.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
@@ -263,6 +275,7 @@ class FriendshipView(APIView):
                     request_instance.sender, request_instance.reciever = request_instance.reciever, request_instance.sender
             else:
                 request_instance = Request.objects.get(id=data['id'])
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>> the data coming : ", data)
             serializer = RequestSerializer(request_instance, data=data, partial=True,
              context={'user_type': 'both'}, fields=['id', 'sender', 'reciever', 'status'])
             if serializer.is_valid(raise_exception=True):
@@ -273,6 +286,7 @@ class FriendshipView(APIView):
         except serializers.ValidationError:
             return  Response({key: value[0] for key, value in serializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>> here the internal server happens : ", str(e))
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     #------------------ post method--------------#

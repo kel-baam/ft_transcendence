@@ -1,4 +1,4 @@
-import { createApp, defineComponent, h } from '../../package/index.js'
+import {defineComponent, h } from '../../package/index.js'
 import { header } from '../../components/header.js'
 import { sidebarLeft } from '../../components/sidebar-left.js'
 import { showErrorNotification } from '../utils/errorNotification.js'

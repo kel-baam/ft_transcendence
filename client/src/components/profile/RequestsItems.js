@@ -1,11 +1,6 @@
 import{defineComponent, h} from '../../package/index.js' 
 
 export const RequestsItems = defineComponent({
-    state()
-    {
-      return{
-      }
-    },
     render()
     {
       const {isExpanded, searchedUser} = this.props

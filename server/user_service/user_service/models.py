@@ -60,8 +60,9 @@ class Player(models.Model):
     user  = models.OneToOneField(User, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
     level = models.IntegerField(default=0)
-    rank = models.IntegerField(default=0)
-    # grade = models.CharField(_(""), max_length=50, )#silver...
+    rank  = models.IntegerField(default=0)
+    grade = models.CharField(max_length=50, null=True, blank=True, default='Newbie')
+
 
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
@@ -76,18 +77,46 @@ class Player(models.Model):
 
     def update_level(self):
         """Update the player's level based on their score."""
-        if self.score >= 1000:
-            self.level = 5
-        elif self.score >= 200:
+        if self.score >= 200:
             self.level = 4
-        elif self.score >= 150:
+        elif self.score >= 140:
             self.level = 3
-        elif self.score >= 50:
+        elif self.score >= 80:
             self.level = 2
-        else:
+        elif self.score >= 20:
             self.level = 1
+        else:
+            self.level = 0
         self.save()
+        self.unlock_badge()
 
+    def unlock_badge(self):
+        """Unlock a badge based on the player's level and update grade."""
+        badge_mapping = {
+            0: 'Newbie',
+            1: 'Bronze',
+            2: 'Silver',
+            3: 'Master',
+            4: 'Legend',
+        }
+        badge_name = badge_mapping.get(self.level)
+        if badge_name:
+            self.grade = badge_name
+            self.save()
+            try:
+                badge = Badge.objects.get(name=badge_name)
+                user_badge, created = UserBadge.objects.get_or_create(
+                    user=self.user,
+                    badge=badge,
+                    defaults={'unlock': True}
+                )
+                if not created and not user_badge.unlock:
+                    user_badge.unlock = True
+                    user_badge.save()
+            except Badge.DoesNotExist:
+                pass
+
+            
     @staticmethod
     def update_all_ranks():
         """Update ranks for all players based on their scores."""
@@ -161,7 +190,6 @@ class PlayerTournament(models.Model):
     class Meta:
         db_table    = 'PlayerTournament'
 
-
 class Match(models.Model):
     tournament    = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
     player1       = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1', null=True, blank=True)
@@ -180,12 +208,15 @@ class Match(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
+    created_at = models.DateField(auto_now_add=True)
+
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
         return f"Match: ({tournament_info})"
     
     class Meta:
         db_table = 'Match'
+
 
 class Request(models.Model):
     STATUS_CHOICES = [
@@ -206,7 +237,7 @@ class Request(models.Model):
 
 class Badge(models.Model):
     name = models.CharField(max_length=255)
-    icon = models.URLField() 
+    icon = models.URLField()
     class Meta:
         db_table = 'Badge'
     def __str__(self):
@@ -244,6 +275,7 @@ class Notification(models.Model):
     content_type   = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id      = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
+
 
     def mark_as_read(self):
         self.read_at = timezone.now()

@@ -1,6 +1,7 @@
 import{defineComponent,h} from '../../package/index.js'
    
 
+// change
 
    const TeamCards = defineComponent({
     props :{
@@ -64,9 +65,9 @@ import{defineComponent,h} from '../../package/index.js'
         return h('div',{id:"team-section"},[
             h('div',{id:"team-title"},[
                 h('h2',{},[
-                    h('span', {'data-translate': 'TEAM_HEADER'}, ["The team"]),
+                    h('span', {class:'team','data-translate': 'TEAM_HEADER'}, ["The team"]),
                     h('br',{}),
-                    h('span',{'data-translate': 'magic'},[
+                    h('span',{ class:'magic','data-translate': 'magic'},[
                         "behind the magic"
                     ])
                 ]),

@@ -36,7 +36,7 @@ import{ defineComponent, h} from '../../package/index.js'
         {
           backgroundColor : '#CBCBCB', 'border-radius' : '15px',
           width:'700px', height:'65px'
-        } : key ? {display : 'flex', justifyContent:'center'} : {}},
+        } : key ? {display : 'grid', justifyContent:'center', 'grid-template-columns' : '42% 57%'} : {}},
         [
           h('div', { class: 'picture-item' },
             [
