@@ -16,14 +16,12 @@ import{createApp, defineComponent, DOM_TYPES, h,
 
     render()
     {
-        // console.log(">>>>>>>>>>>>>>>> here ")
         const {isLoading, data, searchedUser} = this.state
         if(isLoading)
             return h('div',{ class: 'blocked-friends-container' })
         return h('div',
             { class: 'blocked-friends-container' },
             [
-                // Search Friend Section
                 h('div',
                     { class: 'search-friend' },
                     [
@@ -43,7 +41,6 @@ import{createApp, defineComponent, DOM_TYPES, h,
                             on : {
                                 input : (e) =>
                                 {
-                                    if(e.target.value.trim()!= "")
                                         this.updateState({
                                             searchedUser:e.target.value
                                         })
@@ -63,12 +60,13 @@ import{createApp, defineComponent, DOM_TYPES, h,
                     ]
                 ),
                 ...data.map((item, i ) => {
+                    console.log("--------------------------> item : ", item )
                     if ((searchedUser != "" && item.username.startsWith(searchedUser)) || searchedUser == "")
                         return h('div',{ class: 'profile-item' },
                             [
                                 h('div', {},
                                     [
-                                        h('img', {src: `https://${window.env.IP}:3000${item.user.picture}`, class: 'user-profile-pic',  
+                                        h('img', {src: `https://${window.env.IP}:3000${item.picture}`, class: 'user-profile-pic',  
                                         style : {
                                             'object-fit': 'cover'  
                                         },
@@ -84,8 +82,8 @@ import{createApp, defineComponent, DOM_TYPES, h,
                                             [
                                                 h('h1', {style : {'width': '250px','max-width' : '250px',
                                                     'white-space': 'nowrap','overflow': 'hidden','text-overflow':' ellipsis'}}, 
-                                                    [`${item.user.first_name}` + ' ' + `${item.user.last_name}`]),
-                                                h('h2', {}, ['@'+ `${item.user.username}`]),
+                                                    [`${item.first_name}` + ' ' + `${item.last_name}`]),
+                                                h('h2', {}, ['@'+ `${item.username}`]),
                                             ]
                                     ),
                                 h('div',{},
@@ -93,26 +91,26 @@ import{createApp, defineComponent, DOM_TYPES, h,
                                             h('i', {class: 'fa-solid fa-unlock', style: {'color': '#14397C'}, on : {
                                                 click : () =>
                                                 {
+                                                    console.log("----------------------------> item.id : ", item.requet_id)
                                                     customFetch(`https://${window.env.IP}:3000/api/user/friendships?id=${item.id}`, 
-                                                        {
-                                                            method : 'DELETE'
-                                                        }
+                                                    {
+                                                        method : 'DELETE'
+                                                    }
                                                     )
                                                     .then(result =>{
 
                                                         if (!result.status == 401)
-                                                        {
-                                                            console.log("res isn't okey ," , " | ", this)
                                                             this.appContext.router.navigateTo('/login')
-                                                        }
                                                         if (result.status == 204)
+                                                        {
                                                             data.splice(i, 1)
-                                                        console.log("res is okey")
-                                                        this.updateState({
-                                                            isLoading: false,  
-                                                            data: data,   
+                                                            console.log("res is okey")
+                                                            this.updateState({
+                                                                isLoading: false,  
+                                                                data: data,   
                                                         });
-                                                        // allUsers = data
+
+                                                        }
                                                     })
                                                 }
                                             }})

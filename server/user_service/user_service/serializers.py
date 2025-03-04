@@ -24,13 +24,13 @@ class PlayerSerializer(serializers.ModelSerializer):
     # picture = serializers.ImageField(source='user.picture', required=False)
     class Meta():
         model = Player
-        fields = ['score', 'rank', 'level']
+        fields = ['score', 'rank', 'level', 'grade']
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)
     rank = serializers.IntegerField(source='player.rank', read_only = False,required=False)
     level = serializers.FloatField(source='player.level', read_only = False,required=False)
-
+    grade = serializers.CharField(source='player.grade', required=False)
     Current_password = serializers.CharField(write_only=True, required=False)
     New_password = serializers.CharField(write_only=True, required=False)
     Confirm_password = serializers.CharField(write_only=True, required=False)
@@ -50,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     registration_type = serializers.ChoiceField(required=False, choices=['api', 'form'])
 
-    request_id = serializers.IntegerField(read_only=True, required=False,)
+    request_id = serializers.IntegerField(read_only=True, required=False)
     status = serializers.BooleanField(required=False)
     
     def __init__(self, *args, **kwargs):
@@ -178,12 +178,15 @@ class UserSerializer(serializers.ModelSerializer):
                 ).first().status == "pending":
                 return "recieved"
             elif Request.objects.filter(
-                Q(sender=logged_in_user, reciever=obj) | 
+                Q(sender=logged_in_user, reciever=obj)).first() is not None and \
+                Request.objects.filter(
+                Q(sender=logged_in_user, reciever=obj)).first().status == "blocked":
+                return "blocked"
+            elif Request.objects.filter(
                 Q(sender=obj, reciever=logged_in_user)).first() is not None and \
                 Request.objects.filter(
-                Q(sender=logged_in_user, reciever=obj) | 
                 Q(sender=obj, reciever=logged_in_user)).first().status == "blocked":
-                return "blocked"
+                return ""
             elif Request.objects.filter(
                 Q(sender=logged_in_user, reciever=obj) | 
                 Q(sender=obj, reciever=logged_in_user)).first() is not None and \

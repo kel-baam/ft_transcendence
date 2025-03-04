@@ -116,12 +116,11 @@ export const Security = defineComponent(
                             on : {
                                 submit : (event)=>
                                 {
-                                    console.log(">>>>>>>>>>>>>>>>>>> here the event click : ")
                                     event.preventDefault()
                                                              
-                                for (let [key, value] of formData.entries()) {
-                                    console.log(`${key}:`, value);
-                                }
+                                // for (let [key, value] of formData.entries()) {
+                                //     console.log(`${key}:`, value);
+                                // }
                                 customFetch(`https://${window.env.IP}:3000/api/user/`, {
                                     method : 'PUT',
                                     headers: {
@@ -141,13 +140,10 @@ export const Security = defineComponent(
                                         return result.json().then(errs => {
                                             document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                             for (const [field, messages] of Object.entries(errs)) {
-                                                console.log(">>>>>>>>>>>>>>>>>> here  : ", `${field}_error`)
                                                 const errorElement = document.getElementById(`${field}_error`);
                                                 if (errorElement) {
-                                                    console.log(">>>>>>>>>>>>>>> here the element", errorElement)
                                                     errorElement.style.color = '#D44444'
                                                     errorElement.textContent = '* ' + messages;
-                                                    console.log(">>>>>>>>>>>>> errorElement.textContent : ", errorElement.textContent)
                                                 }
                                             }
                                             throw new Error(`HTTP Error: ${result.status}`); // To exit the chain
@@ -156,8 +152,6 @@ export const Security = defineComponent(
                                     return result.json()
                                 })
                                 .then(res =>{
-                                    console.log("res is okey")
-                                    console.log(">>>>>>>>>>>>>>>>>>>>> res here : ", res)
                                     document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                     fetch(`https://${window.env.IP}:3000/auth/logout/`,{
                                         method:'POST',

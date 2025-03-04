@@ -1,21 +1,12 @@
 import{defineComponent,h} from '../../package/index.js'
 import { customFetch } from '../../package/fetch.js'
 
-// const statusIcons = {
-//     sent: { icon: '<i class="fa fa-user-clock"></i>', action: "Cancel Request" },  // Request sent, waiting for acceptance
-//     received: { icon: '<i class="fa fa-user-check"></i>', action: "Accept / Decline" }, // Request received
-//     blocked: { icon: '<i class="fa fa-user-slash"></i>', action: "Unblock User" },  // User is blocked
-//     accepted: { icon: '<i class="fa fa-user-friends"></i>', action: "Remove Friend" }, // Already friends
-//     none: { icon: '<i class="fa fa-user-plus"></i>', action: "Send Request" }, // No relationship (send request)
-// };
 
 export const UserCard = defineComponent({
     state(){
         return {
             isLoading : true,
-            isOwn : true,
             data : {
-                
             },
 
         }
@@ -24,6 +15,15 @@ export const UserCard = defineComponent({
     render(){
 
         const {data, isLoading} = this.state
+        const grades = new Map([
+            ['Newbie',  '#808080'],
+            ['Bronze' , '#CD7F32'],
+            ['Silver', '#C0C0C0'],
+            ['Master', '#0000FF'],
+            ['Legend', '#FF0000']
+        ])
+        // console.log("******************************> data : ", data)
+        // console.log("********************************** grades[data.grade]",grades.get(data.grade))
         const {key} = this.props
         if (isLoading) 
             return h('div', { class: 'infos-user-container' });
@@ -88,53 +88,104 @@ export const UserCard = defineComponent({
                             `${data.relationship_status}` === 'no_request' ? h('i', {class : 'fas fa-user-plus',
 
                                 style : {'font-size' : '20px', color : '#5293CB' ,
-                                     position : 'absolute', left : '85%',
+                                     position : 'absolute', left : '83.5%',
                                      },
                                      'data-text': 'Invite User',
                                 on : {
-                                    click : ()=> this.sendRequest()
+                                        mouseover :()=>
+                                        {
+                                            const popup = document.getElementsByClassName("relation-txt")[0];
+                                            popup.textContent="Add"
+                                            popup.classList.toggle("show");
+                                        },
+                                        mouseout :()=>
+                                        {
+                                            const popup = document.getElementsByClassName("relation-txt")[0];
+                                            popup.classList.remove("show");
+                                        },
+                                        click : ()=> this.sendRequest()
                                 }
                             }) : `${data.relationship_status}` === 'sent' ? 
                             h('i', {class : 'fa fa-user-clock',
                                 style : {'font-size' : '20px', color : '#5293CB' , 
-                                    position : 'absolute', left : '85%'},
+                                    position : 'absolute', left : '83.5%'},
                                 'data-text': 'Pending Request',
                                 on : {
-                                    // click :()=>{
-
-                                    // }
+                                        mouseover :()=>
+                                        {
+                                            const popup = document.getElementsByClassName("relation-txt")[0];
+                                            popup.classList.toggle("show");
+                                            popup.textContent = "Cancel"
+                                        },
+                                        mouseout :()=>
+                                        {
+                                            const popup = document.getElementsByClassName("relation-txt")[0];
+                                            popup.classList.remove("show");
+                                        },
+                                        click : ()=>this.cancelRequest(data.username)
                                 } 
                                 }) : 
-                                `${data.relationship_status}` === 'accepted' ?  h('i', {class : 'fa fa-user-friends',
+                                `${data.relationship_status}` === 'accepted' ?  h('i', {class : 'fa fa-user-slash',
                                     style : {'font-size' : '20px', color : '#5293CB' , 
-                                        position : 'absolute', left : '85%'},
-                                        'data-text': 'Block User',
+                                        position : 'absolute', left : '83.5%'},
                                         on : {
-                                            // click : ()=>this.changeRelationshipStatus('pending')
+                                                mouseover : ()=>
+                                                {
+                                                    const popup = document.getElementsByClassName("relation-txt")[0];
+                                                    popup.classList.toggle("show");
+                                                    popup.textContent="Block"
+                                                },
+                                                mouseout :()=>
+                                                {
+                                                    const popup = document.getElementsByClassName("relation-txt")[0];
+                                                    popup.classList.remove("show");
+                                                },
+                                            click : ()=>this.changeRelationshipStatus('blocked')
                                         }
                                         }): `${data.relationship_status}` === 'recieved' ?  h('i', {class : 'fa fa-user-check',
-                                    style : {'font-size' : '20px', color : '#5293CB' , 
-                                        position : 'absolute', left : '85%'},
-                                        'data-text': 'Block User',
-                                        on : {
-                                            // click : ()=>this.changeRelationshipStatus('blocked')
-                                        }
-                                        }):`${data.relationship_status}` === 'blocked' ?  h('i', {class : "fa fa-user-slash",
                                         style : {'font-size' : '20px', color : '#5293CB' , 
-                                        position : 'absolute', left : '85%'},
-                                        'data-text': 'Block User',
+                                        position : 'absolute', left : '83.5%'},
                                         on : {
-                                            // click : ()=>this.changeRelationshipStatus('blocked')
+                                            mouseover : ()=>
+                                            {
+                                                const popup = document.getElementsByClassName("relation-txt")[0];
+                                                popup.classList.toggle("show");
+                                                popup.textContent="Accept"
+                                            },
+                                            mouseout :()=>
+                                            {
+                                                const popup = document.getElementsByClassName("relation-txt")[0];
+                                                popup.classList.remove("show");
+                                            },
+                                            click : ()=>this.changeRelationshipStatus('accepted')
                                         }
-                                        }):null
-                        ] )]
+                                        }):`${data.relationship_status}` === 'blocked' ?  h('i', {class : "fa-solid fa-unlock",
+                                        style : {'font-size' : '20px', color : '#5293CB' , 
+                                        position : 'absolute', left : '83.5%'},
+                                        on : {
+                                            mouseover : ()=>
+                                            {
+                                                const popup = document.getElementsByClassName("relation-txt")[0];
+                                                popup.classList.toggle("show");
+                                                popup.textContent="Unblock"
+                                            },
+                                            mouseout :()=>
+                                            {
+                                                const popup = document.getElementsByClassName("relation-txt")[0];
+                                                popup.classList.remove("show");
+                                            },
+                                            click : ()=>this.cancelRequest(data.username)
+                                        }
+                                        }):null,
+                                        h('span', {class:'relation-txt' }, [""])
+                        ] 
+                    )]
                 
                 ),
                 h('div', {},
                     [h('div', {},
                         [
-                            // h('span', {},[ `${data.level}` + 'Xps']),
-                            h('span', {},[ `${data.level}` + 'xps']),
+                            h('span', {},[ `${data.level}` + 'Xps']),
 
                         h('div', {},
                             [
@@ -159,7 +210,7 @@ export const UserCard = defineComponent({
                             h('div', { style: {color: '#FBCA35',fontSize: '16px' }, class: 'achievement-item' },
                                 [
                                     h('img', { src: 'images/ach.png' }),
-                                    h('span', {}, ['Silver'])
+                                    h('span', {style :{color : grades.get(data.grade)}}, [`${data.grade}`])
                                 ]
                             )
                         ]
@@ -173,9 +224,9 @@ export const UserCard = defineComponent({
     onMounted()
     {
         const {key, on} = this.props
-        const  endPoint  = !key ? `https://${window.env.IP}:3000/api/user?fields=first_name,last_name,username,picture,score,rank,level`:
+        const  endPoint  = !key ? `https://${window.env.IP}:3000/api/user?fields=first_name,last_name,username,picture,score,rank,level,grade`:
         `https://${window.env.IP}:3000/api/user?username=${key}&
-            fields=first_name,last_name,username,picture,score,rank`
+            fields=first_name,last_name,username,picture,score,rank,level,grade`
        
         customFetch(endPoint)
         .then(result =>{
@@ -215,22 +266,11 @@ export const UserCard = defineComponent({
         }
        )
         .then(result =>{
-
-            // if (!result.ok)
-            // {
-            //     // console.log("res isn't okey ," , " | ", this)
-                
-            //     this.appContext.router.navigateTo('/login')
-            // }
             switch(result.status)
             {
                 case 401:
                     this.appContext.router.navigateTo('/login')
                     break;
-                // case 404:
-                //     console.log(">>>>>>>----------- 404 >>>>>> here ")
-                //     h('h1', {}, ['404 not found'])
-                //     break;
             }
             return result.json()
         })
@@ -260,19 +300,22 @@ export const UserCard = defineComponent({
                 status : 'pending'
             })
         }).then((res)=>
-        {
+        {   
+            if (res.status == 401)
+                this.appContext.router.navigateTo("/login")
             if (res.status == 201)
                 this.updateState({
-                        data : {
-                            ...this.state.data,
-                            relationship_status : 'sent'
-                        }
-                    
-            })
+                    data : {
+                        ...this.state.data,
+                        relationship_status : 'sent'
+                    },
+                })
         })
     },
     changeRelationshipStatus(status)
     {
+        const {data} = this.state
+        console.log(">>>>>>>>>>>>>>>>>>>>>> data is here : ", data.username)
         customFetch(`https://${window.env.IP}:3000/api/user/friendships`, {
             method : 'PUT',
             headers: {
@@ -280,7 +323,7 @@ export const UserCard = defineComponent({
               },
             body : JSON.stringify({
                 target: data.username,
-                status : status
+                status : status,
             })
         }).then((res)=>
         {
@@ -295,6 +338,30 @@ export const UserCard = defineComponent({
 
             }
         })
+    },
+    cancelRequest(target)
+    {
+        customFetch(`https://${window.env.IP}:3000/api/user/friendships?target=${target}`, 
+            {
+                method : 'DELETE'
+            }
+        )
+            .then(result =>{
+
+                if (!result.status == 401)
+                    this.appContext.router.navigateTo('/login')
+                if (result.status == 204)
+                {
+                    console.log("-------------------------> here ")
+                    this.updateState({
+                        data:{
+                            ...this.state.data, 
+                            relationship_status: "no_request"
+                        }
+                    });
+
+                }
+            })
     }
 
 

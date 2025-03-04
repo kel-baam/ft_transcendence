@@ -64,3 +64,15 @@ put in plac of the leaderboard and top 5 the content when no user play a match
 => fix when the player exits in online pvp images, nickname
 
 => if the match exists and type is online so the match shold not found not exited (tested with local match)
+
+=> if the id without id redirect in game then set match not found id=
+
+=> fix the the click on home icon (navigate to landing page )
+
+id= should fixed when redirect to game then get match not found
+
+=> not found redirect 404 component not found 
+=> tournament not found 
+
+=> fix the rank leaderboad 
+

@@ -87,7 +87,7 @@ class NotificationSerializers(serializers.ModelSerializer):
         fields  = '__all__'
 
 class MatchSerializer(serializers.ModelSerializer):
-    created_at = serializers.DateField()
+    created_at = serializers.DateField(read_only=True)
     class Meta:
         model = Match
         fields = '__all__'
