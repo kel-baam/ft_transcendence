@@ -61,7 +61,7 @@ class Player(models.Model):
     score = models.IntegerField(default=0)
     level = models.IntegerField(default=0)
     rank  = models.IntegerField(default=0)
-    grade = models.CharField(max_length=50, null=True, blank=True, default='Newbie')
+    grade = models.CharField(max_length=50, null=True, blank=True, default='Newbie')#correct it 
 
 
     def __str__(self):
@@ -109,7 +109,7 @@ class Player(models.Model):
                     user=self.user,
                     badge=badge,
                     defaults={'unlock': True}
-                )
+                )#here create
                 if not created and not user_badge.unlock:
                     user_badge.unlock = True
                     user_badge.save()
@@ -208,7 +208,7 @@ class Match(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
-    created_at = models.DateField(auto_now_add=True)  # When the match is created
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"

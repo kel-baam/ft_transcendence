@@ -234,13 +234,13 @@ export const Game = defineComponent(
                     
                     if(data.action && data.action == "init_game")
                     {
-                        draw_game(data);
                         if(data.player)
                             this.updateState({player:data.player,player1Score:data.player1Score,player2Score:data.player2Score, 
-                                player1: data.player1, player2:data.player2})
+                            player1: data.player1, player2:data.player2})
                         else
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
-                                player1: data.player1, player2:data.player2})
+                            player1: data.player1, player2:data.player2})
+                        draw_game(data);
                     }
 
                     
@@ -340,6 +340,8 @@ export const Game = defineComponent(
 
                     if (data.action && data.action === "match_exited")
                     {
+                        this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
+                            player1: data.player1, player2:data.player2})
                         this.announce_winner('You Lose!');
 
                         if (socket) {

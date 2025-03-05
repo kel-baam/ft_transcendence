@@ -145,6 +145,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     await self.send(text_data=json.dumps({
                                         "action"     : "match_exited",
                                         "redirect_to": self.redirect_to,
+                                        'player1' : UserSerializer(self.player1, fields={'id', 'username', 'picture'}).data,
+                                        'player2' : UserSerializer(self.player2, fields={'id', 'username', 'picture'}).data,
+                                        'player1Score': match_instance.player1_score ,
+                                        'player2Score': match_instance.player2_score,
                                         "message"    : "You're exited this match."
                                     }))
                                     return
@@ -529,15 +533,22 @@ class GameConsumer(AsyncWebsocketConsumer):
             print(f"An error occurred while updating player scores: {e}")
             raise
 
+    
     def ball_paddle_collison(self):
 
+        leftY_center = self.paddle1Y + self.paddleHeight / 2
+        rightY_center = self.paddle2Y + self.paddleHeight / 2
+
+        left_dy = abs(self.ballY - leftY_center)
+        right_dy = abs(self.ballY - rightY_center)
+
         if self.ballX - self.radius <= self.paddle1X + self.paddleWidth:
-            if self.paddle1Y <= self.ballY <= self.paddle1Y + self.paddleHeight:
+            if left_dy <= self.radius + self.paddleHeight / 2:
                 self.speedXBall *= -1
                 self.ballX = self.paddle1X + self.paddleWidth + self.radius
 
         if self.ballX + self.radius >= self.tableWidth - self.paddleWidth:
-            if self.paddle2Y <= self.ballY <= self.paddle2Y + self.paddleHeight:
+            if right_dy <= self.radius + self.paddleHeight / 2:
                 self.speedXBall *= -1
                 self.ballX = self.tableWidth - self.paddleWidth - self.radius
     

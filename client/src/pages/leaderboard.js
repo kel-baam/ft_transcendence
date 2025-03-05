@@ -52,7 +52,7 @@ import { customFetch } from '../package/fetch.js'
                 h("div", {}, [h("p", {}, [name])]),
                 h("div", {}, [h("p", {}, [score])]),
                 h("div", {}, [h("p", {}, [level])]),
-                h("div", {}, [h("img", { src: badgeSrc })])
+                // h("div", {}, [h("img", { src: badgeSrc })])
             ]
         );
         },
@@ -115,9 +115,7 @@ import { customFetch } from '../package/fetch.js'
                                             h('div',{},[
                                                 h('p',{},['Level']),
                                             ]),
-                                            h('div',{},[
-                                                h('p',{},['Badge']),
-                                            ]),
+                    
                                         ]),
                                         h('div',{class:'info'},
                                                 data.map((player, index) => {

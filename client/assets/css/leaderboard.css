@@ -124,15 +124,18 @@
     width: 900px;
     height: 45px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    justify-content: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-content:space-evenly;
     background-color: #FFEEBF;
+    
+    /* border: 1px solid red; */
 }
 
 .first-row{
     border-radius: 10px 10px 0 0;
     width: 900px;
     background-color: #D0D2D9;
+    
 }
 .space p{
     font-family: myFont;
