@@ -1,8 +1,10 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString}  from '../../package/index.js'
+import{defineComponent,h}  from '../../package/index.js'
 
 import { header }               from '../../components/header.js'
 import { sidebarLeft }          from '../../components/sidebar-left.js'
+import { sidebarRight } from '../../components/sidebar-right.js'
+import { customFetch } from '../../package/fetch.js'
+import { showErrorNotification } from '../utils/errorNotification.js'
 
 export const PlayerVsPlayer = defineComponent({
     state(){
@@ -12,10 +14,10 @@ export const PlayerVsPlayer = defineComponent({
             notification_data: null,
         }
     },
+
     onMounted()
     {
       const userIcon = document.getElementById('pvp-icon');
-    //   console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
   
       if (userIcon) {
           userIcon.style.color = "#F45250";
@@ -25,17 +27,20 @@ export const PlayerVsPlayer = defineComponent({
           userIcon.style.transition = "0.5s";
       }
     },
+
     async submitForm(event) {
         event.preventDefault();
+
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
+                method      : 'PUT',
+                body        : formData,
+                credentials : 'include',
             });
 
             if (!response.ok) {
@@ -45,10 +50,10 @@ export const PlayerVsPlayer = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            
             this.updateState({
                 isBlur: false,
             })
@@ -163,8 +168,12 @@ export const PlayerVsPlayer = defineComponent({
                         ]),
                         h('button', { type: 'submit' }, ['Submit'])
                     ])
-                ]) : null
-            ]) 
+                ]) : null,
+                h('div', { class: 'friends-bar' }, [
+                    h(sidebarRight, {})
+                ]),
+            ])
+              
         ])
     }                    
 })

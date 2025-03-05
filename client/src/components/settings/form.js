@@ -95,8 +95,8 @@ export const Form = defineComponent({
                                 return result.json()
                             })
                             .then(res =>{
-                                // console.log("res is okey")
-                                // console.log(">>>>>>>>>>>>>>>>>>>>> res here : ", res)
+                                console.log("res is okey")
+                                console.log(">>>>>>>>>>>>>>>>>>>>> res here : ", res)
                                 document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                 this.updateState({
                                         isLoading: false,  
@@ -259,7 +259,7 @@ export const Form = defineComponent({
 
             if (!result.status == 401)
             {
-                // console.log("res isn't okey ," , " | ", this)
+                console.log("res isn't okey ," , " | ", this)
                 
                 this.appContext.router.navigateTo('/login')
             }
@@ -267,7 +267,8 @@ export const Form = defineComponent({
             return result.json()
         })
         .then(res =>{
-            // console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
+            console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
+            console.log("res is okey")
             this.updateState({
                     isLoading: false,  
                     data: res,   
@@ -281,6 +282,8 @@ export const Form = defineComponent({
                 data: {},   
                 errors: this.state.errors  
             });
+            // for()
+            console.log(">>>>>>>>>>>> error : ", errors)
         })
       
     }

@@ -14,30 +14,20 @@ export const Tournament = defineComponent({
             isBlur             : false,
         }
     },
-    onMounted()
-    {
-      const userIcon = document.getElementById('tournament-icon');
-    //   console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
-  
-      if (userIcon) {
-          userIcon.style.color = "#F45250";
-          userIcon.style.transform = "scale(1.1)";
-          userIcon.style.webkitTransform = "scale(1.1)";
-          userIcon.style.filter = "blur(0.5px)";
-          userIcon.style.transition = "0.5s";
-      }
-    },
+
     async submitForm(event) {
         event.preventDefault();
+
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
+                method      : 'PUT',
+                body        : formData,
+                credentials : 'include',
             });
 
             if (!response.ok) {
@@ -47,10 +37,28 @@ export const Tournament = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
+            
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            this.updateState({
+                isBlur: false,
+            })
+        }
+    },
+
+    onMounted ()
+    {
+        
+        const userIcon = document.getElementById('tournament-icon');
+  
+        if (userIcon)
+        {
+            userIcon.style.color = "#F45250";
+            userIcon.style.transform = "scale(1.1)";
+            userIcon.style.webkitTransform = "scale(1.1)";
+            userIcon.style.filter = "blur(0.5px)";
+            userIcon.style.transition = "0.5s";
         }
     },
 

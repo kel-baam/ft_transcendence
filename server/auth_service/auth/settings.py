@@ -17,7 +17,8 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+USE_L10N = False  # Disable localization to use custom formats
+DATE_INPUT_FORMATS = ['%m-%d-%Y'] 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -232,16 +233,14 @@ CORS_ALLOW_CREDENTIALS = True
 # pip install pyjwt
 # CSRF_COOKIE_SAMESITE = 'None'
 CSRF_TRUSTED_ORIGINS = [
-    'https://localhost:3000',
-    "https://10.14.4.2:3000",
-    # 'http://127.0.0.1:3000',
+    'http://10.14.3.1:3000',
+    'http://127.0.0.1:3000',
 
-
-
-    # "ws://10.14.3.1:8000",
-    # "http://10.14.3.1:8000",
-    # "http://10.14.3.1:3000",
-    # "http://10.14.3.1:8000",
+    "http://10.14.3.1:8000",
+    "ws://10.14.3.1:8000",
+    "http://10.14.3.1:8000",
+    "http://10.14.3.1:3000",
+    "http://10.14.3.1:8000",
 
 
 ]

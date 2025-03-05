@@ -83,9 +83,9 @@ export const SocialCard = defineComponent({
                 h('input', { type: 'text', placeholder: 'Search...', value : `${searchedUser}`,on :{
                   input : (e) => {
                   console.log("********************> target : ", e.target.value)
-                  if (e.target.event.trim() != "")
+                  const value = e.target.value
                     this.updateState({
-                      searchedUser: e.target.value
+                      searchedUser: value
                     })
                 }} }), 
             ]),

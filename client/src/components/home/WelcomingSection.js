@@ -12,7 +12,13 @@ export const WelcomingSection = defineComponent({
 
     render(){
         const {isLoading, data} = this.state
-        // console.log("-------------------------> data : ", data)
+        const grades = new Map([
+            ['Newbie',  '#808080'],
+            ['Bronze' , '#CD7F32'],
+            ['Silver', '#C0C0C0'],
+            ['Master', '#0000FF'],
+            ['Legend', '#FF0000']
+        ])
         if (isLoading)
             return h('div', { class: 'welcoming-section' })
         return (h('div', { class: 'welcoming-section' }, [
@@ -33,7 +39,7 @@ export const WelcomingSection = defineComponent({
                 ]),
                 h('div', { class: 'acheivement' }, [
                     h('img', { src: './images/ach.png' }),
-                    h('h1', {}, ['Silver'])
+                    h('h1', {style : {color : grades.get(data.grade)}}, [`${data.grade}`])
                 ])
             ]),
             h('img', {
@@ -44,12 +50,11 @@ export const WelcomingSection = defineComponent({
     },
     onMounted()
     {
-        customFetch(`https://${window.env.IP}:3000/api/user?fields=score,rank`)
+        customFetch(`https://${window.env.IP}:3000/api/user?fields=score,rank,grade`)
         .then(result =>{
 
             if (!result.ok)
             {
-                // console.log("res isn't okey ," , " | ", this)
                 
                 this.appContext.router.navigateTo('/login')
             }
@@ -57,8 +62,6 @@ export const WelcomingSection = defineComponent({
             return result.json()
         })
         .then(res =>{
-            // console.log("res is okey")
-            // console.log(">>>>>>>>>>>>>>>> here the data----> comes from backend : ", res)
             this.updateState({
                     isLoading: false,  
                     data: res,   

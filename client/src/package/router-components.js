@@ -33,8 +33,6 @@ export const RouterOutlet = defineComponent({
       const subscription = this.appContext.router.subscribe(({ to }) => {
         this.handleRouteChange(to)
       })
-      // console.log("************************** this.appContext.router ", this.appContext.router)
-      // this.updateState({ subscription , isLoading:false })
     },
   
     onUnmounted() {
@@ -49,15 +47,10 @@ export const RouterOutlet = defineComponent({
     },
   
     render() {
-      if (this.state.isLoading)
-        return h('h1', {}, ['is loading..........'])
-      const { matchedRoute } = this.state
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>> ")
-      // return h('div', { id: 'global' }, [
-      //   matchedRoute ? h(matchedRoute.component) : null,
-      // ])
-
-      // console.log("----------------****************-----------------------> this.appContext.router.params ", this.appContext.router.params)
+      const { matchedRoute, isLoading } = this.state
+      if (isLoading)
+        return h('div', {id : 'global'}, [''])
+     
       if (matchedRoute.path === '/user/:username')
         return h(matchedRoute.component, {key: this.appContext.router.params.username})
       return h(matchedRoute.component, {})

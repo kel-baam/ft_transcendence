@@ -3,8 +3,7 @@ import{defineComponent,h} from '../package/index.js'
 import { showErrorNotification } from '../package/utils.js'
 
 import { showSuccessNotification } from '../package/utils.js'
-import { NotFound } from '../components/errorPages/404.js'
-// change
+
 export const ResetPassword = defineComponent({
     state(){
         return {
@@ -87,7 +86,7 @@ export const ResetPassword = defineComponent({
     render(){
 
         if (this.state.errors == "page not found")
-            return h(NotFound, {})
+            return h('h1', {}, ["404 game not found !!!"])
         return h('div',{id:"global"},[
             h('div',{class:"login-page-content"},[
                 h('div',{class:'top'},[

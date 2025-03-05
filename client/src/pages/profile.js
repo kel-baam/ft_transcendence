@@ -9,17 +9,9 @@ import { GameHistoryCard } from '../components/profile/GameHistoryCard.js'
 import { SocialCard } from '../components/profile/SocialCard.js'
 import {sidebarRight} from '../components/sidebar-right.js'
 import { customFetch } from '../package/fetch.js'
+import { NotFound } from '../components/errorPages/404.js'
+import { showErrorNotification } from './utils/errorNotification.js'
 
-// import { createApp, defineComponent, h } from '../package/index.js'
-// import { header } from '../components/header.js'
-// import { sidebarLeft } from '../components/sidebar-left.js'
-// import { UserCard } from '../components/profile/UserCard.js'
-// import { UserWinRate } from '../components/profile/UserWinRate.js'
-// import { UserAchievementsCard } from '../components/profile/UserAchievementsCard.js'
-// import { GameHistoryCard } from '../components/profile/GameHistoryCard.js'
-// import { SocialCard } from '../components/profile/SocialCard.js'
-// import { sidebarRight } from '../components/sidebar-right.js'
-// import { customFetch } from '../package/fetch.js'
 
 export const Profile = defineComponent({
   state() {
@@ -41,7 +33,7 @@ export const Profile = defineComponent({
     event.preventDefault();
     const formData = new FormData(event.target);
     formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
-    // console.log("submit form ", this.state.notification_data.object_id);
+    console.log("submit form ", this.state.notification_data.object_id);
     formData.append('status', 'accepted');
 
     try {
@@ -58,7 +50,7 @@ export const Profile = defineComponent({
       }
 
       const successData = await response.json();
-      // console.log("Player added:", successData.message);
+      console.log("Player added:", successData.message);
       this.updateState({
         notif_blur: false,
       });
@@ -70,66 +62,55 @@ export const Profile = defineComponent({
     }
   },
 
-   onMounted() {
+   async onMounted() {
 
-    const userIcon = document.getElementById('user-icon');
+    // const userIcon = document.getElementById('user-icon');
     // console.log("on mounted i hommme==>",document); // Check if the element is selected
 
-    if (userIcon) {
-        userIcon.style.color = "#F45250";
-        userIcon.style.transform = "scale(1.1)";
-        userIcon.style.webkitTransform = "scale(1.1)";
-        userIcon.style.filter = "blur(0.5px)";
-        userIcon.style.transition = "0.5s";
-    }
-    // console.log(".>>>>>>>>>>>>>>>................... here ")
-  const key = this.props.username
+    // if (userIcon) {
+    //     userIcon.style.color = "#F45250";
+    //     userIcon.style.transform = "scale(1.1)";
+    //     userIcon.style.webkitTransform = "scale(1.1)";
+    //     userIcon.style.filter = "blur(0.5px)";
+    //     userIcon.style.transition = "0.5s";
+    // }
+  // var storedLanguage = localStorage.getItem('language');
+  // if (!storedLanguage)
+  //   storedLanguage = 'en'
+  // document.querySelectorAll("data-translate").forEach(element => {
+  //     const key = element.getAttribute("data-translate");
+  //     element.textContent = translations[storedLanguage][key];
+  //     })
+  const {key} = this.props
     if (key) {
-      // try {
-      //   const result = await customFetch(`https://${window.env.IP}:3000/api/user?username=${key}`);
-      //   if (result.status === 404) {
-      //     this.updateState({ userExists: false,isLoading: false });
-      //   }
-      //   else
-      //   {
-      //     this.updateState({ isLoading: false });
-          customFetch(`https://${window.env.IP}:3000/api/user?username=${key}`)
-          .then(res=>
-          {
-            if (res.status === 404)
-              this.updateState({ userExists: false,isLoading: false });
-            else
-            this.updateState({ isLoading: false });
-          }
-          )
-        }
-    //   } catch (error) {
-    //     console.error("Error fetching user:", error);
-    //     // this.updateState({ error: 'Failed to fetch user data', userExists: false });
-    //   }
-    // }
-    // else
-    // {
-      this.updateState({ isLoading: false });
+      try {
+        const result = await customFetch(`https://${window.env.IP}:3000/api/user?username=${key}`);
 
-    // }
+        if (result.status === 404) 
+          this.updateState({ userExists: false,isLoading: false });
+  
+        else
+          this.updateState({ isLoading: false });
+        }
+      catch (error) {
+        console.error("Error fetching user:", error);
+        // this.updateState({ error: 'Failed to fetch user data', userExists: false });
+      }
+    }
+    else
+      this.updateState({ isLoading: false })
 
   },
 
   render() {
     const { userExists, isBlured, Expanded, activateSection, isLoading, error } = this.state;
-    // console.log("*******************-------------------**************** username : ", this.props)
-    const key = this.props.username;
-    // Loading and error handling
+    const {key} = this.props;
     if (isLoading) {
-      return h('div', { class: 'global' }, ['Loading...']);
+      return h('div', { class: 'global' }, ['is Loading...']);
     }
 
-    else if (!userExists) {
-      return h('div', { class: 'error' }, [
-        'User not found or an error occurred. Please try again later.'
-      ]);
-    }
+    else if (!userExists) 
+        return h(NotFound, {})
 
     return h('div', { id: 'global' }, [
       h(header, {
@@ -145,10 +126,11 @@ export const Profile = defineComponent({
             });
           },
         },
+        key:'header'
       },
     ),
       h('div', { class: 'content' }, [
-        h(sidebarLeft, { key: 'side-bar' }),
+        h(sidebarLeft, { key: 'left-bar' }),
         h('div', { class: 'global-content' }, [
           h('div', {
             class: 'profile-container',

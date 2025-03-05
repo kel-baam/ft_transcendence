@@ -36,7 +36,6 @@ class TournamentAPIView(APIView):
             players = []
 
             for key in request.data:
-                print("Processing key:", key)
                 if key.startswith('player'):
                     index = int(key[6]) - 1
 
@@ -71,8 +70,6 @@ class TournamentAPIView(APIView):
         except serializers.ValidationError:
             if tournament:
                 tournament.delete()
-
-            print("++++++++++++++++++++++++++++++++++++", serializer.errors)
             
             if isinstance(serializer.errors, list):
                 errors = {key: value[0] if isinstance(value, list) and value else value
@@ -85,8 +82,6 @@ class TournamentAPIView(APIView):
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
-            
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", e)
 
             if tournament:
                 tournament.delete()

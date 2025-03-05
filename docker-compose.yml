@@ -20,6 +20,7 @@ services:
       - "6380:6379"
     networks:
       - app_network
+      
   client-service:
     build: ./client
     container_name: client-service

@@ -7,7 +7,6 @@ import { customFetch } from './package/fetch.js';
 import { Register } from './pages/register.js';
 import { Home } from './pages/home.js';
 import { Leaderboard } from './pages/leaderboard.js';
-// import { settings } from './pages/settings.js';
 import { Profile } from './pages/profile.js';
 import { ResetPassword } from './pages/resetPassword.js';
 import { Game } from './pages/game.js';
@@ -26,11 +25,12 @@ import { BlockedFriendsList } from './pages/BlockedFriendsList.js';
 
 import { NotFound } from './components/errorPages/404.js';
 import { Unauthorized } from './components/errorPages/401.js';
+import { ComingSoon } from './components/errorPages/coming_soon.js';
 
 
 
 window.env = {
-  IP: "10.14.4.2",
+  IP: "10.14.2.1",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -52,76 +52,82 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       });
     });
+    const storedLanguage = localStorage.getItem('language');
+    // console.log(">>>>>>>>>>>>>>>>>>>> stored language ", storedLanguage)
   });
-
-
-  // document.addEventListener('click',(e)=>{
-  //   const notif = document.querySelector('.notification-content')
-  //   // console.log("==================>",e,"||")
-  //   const icon = document.querySelector('.icon_notif')
-
   
-  //   if(notif)
-  //       notif.style.display = 'none'
-  //   // if(icon)
-  //   // {
-  //   //   icon.style.color = "#5293CB"
-    
-  //   // }
-    
-  // })
-  
- 
+  // window.onload = function() {
+  //   console.log('All content including images, CSS, etc., is loaded');
+  //   const storedLanguage = localStorage.getItem('language');
+  //   console.log("+++++++++++++++++++++++++++++++ here on document load : storedLanguage ", storedLanguage)
+  //   document.querySelectorAll("data-translate").forEach(element => {
+  //   const key = element.getAttribute("data-translate");
+  //   element.textContent = translations[storedLanguage][key];
+  //   })
+  // };
 
+// const NotFound = defineComponent({
+//       render() {
+//         return h('div',{},[h('div',{},["404 THIS PAGE NotFound "])]) 
+//       }
+// })
 
 
 async function isAuthenticated(currentLocation)
 {
-    // console.log("==================>",currentLocation,currentLocation.route.path)
-    // console.log("==================>test",currentLocation.getMusic())
-    const path = currentLocation.getMusic()
-    // console.log("==================>i'm smart",currentLocation.extractParams(path))
+      // const path = currentLocation.getMusic()
 
-
-    // console.log("thiiiiiis =>===",this)
-    let query = false
-    if(currentLocation.route.path == '/2FA')
-      query = true
-    console.log("whyyyy",query)
-    const result = await customFetch(`https://${window.env.IP}:3000/isAuthenticated?2fa=${query}`)
-    if(result)
-    {
-      if(!result.ok)
+      let query = false
+      if(currentLocation.route.path == '/2FA')
+        query = true
+      const result = await customFetch(`https://${window.env.IP}:3000/isAuthenticated?2fa=${query}`)
+      if(result)
+      {
+        if(!result.ok)
         { 
 
           if(result.status == 401)
               return '/login'
-        } 
+        }
+        else
+        {
+          const data = await result.json()
+          if(result.status == 200)
+          {
+            if(data['redirect'] && data['redirect'] == "home")
+              return '/home'
+
+          }
+        }
     }
 }
 
-// async function isUserExists(currentLocation)
+// async function isAuthenticated(currentLocation)
 // {
-//   // console.log("==================>",currentLocation,currentLocation.route.path)
-//   // console.log("==================>test",currentLocation.getMusic())
-//   const path = currentLocation.getMusic()
-//   const username = currentLocation.extractParams(path).username
-//   // console.log("<<<<<<<<<<<<<<<<<<<<<<<<< username : ",username)
-//   const result = await customFetch(`https://${window.env.IP}:3000/api/user?username=${username}`)
-//   if(result)
-//   {
-//     if(!result.ok)
-//       { 
+//     // console.log("==================>",currentLocation,currentLocation.route.path)
+//     // console.log("==================>test",currentLocation.getMusic())
+//     // console.log("==================>i'm smart",currentLocation.extractParams(path))
 
-//         if(result.status == 404)
-//         {
-//           document.body.innerText = 'yees not found';
-//           // return `/user/${username}`
 
+//     // console.log("thiiiiiis =>===",this)
+//     let query = false
+//     if(currentLocation.route.path == '/2FA')
+//       query = true
+//     const result = await customFetch(`https://${window.env.IP}:3000/isAuthenticated?2fa=${query}`)
+//     if(result)
+//     {
+//       if(!result.ok)
+//         { 
+
+//           if(result.status == 401)
+//               return '/login'
 //         }
-//       }
-//   }
+        
+//     }
+
+
 // }
+
 const router = new HashRouter([
 
     { path: '/', component: LandingPage 
@@ -144,6 +150,7 @@ const router = new HashRouter([
     },
 
     { path: '/404',  component: NotFound },
+    { path: '/coming_soom', component: ComingSoon },
     { path: '/401',  component: Unauthorized },
     {
       path:'/user', component: Profile,
@@ -175,15 +182,14 @@ const router = new HashRouter([
 
   ])
 
+
 const RootComponent = defineComponent({
     render() {
       return h(RouterOutlet,{}) 
     }
   })
 
+
 export const app = createApp(RootComponent,{}, { router })
 
 app.mount(document.body,{})
-
-
-

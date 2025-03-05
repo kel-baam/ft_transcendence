@@ -52,9 +52,9 @@ export const UserWinRate =  defineComponent({
                   }}, 
                   // 'data-translate' : 'Win'
                 }, [
-                    'Win',
+                    h('span', {}, ['Win']),
                     h('br'),
-                    `${data.wins}` + '/' + `${data.total_matches}`
+                    h('span', {}, [`${data.wins}` + '/' + `${data.total_matches}`])
                   ]),
                   h('button', { class: 'lose-button', style: {color: '#D44444',
                     backgroundColor : this.state.activateSection === 'lose'? '#ddd':'#CBCBCB'
@@ -65,9 +65,10 @@ export const UserWinRate =  defineComponent({
                   }},
                   // 'data-translate':'Loss'
                   }, [
-                    'Loss',
+                    h('span', {}, ['Loss']),
                     h('br'),
-                    `${data.losses}` + '/' + `${data.total_matches}`
+                    h('span', {}, [`${data.losses}` + '/' + `${data.total_matches}`])
+                    
                   ])
               ])
             ])
@@ -83,17 +84,10 @@ export const UserWinRate =  defineComponent({
         .then(result =>{
 
             if (!result.ok)
-            {
-                // console.log("res isn't okey ," , " | ", this)
-                
                 this.appContext.router.navigateTo('/login')
-            }
-
             return result.json()
         })
         .then(res => {
-            // console.log(">>>>>>>>>>>>>>> in win  res : ", res,"|",res.status)
-            // console.log("res is okey")
             this.updateState({
                     isLoading: false,  
                     data: res,   
@@ -102,7 +96,6 @@ export const UserWinRate =  defineComponent({
 
         })
         .catch(error => {
-            // console.log(">>>>>>>>>>>> error in win  : ", error)
         })
   }
 })

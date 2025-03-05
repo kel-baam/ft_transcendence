@@ -46,6 +46,7 @@ export class HashRouter {
 
   #onPopState = (event) => {
 
+
   this.#test()
 }
 
@@ -109,8 +110,6 @@ export class HashRouter {
     if (shouldRedirect) {
       return this.nav(redirectPath)
     }
-    // console.log("tshouldNavigate",matcher)
-
     if (shouldNavigate) {
       this.#matchedRoute = matcher.route
       this.#params = matcher.extractParams(path)
@@ -207,7 +206,6 @@ export class HashRouter {
         redirectPath: null,
       }
     }
-
     const result = await guard(currentLocation)
 
     if (result === false) {

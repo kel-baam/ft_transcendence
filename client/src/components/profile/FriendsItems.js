@@ -1,29 +1,28 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../../package/index.js' 
-// import { customFetch } from '../../package/fetch.js'
+import{ defineComponent, h} from '../../package/index.js' 
 
  export const FriendsItems = defineComponent({
-    // state()
-    // {
-    //   return{
-    //   }
-    // },
+   
     render()
     {
   
       const {isExpanded, key, searchedUser} = this.props
-      // console.log(">>>>>>>>>>>>>>>>>>>> searchedUser here : ", searchedUser)
-      // console.log('>>>>>>>>>>>>>>> this state of friends : ', this.state)
+      // console.log("----------------> seatched user is " , searchedUser)
+
       const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
-      // console.log("------------------------------------> data : ", data)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> data : ", data )
       return h('div', {class : 'friends-scope-item',
           style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
             ,justifyContent : 'center'} : {}
         }, data.map((user) =>
         {
 
-          if ((searchedUser != "" && user.username.startsWith(searchedUser)) 
-            || searchedUser == "")
+          if ((searchedUser != "" && user.username.startsWith(searchedUser)))
+            return h(FriendItem, {
+              user,
+              isExpanded : isExpanded,
+              key,
+            })
+          else if (searchedUser == "")
             return h(FriendItem, {
               user,
               isExpanded : isExpanded,
@@ -37,21 +36,15 @@ import{createApp, defineComponent, DOM_TYPES, h,
   })
   
   const FriendItem = defineComponent({
-    // state()
-    // {
-    //   return {
-    //   }
-    // },
+  
     render()
     {
-      // console.log("------------------>props here : ", this.props)
       const {user, isExpanded, key} = this.props
-      // console.log("---------------------------> user : ", user)
       return  h('div', { class: 'friend-item', style : isExpanded ? 
         {
           backgroundColor : '#CBCBCB', 'border-radius' : '15px',
           width:'700px', height:'65px'
-        } : key ? {display : 'flex', justifyContent:'center'} : {}},
+        } : key ? {display : 'grid', justifyContent:'center', 'grid-template-columns' : '42% 57%'} : {}},
         [
           h('div', { class: 'picture-item' },
             [

@@ -28,7 +28,7 @@ def generateToken(user,level):
                 refresh['email'] = user.email
                 refresh['login_level'] = level
                 user.refresh_token = make_password(str(refresh))
-                user.save()
+                # user.save()
 
                 access = generateAccessToken(user,level)
                 return ({"access":access,
@@ -64,9 +64,7 @@ def token_required(request):
 def generate_new_token(request):
     try:
         refreshToken = request.COOKIES.get("refresh_token")
-        print("refresh token")
         payload = jwt.decode(refreshToken, settings.SECRET_KEY, algorithms=["HS256"])
-        print("refresh token",payload,payload["email"])
 
         
         user = User.objects.filter(email=payload["email"]).first()

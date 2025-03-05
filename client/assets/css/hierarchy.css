@@ -109,8 +109,6 @@ html {
     margin: 0;
     text-align: center;
     box-sizing: border-box;
-    
-    /* max-width: 70px; */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

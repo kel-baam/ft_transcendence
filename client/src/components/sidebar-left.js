@@ -4,7 +4,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
 export const sidebarLeft = defineComponent({
     render()
     {
-        // console.log(">>>>>>>>>>>>>>>>>> here render side bar left ")
+        console.log(">>>>>>>>>>>>>>>>>> here render side bar left ")
         return h('div', { class: 'side-bar', key : 'side-bar'},
             [h('i', {
                 id:'user-icon',
@@ -35,7 +35,6 @@ export const sidebarLeft = defineComponent({
             }),
             h('i', {
                 id:'pvp-icon',
-
                 class: 'fa-solid fa-network-wired fa-rotate-90 icon',
                 on :{ click:()=>{ this.appContext.router.navigateTo('/pvp')} }
             }),

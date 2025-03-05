@@ -1,4 +1,4 @@
-import{createApp, defineComponent, DOM_TYPES, h} from '../package/index.js'
+import{ defineComponent, h} from '../package/index.js'
 
 import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
@@ -9,6 +9,7 @@ import { TournamentSection } from '../components/home/TournamentSection.js'
 import { PlayerVsPlayer } from '../components/home/PlayerVsPlayer.js'
 import { customFetch } from '../package/fetch.js'
 import { showErrorNotification } from './utils/errorNotification.js'
+import { sidebarRight } from '../components/sidebar-right.js'
 
 export const Home = defineComponent({
     state(){
@@ -19,10 +20,10 @@ export const Home = defineComponent({
             homeActive :false
         }
     },
+    
     onMounted()
     {
         const userIcon = document.getElementById('home-icon');
-        // console.log("on mounted i hommme==>",userIcon); // Check if the element is selected
 
         if (userIcon) {
             userIcon.style.color = "#F45250";
@@ -33,13 +34,15 @@ export const Home = defineComponent({
         }
 
     },
+
     async submitForm(event) {
         event.preventDefault();
+
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
-        // print("--------------------> submit form ", formData)
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
@@ -54,10 +57,11 @@ export const Home = defineComponent({
             }
 
             const successData = await response.json();
-            // console.log("Player added:", successData.message);
+
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            
             this.updateState({
                 isBlur: false,
             })
@@ -66,7 +70,8 @@ export const Home = defineComponent({
 
     render()
     {
-        return h('div', {id:'global'}, [h(header, {
+        return h('div', {id:'global'}, [
+            h(header, {
                 icon_notif: this.state.notificationActive,
                 on          : {
                     iconClick :()=>{
@@ -78,10 +83,11 @@ export const Home = defineComponent({
                             notification_data : notification_data
                         })
                     },
-                }
+                },
+                key : 'header'
             }),
             h('div', {class:'content'},[
-                h(sidebarLeft, {}), h('div', 
+                h(sidebarLeft, {key: 'left-bar'}), h('div', 
                     {
                         class :'home-content' ,
                         style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
@@ -93,6 +99,9 @@ export const Home = defineComponent({
                         h('div', { class: 'home-down'},
                             [h(TrainingBoot, {}), h(TournamentSection, {}), h(PlayerVsPlayer, {}) ]
                         )
+                    ]),
+                    h('div', { class: 'friends-bar' }, [
+                              h(sidebarRight, {})
                     ]),
             ]),
             this.state.isBlur ? 

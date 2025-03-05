@@ -1,13 +1,6 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../../package/index.js' 
-// import { customFetch } from '../../package/fetch.js'
+import{defineComponent, h} from '../../package/index.js' 
 
 export const RequestsItems = defineComponent({
-    state()
-    {
-      return{
-      }
-    },
     render()
     {
       const {isExpanded, searchedUser} = this.props
@@ -36,15 +29,9 @@ export const RequestsItems = defineComponent({
 })
 
 const RequestItem =  defineComponent({
-    state()
-    {
-      return {
-      }
-    },
     render()
     {
         const {id, user, isExpanded} = this.props
-        // console.log(">>>>>>>>>>>>>>>> id , ", id, "    ", this.props)
         return h('div', { class: 'request-item',
             style : isExpanded ? 
             { backgroundColor : '#CBCBCB', 'border-radius' : '15px',

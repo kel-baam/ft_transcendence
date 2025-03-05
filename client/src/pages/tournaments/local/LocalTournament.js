@@ -7,20 +7,51 @@ import { customFetch } from '../../../package/fetch.js';
 export const LocalTournament = defineComponent({
     state() {
         return {
-            tournaments: []
+            tournaments: [],
+            notificationActive: false,
+            isBlur:false,
+            notification_data: null,
         };
     },
 
     async submitForm(event) {
         event.preventDefault();
 
+        const formData = new FormData(event.target);
+
+        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
+        formData.append('status', 'accepted');
+        
+        try {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
+                method: 'PUT',
+                body: formData,
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) this.appContext.router.navigateTo('/login');
+                const errorText = await response.json();
+                throw new Error(Object.values(errorText)[0]);
+            }
+
+            const successData = await response.json();
+
+            this.updateState({ isBlur: false });
+        } catch (error) {
+            showErrorNotification(error);
+            
+            this.updateState({
+                isBlur: false,
+            })
+        }
+    },
+
+    async submitTournamentForm(event) {
+        event.preventDefault();
+
         const formElement = event.target;
         const formData    = new FormData(formElement);
-
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
         try
         {
             const response  = await customFetch(`https://${window.env.IP}:3000/api/tournament/local/tournaments/`, {
@@ -34,7 +65,6 @@ export const LocalTournament = defineComponent({
                 
                 if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
-                console.error("Error response:", errorText);
                 const firstError = Object.values(errorText)[0];
                 throw new Error(firstError);
             }
@@ -51,14 +81,10 @@ export const LocalTournament = defineComponent({
         {
             showErrorNotification(error);
             highlightInvalidInput(formElement)
-
-            console.log(error);
         }
     },
 
     async fetchTournaments() {
-        console.log("Fetching tournaments through HTTP request...");
-    
         try
         {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/local/tournaments/`, {
@@ -73,14 +99,10 @@ export const LocalTournament = defineComponent({
                 if(errorText = 401)
                     this.appContext.router.navigateTo('/login')
 
-                console.error("Error response:", errorText);
-
                 throw new Error(errorText);
             }
     
             const tournamentData = await response.json();
-
-            console.log("Tournament data >>>> ", tournamentData);
     
             if (tournamentData && tournamentData.tournaments)
             {
@@ -150,10 +172,27 @@ export const LocalTournament = defineComponent({
     render() {
         console.log("hna", this.state.tournaments.length)
         return h('div', { id: 'global' }, [
-            h(header, {}),
+            h(header, {
+                icon_notif: this.state.notificationActive,
+                on          : {
+                    iconClick :()=>{
+                        this.updateState({ notificationActive: !this.state.notificationActive }); 
+                    },
+                    blur :(notification_data)=> {
+                        this.updateState({
+                            isBlur            : !this.state.isBlur,
+                            notification_data : notification_data
+                        })
+                    },
+                },
+                key : 'header'
+            }),
             h('div', { class: 'content' }, [
                 h(sidebarLeft, {}),
-                h('div', { class: 'local-tournament' }, [
+                h('div', {
+                    class : 'local-tournament',
+                    style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
+                }, [
                     h('div', { class: 'create' }, [
                         h('div', { class: 'title' }, [
                             h('h1', {}, ['Created Tournaments'])
@@ -162,7 +201,7 @@ export const LocalTournament = defineComponent({
                             (this.state.tournaments.length > 0
                                 ? this.state.tournaments.map((tournament) =>
                                     h('div', { class: 'created' }, [
-                                        h('img', { src: './images/ping-pong-equipment-.png' }),
+                                        h('img', { src: './images/gold-cup-removebg-preview.png' }),
                                         h('a', {
                                             on: {
                                                 click: () => {
@@ -185,7 +224,7 @@ export const LocalTournament = defineComponent({
                         h('div', { class: 'title' }, [
                             h('h2', {}, ['Create a Tournament'])
                         ]),
-                        h('form', { onsubmit: this.submitForm.bind(this) }, [
+                        h('form', { onsubmit: this.submitTournamentForm.bind(this) }, [
                             h('div', { class: 'form' }, [
                                 h('div', { class: 'tournament-name' }, [
                                     h('label', { htmlFor: 'fname' }, ['Tournament Name:']),
@@ -246,7 +285,69 @@ export const LocalTournament = defineComponent({
                             ])
                         ])
                     ])
-                ])
+                ]), this.state.isBlur ? 
+                h('div', { class: 'join-player-form' }, [
+                    h('i', {
+                        class   : 'fa-regular fa-circle-xmark icon',
+                        on      : {
+                            click : () => {
+                                this.updateState({
+                                    isBlur: false,
+                                })
+                            }
+                        }
+                    }),
+                    h('form', {
+                        class   : 'form1',
+                        on      : { submit: (event) => this.submitForm(event) }
+                    }, [
+                        h('div', { class: 'avatar' }, [
+                            h('img', { 
+                                class   : 'createAvatar', 
+                                src     : './images/people_14024721.png', 
+                                alt     : 'Avatar' 
+                            }),
+                            h('div', { 
+                                class   : 'editIcon', 
+                                on      : {
+                                    click: () => { document.getElementById(`file-upload1`).click(); }
+                                }
+                            }, [
+                                h('input', {
+                                    type    : 'file',
+                                    id      : 'file-upload1',
+                                    name    : 'player_avatar',
+                                    accept  : 'image/*',
+                                    style   :{
+                                        display         : 'none',
+                                        pointerEvents   : 'none'
+                                    },
+                                    on      : { change: (event) => {
+                                        const file = event.target.files[0];
+                                        if (file) {
+                                            const reader    = new FileReader();
+                                            reader.onload   = (e) => {
+                                                document.querySelector(`.createAvatar`).src = e.target.result;
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}
+                                }),
+                                h('i', { class: 'fas fa-edit icon' })
+                            ])
+                        ]),
+                        h('div', { class: 'createInput' }, [
+                            h('label', { htmlFor: 'playerNickname' }, ['Nickname:']),
+                            h('br'),
+                            h('input', { 
+                                type        : 'text', 
+                                name        : 'nickname', 
+                                placeholder : 'Enter Nickname...' 
+                            })
+                        ]),
+                        h('button', { type: 'submit' }, ['Submit'])
+                    ])
+                ]) : null
             ])
         ]);
     },

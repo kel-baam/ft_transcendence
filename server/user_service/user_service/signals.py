@@ -18,11 +18,33 @@ def notify_friends_on_status_change(sender, instance, created, **kwargs):
             models.Q(sent_request__reciever=instance, sent_request__status="accepted") |
             models.Q(received_request__sender=instance, received_request__status="accepted")
         ).distinct()
-        for friend in friends:
-            async_to_sync(channel_layer.group_send)(
-                f"user_{friend.id}",
-                {
-                    "type": "friend_status_update",
-                    "friend": UserSerializer(instance, fields=['id', 'picture', 'status']).data
-                },
-            )
+        async_to_sync (channel_layer.group_send)(
+            "online_users",
+            {
+            "type": "friend_status_update", 
+            "friend": UserSerializer(instance, fields=['id', 'picture', 'status']).data
+            }
+        )
+
+@receiver(post_save, sender=Request)
+def notify_users_on_accept(sender, instance, created, **kwargs):
+    if created:
+        pass
+    elif instance.status == 'accepted':
+        channel_layer = get_channel_layer()
+
+        async_to_sync(channel_layer.group_send)(
+            f"friend_{instance.sender.id}",  
+            {
+                "type": "friend_status_update",
+                "friend": UserSerializer(instance, fields=['id', 'picture', 'status']).data
+            }
+        )
+
+        async_to_sync(channel_layer.group_send)(
+            f"friend_{instance.reciever.id}",  
+            {
+                "type": "friend_status_update",
+                "friend": UserSerializer(instance, fields=['id', 'picture', 'status']).data
+            }
+        )

@@ -14,24 +14,18 @@ export const sidebarRight = defineComponent(
         },
         render()
         {
-            // console.log('>>>>>>>>>>>>>>> here where is the problem ')
-            // return h('h1', {style : {color : 'red'}}, ['here online friends '])
-        //     <div class="friends-right-sidebar">
-        //     <ul id="friends-list">
-        //         <!-- Friends will be added dynamically here -->
-        //     </ul>
-        // </div>
+       
             const {friends} = this.state
-            // console.log("-------------------------> friends : ", friends )
             return h('div', {class:'friends-right-sidebar'}, [
-                h('ul', {class:"friends-list"}, friends.map(friend=>(
+                h('ul', {class:"friends-list"}, friends.map((friend)=>(
                     h('li', {class : 'friend', style : {'list-style-type': 'none'}},
                         [
-                            h('div', {style :{
+                            h('div', { style :{
                                 position : "relative"
                             }}, 
                                 [
-                                    h('img', {class:'friend-img', src:`https://${window.env.IP}:3000${friend.picture}`, alt:'', style : {'object-fit': 'cover'}}),
+                                    h('img', {class:'friend-img', src:`https://${window.env.IP}:3000${friend.picture}`, 
+                                    alt:'', style : {'object-fit': 'cover'}}),
                                     h('div', {class : `status-indicator ${friend.status ? 'onlineFriend' : 'offlineFriend'}`, style :{
                                         position :'absolute',
                                         right:'80%'
@@ -56,17 +50,33 @@ export const sidebarRight = defineComponent(
             };
         
             socket.onmessage =  (event) =>{
-               
-                const mergedFriends = [...this.state.friends, ...JSON.parse(event.data)];
-                // console.log("----------------------> JSON.parse(event.data): ", JSON.parse(event.data))
-                // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> mergedFRiends : ", mergedFriends)
-                this.updateState({
-                    friends : Array.from(new Map(mergedFriends.map(friend => [friend.id, friend])).values())// sometimes error raised here
-                })
+            const oldFriends = this.state.friends; 
+            const newFriends = JSON.parse(event.data); 
+            const friendsMap = new Map();
+
+            oldFriends.forEach(friend => {
+                friendsMap.set(friend.id, { ...friend });  
+            });
+            
+            newFriends.forEach(newFriend => {
+                const existingFriend = friendsMap.get(newFriend.id);
+            
+                if (existingFriend) {
+                    if (existingFriend.status !== newFriend.status) {
+                        existingFriend.status = newFriend.status;
+                    }
+                } else {
+                    friendsMap.set(newFriend.id, { ...newFriend });
+                }
+            });
+            
+            const updatedFriends = Array.from(friendsMap.values());
+            this.updateState({
+                friends: updatedFriends
+            });
             };
         
            socket.onclose = ()=> {
-                console.log("-----------------------> WebSocket closed");
             };
         },
         onUnmounted()

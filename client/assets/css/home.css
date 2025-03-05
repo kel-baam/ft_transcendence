@@ -140,7 +140,7 @@
     position: absolute;
     right: 0;
     left: 55%;
-    top: 8.7%;
+    top: 22px;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.53));
 
     /* border: 1px solid rgb(255, 1, 1); */
@@ -544,7 +544,7 @@
     height: 97%;
     padding: 3%;
     /* row-gap: 0.5%; */
-    /* border: 1px solid #E0DA5A; */
+    /* border: 1px solid #ff0000; */
 }
 
 .home-content .home-top .leader-board .winners .coll1{
@@ -757,25 +757,25 @@
 
 }
 
-.leader-board .empty-leader-board{
+.home-content .home-top .leader-board .empty-leader-board{
     display: flex;
     justify-content: center;
     align-items: center;
-    /* padding: 30px; */
     flex-direction: column;
-    width: auto;
-    height: 400px;
-
+    /* width: auto; */
+    /* height: 400px; */
+    position: relative;
+    top: 139px;
     /* border: 1px solid #2888ED; */
 
 }
 
 
-.leader-board .empty-leader-board img{
+.home-content .home-top .leader-board .empty-leader-board img{
     width: 200px;
 }
-
-.leader-board .empty-leader-board .title{
+/* 
+.home-content .home-top .leader-board .empty-leader-board .title{
 
     font-family: myFont;
     letter-spacing: 2px;
@@ -786,8 +786,9 @@
     justify-content: center;
     filter: blur(0.5px);
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
-}
-.leader-board .empty-leader-board h1{
+} */
+
+.home-content .home-top .leader-board .empty-leader-board h1{
     font-size: 25px;
     font-family: myFont;
     color: #315084;

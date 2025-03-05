@@ -10,7 +10,7 @@ export const OnlineHierarchy = defineComponent({
 
     state(){
         return {
-            first_round        : [],
+            matcheRounds        : [],
             notificationActive : false,
             isBlur             : false,
             notification_data  : null,
@@ -54,8 +54,6 @@ export const OnlineHierarchy = defineComponent({
             
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/?tournamentId=${tournamentId}`);
 
-            console.log("---> : ", tournamentId)
-
             socket.onopen = () => {
                 console.log('WebSocket connection established');
 
@@ -70,18 +68,16 @@ export const OnlineHierarchy = defineComponent({
                 console.log('WebSocket Data:', data);
                 if (data.success)
                 {
-                    console.log(" ==--> ", data.matches);
                     this.updateState({
-                        first_round : data.matches,
+                        matcheRounds: data.matches,
                         winners     : data.winners
                     });
+
                     if (data.tournament_status === "started")
                         this.startMatches(data.matches);
                 }
                 else if (data.action === "redirect_match")
                 {
-                    console.log("----------> player redirected")
-                    
                     this.appContext.router.navigateTo(`/game?id=${data.match_id}&type=online`);
                 }
                 else
@@ -107,7 +103,6 @@ export const OnlineHierarchy = defineComponent({
                     match_id : match.match_id
                 }));
             }
-            console.log("here");
         });
     },
 
@@ -150,7 +145,7 @@ export const OnlineHierarchy = defineComponent({
                     ]),
                     h('div', { class: 'rounds' }, [
                         h('div', { class: 'round1' }, 
-                            (this.state.first_round || []).map((match, i) =>
+                            (this.state.matcheRounds.slice(0, 2)).map((match, i) =>
                                 h('div', { class: `match${i + 1}` }, [
                                     h('div', { class: 'player1' }, [
                                         h('img', { 
@@ -171,34 +166,33 @@ export const OnlineHierarchy = defineComponent({
                             )
                         ),                        
                         h('div', { class: 'round2' }, [
-                            
                             h('div', { class: 'player1' }, [
                                 h('img', {
-                                    src: this.state.winners && this.state.winners[0] && this.state.winners[0]['avatar'] 
-                                        ? `https://${window.env.IP}:3000/media${this.state.winners[0]['avatar']}` 
+                                    src: this.state.winners && this.state.winners[0] && this.state.winners[0][0] && this.state.winners[0][0]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[0][0].avatar}` 
                                         : './images/people_14024721.png'
                                 }),
-                                h('h2', {}, [this.state.winners && this.state.winners[0] && this.state.winners[0]['nickname'] || 'nickname'])
+                                h('h2', {}, [this.state.winners && this.state.winners[0] && this.state.winners[0][0] && this.state.winners[0][0]['nickname'] || 'nickname'])
                             ]),
                             h('div', { class: 'vs' }, [
                                 h('img', { src: './images/vs.png' })
                             ]),
                             h('div', { class: 'player2' }, [
                                 h('img', {
-                                    src: this.state.winners && this.state.winners[1] && this.state.winners[1]['avatar'] 
-                                        ? `https://${window.env.IP}:3000/media${this.state.winners[1]['avatar']}` 
+                                    src: this.state.winners && this.state.winners[1] && this.state.winners[1][0] && this.state.winners[1][0]['avatar'] 
+                                        ? `https://${window.env.IP}:3000/media${this.state.winners[1][0].avatar}` 
                                         : './images/people_14024721.png'
                                 }),
-                                h('h2', {}, [this.state.winners && this.state.winners[1] && this.state.winners[1]['nickname'] || 'nickname'])
+                                h('h2', {}, [this.state.winners && this.state.winners[1] && this.state.winners[1][0] && this.state.winners[1][0]['nickname'] || 'nickname'])
                             ])
                         ]),
                         h('div', { class: 'round3' }, [
                             h('img', {
-                                src: this.state.winners && this.state.winners[2] && this.state.winners[2]['avatar'] 
-                                    ? `https://${window.env.IP}:3000/media${this.state.winners[2]['avatar']}` 
+                                src: this.state.winners && this.state.winners[2] && this.state.winners[2][0] && this.state.winners[2][0]['avatar'] 
+                                    ? `https://${window.env.IP}:3000/media${this.state.winners[2][0].avatar}` 
                                     : './images/people_14024721.png'
                             }),
-                            h('h2', {}, [this.state.winners && this.state.winners[2] && this.state.winners[2]['nickname'] || 'nickname'])
+                            h('h2', {}, [this.state.winners && this.state.winners[2] && this.state.winners[2][0] && this.state.winners[2][0]['nickname'] || 'nickname'])
                         ]),
                         h('div', { class: 'trophy' }, [
                             h('img', { src: './images/gold-cup-removebg-preview.png' })

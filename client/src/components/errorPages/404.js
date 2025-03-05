@@ -1,4 +1,4 @@
-import {RouterOutlet,h,createApp,defineComponent,HashRouter} from '../../package/index.js'
+import {h,defineComponent} from '../../package/index.js'
 // import { Profile } from './components/profile.js'
 export const NotFound = defineComponent({
     render() {
