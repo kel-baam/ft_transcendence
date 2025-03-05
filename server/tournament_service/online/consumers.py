@@ -10,7 +10,6 @@ import jwt
 
 class Tournaments(AsyncWebsocketConsumer):
     async def connect(self):
-        print("--------> WebSocket connection opened")
 
         self.user_id = None 
         for header_name, header_value in self.scope["headers"]:
@@ -23,14 +22,10 @@ class Tournaments(AsyncWebsocketConsumer):
                     cookies[key] = value          
                 try:
 
-                    print("accccc=>",cookies.get("access_token").encode("utf-8"))
-
                     payload           = jwt.decode(cookies.get("access_token").encode("utf-8"), settings.SECRET_KEY, algorithms=["HS256"])
                     self.access_token = cookies.get("access_token")
                     user              = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
                     if user:
-
-                        print("done user -------> : ",user.id)
 
                         self.scope['user_id'] = user
                         self.user_id          = user.id
@@ -45,14 +40,11 @@ class Tournaments(AsyncWebsocketConsumer):
                         await self.accept() 
                         await self.send_updated_tournaments()
                     else:
-                        print("user not")
                         await self.send(text_data=json.dumps({"error": "user doesn't exist"}))
                 except Exception as e:
-                        print("errrr nor",e)
                         await self.send(text_data=json.dumps({"error": "token expired"}))
  
     async def disconnect(self, close_code):
-        print("--------> WebSocket connection closed")
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
@@ -61,8 +53,6 @@ class Tournaments(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data    = json.loads(text_data)
         action  = data.get('action')
-
-        print(f"Received action: {action}")
 
         if action in ['get_joined_tournaments', 'get_available_tournaments']:
             await self.send_updated_tournaments()
@@ -85,14 +75,12 @@ class Tournaments(AsyncWebsocketConsumer):
 
         await self.send_updated_tournaments()
 
-#update add the tournament role local or online
-
     @sync_to_async
     def joined_tournaments(self):
 
         created_tournaments = Tournament.objects.filter(
-            creator= self.user_id,
-            mode   = 'online'
+            creator = self.user_id,
+            mode    = 'online'
         )
         joined_tournaments  = Tournament.objects.filter(
             participants__player__user_id = self.user_id,

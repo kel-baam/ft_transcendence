@@ -13,7 +13,7 @@ import { sidebarLeft } from '../../../components/sidebar-left.js';
 import { CreateTournament } from '../../../components/tournament/createTournament.js';
 import { JoinedTournaments } from '../../../components/tournament/JoinedTournaments.js';
 import { AvailableTournaments } from '../../../components/tournament/AvailableTournaments.js';
-import { showErrorNotification, highlightInvalidInput } from '../../utils/errorNotification.js';
+import { showErrorNotification} from '../../utils/errorNotification.js';
 import { customFetch } from '../../../package/fetch.js';
 import { ComingSoon } from '../../../components/errorPages/coming_soon.js';
 
@@ -114,7 +114,6 @@ export const OnlineTournament = defineComponent({
         console.log(this.state.coming_soon)
         if (this.state.coming_soon)
         {
-            console.log("sdfsdfsdfsdfrds")
             return h(ComingSoon, {});
         }
 

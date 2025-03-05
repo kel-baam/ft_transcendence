@@ -14,6 +14,7 @@ export const PlayerVsPlayer = defineComponent({
             notification_data: null,
         }
     },
+
     onMounted()
     {
       const userIcon = document.getElementById('pvp-icon');
@@ -26,17 +27,20 @@ export const PlayerVsPlayer = defineComponent({
           userIcon.style.transition = "0.5s";
       }
     },
+
     async submitForm(event) {
         event.preventDefault();
+
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
+                method      : 'PUT',
+                body        : formData,
+                credentials : 'include',
             });
 
             if (!response.ok) {
@@ -46,10 +50,10 @@ export const PlayerVsPlayer = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            
             this.updateState({
                 isBlur: false,
             })

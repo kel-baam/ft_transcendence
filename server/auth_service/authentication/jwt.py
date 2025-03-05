@@ -28,7 +28,7 @@ def generateToken(user,level):
                 refresh['email'] = user.email
                 refresh['login_level'] = level
                 user.refresh_token = make_password(str(refresh))
-                user.save()
+                # user.save()
 
                 access = generateAccessToken(user,level)
                 return ({"access":access,

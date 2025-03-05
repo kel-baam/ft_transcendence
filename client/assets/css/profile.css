@@ -219,6 +219,7 @@ inherits: false;
     font-size: 25px;
     text-shadow: 0px 4px 4px rgba(49, 80, 142, 0.50);
 }
+
 .circle 
 {
     padding-left: 5%;
@@ -535,8 +536,10 @@ inherits: false;
 
 .achievements-container
 {
-    display: grid;
-    grid-template-rows: repeat(3, 31.33%);
+    display: flex;
+    /* grid-template-rows: repeat(3, 31.33%); */
+    justify-content:flex-start;
+    flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 6%;
@@ -547,9 +550,9 @@ inherits: false;
 
 .achievements-title-elt
 {
-    grid-column: span 2;
+    /* grid-column: span 2; */
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     height: 75px;
     /* border: 2px solid red; */
@@ -569,8 +572,9 @@ inherits: false;
     align-items: center;
     justify-content:center ;
     gap: 70px;
-    position: relative;
-    bottom: 60px;
+    /* position: relative; */
+    /* bottom: 60px; */
+    /* gap:20%; */
     /* border: 2px solid red; */
 }
 
@@ -582,11 +586,55 @@ inherits: false;
     background-color: rgba(95, 114, 125, 0.08);
     display: grid;
     grid-template-rows: 20% 80%;
-    justify-content: flex-start;
+    /* justify-content: flex-start; */
     /* border: 2px solid red; */
 
 }
 /*------------------------------------- profile -----------------*/
+.relation-txt {
+    visibility: hidden;
+    width: 100px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 115%;
+    left: 80%;
+    /* margin-left: -80px; */
+  }
+  
+  /* Popup arrow */
+  .relation-txt::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  /* Toggle this class - hide and show the popup */
+ .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+  }
+  
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
 
 .infos-user-container
 {
@@ -676,7 +724,7 @@ div:nth-child(3) > div:nth-child(1) > span:nth-child(1)
     display: flex;
     justify-content: flex-end;
     /* border: 2px solid red; */
-    padding-right: 69px;
+    padding-right: 12%;
 }
 
 
@@ -704,20 +752,20 @@ div:nth-child(2) > div:nth-child(3) > div:nth-child(2)
     width: 70px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     /* border: 2px solid red; */
-    position: relative;
+    /* position: relative; */
 
 
 }
 .achievement-item img
 {
-    position: absolute;
+    /* position: absolute; */
     /* left: 0; */
-    right: 40px;
+    /* right: 40px; */
     bottom: 2.5px;
     width: 18px;
-    height: 18px;
+    height: 23px;
 }
 
 progress

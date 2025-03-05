@@ -16,9 +16,8 @@ export const sidebarRight = defineComponent(
         {
        
             const {friends} = this.state
-            console.log("-------------------------> friends : ", friends )
             return h('div', {class:'friends-right-sidebar'}, [
-                h('ul', {class:"friends-list"}, friends.map(friend=>(
+                h('ul', {class:"friends-list"}, friends.map((friend)=>(
                     h('li', {class : 'friend', style : {'list-style-type': 'none'}},
                         [
                             h('div', { style :{
@@ -51,15 +50,33 @@ export const sidebarRight = defineComponent(
             };
         
             socket.onmessage =  (event) =>{
-               
-                const mergedFriends = [...this.state.friends, ...JSON.parse(event.data)];
-                this.updateState({
-                    friends : Array.from(new Map(mergedFriends.map(friend => [friend.id, friend])).values())// sometimes error raised here
-                })
+            const oldFriends = this.state.friends; 
+            const newFriends = JSON.parse(event.data); 
+            const friendsMap = new Map();
+
+            oldFriends.forEach(friend => {
+                friendsMap.set(friend.id, { ...friend });  
+            });
+            
+            newFriends.forEach(newFriend => {
+                const existingFriend = friendsMap.get(newFriend.id);
+            
+                if (existingFriend) {
+                    if (existingFriend.status !== newFriend.status) {
+                        existingFriend.status = newFriend.status;
+                    }
+                } else {
+                    friendsMap.set(newFriend.id, { ...newFriend });
+                }
+            });
+            
+            const updatedFriends = Array.from(friendsMap.values());
+            this.updateState({
+                friends: updatedFriends
+            });
             };
         
            socket.onclose = ()=> {
-                console.log("-----------------------> WebSocket closed");
             };
         },
         onUnmounted()

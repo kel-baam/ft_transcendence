@@ -1,7 +1,7 @@
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString} from '../package/index.js'
+import{defineComponent, h} from '../package/index.js'
 import { showErrorNotification } from '../package/utils.js';
-
+import { NotFound } from '../components/errorPages/404.js';
+import { Unauthorized } from '../components/errorPages/401.js';
 
 let socket = null;
 const KEY_UP = 87;
@@ -234,13 +234,13 @@ export const Game = defineComponent(
                     
                     if(data.action && data.action == "init_game")
                     {
-                        draw_game(data);
                         if(data.player)
                             this.updateState({player:data.player,player1Score:data.player1Score,player2Score:data.player2Score, 
-                                player1: data.player1, player2:data.player2})
+                            player1: data.player1, player2:data.player2})
                         else
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
-                                player1: data.player1, player2:data.player2})
+                            player1: data.player1, player2:data.player2})
+                        draw_game(data);
                     }
 
                     
@@ -322,6 +322,8 @@ export const Game = defineComponent(
                     {
                         this.updateState({error:"match not found"})
 
+                        // this.appContext.router.navigateTo(data.redirect_to);
+
                         if (socket) {
                             socket.close();
                         }
@@ -338,6 +340,8 @@ export const Game = defineComponent(
 
                     if (data.action && data.action === "match_exited")
                     {
+                        this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
+                            player1: data.player1, player2:data.player2})
                         this.announce_winner('You Lose!');
 
                         if (socket) {
@@ -385,11 +389,11 @@ export const Game = defineComponent(
 
             if (error && error === "match not found")
             {
-                return h('h1', {}, ["404 game not found !!!"])
+                return h(NotFound, {}, ["404 game not found !!!"])
             }
             if (error && error === "unauthorized")
             {
-                return h('h1', {}, ["401 unauthorized !!!"])
+                return h(Unauthorized, {}, ["404 game not found !!!"])
             }
             return h('div',{id:'game'},[
                 h('nav',{id:'header'},[

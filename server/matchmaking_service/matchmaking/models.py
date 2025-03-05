@@ -62,7 +62,6 @@ class Player(models.Model):
     level = models.IntegerField(default=0)
     rank  = models.IntegerField(default=0)
     grade = models.CharField(max_length=50, null=True, blank=True, default='Newbie')
-    # grade = models.CharField(_(""), max_length=50, )#silver...
 
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
@@ -186,7 +185,7 @@ class PlayerTournament(models.Model):
     def __str__(self):
         player_id = self.player.id if self.player else "Unknown Player"
         return f"Invitation for {player_id} to {self.tournament.name} - Status: {self.status}" 
-
+    
     class Meta:
         db_table    = 'PlayerTournament'
 
@@ -208,7 +207,7 @@ class Match(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
-    created_at = models.DateTimeField(default=timezone.now)  # When the match is created
+    created_at = models.DateField(auto_now_add=True)  # When the match is created
 
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"

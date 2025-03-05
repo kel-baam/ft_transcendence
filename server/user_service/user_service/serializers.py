@@ -24,13 +24,13 @@ class PlayerSerializer(serializers.ModelSerializer):
     # picture = serializers.ImageField(source='user.picture', required=False)
     class Meta():
         model = Player
-        fields = ['score', 'level',  'rank']
+        fields = ['score', 'rank', 'level', 'grade']
 
 class UserSerializer(serializers.ModelSerializer):
     score = serializers.FloatField(source='player.score', read_only = False,required=False)
     rank = serializers.IntegerField(source='player.rank', read_only = False,required=False)
     level = serializers.FloatField(source='player.level', read_only = False,required=False)
-
+    grade = serializers.CharField(source='player.grade', required=False)
     Current_password = serializers.CharField(write_only=True, required=False)
     New_password = serializers.CharField(write_only=True, required=False)
     Confirm_password = serializers.CharField(write_only=True, required=False)
@@ -50,8 +50,9 @@ class UserSerializer(serializers.ModelSerializer):
     
     registration_type = serializers.ChoiceField(required=False, choices=['api', 'form'])
 
-    request_id = serializers.IntegerField(read_only=True, required=False,)
-
+    request_id = serializers.IntegerField(read_only=True, required=False)
+    status = serializers.BooleanField(required=False)
+    
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
         exclude = kwargs.pop('exclude', None)
@@ -116,31 +117,33 @@ class UserSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def update(self, instance, validated_data):
-        player_data = validated_data.pop('player', {})
-        for field in validated_data:
-            setattr(instance, field, validated_data[field])
-        instance.save()
-        player = getattr(instance, 'player', None)
-        if player:
-            player.score = player_data.get('score', player.score)
-            player.rank = player_data.get('rank', player.rank)
-            player.level = player_data.get('level', player.level)
-            player.save()
-        return instance
+    # def update(self, instance, validated_data):
+    #     print(">>>>>>>>>>>>>>>> instance : ", instance.status )
+    #     print(">>>>>>>>>>>>>>>>>>>> validated_data : ", validated_data['status'])
+    #     player_data = validated_data.pop('player', {})
+    #     for field in validated_data:
+    #         setattr(instance, field, validated_data[field])
+        
+    #     instance.save()
+    #     print(">>>>>>>>>>>>>>>> instance : ", instance.status  )
+
+    #     player = getattr(instance, 'player', None)
+    #     if player:
+    #         player.score = player_data.get('score', player.score)
+    #         player.rank = player_data.get('rank', player.rank)
+    #         player.level = player_data.get('level', player.level)
+    #         player.save()
+    #     return instance
     
     def create(self, validated_data):
-        print(">>>>>>>>>>>>>> here in create fucntion ")
         player_data = validated_data.pop('player', {})
         user = User(**validated_data)
         # user.set_unusable_password()
         user.save()
-        print("----------------------> player_data : ", player_data)
         if player_data:
             player = Player.objects.create(user=user,**player_data)
             player.save()
 
-        print(">>>>>>>>>>>>>>>> user was created ||| ")
         return user
     
 
@@ -175,12 +178,15 @@ class UserSerializer(serializers.ModelSerializer):
                 ).first().status == "pending":
                 return "recieved"
             elif Request.objects.filter(
-                Q(sender=logged_in_user, reciever=obj) | 
+                Q(sender=logged_in_user, reciever=obj)).first() is not None and \
+                Request.objects.filter(
+                Q(sender=logged_in_user, reciever=obj)).first().status == "blocked":
+                return "blocked"
+            elif Request.objects.filter(
                 Q(sender=obj, reciever=logged_in_user)).first() is not None and \
                 Request.objects.filter(
-                Q(sender=logged_in_user, reciever=obj) | 
                 Q(sender=obj, reciever=logged_in_user)).first().status == "blocked":
-                return "blocked"
+                return ""
             elif Request.objects.filter(
                 Q(sender=logged_in_user, reciever=obj) | 
                 Q(sender=obj, reciever=logged_in_user)).first() is not None and \
@@ -209,7 +215,19 @@ class MatchSerializer(serializers.ModelSerializer):
     player2_id = serializers.PrimaryKeyRelatedField(
         queryset=Player.objects.all(), source='player2', write_only=True
     )
-
+    created_at = serializers.DateField()
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        exclude = kwargs.pop('exclude', None)
+        super().__init__(*args, **kwargs)
+        if fields:
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+        if exclude:
+            for field_name in exclude:
+                self.fields.pop(field_name, None)
     # def validate(self, attrs):
     #     print(">>>>>>>>>> attrs : ", attrs)
     #     return attrs

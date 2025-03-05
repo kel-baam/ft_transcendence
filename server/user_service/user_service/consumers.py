@@ -97,10 +97,10 @@ class OnlineFriends(AsyncWebsocketConsumer):
                     self.user = await sync_to_async(User.objects.filter(email=payload["email"]).first)()
                     
                     if self.user:
-                        self.group_name = f"user_{self.user.id}"  
-                        await self.channel_layer.group_add(self.group_name, self.channel_name) 
+                        self.group_name = f"friend_{self.user.id}"  
                         await self.accept()
-
+                        await self.channel_layer.group_add(self.group_name, self.channel_name) 
+                        await self.channel_layer.group_add("online_users", self.channel_name)
                         friends = await self.get_friends(self.user)
                         await self.send(text_data=json.dumps(friends))
                 except Exception as e:
@@ -113,7 +113,7 @@ class OnlineFriends(AsyncWebsocketConsumer):
             models.Q(sent_request__status='accepted', sent_request__reciever=user) |
             models.Q(received_request__status='accepted', received_request__sender=user)
         )
-        return [{'id': f.id, 'picture': f.picture.url if f.picture else None, 'status': f.status} for f in friends]
+        return UserSerializer(friends, many=True, fields=['id','username', 'picture', 'status']).data
 
     async def disconnect(self, close_code):
         """Remove the user from the WebSocket group on disconnect"""
@@ -128,5 +128,6 @@ class OnlineFriends(AsyncWebsocketConsumer):
         """Handles incoming status update messages"""
         print(f"📨 Received status update: {event}")        
         await self.send(text_data=json.dumps(
-            [event["friend"]]
+            [event["friend"]],
+            
         ))

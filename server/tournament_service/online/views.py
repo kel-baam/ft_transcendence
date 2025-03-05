@@ -74,7 +74,6 @@ class TournamentAPIView(APIView):
                     }
                     notification_data.append(notif_data)
                     
-            print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", participants_data)
 
             if invited_players:
                 serializer = PlayerTournamentSerializer(data=participants_data, many=True)
@@ -88,13 +87,10 @@ class TournamentAPIView(APIView):
                 if existing_participants.count() != 3:
                     tournament.delete()
                     return Response({'error': 'A private tournament have 3 participants excluding the creator.'}, status=status.HTTP_400_BAD_REQUEST)
-          
-            print("+++++++++++++--------------------------+++++++++++++++")
     
             if notification_data :
                 serializer = NotificationSerializers(data=notification_data, many=True)
 
-                print("------> ", serializer)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
 
@@ -109,8 +105,6 @@ class TournamentAPIView(APIView):
         except serializers.ValidationError:
             if tournament:
                 tournament.delete()
-
-            print("++++++++++++++++++++++++++++++++++++", serializer.errors)
             
             if isinstance(serializer.errors, list):
                 errors = {key: value[0] if isinstance(value, list) and value else value
@@ -123,8 +117,6 @@ class TournamentAPIView(APIView):
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
-            
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", e)
 
             if tournament:
                 tournament.delete()
@@ -134,10 +126,7 @@ class TournamentAPIView(APIView):
 
     def broadcast_notification(self, notification):
         channel_layer = get_channel_layer()
-        print(">>>>>>>>>>>>>> : ", notification)
         group_name    = f'user_{notification.receiver.id}'
-
-        print("------------- ", f'user_{notification.receiver.id}')
         
         async_to_sync(channel_layer.group_send)(
             group_name,
@@ -159,19 +148,14 @@ class TournamentAPIView(APIView):
 
         try:
 
-            print("---------------------------------------------------,,,, -")
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
             user     = User.objects.get(username=username)
             player   = Player.objects.get(user_id=user.id)
-
-            print("player id ", player.id, user.id)
 
             tournament_id = request.data.get("tournament_id")
             avatar        = request.FILES.get("player_avatar", None)
             nickname      = request.data.get("nickname", None)
             status_value  = request.data.get("status")
-            
-            print("----------------- ", tournament_id)
 
             try:
                 tournament = Tournament.objects.get(id=tournament_id)
@@ -212,10 +196,8 @@ class TournamentAPIView(APIView):
                 
                 serializer = PlayerTournamentSerializer(player_tournament, data=player_tournament_data)
                 if serializer.is_valid():
-                    print("serializer is valid()")
                     serializer.save()
                 else:
-                    print("erializer.errors", serializer.errors)
                     return Response(
                         {"error": "Invalid data provided.", "details": serializer.errors},
                         status=status.HTTP_400_BAD_REQUEST
@@ -280,8 +262,6 @@ class TournamentAPIView(APIView):
             tournament      = get_object_or_404(Tournament, id = tournament_id)
 
             if tournament.creator_id == user.id:
-                # print("===> on Delete : ", ContentType.objects.get_for_model(Tournament))
-                # Notification.objects.filter(content_type=ContentType.objects.get_for_model(Tournament), object_id=tournament.id).delete()
                 tournament.delete()
                 return Response({'message': 'Tournament deleted successfully'}, status=201)
             else:
@@ -302,7 +282,6 @@ class TournamentAPIView(APIView):
                 if notif_serializer.is_valid(raise_exception=True):
                     notif_serializer.save()
                     self.broadcast_notification(notif_serializer.instance)
-
 
                 return Response({'message': 'You have left the tournament'}, status=status.HTTP_200_OK)
         except Tournament.DoesNotExist:
@@ -345,7 +324,6 @@ class TournamentAPIView(APIView):
             tournament = Tournament.objects.get(id=tournament_id)
             if tournament.creator.id != user.id:
                 if tournament.status == 'pending':
-                    print("tournament status: ", tournament.status)
                     raise Exception("The tournament hasn't started yet!")
             return tournament
 
@@ -365,13 +343,9 @@ class TournamentAPIView(APIView):
 
             if total_players != 4:
                 raise Exception(f"Not enough participants. {needed_players} more participants are needed.")
-            print(total_players)
             return total_players
         except Exception as e:
             raise Exception(f"{str(e)}")
-
-
-# i don't have friends yet so i will get all the users of the website i will update it soon
 
 # -----------------------------------GET---------------------------------------------------------------
 

@@ -19,7 +19,6 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
         status   = data.get('status')
         nickname = data.get('nickname')
 
-        print("acccccccccccccccccccccccccccccccccccccc")
         if status == 'accepted' and not nickname:
             raise ValidationError({'nickname': 'Nickname cannot be empty.'})
         return data
@@ -34,7 +33,6 @@ class TournamentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Override the default validation to handle custom checks"""
-        print(">>>>>> ", data)
 
         name = data.get('name')
         if not name:

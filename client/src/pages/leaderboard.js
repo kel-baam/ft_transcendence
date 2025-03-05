@@ -3,7 +3,6 @@ import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
 import { sidebarRight } from '../components/sidebar-right.js'
 import { customFetch } from '../package/fetch.js'
-import { showErrorNotification } from './utils/errorNotification.js'
 
   export const Leaderboard = defineComponent({
     state(){
@@ -13,43 +12,8 @@ import { showErrorNotification } from './utils/errorNotification.js'
             data :[],
             isloading : true,
 
-            notificationActive: false,
-            isBlur:false,
-            notification_data: null,
-        }
+    }
     },
-
-    async submitForm(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
-        formData.append('status', 'accepted');
-        
-        // print("--------------------> submit form ", formData)
-        try {
-            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                if (response.status === 401) this.appContext.router.navigateTo('/login');
-                const errorText = await response.json();
-                throw new Error(Object.values(errorText)[0]);
-            }
-
-            const successData = await response.json();
-            console.log("Player added:", successData.message);
-            this.updateState({ isBlur: false });
-        } catch (error) {
-            showErrorNotification(error);
-            this.updateState({
-                isBlur: false,
-            })
-        }
-    },
-
     onMounted()
     {
         const userIcon = document.getElementById('leaderboard-icon');
@@ -80,8 +44,8 @@ import { showErrorNotification } from './utils/errorNotification.js'
         )
 
     },
-
     createPlayerEntry(rank, name, score, level, badgeSrc) {
+        // console.log("yyyy",rank,name)
         return h("div", { class: "space" },
             [
                 h("div", {}, [h("p", {}, [rank])]),
@@ -91,39 +55,25 @@ import { showErrorNotification } from './utils/errorNotification.js'
                 h("div", {}, [h("img", { src: badgeSrc })])
             ]
         );
-    },
-
+        },
+// style:{'overflow-y': 'hidden'}
     render(){
         const {data, isloading} = this.state
         const playersLen = Object.keys(data).length
 
+        // console.log("this.state.data",Object.keys(data).length 
         return(
                 h('div',{id:'global'},[
-                    h(header, {icon_notif: this.state.notificationActive,
-                        on          : {
-                            iconClick :()=>{
-                                this.updateState({ notificationActive: !this.state.notificationActive }); 
-                            },
-                            blur :(notification_data)=> {
-                                this.updateState({
-                                    isBlur            : !this.state.isBlur,
-                                    notification_data : notification_data
-                                })
-                            },
-                        },
-                        key : 'header'}),
-                    h('div', { class:'content', style:{'overflow-y': 'hidden'} }, 
+                    h(header, {}),
+                    h('div', {class:'content',style:{'overflow-y': 'hidden'} }, 
                         [h(sidebarLeft, {}),
-                            h('div',{
-                                class:'home-content',
-                                style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none', 'z-index':'5'} : {}
-                            }, playersLen > 0 && !isloading?[
+                            h('div',{class:'home-content'}, playersLen > 0 ?[
                                 
                                 h('div',{class:'leaderboard-title'},[
                                     h('h1',{},['Leaderboard'])
                                 ]),
                                 h('div',{class: 'pics-rank'},[
-                                    h('div',{class:'first-place'},playersLen >= 1  && !isloading?[
+                                    h('div',{class:'first-place'}, playersLen >= 1  ?[
                                         h('img',{class:'crown-pic', src:'./images/crown-removebg-preview.png'}),
                                         h('img',{class:'first-pic', src:`${data[0].picture}`}),
                                         h('h4',{},[`${data[0].username}`])
@@ -132,7 +82,7 @@ import { showErrorNotification } from './utils/errorNotification.js'
                                         h('h1',{},['?'])
                                     ]),
                                     h('div',{class:'second-third-place'},[
-                                        h('div',{class:'second-place'},playersLen >= 2 && !isloading?[
+                                        h('div',{class:'second-place'},playersLen >= 2 ?[
                                             h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
                                             h('img',{class:'second-pic',src:`${data[1].picture}`,alt:'second player picture'}),
                                             h('h4',{},[`${data[1].username}`])
@@ -140,10 +90,10 @@ import { showErrorNotification } from './utils/errorNotification.js'
                                             h('img',{class:'second-pic',src:'./images/accountUser.png',alt:'third player picture'}),
                                             h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])]
                                         ),
-                                        h('div',{class:'third-place'},playersLen >= 3 && !isloading?[
+                                        h('div',{class:'third-place'},playersLen >= 3 ?[
                                             h('img',{class:'third-symbol',src:'./images/third.png'}),
                                             h('img',{class:'third-pic',src:`${data[2].picture}`,alt:'third player picture'}),
-                                            h('h4',{},[`${data[1].username}`])
+                                            h('h4',{},[`${data[2].username}`])
                                         ]:[h('img',{class:'third-symbol',src:'./images/third.png'}),
                                             h('img',{class:'third-pic unknown',src:'./images/accountUser.png',alt:'third player picture'}),
                                             h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])
@@ -170,13 +120,18 @@ import { showErrorNotification } from './utils/errorNotification.js'
                                             ]),
                                         ]),
                                         h('div',{class:'info'},
-                                            data.map((player, index) => {
-                                                return this.createPlayerEntry(index + 1, player.username,player.score,player.level,"./images/diamond.png")
-                                            }),
-                                        )
+                                                data.map((player, index) => {
+                                                    
+                                                    return this.createPlayerEntry(index + 1, player.username,player.score,player.level,"./images/diamond.png")
+
+                                                }),
+                                            )
+                                              
+                                        // )
+                                            
                                     ])
                                 ])
-                            ] : [
+                            ] : !isloading ?[
                                 h('div',{class:'empty'},[
                                     h('div',{class:'leaderboard-title'},[
                                         h('h1',{},['Leaderboard'])
@@ -185,74 +140,11 @@ import { showErrorNotification } from './utils/errorNotification.js'
                                     h('h1',{},['No matches played yet'])
 
                                 ])
-                            ]),
+                            ] : []),
                               h('div', { class: 'friends-bar' }, [
                                 h(sidebarRight, {})
                                 ]),
                     ]),
-                    this.state.isBlur ? 
-                    h('div', { class: 'join-player-form' }, [
-                        h('i', {
-                            class   : 'fa-regular fa-circle-xmark icon',
-                            on      : {
-                                click : () => {
-                                    this.updateState({
-                                        isBlur: false,
-                                    })
-                                }
-                            }
-                        }),
-                        h('form', {
-                            class   : 'form1',
-                            on      : { submit: (event) => this.submitForm(event) }
-                        }, [
-                            h('div', { class: 'avatar' }, [
-                                h('img', { 
-                                    class   : 'createAvatar', 
-                                    src     : './images/people_14024721.png', 
-                                    alt     : 'Avatar' 
-                                }),
-                                h('div', { 
-                                    class   : 'editIcon', 
-                                    on      : {
-                                        click: () => { document.getElementById(`file-upload1`).click(); }
-                                    }
-                                }, [
-                                    h('input', {
-                                        type    : 'file',
-                                        id      : 'file-upload1',
-                                        name    : 'player_avatar',
-                                        accept  : 'image/*',
-                                        style   :{
-                                            display         : 'none',
-                                            pointerEvents   : 'none'
-                                        },
-                                        on      : { change: (event) => {
-                                            const file = event.target.files[0];
-                                            if (file) {
-                                                const reader    = new FileReader();
-                                                reader.onload   = (e) => {
-                                                    document.querySelector(`.createAvatar`).src = e.target.result;
-                                                };
-                                                reader.readAsDataURL(file);
-                                            }
-                                        }}
-                                    }),
-                                    h('i', { class: 'fas fa-edit icon' })
-                                ])
-                            ]),
-                            h('div', { class: 'createInput' }, [
-                                h('label', { htmlFor: 'playerNickname' }, ['Nickname:']),
-                                h('br'),
-                                h('input', { 
-                                    type        : 'text', 
-                                    name        : 'nickname', 
-                                    placeholder : 'Enter Nickname...' 
-                                })
-                            ]),
-                            h('button', { type: 'submit' }, ['Submit'])
-                        ])
-                    ]) : null
             ])
           
         )}

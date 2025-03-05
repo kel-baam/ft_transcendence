@@ -61,8 +61,8 @@ class Player(models.Model):
     score = models.IntegerField(default=0)
     level = models.IntegerField(default=0)
     rank  = models.IntegerField(default=0)
-    grade = models.CharField(max_length=50, null=True, blank=True, default='Newbie')
-    # grade = models.CharField(_(""), max_length=50, )#silver...
+    grade = models.CharField(max_length=50, null=True, blank=True, default='Newbie')#correct it 
+
 
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
@@ -109,7 +109,7 @@ class Player(models.Model):
                     user=self.user,
                     badge=badge,
                     defaults={'unlock': True}
-                )
+                )#here create
                 if not created and not user_badge.unlock:
                     user_badge.unlock = True
                     user_badge.save()
@@ -208,7 +208,7 @@ class Match(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
@@ -216,6 +216,7 @@ class Match(models.Model):
     
     class Meta:
         db_table = 'Match'
+
 
 class Request(models.Model):
     STATUS_CHOICES = [
@@ -236,7 +237,7 @@ class Request(models.Model):
 
 class Badge(models.Model):
     name = models.CharField(max_length=255)
-    icon = models.URLField() 
+    icon = models.URLField()
     class Meta:
         db_table = 'Badge'
     def __str__(self):
@@ -274,6 +275,7 @@ class Notification(models.Model):
     content_type   = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id      = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
+
 
     def mark_as_read(self):
         self.read_at = timezone.now()

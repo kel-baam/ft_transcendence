@@ -15,6 +15,7 @@ export const GameHistoryCard = defineComponent({
     render()
     {
       const {data, isLoading} = this.state
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>> data : ", data )
       const {isExpanded} = this.props
       if (isLoading)
         return  h('div', { class: 'match-history-container', style : isExpanded ? {
@@ -129,7 +130,7 @@ export const GameHistoryCard = defineComponent({
             ),
             h('div', { class: 'match-result' },
               [
-                isExpanded ? hFragment([h('span', {style: {color: '#0B42AF', fontSize:'20px'}}, [`${item.date}`]), 
+                isExpanded ? hFragment([h('span', {style: {color: '#0B42AF', fontSize:'20px'}}, [`${item.created_at}`]), 
                 h('br')]): null,
                 h('span', { class: 'user-score', style: {color: `${item.player1_score < item.player2_score ? '#D44444' : '#0AA989'}`} },
                    [`${item.player1_score}`]),

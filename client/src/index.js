@@ -7,7 +7,6 @@ import { customFetch } from './package/fetch.js';
 import { Register } from './pages/register.js';
 import { Home } from './pages/home.js';
 import { Leaderboard } from './pages/leaderboard.js';
-// import { settings } from './pages/settings.js';
 import { Profile } from './pages/profile.js';
 import { ResetPassword } from './pages/resetPassword.js';
 import { Game } from './pages/game.js';
@@ -31,7 +30,7 @@ import { ComingSoon } from './components/errorPages/coming_soon.js';
 
 
 window.env = {
-  IP: "10.14.4.4",
+  IP: "10.14.2.1",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -129,29 +128,6 @@ async function isAuthenticated(currentLocation)
 
 // }
 
-async function isUserExists(currentLocation)
-{
-  // console.log("==================>",currentLocation,currentLocation.route.path)
-  // console.log("==================>test",currentLocation.getMusic())
-  const path = currentLocation.getMusic()
-  console.log("==================>i'm smart",currentLocation.extractParams(path))
-  const username = currentLocation.extractParams(path).username
-  // console.log("<<<<<<<<<<<<<<<<<<<<<<<<< username : ",username)
-  const result = await customFetch(`https://${window.env.IP}:3000/api/user?username=${username}`)
-  if(result)
-  {
-    if(!result.ok)
-      { 
-
-        if(result.status == 404)
-        {
-          document.body.innerText = 'yees not found';
-          // return `/user/${username}`
-
-        }
-      }
-  }
-}
 const router = new HashRouter([
 
     { path: '/', component: LandingPage 

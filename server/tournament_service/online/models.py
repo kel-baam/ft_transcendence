@@ -63,7 +63,6 @@ class Player(models.Model):
     rank  = models.IntegerField(default=0)
     grade = models.CharField(max_length=50, null=True, blank=True, default='Newbie')
 
-
     def __str__(self):
         return f'{self.user} ,{self.score}, {self.rank}'
 
@@ -208,7 +207,7 @@ class Match(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
-    created_at = models.DateTimeField(default=timezone.now)  # When the match is created
+    created_at = models.DateField(auto_now_add=True)  # When the match is created
 
     def __str__(self):
         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
@@ -216,7 +215,6 @@ class Match(models.Model):
     
     class Meta:
         db_table = 'Match'
-
 
 class Request(models.Model):
     STATUS_CHOICES = [
@@ -237,7 +235,7 @@ class Request(models.Model):
 
 class Badge(models.Model):
     name = models.CharField(max_length=255)
-    icon = models.URLField()
+    icon = models.URLField() 
     class Meta:
         db_table = 'Badge'
     def __str__(self):
@@ -275,7 +273,6 @@ class Notification(models.Model):
     content_type   = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id      = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
-
 
     def mark_as_read(self):
         self.read_at = timezone.now()

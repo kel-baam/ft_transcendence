@@ -64,7 +64,7 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
                         response = redirect(f"{domain}/#/2FA")
 
-                if(email != payload.get("email")):
+                if(email != payload.get("email") or user.username != payload.get("username")):
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
@@ -75,7 +75,7 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
         except (ExpiredSignatureError, InvalidTokenError):
                 try:
                         payload = decode(request.COOKIES.get("refresh_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
-                        if(email!= payload.get("email")):
+                        if(email!= payload.get("email") or user.username != payload.get("username")):
                                 raise InvalidTokenError("Custom error message")
                         if(user.enabled_twoFactor and payload['login_level'] == 1):
                                 response = redirect(f"{domain}/#/2FA")
@@ -113,7 +113,7 @@ def set_tokens_in_login(request,email,response):
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
                         response = JsonResponse({'message': "2fa active"}, status=200)
 
-                if(email != payload.get("email")):
+                if(email != payload.get("email") or user.username != payload.get("username")):
                         token = generateToken(user,1)
                         accessTokenLifeTime =int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
                         refreshTokenLifeTime = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
@@ -123,7 +123,7 @@ def set_tokens_in_login(request,email,response):
         except (ExpiredSignatureError, InvalidTokenError):
                 try:
                         payload = decode(request.COOKIES.get("refresh_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
-                        if(email!= payload.get("email")):
+                        if(email!= payload.get("email")  or user.username != payload.get("username")):
                                 raise InvalidTokenError("Custom error message")
                         if(user.enabled_twoFactor and payload['login_level'] == 1):
                                 response = JsonResponse({'message': "2fa active"}, status=200)
@@ -391,6 +391,8 @@ def logout(request):
             response.delete_cookie('access_token')
             return response
         except Exception as e:
+            print(">>>>>>>>>>>>>>>>>>> dfjgfhghgfhjhgjffdskgjkfg ", str(e))
+            
             return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])                 
