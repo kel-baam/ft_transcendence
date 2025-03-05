@@ -20,40 +20,43 @@ export const UserAchievementsCard = defineComponent({
           ]),
           h('div', { class : 'badges-container' }, [
             h('div', { class : 'badge-item' }, [
-              !data[0].unlocked ? h('img', { 
-                src: './images/lock.png', 
-                alt: 'lock icon' 
-              }) : null,
-              h('div', { }, [
+              // !data[0].unlocked ? h('img', { 
+              //   class : 'lock',
+              //   src: './images/lock.png', 
+              //   alt: 'lock icon' 
+              // }) : null,
+              h('div', { class : 'sys_badge0' }, [
                  h('img', {src : `https://${window.env.IP}:3000${data[0].icon}`, style : !data[0].unlocked ? 
               {
                 filter : 'grayscale(50%) brightness(0.5)', 
                 opacity: '0.5'} : {filter : 'none', opacity : 1}})
               ])
              
-          
 
             ]),
             h('div', { class : 'badge-item' }, [
-              !data[1].unlocked ? h('img', { 
-                src: './images/lock.png', 
-                alt: 'lock icon' 
-              }) : null,
-              h('div', { }, [
+              // !data[1].unlocked ?
+              // h('img', { 
+              //   class : 'lock',
+              //   src: './images/lock.png', 
+              //   alt: 'lock icon' 
+              // }) : null,
+              h('div', { class : 'sys_badge1' }, [
                 h('img', {src : `https://${window.env.IP}:3000${data[1].icon}`, style : !data[1].unlocked ? 
-             {
-               filter : 'grayscale(50%) brightness(0.5)', 
-               opacity: '0.5'} : {filter : 'none', opacity : 1}})
+                {
+                filter : 'grayscale(50%) brightness(0.5)', 
+                opacity: '0.5'} : {filter : 'none', opacity : 1}})
              ])
             ])
           ]),
           h('div', { class : 'badges-container' }, [
             h('div', { class : 'badge-item' }, [
-              !data[2].unlocked ? h('img', { 
-                src: './images/lock.png', 
-                alt: 'lock icon' 
-              }) : null,
-              h('div', { }, [
+              // !data[2].unlocked ? h('img', {
+              //   class : 'lock',
+              //   src: './images/lock.png', 
+              //   alt: 'lock icon' 
+              // }) : null,
+              h('div', { class : 'sys_badge2' }, [
                 h('img', {src : `https://${window.env.IP}:3000${data[2].icon}`, style : !data[2].unlocked ? 
              {
                filter : 'grayscale(50%) brightness(0.5)', 
@@ -62,11 +65,12 @@ export const UserAchievementsCard = defineComponent({
              ])
             ]),
             h('div', { class : 'badge-item' }, [
-              ! data[3].unlocked ? h('img', { 
-                src: './images/lock.png', 
-                alt: 'lock icon'
-              }) : null,
-              h('div', { }, [
+              // ! data[3].unlocked ? h('img', { 
+              //   class : 'lock',
+              //   src: './images/lock.png', 
+              //   alt: 'lock icon'
+              // }) : null,
+              h('div', {class : 'sys_badge3' }, [
                 h('img', {src : `https://${window.env.IP}:3000${data[3].icon}`, style : !data[3].unlocked ? 
              {
                filter : 'grayscale(50%) brightness(0.5)', 

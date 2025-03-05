@@ -291,10 +291,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 
                 if match and match.status != "completed" and match.status != "exited":
                     print("-===", self.player)
-                    if self.type == "online" and self.player == 'player1':
+                    if self.type == "online" and self.player != 'player1':
                         print("_____________________")
                         self.player1Score = 8
-                    elif self.type == "online" and self.player == 'player2':
+                    elif self.type == "online" and self.player != 'player2':
                         print("_____________________++")
                         self.player2Score = 8
                     print("---------------------------------")
