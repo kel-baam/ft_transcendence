@@ -1,6 +1,7 @@
 import {defineComponent, h } from '../../package/index.js'
 import { header } from '../../components/header.js'
 import { sidebarLeft } from '../../components/sidebar-left.js'
+import { sidebarRight } from '../../components/sidebar-right.js'
 import { showErrorNotification } from '../utils/errorNotification.js'
 
 let socket = null;
@@ -72,12 +73,10 @@ export const OnlinePvp = defineComponent({
                 else if (data.action === "match_found")
                 {
                     console.log("----------------------------------")
-                    // this.updateState({ player_data: data.opponent });
                     this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                 }
                 else if (data.action === "opponent_disconnected")
                 {
-                    console.log("------------------------------------------------------------")
                     showErrorNotification(data.message);
                     this.appContext.router.navigateTo('/pvp');
                 }
@@ -131,7 +130,9 @@ export const OnlinePvp = defineComponent({
                         h('img', { src: `https://${window.env.IP}:3000/media${this.state.player_data.picture}`,style : {'object-fit': 'cover'}  }),
                         h('h3', {}, [this.state.player_data.username || "Searching..."])
                     ])
-                ])
+                ]),h('div', { class: 'friends-bar' }, [
+                h(sidebarRight, {})
+            ]),
             ]),
             this.state.isBlur ? 
             h('div', { class: 'join-player-form' }, [

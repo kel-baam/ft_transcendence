@@ -1,6 +1,7 @@
 import { createApp, defineComponent, h }    from '../../../package/index.js'
 import { header }                           from '../../../components/header.js'
 import { sidebarLeft }                      from '../../../components/sidebar-left.js'
+import { sidebarRight } from '../../../components/sidebar-right.js';
 import { showErrorNotification, highlightInvalidInput } from '../../utils/errorNotification.js';
 import { customFetch } from '../../../package/fetch.js';
 
@@ -285,6 +286,8 @@ export const LocalTournament = defineComponent({
                             ])
                         ])
                     ])
+                ]), h('div', { class: 'friends-bar' }, [
+                    h(sidebarRight, {})
                 ]), this.state.isBlur ? 
                 h('div', { class: 'join-player-form' }, [
                     h('i', {

@@ -4,7 +4,7 @@ import { header } from '../../components/header.js'
 import { sidebarLeft } from '../../components/sidebar-left.js'
 import { customFetch } from '../../package/fetch.js'
 import { showErrorNotification } from '../utils/errorNotification.js'
-
+import { sidebarRight } from '../../components/sidebar-right.js'
 export const Tournament = defineComponent({
     
     state(){
@@ -111,7 +111,9 @@ export const Tournament = defineComponent({
                             }, ['Local'])
                         ])
                     ])
-                ])
+                ]), h('div', { class: 'friends-bar' }, [
+                    h(sidebarRight, {})
+                ]),
             ]),
             this.state.isBlur ? 
             h('div', { class: 'join-player-form' }, [

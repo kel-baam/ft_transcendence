@@ -5,6 +5,7 @@ import { NotFound } from '../../../components/errorPages/404.js';
 import { Unauthorized } from '../../../components/errorPages/401.js';
 import { showErrorNotification } from '../../utils/errorNotification.js';
 import { customFetch } from '../../../package/fetch.js';
+import { sidebarRight } from '../../../components/sidebar-right.js';
 
 let socket          = null;
 let redirectTimeout = null;
@@ -255,6 +256,8 @@ export const LocalHierarchy = defineComponent({
                                 h('h3', {}, [this.state.currentMatch.player2])
                             ]
                         )
+                    ]), h('div', { class: 'friends-bar' }, [
+                            h(sidebarRight, {})
                     ]), this.state.isBlur ? 
                     h('div', { class: 'join-player-form' }, [
                         h('i', {
