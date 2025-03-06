@@ -1,6 +1,7 @@
 import {defineComponent, h } from '../../package/index.js'
 import { header } from '../../components/header.js'
 import { sidebarLeft } from '../../components/sidebar-left.js'
+import { sidebarRight } from '../../components/sidebar-right.js'
 import { showErrorNotification } from '../utils/errorNotification.js'
 
 let socket = null;
@@ -71,12 +72,11 @@ export const OnlinePvp = defineComponent({
                 } 
                 else if (data.action === "match_found")
                 {
-                    this.updateState({ player_data: data.opponent });
+                    console.log("----------------------------------")
                     this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                 }
                 else if (data.action === "opponent_disconnected")
                 {
-                    console.log("------------------------------------------------------------")
                     showErrorNotification(data.message);
                     this.appContext.router.navigateTo('/pvp');
                 }
@@ -123,14 +123,16 @@ export const OnlinePvp = defineComponent({
                  }, [
                     h('div', { class: 'user-profile' }, [
                         h('img', { src: `https://${window.env.IP}:3000/media${this.state.user_data.picture}`, style : {'object-fit': 'cover'} }),
-                        h('h3', {}, [this.state.user_data.username || "Unknown"])
+                        h('h3', {}, [this.state.user_data.username])
                     ]),
                     h('div', { class: 'vs' }, [h('img', { src: './images/vs.png' })]),
                     h('div', { class: 'invited' }, [
-                        h('img', { src: `https://${window.env.IP}:3000/media${this.state.player_data.picture}`,style : {'object-fit': 'cover'}  }),
+                        h('img', { src: './images/people_14024721.png',style : {'object-fit': 'cover'}  }),
                         h('h3', {}, [this.state.player_data.username || "Searching..."])
                     ])
-                ])
+                ]),h('div', { class: 'friends-bar' }, [
+                h(sidebarRight, {})
+            ]),
             ]),
             this.state.isBlur ? 
             h('div', { class: 'join-player-form' }, [

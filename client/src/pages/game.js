@@ -1,6 +1,7 @@
 import{defineComponent, h} from '../package/index.js'
 import { showErrorNotification } from '../package/utils.js';
-
+import { NotFound } from '../components/errorPages/404.js';
+import { Unauthorized } from '../components/errorPages/401.js';
 
 let socket = null;
 const KEY_UP = 87;
@@ -233,13 +234,13 @@ export const Game = defineComponent(
                     
                     if(data.action && data.action == "init_game")
                     {
-                        draw_game(data);
                         if(data.player)
                             this.updateState({player:data.player,player1Score:data.player1Score,player2Score:data.player2Score, 
-                                player1: data.player1, player2:data.player2})
+                            player1: data.player1, player2:data.player2})
                         else
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
-                                player1: data.player1, player2:data.player2})
+                            player1: data.player1, player2:data.player2})
+                        draw_game(data);
                     }
 
                     
@@ -321,6 +322,8 @@ export const Game = defineComponent(
                     {
                         this.updateState({error:"match not found"})
 
+                        // this.appContext.router.navigateTo(data.redirect_to);
+
                         if (socket) {
                             socket.close();
                         }
@@ -337,6 +340,9 @@ export const Game = defineComponent(
 
                     if (data.action && data.action === "match_exited")
                     {
+                        console.log("match_exited >> ", data.redirect_to)
+                        this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
+                            player1: data.player1, player2:data.player2})
                         this.announce_winner('You Lose!');
 
                         if (socket) {
@@ -348,6 +354,38 @@ export const Game = defineComponent(
                         }, 3000);
 
                         showErrorNotification(data.message)
+                    }
+                    
+                    if (data.action && data.action === "quit_match")
+                    {
+                        console.log("quit_match >> ", data)
+                        // if(data.winner == this.state.player)
+                        //     this.announce_winner('You Won!');
+                        // else
+                        //     this.announce_winner('You Lose!');
+        
+                        let message = "You Won!" 
+
+                        if(type == "local")
+                        {
+                            const name1 =  (this.state.player1.nickname).substring(0, 10)
+                            const name2 =  (this.state.player2.nickname).substring(0, 10)
+                            if(data.Winner =="player1")
+                                message = name1 + " Won!"
+                            else
+                                message = name2 +" Won!"
+
+                        }
+                        
+                        console.log("===========>winner=>",message,this.state.player , data.winner)
+                        if (this.state.player === data.winner || type == "local")
+                            this.announce_winner(message);
+                        else
+                            this.announce_winner('You Lose!');
+                        setTimeout(() => {
+                            this.appContext.router.navigateTo(data.redirect_to);
+                        }, 3000);
+
                     }
 
                     if (data.action && data.action === "match_ends")
@@ -376,6 +414,10 @@ export const Game = defineComponent(
 
         async exit_game() {
             socket.send(JSON.stringify({ action: 'exit_game' }));
+            // if (socket) {
+            //     socket.close();
+            // }
+
         },
 
         render()
@@ -384,11 +426,11 @@ export const Game = defineComponent(
 
             if (error && error === "match not found")
             {
-                return h('h1', {}, ["404 game not found !!!"])
+                return h(NotFound, {}, ["404 game not found !!!"])
             }
             if (error && error === "unauthorized")
             {
-                return h('h1', {}, ["401 unauthorized !!!"])
+                return h(Unauthorized, {}, ["404 game not found !!!"])
             }
             return h('div',{id:'game'},[
                 h('nav',{id:'header'},[

@@ -54,8 +54,6 @@ export const OnlineHierarchy = defineComponent({
             
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/?tournamentId=${tournamentId}`);
 
-            console.log("---> : ", tournamentId)
-
             socket.onopen = () => {
                 console.log('WebSocket connection established');
 
@@ -70,18 +68,16 @@ export const OnlineHierarchy = defineComponent({
                 console.log('WebSocket Data:', data);
                 if (data.success)
                 {
-                    console.log(" ==--> ", data.matches);
                     this.updateState({
-                        matcheRounds : data.matches,
+                        matcheRounds: data.matches,
                         winners     : data.winners
                     });
+
                     if (data.tournament_status === "started")
                         this.startMatches(data.matches);
                 }
                 else if (data.action === "redirect_match")
                 {
-                    console.log("----------> player redirected")
-                    
                     this.appContext.router.navigateTo(`/game?id=${data.match_id}&type=online`);
                 }
                 else
@@ -107,7 +103,6 @@ export const OnlineHierarchy = defineComponent({
                     match_id : match.match_id
                 }));
             }
-            console.log("here");
         });
     },
 
@@ -143,7 +138,6 @@ export const OnlineHierarchy = defineComponent({
                 h('div', {
                     class: 'hierarchy-global-content',
                     style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
-
                 }, [
                     h('div', { class: 'title' }, [
                         h('h1', {}, ['Tournament in Progress'])

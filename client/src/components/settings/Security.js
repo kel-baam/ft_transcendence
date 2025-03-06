@@ -88,11 +88,13 @@ export const Security = defineComponent(
                             'data-translate' : 'enable'
                         },   [!isEnabled ?  'Enable' : 'Disable'])
                     ] : [
-                        h(EnableTwoFactor,{on : {
-                            '2faVerified' : ()=>{
-                                this.updateState({isQrCodeVisible : false, isEnabled : true})
-                            }
-                        }}), 
+                        h(EnableTwoFactor,{
+                        //     on : {
+                        //     '2faVerified' : ()=>{
+                        //         this.updateState({isQrCodeVisible : false, isEnabled : true})
+                        //     }
+                        // }
+                    }), 
                         // h('button', {style:{
                         //     'background-color': '#D44444',
                         //     color: '#FFEEBF',

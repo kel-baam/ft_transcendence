@@ -22,34 +22,23 @@ export const LeaderboardHome = defineComponent({
         customFetch(`https://${window.env.IP}:3000/api/user/ranking?top=5`)
         .then(res=>
             {
-                console.log(">>>>>>>>>>>>>>>>>>>> res status in leaderboard : ", res.status)
                 return res.json()
             }
         )
         .then(result=>
         {
             this.updateState({
-                data : result,
+                data     : result,
                 isloading:false
 
             })
-            console.log("----------------------> result : ", result)
         }
         )
     },
     render(){
-        // console.log(">>>>>>>>>>>>> data : ",  this.state.data.map(item =>
-        //     h('div', { class: 'second-one' }, [
-        //         h('p', {}, [`${item.user.Rank}`]),
-        //         h('h3', {}, [`${item.user.username}`]),
-        //         h('div', { class: 'scor-coin' }, [
-        //             h('p', {}, [`${item.user.score}`]),
-        //             h('img', { src: './images/star_12921513.png', class: 'coin' })
-        //         ])
-        //     ])
-        // ))
         const {data, isloading} = this.state
         const playersLen = Object.keys(data).length
+
         return h('div', { class: 'leader-board' }, playersLen > 0?[
             h('div', { class: 'winners' }, [
                 h('div', { class: 'coll1' },[

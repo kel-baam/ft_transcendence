@@ -10,7 +10,7 @@ from django.conf import settings
 # from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
-from django.db.models import  Q, F,Case, When, IntegerField
+from django.db.models import  Q, F,Case, When, IntegerField, Exists, OuterRef
 import os
 import requests
 from django.core.cache import cache
@@ -151,7 +151,7 @@ class MatchHistoryView(APIView):
             matches = Match.objects.filter(
                 (models.Q(player1=Player.objects.get(user=user)) | models.Q(player2=Player.objects.get(user=user)) )
                  & (models.Q(status='completed') | models.Q(status='exited'))
-            )
+            ).order_by('id')
             matches = MatchSerializer(matches, many=True, fields={'player1', 'player2','player1_score',  'player2_score', 'created_at'}).data
             return Response(matches, status=status.HTTP_200_OK)
         except User.DoesNotExist:
@@ -375,7 +375,7 @@ class UserBadgesView(APIView):
             # print(">>>>>>>>>>>>>> here badges after serializer : ", badgesSerializer.data)
             return Response(UserBadges, status=status.HTTP_200_OK)
         except Exception as e:
-                # print(">>>>>>>>>>>>>>>>>>>> e : ", str(e))
+                print(">>>>>>>>>>>>>>>>>>>> e : ", str(e))
                 return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
     def post(self, request):

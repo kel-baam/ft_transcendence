@@ -91,8 +91,7 @@ import{createApp, defineComponent, DOM_TYPES, h,
                                             h('i', {class: 'fa-solid fa-unlock', style: {'color': '#14397C'}, on : {
                                                 click : () =>
                                                 {
-                                                    console.log("----------------------------> item.id : ", item.requet_id)
-                                                    customFetch(`https://${window.env.IP}:3000/api/user/friendships?id=${item.id}`, 
+                                                    customFetch(`https://${window.env.IP}:3000/api/user/friendships?id=${item.request_id}`, 
                                                     {
                                                         method : 'DELETE'
                                                     }

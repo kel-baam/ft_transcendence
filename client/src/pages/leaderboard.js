@@ -46,13 +46,13 @@ import { customFetch } from '../package/fetch.js'
     },
     createPlayerEntry(rank, name, score, level, badgeSrc) {
         // console.log("yyyy",rank,name)
+        name = name.substring(0, 10)
         return h("div", { class: "space" },
             [
                 h("div", {}, [h("p", {}, [rank])]),
                 h("div", {}, [h("p", {}, [name])]),
                 h("div", {}, [h("p", {}, [score])]),
                 h("div", {}, [h("p", {}, [level])]),
-                h("div", {}, [h("img", { src: badgeSrc })])
             ]
         );
         },
@@ -76,7 +76,7 @@ import { customFetch } from '../package/fetch.js'
                                     h('div',{class:'first-place'}, playersLen >= 1  ?[
                                         h('img',{class:'crown-pic', src:'./images/crown-removebg-preview.png'}),
                                         h('img',{class:'first-pic', src:`${data[0].picture}`}),
-                                        h('h4',{},[`${data[0].username}`])
+                                        h('h4',{},[`${data[0].username.substring(0, 10)}`])
                                     ]:[h('img',{class:'crown-pic', src:'./images/crown-removebg-preview.png'}),
                                         h('img',{class:'first-pic',src:'./images/accountUser.png',alt:'third player picture'}),
                                         h('h1',{},['?'])
@@ -85,7 +85,7 @@ import { customFetch } from '../package/fetch.js'
                                         h('div',{class:'second-place'},playersLen >= 2 ?[
                                             h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
                                             h('img',{class:'second-pic',src:`${data[1].picture}`,alt:'second player picture'}),
-                                            h('h4',{},[`${data[1].username}`])
+                                            h('h4',{},[`${data[1].username.substring(0, 10)}`])
                                         ]:[h('img',{class:'second-symbol',src:"./images/second_1021187.png"}),
                                             h('img',{class:'second-pic',src:'./images/accountUser.png',alt:'third player picture'}),
                                             h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])]
@@ -93,7 +93,7 @@ import { customFetch } from '../package/fetch.js'
                                         h('div',{class:'third-place'},playersLen >= 3 ?[
                                             h('img',{class:'third-symbol',src:'./images/third.png'}),
                                             h('img',{class:'third-pic',src:`${data[2].picture}`,alt:'third player picture'}),
-                                            h('h4',{},[`${data[2].username}`])
+                                            h('h4',{},[`${data[2].username.substring(0, 10)}`])
                                         ]:[h('img',{class:'third-symbol',src:'./images/third.png'}),
                                             h('img',{class:'third-pic unknown',src:'./images/accountUser.png',alt:'third player picture'}),
                                             h('h1',{style:{fontSize:'20px',color:"#BBB7B3"}},['?'])
@@ -114,9 +114,6 @@ import { customFetch } from '../package/fetch.js'
                                             ]),
                                             h('div',{},[
                                                 h('p',{},['Level']),
-                                            ]),
-                                            h('div',{},[
-                                                h('p',{},['Badge']),
                                             ]),
                                         ]),
                                         h('div',{class:'info'},

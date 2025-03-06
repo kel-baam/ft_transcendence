@@ -79,25 +79,43 @@ export const JoinedTournaments = defineComponent({
     },
     
     render() {
+        const {isloading} = this.props
+
+        console.log("------------------------> isloading here : ", isloading)
+        
         return h('div', { class: 'joinedTournament' }, [
             h('div', { class: 'title' }, [h('h1', {}, ['Joined Tournaments'])]),
             h('div', { class: 'tournaments' },
-                (this.props.tournaments && this.props.tournaments.length > 0) ? this.props.tournaments.map((tournament) =>
-                    h('div', { class: 'available' }, [
-                        h('img', { src:  `https://${window.env.IP}:3000${tournament.participants.find(participant => participant.role === 'creator').avatar}`}),
-                        h('a', {
-                            on : { click : () => this.startTournament(tournament.id) }
-                        }, [tournament.name]),
-                        h('i', {
-                            class     : "fa-regular fa-circle-xmark icon", 
-                            style     : { color:'#D44444' },
-                            on        : {
-                                click : () => this.delete_tournament(tournament.id)
-                            }
-                        })
-                    ])
-                ) : [h('p', {}, ['No joined tournaments'])]
+                (this.props.tournaments && this.props.tournaments.length > 0 && !isloading)
+                    ? this.props.tournaments.map((tournament) => {
+                        const creator = tournament.participants.find(participant => participant.role === 'creator');
+                        const avatar = creator && creator.avatar 
+                            ? `https://${window.env.IP}:3000${creator.avatar}` 
+                            : './images/people_14024721.png';
+    
+                        return h('div', { class: 'available' }, [
+                            h('img', { src: avatar }),
+                            h('a', {
+                                on: { click: () => this.startTournament(tournament.id) }
+                            }, [tournament.name]),
+                            h('i', {
+                                class: "fa-regular fa-circle-xmark icon", 
+                                style: { color: '#D44444' },
+                                on: {
+                                    click: () => this.delete_tournament(tournament.id)
+                                }
+                            })
+                        ]);
+                    })
+                    : !isloading ? [h('p', {}, ['No joined tournaments'])] : []
             )
         ]);
+    },
+    onMounted()
+    {
+        this.updateState({
+            isloading : false
+        })
     }
+    
 });

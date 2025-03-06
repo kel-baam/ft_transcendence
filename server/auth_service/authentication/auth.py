@@ -363,37 +363,66 @@ def  registerForm(request):
                 return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-
-
-
 @csrf_exempt
-@api_view(['POST'])                 
+@api_view(['POST'])
 def logout(request):
+    try:
+        refresh_token = request.COOKIES.get('refresh_token')
+        if not refresh_token:
+            raise ValueError("Refresh token not provided")
         try:
-            refresh_token = request.COOKIES.get('refresh_token')
             token = RefreshToken(refresh_token)
             payload = decode(refresh_token, settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
             user = User.objects.filter(email=payload.get("email")).first()
-            resp = requests.put('http://user-service:8001/api/user',json= {
-                   "status": False
-                }
-            ,
-            headers={
-                   "X-Authenticated-User":user.username
-            }
+        except ExpiredSignatureError:
+            print(">>>>>>>>>>> Refresh token expired")
+            user = None  # Proceed without decoding token
+        
+        if user:
+            resp = requests.put(
+                'http://user-service:8001/api/user',
+                json={"status": False},
+                headers={"X-Authenticated-User": user.username}
             )
-            print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
-        #     user.status = False
-        #     user.save(update_fields=['status'])
-            response = Response(status=status.HTTP_205_RESET_CONTENT)
-            response.delete_cookie('refresh_token')
-            response.delete_cookie('access_token')
-            return response
-        except Exception as e:
-            print(">>>>>>>>>>>>>>>>>>> dfjgfhghgfhjhgjffdskgjkfg ", str(e))
+
+        response = Response(status=status.HTTP_205_RESET_CONTENT)
+        response.delete_cookie('refresh_token')
+        response.delete_cookie('access_token')
+        return response
+
+    except Exception as e:
+        print(">>>>>>>>>>>>>>>>>>> Error: ", str(e))
+        return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# @csrf_exempt
+# @api_view(['POST'])                 
+# def logout(request):
+#         try:
+#             refresh_token = request.COOKIES.get('refresh_token')
+#             token = RefreshToken(refresh_token)
+#             payload = decode(refresh_token, settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
+#             user = User.objects.filter(email=payload.get("email")).first()
+#             resp = requests.put('http://user-service:8001/api/user',json= {
+#                    "status": False
+#                 }
+#             ,
+#             headers={
+#                    "X-Authenticated-User":user.username
+#             }
+#             )
+#             print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
+#         #     user.status = False
+#         #     user.save(update_fields=['status'])
+#             response = Response(status=status.HTTP_205_RESET_CONTENT)
+#             response.delete_cookie('refresh_token')
+#             response.delete_cookie('access_token')
+#             return response
+#         except Exception as e:
+#             print(">>>>>>>>>>>>>>>>>>> dfjgfhghgfhjhgjffdskgjkfg ", str(e))
             
-            return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
+#             return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])                 
 def verify_email(request, uidb64, token):

@@ -37,11 +37,12 @@ export const Home = defineComponent({
 
     async submitForm(event) {
         event.preventDefault();
+
         const formData = new FormData(event.target);
+
         formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
         formData.append('status', 'accepted');
         
-        // print("--------------------> submit form ", formData)
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
@@ -56,10 +57,11 @@ export const Home = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
+
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            
             this.updateState({
                 isBlur: false,
             })

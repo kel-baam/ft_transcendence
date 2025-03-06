@@ -112,7 +112,7 @@ class OnlineFriends(AsyncWebsocketConsumer):
         friends = User.objects.filter(
             models.Q(sent_request__status='accepted', sent_request__reciever=user) |
             models.Q(received_request__status='accepted', received_request__sender=user)
-        )
+        ).distinct()
         return UserSerializer(friends, many=True, fields=['id','username', 'picture', 'status']).data
 
     async def disconnect(self, close_code):
@@ -128,6 +128,10 @@ class OnlineFriends(AsyncWebsocketConsumer):
         """Handles incoming status update messages"""
         print(f"📨 Received status update: {event}")        
         await self.send(text_data=json.dumps(
-            [event["friend"]],
-            
+            event["friends"],  
+        ))
+    async def update_friends(self, event):
+        print(f"📨 Received status update: {event}") 
+        await self.send(text_data=json.dumps(
+            event["friends"],  
         ))

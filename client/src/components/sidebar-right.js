@@ -50,29 +50,10 @@ export const sidebarRight = defineComponent(
             };
         
             socket.onmessage =  (event) =>{
-            const oldFriends = this.state.friends; 
             const newFriends = JSON.parse(event.data); 
-            const friendsMap = new Map();
-
-            oldFriends.forEach(friend => {
-                friendsMap.set(friend.id, { ...friend });  
-            });
-            
-            newFriends.forEach(newFriend => {
-                const existingFriend = friendsMap.get(newFriend.id);
-            
-                if (existingFriend) {
-                    if (existingFriend.status !== newFriend.status) {
-                        existingFriend.status = newFriend.status;
-                    }
-                } else {
-                    friendsMap.set(newFriend.id, { ...newFriend });
-                }
-            });
-            
-            const updatedFriends = Array.from(friendsMap.values());
+            console.log(">>>>>>>>>>>>>>>>>>>>>>> new friends : ", newFriends)
             this.updateState({
-                friends: updatedFriends
+                friends: newFriends
             });
             };
         

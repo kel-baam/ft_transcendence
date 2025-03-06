@@ -318,17 +318,15 @@ font-family: myFont;
 
 /******************** online friends ******************/
 .friends-right-sidebar {
-    height: 25%;
-    overflow-y: scroll;
+    height: 29%;
+    /* border: 2px solid #e90e0e; */
+
+    display: grid;
+    grid-auto-rows: 12.5%;
+
+    box-sizing: border-box;
+    overflow-y: overlay;
     scroll-behavior: smooth;
-    scrollbar-width: 10px;
-    max-height: 25%;
-    /* background: #1c2340; */
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    /* gap: 15px; */
-    gap: 2em;
 }
 
 /* Friends List */

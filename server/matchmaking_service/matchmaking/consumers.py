@@ -3,10 +3,7 @@ from asgiref.sync                       import sync_to_async
 from channels.db                        import database_sync_to_async
 from django.conf                        import settings
 from django.db                          import models
-from asgiref.sync                       import async_to_sync
-from channels.layers                    import get_channel_layer
-from django.contrib.contenttypes.models import ContentType
-
+from django.db.models                   import Q
 from .models                            import Player, User, Match, Tournament, PlayerTournament
 from .serializers                       import *
 from .exceptions                        import CustomAPIException
@@ -16,7 +13,6 @@ import asyncio
 import jwt
 import random
 import string
-from django.core.exceptions import ObjectDoesNotExist
 
 class Matchmaking(AsyncWebsocketConsumer):
     waiting_player = None
@@ -49,13 +45,20 @@ class Matchmaking(AsyncWebsocketConsumer):
                         await self.accept()
                        
                         self.tournament_id    = self.scope["query_string"].decode().split("tournamentId=")[-1] if "tournamentId=" in self.scope["query_string"].decode() else None
-
+                        
                         if self.tournament_id is None:        
                             await self.send_json({
                                 'action': 'user_data',
                                 'user'  : UserSerializer(user, fields=['id', 'username', 'picture']).data,
                             })
-
+                        check_tournament = await self.check_tournament_exists()
+                        print("check ", check_tournament)
+                        if check_tournament == "Tournament not found":
+                            await self.send(text_data=json.dumps({"action": "tournament_not_found"}))
+                            return
+                        elif check_tournament == "Not authorized":
+                            await self.send(text_data=json.dumps({"action": "unauthorized"}))
+                            return
                     else:
                         await self.send_json({"error": "user doesn't exist"})
                 except Exception as e:
@@ -64,6 +67,18 @@ class Matchmaking(AsyncWebsocketConsumer):
     async def send_json(self, data):
         """Helper function to send JSON messages"""
         await self.send(text_data=json.dumps(data))
+
+    @sync_to_async
+    def check_tournament_exists(self):
+        tournament = Tournament.objects.filter(id=self.tournament_id).first()
+        
+        if not tournament:
+            return "Tournament not found"
+        
+        if tournament.creator_id != self.user_id:
+            return "Not authorized"
+        
+        return "Tournament found and authorized"
 
     async def disconnect(self, close_code):
         print(f"Disconnected: {self.user_id}")
@@ -113,6 +128,13 @@ class Matchmaking(AsyncWebsocketConsumer):
         if action == 'find_opponent':
             await self.pair_pvp_players()
 
+        # if action == 'onUnmounted_player':
+        #     print("onUnmounted_player")
+        #     if Matchmaking.waiting_player and Matchmaking.waiting_player['user_id'] == self.user_id:
+        #         print("Rrr")
+        #         Matchmaking.waiting_player = None
+        #         await self.close()
+
         if action == 'local_tournament':
             await self.pair_local_tournament_players()
 
@@ -121,6 +143,7 @@ class Matchmaking(AsyncWebsocketConsumer):
     async def pair_pvp_players(self):
 
         if Matchmaking.waiting_player is None or Matchmaking.waiting_player["user_id"] == self.user_id:
+
             Matchmaking.waiting_player = {
                 "user_id"  : self.user_id,
                 "websocket": self
@@ -128,10 +151,10 @@ class Matchmaking(AsyncWebsocketConsumer):
 
             print(f"Player {self.user_id} is waiting for an opponent...")
 
-            try:
-                await asyncio.wait_for(self.wait_for_opponent(), timeout=15)
-            except asyncio.TimeoutError:
-                await self.notify_timeout()
+            # try:
+            #     await asyncio.wait_for(self.wait_for_opponent(), timeout=15)
+            # except asyncio.TimeoutError:
+            #     await self.notify_timeout()
 
         else:
             self.matched_player        = Matchmaking.waiting_player
@@ -226,7 +249,7 @@ class Matchmaking(AsyncWebsocketConsumer):
         for _ in range(15):
             if Matchmaking.waiting_player is None:
                 return
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.09)
 
     async def notify_timeout(self):
         """Notify the user if no opponent is found within the timeout period."""
@@ -248,6 +271,15 @@ class Matchmaking(AsyncWebsocketConsumer):
                 'success': False,
                 'error'  : 'Tournament ID is required'
             }))
+            return
+        
+        check_tournament = await self.check_tournament_exists()
+        print("check ", check_tournament)
+        if check_tournament == "Tournament not found":
+            await self.send(text_data=json.dumps({"action": "tournament_not_found"}))
+            return
+        elif check_tournament == "Not authorized":
+            await self.send(text_data=json.dumps({"action": "unauthorized"}))
             return
 
         try:
@@ -281,25 +313,25 @@ class Matchmaking(AsyncWebsocketConsumer):
                     match_index += 1
 
                 print("update_tournament_hierarchy")
-
-                await self.update_tournament_hierarchy(tournament, matches)
+                if tournament.status == 'matchmaking':
+                    await self.update_tournament_hierarchy(tournament, matches)
 
                 matches     = await self.get_all_tournament_matches(self.tournament_id)
                 match_index = 0
                 match_id    = None
-                winners     = []
+                winners     = [None] * len(matches)
 
                 print(">>>>> ,", len(matches))
 
                 while match_index < len(matches):
                     match = matches[match_index]
-                    print("match_index ---> ", match_index)
+                    print("match_index ---> ", match_index, match.id)
                     if match.status == "completed":
                         winner            = await self.determine_winner(match)
                         winner_tournament = await self.get_player_tournament(tournament, winner)
                         if winner:
                             print("----> winner ", winner)
-                            winners.append(PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data)
+                            winners[match_index] = PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data
 
                     if match_id is None and (match.status == 'pending' or match.status == 'started'):
                         match_id = match.id
@@ -365,10 +397,6 @@ class Matchmaking(AsyncWebsocketConsumer):
 
     @sync_to_async
     def determine_winner(self, match):
-
-        print("in determine_winner ---> ", match.player1_score , match.player2_score)
-        print("in determine_winner ---> ", match.player1_nickname , match.player2_nickname)
-
         if match.player1_score > match.player2_score:
             return match.player1_nickname
         else:
@@ -379,21 +407,21 @@ class Matchmaking(AsyncWebsocketConsumer):
         print("IN ----- > update_tournament_hierarchy")
 
         try:
-            winners = []
+            winners = [None] * len(matches)
             match_index = 0
 
             while match_index < len(matches):
                 match = matches[match_index]
-                print("match_index ---> ", match_index)
+                print("match_index update_tournament_hierarchy ---> ", match_index)
                 if match.status == "completed":
                     winner            = await self.determine_winner(match)
                     winner_tournament = await self.get_player_tournament(tournament, winner)
                     if winner:
                         print("----> winner ", winner)
-                        winners.append(PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data)
+                        winners[match_index] = PlayerTournamentSerializer(winner_tournament, fields={'nickname', 'avatar'}).data
                 match_index += 1
             
-            if len(winners) == 2:
+            if winners[0] and winners[1]:
                 room_name = await self.generate_unique_room_code()
                 print("in matchmaking up toyur", winners[0]['nickname'], winners[1]['nickname'])
                 await self.create_local_match(tournament, room_name, winners[0]['nickname'], winners[1]['nickname'])
@@ -447,14 +475,22 @@ class Matchmaking(AsyncWebsocketConsumer):
         except PlayerTournament.DoesNotExist:
             return []
 
+    # @sync_to_async
+    # def get_all_tournament_matches(self, tournament_id):
+    #     try:
+    #         match = Match.objects.filter(tournament_id=tournament_id)
+    #         return list(match)
+    #     except Match.DoesNotExist:
+    #         return []
+    
     @sync_to_async
     def get_all_tournament_matches(self, tournament_id):
         try:
-            match = Match.objects.filter(tournament_id=tournament_id)
-            return list(match)
+            matches = Match.objects.filter(tournament_id=tournament_id).order_by('id')
+            return list(matches)
         except Match.DoesNotExist:
             return []
-        
+
     
     @database_sync_to_async
     def get_tournament(self, tournament_id):

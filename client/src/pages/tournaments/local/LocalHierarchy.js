@@ -1,10 +1,15 @@
 import{defineComponent,h} from '../../../package/index.js'
 import { header } from '../../../components/header.js'
 import { sidebarLeft } from '../../../components/sidebar-left.js'
+import { NotFound } from '../../../components/errorPages/404.js';
+import { Unauthorized } from '../../../components/errorPages/401.js';
+import { showErrorNotification } from '../../utils/errorNotification.js';
+import { customFetch } from '../../../package/fetch.js';
+import { sidebarRight } from '../../../components/sidebar-right.js';
 
-
-let socket = null;
+let socket          = null;
 let redirectTimeout = null;
+
 export const LocalHierarchy = defineComponent({
 
     state(){
@@ -12,7 +17,45 @@ export const LocalHierarchy = defineComponent({
             matcheRounds : [],
             currentMatch : null,
             matchIndex   : 0,
-            winners      : []
+            winners      : [],
+            error        : null,
+            
+            notificationActive: false,
+            isBlur            :false,
+            notification_data : null,
+        }
+    },
+
+    async submitForm(event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+
+        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
+        formData.append('status', 'accepted');
+        
+        try {
+            const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
+                method: 'PUT',
+                body: formData,
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) this.appContext.router.navigateTo('/login');
+                const errorText = await response.json();
+                throw new Error(Object.values(errorText)[0]);
+            }
+
+            const successData = await response.json();
+
+            this.updateState({ isBlur: false });
+        } catch (error) {
+            showErrorNotification(error);
+            
+            this.updateState({
+                isBlur: false,
+            })
         }
     },
 
@@ -39,6 +82,22 @@ export const LocalHierarchy = defineComponent({
                 
                 console.log('WebSocket Data:', data);
                 
+                if (data && data.action == "tournament_not_found")
+                {
+                    this.updateState({error:"match not found"})
+
+                    if (socket) {
+                        socket.close();
+                    }
+                }
+                if (data && data.action == "unauthorized")
+                {
+                    this.updateState({error: "unauthorized"})
+
+                    if (socket) {
+                        socket.close();
+                    }
+                }
                 if (data.success)
                 {
                     this.updateState({
@@ -64,7 +123,6 @@ export const LocalHierarchy = defineComponent({
 
                 if (redirectTimeout) {
                     clearTimeout(redirectTimeout);
-                    console.log('Redirect timeout cleared.');
                 }
             };
 
@@ -77,24 +135,49 @@ export const LocalHierarchy = defineComponent({
     onMounted()
     {
         this.matchmake_players();
-        // i think i will emit an event in match then when the match finish i will back here then i will update matches 
-        //in screen and then qannace next index ...
     },
 
     onUnmounted()
     {
         if (socket) {
-            console.log('WebSocket connection closed');
             socket.close();
         }
     },
 
     render()
     {
-        return h('div', {id:'global'}, [h(header, {}),h('div', {class:'content'}, 
+        const {error} = this.state
+        
+        if (error && error === "match not found")
+        {
+            return h(NotFound, {}, ["404 game not found !!!"])
+        }
+        if (error && error === "unauthorized")
+        {
+            return h(Unauthorized, {}, ["404 game not found !!!"])
+        }
+
+        return h('div', {id:'global'}, [h(header, {
+            icon_notif: this.state.notificationActive,
+                on          : {
+                    iconClick :()=>{
+                        this.updateState({ notificationActive: !this.state.notificationActive }); 
+                    },
+                    blur :(notification_data)=> {
+                        this.updateState({
+                            isBlur            : !this.state.isBlur,
+                            notification_data : notification_data
+                        })
+                    },
+                },
+                key : 'header'
+        }),h('div', {class:'content'}, 
             [h(sidebarLeft, {}),
                 this.state.currentMatch === null ?
-                h('div', { class: 'hierarchy-global-content' }, [
+                h('div', {
+                    class : 'hierarchy-global-content',
+                    style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
+                }, [
                     h('div', { class: 'title' }, [
                         h('h1', {}, ['Tournament in Progress'])
                     ]),
@@ -173,7 +256,71 @@ export const LocalHierarchy = defineComponent({
                                 h('h3', {}, [this.state.currentMatch.player2])
                             ]
                         )
-                    ])
+                    ]), h('div', { class: 'friends-bar' }, [
+                            h(sidebarRight, {})
+                    ]), this.state.isBlur ? 
+                    h('div', { class: 'join-player-form' }, [
+                        h('i', {
+                            class   : 'fa-regular fa-circle-xmark icon',
+                            on      : {
+                                click : () => {
+                                    this.updateState({
+                                        isBlur: false,
+                                    })
+                                }
+                            }
+                        }),
+                        h('form', {
+                            class   : 'form1',
+                            on      : { submit: (event) => this.submitForm(event) }
+                        }, [
+                            h('div', { class: 'avatar' }, [
+                                h('img', { 
+                                    class   : 'createAvatar', 
+                                    src     : './images/people_14024721.png', 
+                                    alt     : 'Avatar' 
+                                }),
+                                h('div', { 
+                                    class   : 'editIcon', 
+                                    on      : {
+                                        click: () => { document.getElementById(`file-upload1`).click(); }
+                                    }
+                                }, [
+                                    h('input', {
+                                        type    : 'file',
+                                        id      : 'file-upload1',
+                                        name    : 'player_avatar',
+                                        accept  : 'image/*',
+                                        style   :{
+                                            display         : 'none',
+                                            pointerEvents   : 'none'
+                                        },
+                                        on      : { change: (event) => {
+                                            const file = event.target.files[0];
+                                            if (file) {
+                                                const reader    = new FileReader();
+                                                reader.onload   = (e) => {
+                                                    document.querySelector(`.createAvatar`).src = e.target.result;
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                    }),
+                                    h('i', { class: 'fas fa-edit icon' })
+                                ])
+                            ]),
+                            h('div', { class: 'createInput' }, [
+                                h('label', { htmlFor: 'playerNickname' }, ['Nickname:']),
+                                h('br'),
+                                h('input', { 
+                                    type        : 'text', 
+                                    name        : 'nickname', 
+                                    placeholder : 'Enter Nickname...' 
+                                })
+                            ]),
+                            h('button', { type: 'submit' }, ['Submit'])
+                        ])
+                    ]) : null
             ]) 
         ])  
     }                    

@@ -58,9 +58,7 @@ export const Form = defineComponent({
                         {
                             event.preventDefault()
                          
-                            for (let [key, value] of formData.entries()) {
-                                // console.log(`${key}:`, value);
-                            }
+                           
                             customFetch(`https://${window.env.IP}:3000/api/user`, {
                                 method : 'PUT',
                                 body : formData
@@ -72,31 +70,21 @@ export const Form = defineComponent({
                                     this.appContext.router.navigateTo('/login')
                                 if (!result.ok) {
                                     return result.json().then(errs => {
-                                        // console.log(">>>>>>>>>>>>>> err : ", errs)
-                                        // this.updateState({
-                                        //     isLoading: false,
-                                        //     // data: null, // Clear data in case of an error
-                                        //     errors: errs, // Error details from the response
-                                        // });
+                                      
                                         document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                         for (const [field, messages] of Object.entries(errs)) {
-                                            // console.log(">>>>>>>>>>>>>>>>>> here  : ", `${field}_error`)
                                             const errorElement = document.getElementById(`${field}_error`);
                                             if (errorElement) {
-                                                // console.log(">>>>>>>>>>>>>>> here the element", errorElement)
                                                 errorElement.style.color = '#D44444'
                                                 errorElement.textContent = '* ' + messages;
-                                                // console.log(">>>>>>>>>>>>> errorElement.textContent : ", errorElement.textContent)
                                             }
                                         }
-                                        throw new Error(`HTTP Error: ${result.status}`); // To exit the chain
+                                        throw new Error(`HTTP Error: ${result.status}`); 
                                     });
                                 }
                                 return result.json()
                             })
                             .then(res =>{
-                                console.log("res is okey")
-                                console.log(">>>>>>>>>>>>>>>>>>>>> res here : ", res)
                                 document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                 this.updateState({
                                         isLoading: false,  
@@ -107,9 +95,7 @@ export const Form = defineComponent({
                     
                             })
                             .catch(error => {
-                                    // console.log('>>>>>>>>>>>>>>>> error : ', error)
-                                    // if(error == 401)
-                                    //     this.appContext.router.navigateTo('/login')
+                                    
                             })
                         }
                     }
@@ -170,9 +156,17 @@ export const Form = defineComponent({
                                             h('label', { for: 'Username', 'data-translate' : 'Username'}, ['Username']),
                                             h('small', {class : 'error', id : "username_error"}),
                                             h('input', { type: 'text', id: 'username', name: 'username', value: `${data.username}` ,
+                                                disabled: true,
+                                                style: {
+                                                    backgroundColor: '#d3d3d3',  // light grey background
+                                                    color: '#888',                // grey text
+                                                    cursor: 'not-allowed',         // show 'forbidden' cursor
+                                                    border: '1px solid #ccc'       // optional: lighter border
+                                                },
                                                 on : {
                                                     change : (event)=>  formData.set(event.target.name, event.target.value)
-                                                } 
+                                                } ,
+                                               
                                             }),
                                             h('br'),
                                             h('label', { for: 'pnumber', 'data-translate' :'Phone number' }, ['Phone number']),
@@ -186,9 +180,17 @@ export const Form = defineComponent({
                                             h('label', { for: 'email', 'data-translate' : 'E-mail' }, ['E-mail']),
                                             h('small', {class : 'error', id : "email_error"}),
                                             h('input', { type: 'text', id: 'email', name: 'email', value: `${data.email}` ,
+                                                disabled: true,
+                                                style: {
+                                                    backgroundColor: '#d3d3d3',  // light grey background
+                                                    color: '#888',                // grey text
+                                                    cursor: 'not-allowed',         // show 'forbidden' cursor
+                                                    border: '1px solid #ccc'       // optional: lighter border
+                                                },
                                                 on : {
                                                     change : (event)=>  formData.set(event.target.name, event.target.value)
-                                                } 
+                                                } , 
+                                               
                                             }),                                  
                                             h('br')
                                         ]
@@ -257,18 +259,11 @@ export const Form = defineComponent({
         customFetch(`https://${window.env.IP}:3000/api/user`)
         .then(result =>{
 
-            if (!result.status == 401)
-            {
-                console.log("res isn't okey ," , " | ", this)
-                
+            if (result.status == 401)
                 this.appContext.router.navigateTo('/login')
-            }
-
             return result.json()
         })
         .then(res =>{
-            console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
-            console.log("res is okey")
             this.updateState({
                     isLoading: false,  
                     data: res,   
@@ -282,8 +277,6 @@ export const Form = defineComponent({
                 data: {},   
                 errors: this.state.errors  
             });
-            // for()
-            console.log(">>>>>>>>>>>> error : ", errors)
         })
       
     }

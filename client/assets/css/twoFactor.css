@@ -173,23 +173,31 @@
     color: #FFEEBF;
     font-family: 'Lemon',serif;
     font-size: 40px;
-    top: 50px;
-    margin-top: 25px;
+    /* top: 100px; */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin:40px;
     padding-bottom: 50px;
+    /* border: 1px solid red; */
 }
 
 #twoFactor .twoFactorCard form
 {
+  /* border: 1px solid red; */
+
     width: 100%;
     height: auto;           
-    padding: 50px;     
+    padding: 20px;     
 }
 
 #twoFactor .twoFactorCard #input
 {
+  border: 1px solid red;
+
   color: black;
-  width: 75%;
-  height: 50px;
+  width: 70%;
+  height: 48px;
   border: none;
   border-radius: 10PX;
   padding-left: 30px;
@@ -216,16 +224,18 @@
 
   
 }
-#twoFactor .twoFactorCard form   #submit
+#twoFactor .twoFactorCard form   #submitt
 {
     width: 30%;
     height: 40px;
     font-family: myFont;
     background-color: #FFEEBF;
+   
     border: none;
+    font-size: 18px;
     border-radius: 20px;
     color: #161C40;
-
+    /* border: 1px solid red; */
 }
 
 
@@ -267,4 +277,3 @@
       transform: translateX(0);
     }
   }
-
