@@ -6,10 +6,8 @@ from django.conf import settings
 import jwt
 from asgiref.sync   import async_to_sync
 from .serializers import *
-# from .signals import *
 
 
-# Notification container's WebSocket consumer
 class Notification(AsyncWebsocketConsumer):
     async def connect(self):
         print("--------> WebSocket connection opened")
@@ -59,7 +57,6 @@ class Notification(AsyncWebsocketConsumer):
                         await self.send(text_data=json.dumps({"error": "User doesn't exist"}))
 
                 except Exception as e:
-                    print(f"Error: {e}")
                     await self.send(text_data=json.dumps({"error": "Token expired or invalid"}))
 
     async def disconnect(self, close_code):
@@ -67,7 +64,7 @@ class Notification(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive(self, text_data):
-        pass  # Handle any incoming data if needed
+        pass
 
     async def send_notification(self, event):
         """
@@ -122,16 +119,13 @@ class OnlineFriends(AsyncWebsocketConsumer):
             await self.close()
 
             
-        print(f"❌ Disconnected: {self.user.email if self.user else 'Unknown User'}")
 
     async def friend_status_update(self, event):
         """Handles incoming status update messages"""
-        print(f"📨 Received status update: {event}")        
         await self.send(text_data=json.dumps(
             event["friends"],  
         ))
     async def update_friends(self, event):
-        print(f"📨 Received status update: {event}") 
         await self.send(text_data=json.dumps(
             event["friends"],  
         ))

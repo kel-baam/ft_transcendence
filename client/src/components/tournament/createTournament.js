@@ -20,9 +20,9 @@ export const CreateTournament = defineComponent({
         
         formData.append('invited-players', JSON.stringify(this.state.players));
 
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(`${key}: ${value}`);
+        // }
 
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
@@ -38,7 +38,9 @@ export const CreateTournament = defineComponent({
                 if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
                 console.error("Error response:", errorText);
+
                 const firstError = Object.values(errorText)[0];
+                console.log(Object.values(errorText))
                 throw new Error(firstError);
             }
             

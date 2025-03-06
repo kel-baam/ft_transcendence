@@ -3,8 +3,7 @@ from rest_framework.decorators      import api_view
 from rest_framework.response        import Response
 from django.shortcuts               import get_object_or_404
 from rest_framework.views           import APIView
-from .models                        import Player, Tournament, PlayerTournament, Notification
-from local.models import User
+from .models                        import *
 from .serializers                   import TournamentSerializer , PlayerTournamentSerializer, NotificationSerializers
 from django.core.exceptions         import ValidationError
 from rest_framework                 import serializers
@@ -114,6 +113,7 @@ class TournamentAPIView(APIView):
                         for key, value in serializer.errors.items()}
             else:
                 errors = str(serializer.errors)
+                print("====> : ", errors)
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:

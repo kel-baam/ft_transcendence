@@ -33,7 +33,6 @@ export const Profile = defineComponent({
     event.preventDefault();
     const formData = new FormData(event.target);
     formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
-    console.log("submit form ", this.state.notification_data.object_id);
     formData.append('status', 'accepted');
 
     try {
@@ -50,7 +49,6 @@ export const Profile = defineComponent({
       }
 
       const successData = await response.json();
-      console.log("Player added:", successData.message);
       this.updateState({
         notif_blur: false,
       });
@@ -62,25 +60,8 @@ export const Profile = defineComponent({
     }
   },
 
-   async onMounted() {
+  async onMounted() {
 
-    // const userIcon = document.getElementById('user-icon');
-    // console.log("on mounted i hommme==>",document); // Check if the element is selected
-
-    // if (userIcon) {
-    //     userIcon.style.color = "#F45250";
-    //     userIcon.style.transform = "scale(1.1)";
-    //     userIcon.style.webkitTransform = "scale(1.1)";
-    //     userIcon.style.filter = "blur(0.5px)";
-    //     userIcon.style.transition = "0.5s";
-    // }
-  // var storedLanguage = localStorage.getItem('language');
-  // if (!storedLanguage)
-  //   storedLanguage = 'en'
-  // document.querySelectorAll("data-translate").forEach(element => {
-  //     const key = element.getAttribute("data-translate");
-  //     element.textContent = translations[storedLanguage][key];
-  //     })
   const {key} = this.props
     if (key) {
       try {
@@ -94,7 +75,6 @@ export const Profile = defineComponent({
         }
       catch (error) {
         console.error("Error fetching user:", error);
-        // this.updateState({ error: 'Failed to fetch user data', userExists: false });
       }
     }
     else

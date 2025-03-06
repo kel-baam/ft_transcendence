@@ -23,7 +23,7 @@ export const JoinedTournaments = defineComponent({
             if (!response.ok) {
                 const errorText = await response.json();
 
-                if(errorText === 401)
+                if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
                 
                 throw new Error(errorText.error);   

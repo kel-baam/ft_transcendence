@@ -51,7 +51,6 @@ export const sidebarRight = defineComponent(
         
             socket.onmessage =  (event) =>{
             const newFriends = JSON.parse(event.data); 
-            console.log(">>>>>>>>>>>>>>>>>>>>>>> new friends : ", newFriends)
             this.updateState({
                 friends: newFriends
             });

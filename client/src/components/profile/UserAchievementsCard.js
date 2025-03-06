@@ -20,11 +20,6 @@ export const UserAchievementsCard = defineComponent({
           ]),
           h('div', { class : 'badges-container' }, [
             h('div', { class : 'badge-item' }, [
-              // !data[0].unlocked ? h('img', { 
-              //   class : 'lock',
-              //   src: './images/lock.png', 
-              //   alt: 'lock icon' 
-              // }) : null,
               h('div', { class : 'sys_badge0' }, [
                  h('img', {src : `https://${window.env.IP}:3000${data[0].icon}`, style : !data[0].unlocked ? 
               {
@@ -35,12 +30,6 @@ export const UserAchievementsCard = defineComponent({
 
             ]),
             h('div', { class : 'badge-item' }, [
-              // !data[1].unlocked ?
-              // h('img', { 
-              //   class : 'lock',
-              //   src: './images/lock.png', 
-              //   alt: 'lock icon' 
-              // }) : null,
               h('div', { class : 'sys_badge1' }, [
                 h('img', {src : `https://${window.env.IP}:3000${data[1].icon}`, style : !data[1].unlocked ? 
                 {
@@ -51,11 +40,6 @@ export const UserAchievementsCard = defineComponent({
           ]),
           h('div', { class : 'badges-container' }, [
             h('div', { class : 'badge-item' }, [
-              // !data[2].unlocked ? h('img', {
-              //   class : 'lock',
-              //   src: './images/lock.png', 
-              //   alt: 'lock icon' 
-              // }) : null,
               h('div', { class : 'sys_badge2' }, [
                 h('img', {src : `https://${window.env.IP}:3000${data[2].icon}`, style : !data[2].unlocked ? 
              {
@@ -65,11 +49,6 @@ export const UserAchievementsCard = defineComponent({
              ])
             ]),
             h('div', { class : 'badge-item' }, [
-              // ! data[3].unlocked ? h('img', { 
-              //   class : 'lock',
-              //   src: './images/lock.png', 
-              //   alt: 'lock icon'
-              // }) : null,
               h('div', {class : 'sys_badge3' }, [
                 h('img', {src : `https://${window.env.IP}:3000${data[3].icon}`, style : !data[3].unlocked ? 
              {
@@ -86,37 +65,21 @@ export const UserAchievementsCard = defineComponent({
         customFetch(`https://${window.env.IP}:3000/api/user/badges`)
               .then(result =>{
       
-                  // if (!result.ok)
-                  // {
-                  //     // console.log("res isn't okey ," , " | ", this)
-                      
-                  //     this.appContext.router.navigateTo('/login')
-                  // }
                   switch(result.status)
                   {
                       case 401:
-                          console.log(">>>>>>>>>>>>> here ")
                           this.appContext.router.navigateTo('/login')
                           break;
-                      // case 404:
-                      //     console.log(">>>>>>>----------- 404 >>>>>> here ")
-                      //     h('h1', {}, ['404 not found'])
-                      //     break;
                   }
                   return result.json()
               })
               .then(res =>{
-                console.log("---------------------> achievements : ", res)
                   this.updateState({
                           isLoading: false,  
                           data: res,   
-                          // error: null   
                   });
       
               })
-              // .catch(error => {
-              //     // console.log(">>>>>>>>>>>> error : ", error)
-              // })
     }
 
 })

@@ -20,12 +20,8 @@ export const Security = defineComponent(
         {
             event.preventDefault()    
             customFetch(`https://${window.env.IP}:3000/auth/twoFactor/desactivate/`,{}).then(async(result)=>{
-                if(!result.ok)
-                {
-                    if(result.status == 401)
+                if(result.status == 401)
                         this.appContext.router.navigateTo('/login')
-                }
-                // to check else
             })
         },
         onMounted()
@@ -89,27 +85,7 @@ export const Security = defineComponent(
                         },   [!isEnabled ?  'Enable' : 'Disable'])
                     ] : [
                         h(EnableTwoFactor,{
-                        //     on : {
-                        //     '2faVerified' : ()=>{
-                        //         this.updateState({isQrCodeVisible : false, isEnabled : true})
-                        //     }
-                        // }
                     }), 
-                        // h('button', {style:{
-                        //     'background-color': '#D44444',
-                        //     color: '#FFEEBF',
-                        //     width: '120px',
-                        //     height: '40px',
-                        //     'border-radius': '12px',
-                        //     border: 'none'
-                        //     },
-                        //     on : {
-                        //         click : () =>
-                        //         {
-                        //             this.updateState({isQrCodeVisible : false, isEnabled : true})
-                        //         }
-                        //     }
-                        // },   ['Verify'])
                     ]) , 
                     h('div', {class : 'auth-password-card'}, 
                         [
@@ -119,14 +95,10 @@ export const Security = defineComponent(
                                 submit : (event)=>
                                 {
                                     event.preventDefault()
-                                                             
-                                // for (let [key, value] of formData.entries()) {
-                                //     console.log(`${key}:`, value);
-                                // }
-                                customFetch(`https://${window.env.IP}:3000/api/user/`, {
+                                    customFetch(`https://${window.env.IP}:3000/api/user/`, {
                                     method : 'PUT',
                                     headers: {
-                                        'Content-Type': 'application/json', // Explicitly set content type
+                                        'Content-Type': 'application/json',
                                       },
                                       body : JSON.stringify({
                                           Current_password : formData.get('Current_password'),
@@ -136,7 +108,7 @@ export const Security = defineComponent(
                                 }
                                 )
                                 .then(result =>{
-                                    if (!result.status == 401)
+                                    if (result.status == 401)
                                         this.appContext.router.navigateTo('/login')
                                     if (!result.ok) {
                                         return result.json().then(errs => {
@@ -148,7 +120,6 @@ export const Security = defineComponent(
                                                     errorElement.textContent = '* ' + messages;
                                                 }
                                             }
-                                            throw new Error(`HTTP Error: ${result.status}`); // To exit the chain
                                         });
                                     }
                                     return result.json()
@@ -164,11 +135,6 @@ export const Security = defineComponent(
                                             this.appContext.router.navigateTo('/login')
                                         }
                                     })
-                                })
-                                .catch(error => {
-                                        // console.log('>>>>>>>>>>>>>>>> error : ', error)
-                                        // if(error == 401)
-                                        //     this.appContext.router.navigateTo('/login')
                                 })
                             }
                             }

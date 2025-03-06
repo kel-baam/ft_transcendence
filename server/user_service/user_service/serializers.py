@@ -6,22 +6,9 @@ from django.core.exceptions import ValidationError
 from django.db.models import  Q
 from validate_email_address import validate_email
 
-# # import os
-# import requests
-# from django.core.files import File
-# from django.core.files.temp import NamedTemporaryFile
-# from django.core.files.base import ContentFile
-# import logging
 
-
-
-
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(__name__)
 
 class PlayerSerializer(serializers.ModelSerializer):
-    # username = serializers.CharField(source='user.username', required=False)
-    # picture = serializers.ImageField(source='user.picture', required=False)
     class Meta():
         model = Player
         fields = ['score', 'rank', 'level', 'grade']
@@ -43,9 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(
         write_only=True, 
-        required=False, 
-        # allow_null=True, 
-        # allow_blank=True
+        required=False,
     )
     
     registration_type = serializers.ChoiceField(required=False, choices=['api', 'form'])
@@ -67,26 +52,14 @@ class UserSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name, None)
 
     def validate(self, attrs):
-        # print(">>>>>>>>>>>>>>>>>>>>> picture in validate stage : ", attrs.get('picture'))
-        # if 'picture' in attrs:
-        #     picture = attrs.get('picture')
-
-        # # Ensure file is open
-        #     if picture.closed:
-        #         raise ValidationError({"picture": "The file is closed, cannot read."})
         if attrs.get('registration_type') == 'form' and not attrs.get('password'):
             raise serializers.ValidationError({"password" : "Password is required !!!"})
         if self.instance is not None:
-            print(">>>>>>>>>>>>>>>>>>>>>> here in validate data ")
-            print(">>>>>>>>>>>> attrs : ", attrs )
             old_password = attrs.get('Current_password')
             new_password = attrs.get('New_password')
             confirm_password = attrs.get('Confirm_password')
-            print(">>>>>>>>>>>>> old_password : ", old_password)
-            print("----------------> new_password : ", new_password)
-            print("*******************> confirm_password : ", confirm_password)
+    
             if old_password is not None or new_password is not None or confirm_password is not None:
-                print('>>>>>>>>>>>>>> here old_password exist :  ', old_password)
                 if not old_password:
                     raise serializers.ValidationError({"Current_password" : "This field  is required"})
                 if not new_password:
@@ -109,36 +82,15 @@ class UserSerializer(serializers.ModelSerializer):
                 attrs['password']=make_password(attrs['password'])
             except ValidationError as e:
                 raise serializers.ValidationError({"New_password": e.messages[0]})
-        
-        # if 'email' in attrs and  not validate_email(attrs['email'], verify=True):
-        #     raise ValidationError(f"The email '{attrs['email']}' is not valid or does not exist.")
         if 'registration_type' in attrs:
             attrs.pop('registration_type')
 
         return attrs
 
-    # def update(self, instance, validated_data):
-    #     print(">>>>>>>>>>>>>>>> instance : ", instance.status )
-    #     print(">>>>>>>>>>>>>>>>>>>> validated_data : ", validated_data['status'])
-    #     player_data = validated_data.pop('player', {})
-    #     for field in validated_data:
-    #         setattr(instance, field, validated_data[field])
-        
-    #     instance.save()
-    #     print(">>>>>>>>>>>>>>>> instance : ", instance.status  )
-
-    #     player = getattr(instance, 'player', None)
-    #     if player:
-    #         player.score = player_data.get('score', player.score)
-    #         player.rank = player_data.get('rank', player.rank)
-    #         player.level = player_data.get('level', player.level)
-    #         player.save()
-    #     return instance
     
     def create(self, validated_data):
         player_data = validated_data.pop('player', {})
         user = User(**validated_data)
-        # user.set_unusable_password()
         user.save()
         if player_data:
             player = Player.objects.create(user=user,**player_data)
@@ -152,20 +104,10 @@ class UserSerializer(serializers.ModelSerializer):
         This method computes the relationship status between the logged-in user
         and the user being serialized (obj).
         """
-        # Get the logged-in user from the request context
         if self.context:
             logged_in_user = self.context['logged_in_user']
             if (logged_in_user == obj):
                 return "self"
-        # Check if there is a request between the logged-in user and the target user (obj)
-            # relationship = Request.objects.filter(
-            #     sender=logged_in_user,
-            #     reciever=obj
-            # ).first()  # Get the first matching relationship (if any)
-            # print(">>>>>>>>>>>>>>>>>>>>> here the value : ", 
-            #       Request.objects.filter(sender=logged_in_user, reciever=obj).get('status'))
-            # req = Request.objects.filter(sender=logged_in_user, reciever=obj).first()
-            # print("--------------> req ", req, "    |   ")
             if   Request.objects.filter(sender=logged_in_user, reciever=obj).first() is not None \
                 and Request.objects.filter(sender=logged_in_user, reciever=obj).first().status == "pending":
                 return "sent"
@@ -228,38 +170,10 @@ class MatchSerializer(serializers.ModelSerializer):
         if exclude:
             for field_name in exclude:
                 self.fields.pop(field_name, None)
-    # def validate(self, attrs):
-    #     print(">>>>>>>>>> attrs : ", attrs)
-    #     return attrs
+    
     class Meta():
         model = Match
         fields = '__all__'
-    # def create(self, validated_data):
-    #     match = Match(**validated_data)
-    #     match.save()
-    #     return match
- 
-    
-#    class Match(models.Model):
-#     tournament  = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True, related_name='matches')
-#     player1     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player1')
-#     player2     = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='matches_as_player2')
-#           room_name = models.CharField(max_length=50, null=True)
-#     
-    
-#     status_choices = [
-#         ('pending', 'Pending'),
-#         ('completed', 'Completed'),
-#         ('exited', 'Exited')
-#     ]
-#     status = models.CharField(max_length=10, choices=status_choices, default='pending')
-
-#     def __str__(self):
-#         tournament_info = f"Tournament: {self.tournament.name}" if self.tournament else "No Tournament"
-#         return f"Match: {self.player1.user.username} vs {self.player2.user.username} ({tournament_info})"
-    
-#     class Meta:
-#         db_table = 'Match'
 
 
 class RequestSerializer(serializers.ModelSerializer):
@@ -292,7 +206,6 @@ class RequestSerializer(serializers.ModelSerializer):
         return None
     
     def validate(self, attrs):
-        print(">>>>>>>>>>>>>>>>>> attrs : ", attrs)
         return super().validate(attrs)
     
     class Meta:

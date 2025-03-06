@@ -28,7 +28,8 @@ import { customFetch } from '../package/fetch.js'
         customFetch(`https://${window.env.IP}:3000/api/user/ranking`)
         .then(res=>
             {
-                console.log(">>>>>>>>>>>>>>>>>>>> res status in leaderboard : ", res.status)
+                if (res.status == 401)
+                    this.appContext.router.navigateTo('/login')
                 return res.json()
             }
         )
@@ -39,13 +40,11 @@ import { customFetch } from '../package/fetch.js'
                 isloading:false
 
             })
-            console.log("----------------------> result : ", result)
         }
         )
 
     },
     createPlayerEntry(rank, name, score, level, badgeSrc) {
-        // console.log("yyyy",rank,name)
         name = name.substring(0, 10)
         return h("div", { class: "space" },
             [
@@ -56,12 +55,10 @@ import { customFetch } from '../package/fetch.js'
             ]
         );
         },
-// style:{'overflow-y': 'hidden'}
     render(){
         const {data, isloading} = this.state
         const playersLen = Object.keys(data).length
 
-        // console.log("this.state.data",Object.keys(data).length 
         return(
                 h('div',{id:'global'},[
                     h(header, {}),
@@ -122,10 +119,7 @@ import { customFetch } from '../package/fetch.js'
                                                     return this.createPlayerEntry(index + 1, player.username,player.score,player.level,"./images/diamond.png")
 
                                                 }),
-                                            )
-                                              
-                                        // )
-                                            
+                                            )                                        
                                     ])
                                 ])
                             ] : !isloading ?[

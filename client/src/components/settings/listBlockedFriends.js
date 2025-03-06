@@ -1,8 +1,6 @@
 import { customFetch } from '../../package/fetch.js'
-import{createApp, defineComponent, DOM_TYPES, h,
-    hFragment, hSlot, hString,RouterOutlet} from '../../package/index.js'
+import{defineComponent,h} from '../../package/index.js'
 
-// let allUsers;
  export const listBlockedFriends = defineComponent({
     state()
     {
@@ -44,23 +42,12 @@ import{createApp, defineComponent, DOM_TYPES, h,
                                         this.updateState({
                                             searchedUser:e.target.value
                                         })
-                                    // if (event.target.value)
-                                    // {
-                                    //     const filtredData =   data.filter((item) =>
-                                    //         item.user.username.toLowerCase().startsWith(event.target.value.toLowerCase())
-                                    //     )
-                                    //     this.updateState({data: filtredData, isLoading:false})
-
-                                    // }
-                                    // else
-                                    //     this.updateState({data : [...allUsers], isLoading:false})
                                 }
                             }
                         }),
                     ]
                 ),
                 ...data.map((item, i ) => {
-                    console.log("--------------------------> item : ", item )
                     if ((searchedUser != "" && item.username.startsWith(searchedUser)) || searchedUser == "")
                         return h('div',{ class: 'profile-item' },
                             [
@@ -70,9 +57,6 @@ import{createApp, defineComponent, DOM_TYPES, h,
                                         style : {
                                             'object-fit': 'cover'  
                                         },
-                                        // on : {error: (event) => {
-                                        //     event.target.src = '/media/users_pics/default.png'; // Replace with your placeholder image
-                                        // }}
                                     }),
                                     ]
                                 ) ,
@@ -98,12 +82,11 @@ import{createApp, defineComponent, DOM_TYPES, h,
                                                     )
                                                     .then(result =>{
 
-                                                        if (!result.status == 401)
+                                                        if (result.status == 401)
                                                             this.appContext.router.navigateTo('/login')
                                                         if (result.status == 204)
                                                         {
                                                             data.splice(i, 1)
-                                                            console.log("res is okey")
                                                             this.updateState({
                                                                 isLoading: false,  
                                                                 data: data,   
@@ -127,25 +110,15 @@ import{createApp, defineComponent, DOM_TYPES, h,
         customFetch(`https://${window.env.IP}:3000/api/user/friendships?status=blocked`)
         .then(result =>{
 
-            if (!result.status == 401)
-            {
-                console.log("res isn't okey ," , " | ", this)
-                
+            if (result.status == 401)
                 this.appContext.router.navigateTo('/login')
-            }
-
             return result.json()
         })
         .then(res =>{
-            console.log(">>>>>>>>>>>>>>> res : ", res,"|",res.status)
-            console.log("res is okey")
             this.updateState({
                 isLoading: false,  
                 data: res,   
             });
-            // allUsers = res;
         })
-
-    
     }
  })

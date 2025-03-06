@@ -27,8 +27,6 @@ def generateToken(user,level):
                 refresh = RefreshToken.for_user(user)
                 refresh['email'] = user.email
                 refresh['login_level'] = level
-                user.refresh_token = make_password(str(refresh))
-                # user.save()
 
                 access = generateAccessToken(user,level)
                 return ({"access":access,
@@ -55,12 +53,10 @@ def token_required(request):
                 
                 return JsonResponse({'message': 'Invalid user'},status = 401)
         except Exception as e:
-                print("token required access endd=========>")
                 return JsonResponse({'message': 'token expired'},status = 401)
 
 
 
-# @refreshTokenRequired
 def generate_new_token(request):
     try:
         refreshToken = request.COOKIES.get("refresh_token")
@@ -77,7 +73,6 @@ def generate_new_token(request):
         response.set_cookie("access_token",accessToken,httponly=True, max_age=accessTokenLifeTime)
         return response
     except Exception as e:
-                print("refresh expired why==>",e)
                 return JsonResponse({'message': 'token expired'},status = 401)
 
 

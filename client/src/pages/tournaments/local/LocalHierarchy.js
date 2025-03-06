@@ -149,13 +149,10 @@ export const LocalHierarchy = defineComponent({
         const {error} = this.state
         
         if (error && error === "match not found")
-        {
-            return h(NotFound, {}, ["404 game not found !!!"])
-        }
+            return h(NotFound, {})
+        
         if (error && error === "unauthorized")
-        {
-            return h(Unauthorized, {}, ["404 game not found !!!"])
-        }
+            return h(Unauthorized,{})
 
         return h('div', {id:'global'}, [h(header, {
             icon_notif: this.state.notificationActive,

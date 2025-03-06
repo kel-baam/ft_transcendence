@@ -22,8 +22,6 @@ export const UserCard = defineComponent({
             ['Master', '#0000FF'],
             ['Legend', '#FF0000']
         ])
-        // console.log("******************************> data : ", data)
-        // console.log("********************************** grades[data.grade]",grades.get(data.grade))
         const {key} = this.props
         if (isLoading) 
             return h('div', { class: 'infos-user-container' });
@@ -64,7 +62,6 @@ export const UserCard = defineComponent({
                     [ 
                         h('h2', {}, [`${data.first_name}` + ' '+ `${data.last_name}`])]
                     ),
-                    // h('span', {}, ['here add user'])
                     ]
                 ),
                 h('div', {
@@ -235,9 +232,6 @@ export const UserCard = defineComponent({
                     case 401:
                         this.appContext.router.navigateTo('/login')
                         break;
-                    case 404:
-                        throw Error("404 User not found")
-                        break;
                 }
             return result.json()
         })
@@ -249,9 +243,6 @@ export const UserCard = defineComponent({
                     // error: null  
             });
 
-        })
-        .catch(error => {
-            this.appContext.router.navigateTo("/404")
         })
       
     },
@@ -282,9 +273,6 @@ export const UserCard = defineComponent({
             });
 
         })
-        // .catch(error => {
-        //     // console.log(">>>>>>>>>>>> error : ", error)
-        // })
 
     },
     sendRequest()
@@ -315,7 +303,6 @@ export const UserCard = defineComponent({
     changeRelationshipStatus(status)
     {
         const {data} = this.state
-        console.log(">>>>>>>>>>>>>>>>>>>>>> data is here : ", data.username)
         customFetch(`https://${window.env.IP}:3000/api/user/friendships`, {
             method : 'PUT',
             headers: {
@@ -348,11 +335,10 @@ export const UserCard = defineComponent({
         )
             .then(result =>{
 
-                if (!result.status == 401)
+                if (result.status == 401)
                     this.appContext.router.navigateTo('/login')
                 if (result.status == 204)
                 {
-                    console.log("-------------------------> here ")
                     this.updateState({
                         data:{
                             ...this.state.data, 

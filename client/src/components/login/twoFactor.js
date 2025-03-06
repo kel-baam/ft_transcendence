@@ -24,7 +24,6 @@ export const TwoFactor =  defineComponent({
         }).then(async(result)=>{
             if(!result.ok)
             {
-                
                 if(result.status == 401)
                     this.appContext.router.navigateTo('/login')
                 else{

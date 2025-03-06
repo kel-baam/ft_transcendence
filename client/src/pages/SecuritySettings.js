@@ -39,7 +39,6 @@ export const SecuritySettings = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);

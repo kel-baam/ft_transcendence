@@ -83,7 +83,6 @@ export const Game = defineComponent(
             window.removeEventListener('keyup', keyUpHandler);
         
             if (socket) {
-                console.log('=======> WebSocket connection closed');
                 socket.close();
             }
         },
@@ -108,11 +107,11 @@ export const Game = defineComponent(
 
         createConfetti() {
             for (let i = 0; i < 200; i++) {
-                const size = Math.random() * 10 + 5;  // Random size of confetti
+                const size = Math.random() * 10 + 5;
                 const x = Math.random() * canvas.width;
                 const y = Math.random() * canvas.height / 2;
-                const speedX = Math.random() * 4 - 2;  // Horizontal speed
-                const speedY = Math.random() * 4 + 2;  // Vertical speed
+                const speedX = Math.random() * 4 - 2;
+                const speedY = Math.random() * 4 + 2;
                 const color = this.getRandomColor();
                 confettiParticles.push({ x, y, size, speedX, speedY, color });
             }
@@ -340,7 +339,6 @@ export const Game = defineComponent(
 
                     if (data.action && data.action === "match_exited")
                     {
-                        console.log("match_exited >> ", data.redirect_to)
                         this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
                             player1: data.player1, player2:data.player2})
                         this.announce_winner('You Lose!');
@@ -358,12 +356,6 @@ export const Game = defineComponent(
                     
                     if (data.action && data.action === "quit_match")
                     {
-                        console.log("quit_match >> ", data)
-                        // if(data.winner == this.state.player)
-                        //     this.announce_winner('You Won!');
-                        // else
-                        //     this.announce_winner('You Lose!');
-        
                         let message = "You Won!" 
 
                         if(type == "local")
@@ -376,8 +368,7 @@ export const Game = defineComponent(
                                 message = name2 +" Won!"
 
                         }
-                        
-                        console.log("===========>winner=>",message,this.state.player , data.winner)
+
                         if (this.state.player === data.winner || type == "local")
                             this.announce_winner(message);
                         else
@@ -414,9 +405,6 @@ export const Game = defineComponent(
 
         async exit_game() {
             socket.send(JSON.stringify({ action: 'exit_game' }));
-            // if (socket) {
-            //     socket.close();
-            // }
 
         },
 
@@ -426,11 +414,11 @@ export const Game = defineComponent(
 
             if (error && error === "match not found")
             {
-                return h(NotFound, {}, ["404 game not found !!!"])
+                return h(NotFound, {})
             }
             if (error && error === "unauthorized")
             {
-                return h(Unauthorized, {}, ["404 game not found !!!"])
+                return h(Unauthorized, {})
             }
             return h('div',{id:'game'},[
                 h('nav',{id:'header'},[

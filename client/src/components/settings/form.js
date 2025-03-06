@@ -66,7 +66,7 @@ export const Form = defineComponent({
                            )
                             .then(result =>{
                     
-                                if (!result.status == 401)
+                                if (result.status == 401)
                                     this.appContext.router.navigateTo('/login')
                                 if (!result.ok) {
                                     return result.json().then(errs => {

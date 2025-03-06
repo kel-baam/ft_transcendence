@@ -11,7 +11,6 @@ import { translations } from '../languages.js'
             }
             },
             render(){
-                // console.log("=========================================>activation",this.state.home)
                 return   h('div',{id:"landing-header"},[
                     h('nav',{ class: 'landing-nav' },[
                     h('img', { class: 'logo', src: './images/logo.png', alt: 'logo'}),

@@ -21,7 +21,6 @@ import {
 
 export function patchDOM(oldVdom, newVdom, parentEl, hostComponent = null) {
     if (!areNodesEqual(oldVdom, newVdom)) {
-      // console.log("----------------------------------> here here patch equal zero ")
         const index = findIndexInParent(parentEl, oldVdom.el)
         destroyDOM(oldVdom)
         mountDOM(newVdom, parentEl, index, hostComponent)

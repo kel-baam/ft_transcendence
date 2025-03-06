@@ -53,11 +53,8 @@ export const WelcomingSection = defineComponent({
         customFetch(`https://${window.env.IP}:3000/api/user?fields=score,rank,grade`)
         .then(result =>{
 
-            if (!result.ok)
-            {
-                
+            if (result.status == 401)
                 this.appContext.router.navigateTo('/login')
-            }
 
             return result.json()
         })
@@ -68,9 +65,6 @@ export const WelcomingSection = defineComponent({
                     error: null   
             });
 
-        })
-        .catch(error => {
-            // console.log(">>>>>>>>>>>> error : ", error)
         })
     }
 })

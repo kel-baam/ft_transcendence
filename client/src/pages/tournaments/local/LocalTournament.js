@@ -97,7 +97,7 @@ export const LocalTournament = defineComponent({
             if (!response.ok) {
                 const errorText = await response.json();
 
-                if(errorText = 401)
+                if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
 
                 throw new Error(errorText);
@@ -153,7 +153,7 @@ export const LocalTournament = defineComponent({
             {
                 const errorText = await response.json();
                 
-                if(errorText = 401)
+                if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
 
                 console.error('Failed to delete tournament');

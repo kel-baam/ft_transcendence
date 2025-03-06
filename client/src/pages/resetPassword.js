@@ -3,7 +3,7 @@ import{defineComponent,h} from '../package/index.js'
 import { showErrorNotification } from '../package/utils.js'
 
 import { showSuccessNotification } from '../package/utils.js'
-
+import { NotFound } from '../components/errorPages/404.js'
 export const ResetPassword = defineComponent({
     state(){
         return {
@@ -19,10 +19,6 @@ export const ResetPassword = defineComponent({
         const query = this.appContext.router.query
         if(query['type'] !='reset' && query['type'] !='change')
                 this.updateState({errors: 'page not found' });
-
-        console.log("startiiiin of page ",query['type'])
-
-        // if(query)
     },
     async changePassword(event)
     {
@@ -43,8 +39,6 @@ export const ResetPassword = defineComponent({
             if(!res.ok)
             {
                 const  errors = await res.json()
-                console.log("errrrrror=>",errors)
-
                 showErrorNotification(Object.values(errors)[0])
             }
             else
@@ -52,7 +46,6 @@ export const ResetPassword = defineComponent({
                 showSuccessNotification("Your password has been successfully reset! You can now log in with your new password.")
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmPassword').value = '';
-                // this.updateState({errors: '' });
             }
         }
         )
@@ -68,14 +61,12 @@ export const ResetPassword = defineComponent({
             {
                 const error = await res.json();
                 showErrorNotification(error['email'])
-                // this.updateState({errors: error });
             }
             else
             {
                 const message = 'A verification email has been sent to your inbox. Please check your email and follow the instructions to verify your account.';
                 showSuccessNotification(message)
                 document.querySelector('.email').value = '';
-                // this.updateState({errors:""});
             }
         })
     },
@@ -86,7 +77,7 @@ export const ResetPassword = defineComponent({
     render(){
 
         if (this.state.errors == "page not found")
-            return h('h1', {}, ["404 game not found !!!"])
+            return h(NotFound, {})
         return h('div',{id:"global"},[
             h('div',{class:"login-page-content"},[
                 h('div',{class:'top'},[

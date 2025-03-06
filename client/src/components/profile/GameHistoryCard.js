@@ -15,7 +15,6 @@ export const GameHistoryCard = defineComponent({
     render()
     {
       const {data, isLoading} = this.state
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>> data : ", data )
       const {isExpanded} = this.props
       if (isLoading)
         return  h('div', { class: 'match-history-container', style : isExpanded ? {
@@ -60,12 +59,7 @@ export const GameHistoryCard = defineComponent({
             [
               h('a', { on : {click : () => 
                 this.emit('blurProfile', {Expanded:'MatchesHistory'})
-                // h(GameHistoryItems, {})
-                // {
-                //   console.log(">>>>>>>>>>>>> here the div rendred ")
-                //   h('div', {style :{color : 'red'}}, ["hello from div "])
-                // }
-                // this.updateState({isExpanded:true})
+              
               }, 'data-translate' : 'View all'}, ['View all'])
             ]: []
           )
@@ -81,17 +75,11 @@ export const GameHistoryCard = defineComponent({
         customFetch(endPoint)
           .then(result =>{
   
-              if (!result.ok)
-              {
-                  // console.log("res isn't okey ," , " | ", this)
-                  
+              if (result.state == 401)
                   this.appContext.router.navigateTo('/login')
-              }
-  
               return result.json()
           })
           .then(res => {
-              console.log("res is okey")
               this.updateState({
                       isLoading: false,  
                       data: res,   
@@ -99,23 +87,14 @@ export const GameHistoryCard = defineComponent({
               });
   
           })
-          // .catch(error => {
-          //     // console.log(">>>>>>>>>>>> error in win  : ", error)
-          // })
     }
   })
   const GameHistoryItems = defineComponent({
-    state()
-    {
-      return {
-      //  shownOnviewAll : false
-      }
-    },
+  
     render()
     {
       const {isExpanded} = this.props
       const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
-      // console.log(">>>>>>>>>>>>> data  of matches history : ", data)
       return h('div', {class:'center-div', 
         style : isExpanded ?  {'row-gap' :'0%', 'grid-auto-rows': '16.7%'} : {}},
         data.map((item)=> h('div', { class: 'match-result-item',
