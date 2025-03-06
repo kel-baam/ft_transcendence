@@ -288,7 +288,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             else:
                 match = await self.get_match_instance(self.match_id)
                 print("-----------------", self.type)
-                
                 if match and match.status != "completed" and match.status != "exited":
                     print("-===", self.player)
                     if self.type == "online" and self.player != 'player1':
@@ -298,7 +297,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                         print("_____________________++")
                         self.player2Score = 8
                     print("---------------------------------")
-
                     await self.handel_match_result('exited')
 
                     user = await self.get_username(self.user_id)
@@ -439,17 +437,13 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'status'       : status
             }
             match = await self.get_match_instance(self.match_id)
-            if match is None:
-                print("----handel_match_result-----------------------------")
-                print("Match not found for match_id:", self.match_id)
-                return
-
             match = await self.update_match(match, match_data)
-            if match is None:
-                print("Failed to update match.")
-                return
 
             if match.get('player1') is not None:
+                
+                print("in handel match : ", match.get('player1_score'), match.get('player2_score'))
+                print("in handel match : ", self.player1Score, self.player2Score)
+                
                 if match.get('player1_score') > match.get('player2_score'):
                     winner = match.get('player1')
                     loser  = match.get('player2')
@@ -514,15 +508,25 @@ class GameConsumer(AsyncWebsocketConsumer):
         serializer = MatchSerializer(match, data=match_data, partial=True)
         if serializer.is_valid():
             match = serializer.save()
+            print("----> match update :", MatchSerializer(match).data)
             return MatchSerializer(match).data
         else:
             raise ValidationError(serializer.errors)
 
     @sync_to_async
-    def update_player_scores(self, winner, loser, winner_score, loser_score):
+    def update_player_scores(self, winner, loser, player1_score, player2_score):
         try:
             winner_player = Player.objects.get(id=winner)
             loser_player  = Player.objects.get(id=loser)
+
+            print("---- update_player_scores : ", winner_player.id, loser_player.id)
+
+            if player1_score > player2_score:
+                winner_score = player1_score
+                loser_score  = player2_score
+            else:
+                winner_score = player2_score
+                loser_score  = player1_score
 
             winner_player.update_score(score=winner_score)
             loser_player.update_score(score=loser_score)

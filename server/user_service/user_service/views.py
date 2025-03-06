@@ -151,7 +151,7 @@ class MatchHistoryView(APIView):
             matches = Match.objects.filter(
                 (models.Q(player1=Player.objects.get(user=user)) | models.Q(player2=Player.objects.get(user=user)) )
                  & (models.Q(status='completed') | models.Q(status='exited'))
-            )
+            ).order_by('id')
             matches = MatchSerializer(matches, many=True, fields={'player1', 'player2','player1_score',  'player2_score', 'created_at'}).data
             return Response(matches, status=status.HTTP_200_OK)
         except User.DoesNotExist:

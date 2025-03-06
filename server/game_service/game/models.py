@@ -73,6 +73,7 @@ class Player(models.Model):
     def update_score(self, score):
         """Update the player's score based on the match result."""
         self.score += score
+        print("self.score: ", score, self.score)
         self.save()
 
     def update_level(self):

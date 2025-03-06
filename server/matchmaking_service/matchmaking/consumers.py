@@ -133,60 +133,14 @@ class Matchmaking(AsyncWebsocketConsumer):
 
 # ------------------------------------------PVP----------------------------
 
-    # @sync_to_async
-    # def get_active_match_without_tournament(self, user_id):
-    #     try:
-    #         player = Player.objects.get(user_id=user_id)
-
-    #         match = Match.objects.filter(
-    #             tournament=None,
-    #             status__in=['started', 'pending']
-    #         ).filter(
-    #             Q(player1=player) | Q(player2=player)
-    #         ).first()
-
-    #         return match
-
-    #     except Player.DoesNotExist:
-    #         return None
-        
-    # @sync_to_async
-    # def get_match_users(self, match):
-    #     player1_user = match.player1.user if match.player1 else None
-    #     player2_user = match.player2.user if match.player2 else None
-    #     return (
-    #         UserSerializer(player1_user, fields=["id", "username", "picture"]).data if player1_user else None,
-    #         UserSerializer(player2_user, fields=["id", "username", "picture"]).data if player2_user else None
-    #     )
-
-
     async def pair_pvp_players(self):
-        # exist_in_match = await self.get_active_match_without_tournament(self.user_id)
-
-        # if exist_in_match:
-        #     print("gerererere")
-        #     user_1, user_2 = await self.get_match_users(exist_in_match)
-
-        #     self.is_redirected = True
-        #     if self.user_id == user_1["id"]:
-        #         opponent = user_2
-        #     else:
-        #         opponent = user_1
-
-        #     await self.send_json({
-        #         "action"    : "match_found",
-        #         "id"        : exist_in_match.id,
-        #         "opponent"  : opponent,
-        #         "room_name" : exist_in_match.room_name,
-        #     })
-        #     return
 
         if Matchmaking.waiting_player is None or Matchmaking.waiting_player["user_id"] == self.user_id:
-            if Matchmaking.waiting_player is None:
-                Matchmaking.waiting_player = {
-                    "user_id"  : self.user_id,
-                    "websocket": self
-                }
+
+            Matchmaking.waiting_player = {
+                "user_id"  : self.user_id,
+                "websocket": self
+            }
 
             print(f"Player {self.user_id} is waiting for an opponent...")
 
