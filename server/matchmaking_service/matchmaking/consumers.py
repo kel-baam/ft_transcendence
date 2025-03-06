@@ -128,6 +128,13 @@ class Matchmaking(AsyncWebsocketConsumer):
         if action == 'find_opponent':
             await self.pair_pvp_players()
 
+        if action == 'onUnmounted_player':
+            print("onUnmounted_player")
+            if Matchmaking.waiting_player and Matchmaking.waiting_player['user_id'] == self.user_id:
+                print("Rrr")
+                Matchmaking.waiting_player = None
+                await self.close()
+
         if action == 'local_tournament':
             await self.pair_local_tournament_players()
 
@@ -242,7 +249,7 @@ class Matchmaking(AsyncWebsocketConsumer):
         for _ in range(15):
             if Matchmaking.waiting_player is None:
                 return
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.009)
 
     async def notify_timeout(self):
         """Notify the user if no opponent is found within the timeout period."""

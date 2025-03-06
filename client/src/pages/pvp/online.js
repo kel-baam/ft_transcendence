@@ -71,7 +71,8 @@ export const OnlinePvp = defineComponent({
                 } 
                 else if (data.action === "match_found")
                 {
-                    this.updateState({ player_data: data.opponent });
+                    console.log("----------------------------------")
+                    // this.updateState({ player_data: data.opponent });
                     this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                 }
                 else if (data.action === "opponent_disconnected")
