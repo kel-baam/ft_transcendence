@@ -72,8 +72,6 @@ export const LocalTournament = defineComponent({
 
             const successData = await response.json();
 
-            console.log("Tournament created:", successData.message);
-
             formElement.reset();
             this.resetImagePreviews();
             this.fetchTournaments();
@@ -97,7 +95,7 @@ export const LocalTournament = defineComponent({
             if (!response.ok) {
                 const errorText = await response.json();
 
-                if(errorText = 401)
+                if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
 
                 throw new Error(errorText);
@@ -153,25 +151,22 @@ export const LocalTournament = defineComponent({
             {
                 const errorText = await response.json();
                 
-                if(errorText = 401)
+                if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
 
                 console.error('Failed to delete tournament');
 
                 throw new Error(errorText);
             }
-                
-            console.log('Tournament deleted successfully!');
             this.updateState({
                 tournaments: this.state.tournaments.filter(tournament => tournament.id !== id)
             });
             
         }
-        catch (error) { console.log('Error while deleting tournament:', error); }
+        catch (error) {}
     },
 
     render() {
-        console.log("hna", this.state.tournaments.length)
         return h('div', { id: 'global' }, [
             h(header, {
                 icon_notif: this.state.notificationActive,

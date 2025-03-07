@@ -43,32 +43,21 @@ class UserInfoView(APIView):
     def put(self, request):
         try:
             username = request.META.get('HTTP_X_AUTHENTICATED_USER')
-            print(">>>>>>>>>>>>>>>>>>>>> the username : ", username )
             user_instatnce = User.objects.get(username=username)
             user_instatnce.refresh_from_db()
-            print("*****************************> request.data : ", request.data)
             data = request.data.copy()
-            print(">>>>>>>>>>>>>>>>>> data coming : ", data)
             if 'picture' in request.FILES:
                 data['picture'] = request.FILES.get('picture', None)
             
             userSerializer = UserSerializer(user_instatnce, data=data, partial=True)
-            print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
             if userSerializer.is_valid(raise_exception=True):
                 userSerializer.save()
-                # cache.clear()
-                # updated_user.refresh_from_db()  # Force reload directly from DB
-                update_user =  User.objects.get(username=username)
-                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> updated_user.status : ",  update_user.status,update_user.id)
-                user_instatnce.refresh_from_db()
-                # user_instatnce.status = data['status']
                 return Response(userSerializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except serializers.ValidationError:
             return Response({key: value[0] for key, value in userSerializer.errors.items()}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("------------------------> here 500 internal server : ", str(e))
             return Response( str(e),  status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
 
     def post(self, request):
@@ -77,12 +66,11 @@ class UserInfoView(APIView):
             if data.get('picture'):
                 response = requests.get(data['picture'], stream=True)
                 if response.status_code == 200:
-                    folder_name = 'user_pics'
+                    folder_name = 'users_pics'
                     folder_path = os.path.join(settings.MEDIA_ROOT, folder_name)
                     if not os.path.exists(folder_path):
                         os.makedirs(folder_path, exist_ok=True) 
                     file_name = data['picture'].split('/')[-1]
-                    # file_path = os.path.join(folder_path, file_name)
                     in_memory_file = InMemoryUploadedFile(
                     file=BytesIO(response.content), 
                     field_name='picture',
@@ -255,19 +243,15 @@ class FriendshipView(APIView):
                 request_instance = Request.objects.get(id=request.query_params.get('id', None))
             else:
                 user = User.objects.get(username=request.META.get('HTTP_X_AUTHENTICATED_USER'))
-                print(">>>>>>>>>>>>>>>>>the logging user : ", user)
                 targetUser = User.objects.get(username=request.query_params.get('target', None))
-                print("<<<<<<<<<<<<<<<<<< the target user : ", targetUser)
                 request_instance = Request.objects.get(
                     Q(sender=user, reciever=targetUser) | Q(sender=targetUser, reciever=user)
                 )
-                print(">>>>>>>>>>>>>>>>>>>>>>> request instance is : ", request_instance)
             request_instance.delete()
             return Response({"message": "Request deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except Request.DoesNotExist:
             return Response({"error": "Request not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(">>>>>>>>>>>>>>>>>>>>>> here the internal error ", str(e))
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     #-----------------put method----------------#
@@ -327,14 +311,13 @@ class UserRankingView(APIView):
             top = request.query_params.get('top', None)
             if top is not None and top.isdigit():
                 limit = int(top)
-                players = list(User.objects.select_related('player').filter(player__rank__gt=0).order_by('player__rank')[:limit]
+                players = list(User.objects.select_related('player').filter(player__score__gt=0).order_by('player__rank')[:limit]
                             .annotate(rank=F('player__rank'), score =F('player__score'), level =F('player__level') ))
             else:
-                players = list(User.objects.select_related('player').filter(player__rank__gt=0).order_by('player__rank').
+                players = list(User.objects.select_related('player').filter(player__score__gt=0).order_by('player__rank').
                             annotate(rank=F('player__rank'), score =F('player__score'), level =F('player__level') ))
                 
             results = UserSerializer(players, many=True, fields={'username', 'picture', 'score', 'rank', 'level'}).data 
-
             return Response(results, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -355,34 +338,22 @@ class SearchUsersView(APIView):
         
 class UserBadgesView(APIView):
     def get(self, request):
-        # print(">>>>>>>>>>>>>>>>>>>>...here user badges ")
         try:
             user = request.META.get('HTTP_X_AUTHENTICATED_USER')
-            # print(">>>>>>>>>>>>>>>>>>>> here before search ")
             userBadges = UserBadge.objects.filter(user=User.objects.get(username=user), badge=OuterRef('pk'))
-            # print(">>>>>>>>>>>>>>>>>>  userBadges : ", userBadges)
-            # Annotate each badge with "unlocked" status
             badges = Badge.objects.annotate(
                 unlocked=Exists(userBadges)
             ).values('id', 'name', 'icon', 'unlocked')
-            # print(">>>>>>>>>>>>>>>>>>>>> here the badges : ", badges )
             UserBadges = [
                 BadgeSerializer(badge).data
                 for badge in badges 
             ]
-            # print(">>>>>>>>>>>>>>>>>>>>> userBadges : ", UserBadges)
-            # badgesSerializer = BadgeSerializer(badges)
-            # print(">>>>>>>>>>>>>> here badges after serializer : ", badgesSerializer.data)
             return Response(UserBadges, status=status.HTTP_200_OK)
         except Exception as e:
-                print(">>>>>>>>>>>>>>>>>>>> e : ", str(e))
                 return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
     def post(self, request):
         try:
-            # user = request.META.get('HTTP_X_AUTHENTICATED_USER')
-            # print(">>>>>>>>>>>>>>>>>>>> here in post locked badge ---------------")
-            # print(">>>>>>>>>>>>>>>>>> the data came from the locked bage ",request.data )
             user_badges_serializer  = UserBadgeSerializer(data=request.data)
             if(user_badges_serializer.is_valid(raise_exception=True)):
                 user_badges_serializer.save()

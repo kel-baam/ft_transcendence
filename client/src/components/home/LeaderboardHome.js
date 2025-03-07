@@ -87,7 +87,7 @@ export const LeaderboardHome = defineComponent({
                         data.map((item )=>
                             h('div', { class: 'second-one' }, [
                             h('p', {}, [`${item.rank}`]),
-                            h('h3', {}, [`${item.username}`]),
+                            h('h3', {}, [`${item.username.slice(0, 8)}`]),
                             h('div', { class: 'scor-coin' }, [
                                 h('p', {}, [`${item.score}`]),
                                 h('img', { src: './images/star_12921513.png', class: 'coin' })

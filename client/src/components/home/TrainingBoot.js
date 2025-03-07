@@ -11,7 +11,14 @@ export const TrainingBoot = defineComponent({
         return h('div', { class: 'training-boot' }, [
             h('h1', {'data-translate' : 'Training'}, ['Training']),
             h('img', { src: './images/paddles-removebg-preview.png' }),
-            h('a', { href: '/waitPlayerJoin' }, [
+            h('a', {
+                on : {
+                        click : (event) => {
+                            event.preventDefault();
+                            this.appContext.router.navigateTo('/AI');
+                        }
+                    } ,
+            }, [
                 h('button', { type: 'button', class: 'btn', 'data-translate' : 'PLAY' }, ['PLAY'])
             ])
         ]);   

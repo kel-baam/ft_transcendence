@@ -85,7 +85,7 @@ import{defineComponent,h} from '../../package/index.js'
             h('div',{className:"team-pics"},[
                 h(TeamCards,{name:'KAOUTAR EL BAAMRANI',githubLink:"https://github.com/kel-baam",linkdenLink:"https://www.linkedin.com/in/kaoutarbm/",emailLink:"kaoutarelbaamrani@gmail.com",picture:"./images/kel-baam.png"}),
                 h(TeamCards,{name:'NISIN BOUKHARI',githubLink:"https://github.com/niboukha",linkdenLink:"https://www.linkedin.com/in/nisrinboukhari/",emailLink:"nisrinboukhari19@gmail.com",picture:"./images/niboukha.jpeg"}),
-                h(TeamCards,{name:'SOUAD HICHAM',githubLink:"https://github.com/s-hicham",linkdenLink:"https://www.linkedin.com/in/souad-hicham/",emailLink:"ms.souadhicham@gmail.com",picture:"./images/shicham.jpeg"}),
+                h(TeamCards,{name:'SOUAD HICHAM',githubLink:"https://github.com/s-hicham",linkdenLink:"https://www.linkedin.com/in/souad-hicham/",emailLink:"ms.souadhicham@gmail.com",picture:"./images/shicham.JPG"}),
             ]),
         ])
     }

@@ -44,8 +44,10 @@ export const EnableTwoFactor =  defineComponent({
             }
             else
             {
-                this.updateState({error :  {}})            
-                this.emit('2faVerified')
+                this.updateState({error :  {}})
+                this.appContext.router.navigateTo('/login')
+
+                // this.emit('2faVerified')
             }
         })
     },

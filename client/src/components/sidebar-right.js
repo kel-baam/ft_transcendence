@@ -46,33 +46,12 @@ export const sidebarRight = defineComponent(
         {
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/friends-status/`);
             socket.onopen =  () => {
-                console.log("-----------------> WebSocket connected");
             };
         
             socket.onmessage =  (event) =>{
-            const oldFriends = this.state.friends; 
             const newFriends = JSON.parse(event.data); 
-            const friendsMap = new Map();
-
-            oldFriends.forEach(friend => {
-                friendsMap.set(friend.id, { ...friend });  
-            });
-            
-            newFriends.forEach(newFriend => {
-                const existingFriend = friendsMap.get(newFriend.id);
-            
-                if (existingFriend) {
-                    if (existingFriend.status !== newFriend.status) {
-                        existingFriend.status = newFriend.status;
-                    }
-                } else {
-                    friendsMap.set(newFriend.id, { ...newFriend });
-                }
-            });
-            
-            const updatedFriends = Array.from(friendsMap.values());
             this.updateState({
-                friends: updatedFriends
+                friends: newFriends
             });
             };
         

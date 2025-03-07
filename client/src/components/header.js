@@ -25,13 +25,20 @@ export const header = defineComponent({
         this.initWebSocket();
     },
 
+    onUnmounted(){
+        if (socket)
+        {
+            socket.close();
+            socket = null;
+        }
+
+    },
+
     initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/notification/`);
-            socket.onopen = () => {console.log('WebSocket connection established'); };
+            socket.onopen = () => {};
             socket.onmessage = async (event) => {
-
-                console.log('Message received in notif : ');
                 
                 const data = JSON.parse(event.data);
                 this.updateState({
@@ -40,7 +47,7 @@ export const header = defineComponent({
             };
     
             socket.onerror = (error) => { console.error('WebSocket error:', error); };
-            socket.onclose = () => { console.log('WebSocket connection closed'); };
+            socket.onclose = () => {};
         }
     },
 
@@ -63,8 +70,6 @@ export const header = defineComponent({
             }
 
             const notifications = await response.json();
-            
-            console.log("notifications :", notifications);
 
             this.updateState({
                 notif        : !this.state.notif,
@@ -74,7 +79,7 @@ export const header = defineComponent({
             
             this.emit("iconClick")
         }
-        catch (error) {  console.log(error);  }
+        catch (error) {}
     },
 
 
@@ -97,19 +102,16 @@ export const header = defineComponent({
 
                 if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
-                
-                console.error("Error response:", errorText);
 
                 const firstError = Object.values(errorText)[0];
                 throw new Error(firstError);
             }
             const successData = await response.json();
-            console.log("player added :", successData.message);
+            showErrorNotification("You decline this invitation!");
         }
         catch (error)
         {
             showErrorNotification(error);
-            console.log(error);
         }
     },
 
@@ -186,7 +188,6 @@ export const header = defineComponent({
                         ]
                         break;
                     default:
-                        // console.log(`⚠️ ${notification.message}`);
                         content = `⚠️ ${notification.message}`;
                         break;
                 }
@@ -310,9 +311,7 @@ export const header = defineComponent({
                                     e.preventDefault()
 
                                     const target = e.currentTarget;
-                                    // target.style.removeProperty('color'); 
                                     target.style.color = '#F45250';
-                                    // console.log(">>>>>>>>>>>the target icon : ", target)
                                     this.appContext.router.navigateTo('/settings/edit-info')
                                     
                                 }

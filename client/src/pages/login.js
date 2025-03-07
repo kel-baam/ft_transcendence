@@ -28,9 +28,7 @@ export const Login = defineComponent({
     async loginForm(event)
     {
         try{
-            event.preventDefault()
-            console.log("=>beforrrre over")
-            
+            event.preventDefault()            
             const response = await fetch(`https://${window.env.IP}:3000/auth/login/`,{
                 method:'POST',
                 body:new FormData(document.querySelector(".loginForm")),
@@ -53,14 +51,12 @@ export const Login = defineComponent({
         }
         catch (e)
         {
-            console.log("yeees")
         }
     
         // console.clear();  
 
     },
     
-        // TO CHANGE
     render(){
         return h ('div',{id:"global"},[
             h('div',{class:"login-page-content"},[

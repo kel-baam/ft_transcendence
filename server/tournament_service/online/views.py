@@ -3,8 +3,7 @@ from rest_framework.decorators      import api_view
 from rest_framework.response        import Response
 from django.shortcuts               import get_object_or_404
 from rest_framework.views           import APIView
-from .models                        import Player, Tournament, PlayerTournament, Notification
-from local.models import User
+from .models                        import *
 from .serializers                   import TournamentSerializer , PlayerTournamentSerializer, NotificationSerializers
 from django.core.exceptions         import ValidationError
 from rest_framework                 import serializers
@@ -193,13 +192,13 @@ class TournamentAPIView(APIView):
                     'avatar'     : avatar,
                     'status'     : status_value,
                 }
-                
+
                 serializer = PlayerTournamentSerializer(player_tournament, data=player_tournament_data)
                 if serializer.is_valid():
                     serializer.save()
                 else:
                     return Response(
-                        {"error": "Invalid data provided.", "details": serializer.errors},
+                        {"error": "Nickname cannot be empty.", "details": serializer.errors},
                         status=status.HTTP_400_BAD_REQUEST
                     )
 

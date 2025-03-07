@@ -117,28 +117,7 @@ DATABASES = {
     }
 }
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': 'redis://redis-service:6378/1',  # Adjust location if Redis is on a different host
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
 
-# AUTHENTICATION_BACKENDS = [
-    
-#     # Needed to login by username in Django admin, regardless of `allauth`
-#     'django.contrib.auth.backends.ModelBackend',
-
-#     # `allauth` specific authentication methods, such as login by email
-#     'allauth.account.auth_backends.AuthenticationBackend',
-
-# ]
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -155,8 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+
 
 LANGUAGE_CODE = 'en-us'
 
@@ -189,19 +167,13 @@ AUTHENTICATION_BACKENDS = (
     # 'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-# SITE_ID = 1
-# ACCOUNT_EMAIL_VERIFICATION = "none"
-# LOGIN_REDIRECT_URL = "home"
-# ACCOUNT_LOGOUT_ON_GET = True
 
 LOGIN_URL = 'login'
 
 
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+  
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -210,7 +182,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=70),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -225,13 +197,10 @@ SIMPLE_JWT = {
     "LEEWAY": 0,
 }
 
-# CORS_ALLOWED_ORIGINS = 
-# CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOW_CREDENTIALS = True
 
-# pip install python-decouple
-# pip install pyjwt
-# CSRF_COOKIE_SAMESITE = 'None'
+
 CSRF_TRUSTED_ORIGINS = [
     'http://10.14.3.1:3000',
     'http://127.0.0.1:3000',
@@ -252,33 +221,6 @@ ASGI_APPLICATION = "auth.asgi.application"
 ALLOWED_HOSTS = ['*']
 
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',  # Capture DEBUG level and above
-#             'class': 'logging.StreamHandler',  # Send logs to the console
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',  # Capture DEBUG level and above for django logger
-#             'propagate': False,  # Do not propagate to the root logger
-#         },
-#         'django.request': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',  # Capture DEBUG level for request logs
-#             'propagate': False,  # Prevents duplication in logs
-#         },
-#         '': {  # This is the root logger
-#             'handlers': ['console'],
-#             'level': 'DEBUG',  # Capture DEBUG level and above for all other loggers
-#             'propagate': False,
-#         },
-#     },
-# }
 
 
 APPEND_SLASH=False

@@ -30,12 +30,12 @@ import { ComingSoon } from './components/errorPages/coming_soon.js';
 
 
 window.env = {
-  IP: "10.14.1.2",
+  IP: "10.14.2.1",
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  // console.clear()
   const links = document.querySelectorAll('.scroll-link');
-  // console.log("------------------> Domain:",  window.ENV);
     links.forEach(link => {
       link.addEventListener('click', function(event) {
           event.preventDefault();
@@ -52,30 +52,12 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       });
     });
-    const storedLanguage = localStorage.getItem('language');
-    // console.log(">>>>>>>>>>>>>>>>>>>> stored language ", storedLanguage)
   });
   
-  // window.onload = function() {
-  //   console.log('All content including images, CSS, etc., is loaded');
-  //   const storedLanguage = localStorage.getItem('language');
-  //   console.log("+++++++++++++++++++++++++++++++ here on document load : storedLanguage ", storedLanguage)
-  //   document.querySelectorAll("data-translate").forEach(element => {
-  //   const key = element.getAttribute("data-translate");
-  //   element.textContent = translations[storedLanguage][key];
-  //   })
-  // };
-
-// const NotFound = defineComponent({
-//       render() {
-//         return h('div',{},[h('div',{},["404 THIS PAGE NotFound "])]) 
-//       }
-// })
-
+ 
 
 async function isAuthenticated(currentLocation)
 {
-      // const path = currentLocation.getMusic()
 
       let query = false
       if(currentLocation.route.path == '/2FA')
@@ -102,82 +84,37 @@ async function isAuthenticated(currentLocation)
     }
 }
 
-// async function isAuthenticated(currentLocation)
-// {
-//     // console.log("==================>",currentLocation,currentLocation.route.path)
-//     // console.log("==================>test",currentLocation.getMusic())
-//     // console.log("==================>i'm smart",currentLocation.extractParams(path))
 
-
-//     // console.log("thiiiiiis =>===",this)
-//     let query = false
-//     if(currentLocation.route.path == '/2FA')
-//       query = true
-//     const result = await customFetch(`https://${window.env.IP}:3000/isAuthenticated?2fa=${query}`)
-//     if(result)
-//     {
-//       if(!result.ok)
-//         { 
-
-//           if(result.status == 401)
-//               return '/login'
-//         }
-        
-//     }
-
-
-// }
 
 const router = new HashRouter([
 
-    { path: '/', component: LandingPage 
-    },
+    { path: '/', component: LandingPage },
     { path: '/login', component: Login },
     { path: '/register',  component: Register },
-    { path:'/home', component: Home,
-      beforeEnter:isAuthenticated
-    },
-
+    { path:'/home', component: Home,beforeEnter:isAuthenticated},
+    { path: '/2FA', component: TwoFactor,beforeEnter:isAuthenticated},
     
-    // { path:'/home', component: test},
-    { path: '/2FA', component: TwoFactor,
-      beforeEnter:isAuthenticated
+    { path: '/leaderboard',component: Leaderboard, beforeEnter:isAuthenticated },
 
-    },
-    { path: '/leaderboard',component: Leaderboard,
-      beforeEnter:isAuthenticated
-
-    },
-
-    { path: '/404',  component: NotFound },
-    { path: '/coming_soom', component: ComingSoon },
-    { path: '/401',  component: Unauthorized },
-    {
-      path:'/user', component: Profile,
-      beforeEnter:isAuthenticated
-
-    },
-    {
-      path:'/user/:username', component: Profile,  beforeEnter:isAuthenticated
-
-    },
-
+    // { path: '/404',  component: NotFound },
+    // { path: '/coming_soom', component: ComingSoon },
+    // { path: '/401',  component: Unauthorized },
+    { path:'/user', component: Profile, beforeEnter:isAuthenticated},
+    { path:'/user/:username', component: Profile,  beforeEnter:isAuthenticated},
     { path: '/password/reset',  component: ResetPassword },
 
-    {path:'/tournament',component: Tournament, beforeEnter:isAuthenticated},
-    {path:'/tournament/local', component: LocalTournament, beforeEnter:isAuthenticated},
-    { path:'/game', component: Game, beforeEnter:isAuthenticated},
-    // { path:'/game/:id', component: Game, beforeEnter:isAuthenticated},
+    { path:'/tournament',component: Tournament, beforeEnter:isAuthenticated},
+    { path:'/tournament/local', component: LocalTournament, beforeEnter:isAuthenticated},
     { path:'/tournament/local/local_hierachy/:id', component:  LocalHierarchy, beforeEnter:isAuthenticated},
-    { path:'/tournament/online', component: OnlineTournament,
-      beforeEnter:isAuthenticated },
+    { path:'/tournament/online', component: OnlineTournament, beforeEnter:isAuthenticated },
     { path:'/tournament/online/online_hierachy/:id', component: OnlineHierarchy, beforeEnter:isAuthenticated},
     { path: '/pvp', component: PlayerVsPlayer, beforeEnter:isAuthenticated},
     { path: '/pvp_online', component: OnlinePvp, beforeEnter:isAuthenticated},
+    { path:'/game', component: Game, beforeEnter:isAuthenticated},
+    
     {path : '/settings/edit-info', component : EditInfoForm, beforeEnter:isAuthenticated},
     {path : '/settings/security', component : SecuritySettings,beforeEnter:isAuthenticated},
     {path: '/settings/blocked-friends', component: BlockedFriendsList,beforeEnter:isAuthenticated},
-    {path:'/404', component : NotFound},
     {path :  '*', component : NotFound}
 
   ])

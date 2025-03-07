@@ -39,7 +39,6 @@ export const OnlinePvp = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
         }
         catch (error)
         { showErrorNotification(error); }
@@ -52,14 +51,11 @@ export const OnlinePvp = defineComponent({
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
     
             socket.onopen = () => {
-                console.log('WebSocket connection established');
                 socket.send(JSON.stringify({ action: 'find_opponent' }));
             };
     
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                
-                console.log('WebSocket Data:', data);
     
                 if (data.action === "match_not_found")
                 {
@@ -72,7 +68,6 @@ export const OnlinePvp = defineComponent({
                 } 
                 else if (data.action === "match_found")
                 {
-                    console.log("----------------------------------")
                     this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                 }
                 else if (data.action === "opponent_disconnected")
@@ -100,6 +95,7 @@ export const OnlinePvp = defineComponent({
     
     render() {
         const {isLoading} = this.state
+
         return h('div', { id: 'global' }, [
             h(header, {
                 icon_notif: this.state.notificationActive,
@@ -122,12 +118,13 @@ export const OnlinePvp = defineComponent({
                     style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
                  }, [
                     h('div', { class: 'user-profile' }, [
-                        h('img', { src: `https://${window.env.IP}:3000/media${this.state.user_data.picture}`, style : {'object-fit': 'cover'} }),
-                        h('h3', {}, [this.state.user_data.username || "Unknown"])
+                        h('img', { src: !isLoading ? `https://${window.env.IP}:3000/media${this.state.user_data.picture}` : './images/people_14024721.png'
+                            , style : {'object-fit': 'cover'} }),
+                        h('h3', {}, [this.state.user_data.username])
                     ]),
                     h('div', { class: 'vs' }, [h('img', { src: './images/vs.png' })]),
                     h('div', { class: 'invited' }, [
-                        h('img', { src: `https://${window.env.IP}:3000/media${this.state.player_data.picture}`,style : {'object-fit': 'cover'}  }),
+                        h('img', { src: './images/people_14024721.png',style : {'object-fit': 'cover'}  }),
                         h('h3', {}, [this.state.player_data.username || "Searching..."])
                     ])
                 ]),h('div', { class: 'friends-bar' }, [

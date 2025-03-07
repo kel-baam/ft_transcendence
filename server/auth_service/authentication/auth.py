@@ -12,7 +12,6 @@ from rest_framework import status
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from .models import User
-from .decorators import refreshTokenRequired
 from django.views.decorators.csrf import csrf_exempt
 from .jwt import generateToken,generateAccessToken
 from .oauthUtils import exchange_code_with_token,get_user_info
@@ -31,22 +30,12 @@ from .serializers import  UserSerializer
 import json
 import random
 import os
-
-
-
-
-
-
-
 from jwt import decode , ExpiredSignatureError, InvalidTokenError
 
-# logging.basicos.getenv(level=logging.DEBUG)
-# logger = logging.getLogger(__name__)
 
 
 def set_tokens_in_cookies_with_OAuth(request,email,response):
         try:
-                # domain = os.getenv('DOMAIN')
                 domain = os.getenv('DOMAIN')
 
                 user = User.objects.filter(email=email).first()
@@ -57,9 +46,6 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                        "X-Authenticated-User":user.username
                 }
                 )
-                print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
-                # user.status = True
-                # user.save(update_fields=['status'])#to change
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
                 if(user.enabled_twoFactor and payload['login_level'] == 1):
                         response = redirect(f"{domain}/#/2FA")
@@ -94,7 +80,6 @@ def set_tokens_in_cookies_with_OAuth(request,email,response):
                         response.set_cookie('refresh_token',token.get('refresh'), max_age=refreshTokenLifeTime)
                         return response
 
-# TO CHANGE
 
 def set_tokens_in_login(request,email,response):
         try:
@@ -104,9 +89,6 @@ def set_tokens_in_login(request,email,response):
                 }, headers={
                        "X-Authenticated-User":user.username
                 })
-                print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
-                # user.status = True
-                # user.save()
                 payload = decode(request.COOKIES.get("access_token"), settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
 
 
@@ -240,7 +222,6 @@ def storeIntraData(intraData):
                         'first_name' : intraData.get('first_name'),
                         'email' :intraData.get('email'),
                         'phone_number': phone_number,
-                        # 'password': '4475588@kdjndjfjjdfnbhf',
                         'registration_type': 'api',
                         'player' : {
                                 'rank' : '0',
@@ -281,11 +262,8 @@ def intra_callback(request):
                 validateCode = exchange_code_with_token(code,os.getenv('TOKEN_URL'),os.getenv('CLIENT_ID'),os.getenv('SECRET_KEY'),os.getenv('REDIRECT_URI'))
                 if validateCode['status_code'] == 200:
                         user_info = get_user_info(validateCode['accessToken'],os.getenv('INTRA_API'))
-                        # TODO i should here check user_info status code later
                         user = User.objects.filter(email=user_info.get("email")).first()
-                        response = handle_state(state,user,user_info)
-                        #  TODO maybe before setting coookie i should check access id is exist if note set it if yes decode it if i snot valid set new one
-                        
+                        response = handle_state(state,user,user_info)                        
                         if((state == 'login' and user) or (state == 'register' and not user))  :         
                                 response = set_tokens_in_cookies_with_OAuth(request,user_info.get("email"),response)
                         return response
@@ -293,14 +271,12 @@ def intra_callback(request):
 
 
 # -----------------------------------------------------------login form ------------------------------------------------------
-# i guess this done for now
 @csrf_exempt
 @api_view(['POST'])                 
 def login(request):
 
         username = request.data.get('username')
         password = request.data.get('password')
-        # domain = os.getenv('DOMAIN')
         user = User.objects.filter(username=username).first()
         if not user:
                 return Response({'username':'invalid username','password':'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
@@ -375,8 +351,7 @@ def logout(request):
             payload = decode(refresh_token, settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
             user = User.objects.filter(email=payload.get("email")).first()
         except ExpiredSignatureError:
-            print(">>>>>>>>>>> Refresh token expired")
-            user = None  # Proceed without decoding token
+            user = None
         
         if user:
             resp = requests.put(
@@ -391,38 +366,8 @@ def logout(request):
         return response
 
     except Exception as e:
-        print(">>>>>>>>>>>>>>>>>>> Error: ", str(e))
         return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-
-
-# @csrf_exempt
-# @api_view(['POST'])                 
-# def logout(request):
-#         try:
-#             refresh_token = request.COOKIES.get('refresh_token')
-#             token = RefreshToken(refresh_token)
-#             payload = decode(refresh_token, settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=["HS256"])
-#             user = User.objects.filter(email=payload.get("email")).first()
-#             resp = requests.put('http://user-service:8001/api/user',json= {
-#                    "status": False
-#                 }
-#             ,
-#             headers={
-#                    "X-Authenticated-User":user.username
-#             }
-#             )
-#             print(">>>>>>>>>>>>>>>>>>> response form souad is ", resp)
-#         #     user.status = False
-#         #     user.save(update_fields=['status'])
-#             response = Response(status=status.HTTP_205_RESET_CONTENT)
-#             response.delete_cookie('refresh_token')
-#             response.delete_cookie('access_token')
-#             return response
-#         except Exception as e:
-#             print(">>>>>>>>>>>>>>>>>>> dfjgfhghgfhjhgjffdskgjkfg ", str(e))
-            
-#             return Response(str(e),status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])                 
 def verify_email(request, uidb64, token):
@@ -461,7 +406,6 @@ def password_reset_request(request):
         verification_link = f'{domain}/#/password/reset?type=change&uid={uid}&token={token}'
         email_body = f'Hi {user.first_name},\nWe received a request to reset the password for your account. If you didn’t make this request, you can safely ignore this email.\nTo reset your password, please click the link below:\n\n{verification_link}'
         email_subject = 'Reset Your Password'
-        print("email=====================>",email)
         send_mail(
                 email_subject,
                 email_body,

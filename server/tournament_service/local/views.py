@@ -8,9 +8,8 @@ from rest_framework.exceptions      import ValidationError
 from django.db                      import transaction
 from rest_framework                 import serializers
 
-from .models                        import User, Tournament, PlayerTournament
-from .serializers                   import TournamentSerializer , PlayerTournamentSerializer
-from .verifyForm                    import validate_form
+from online.models                  import *
+from .serializers                   import *
 
 import json
 

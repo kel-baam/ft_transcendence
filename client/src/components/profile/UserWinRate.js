@@ -83,7 +83,7 @@ export const UserWinRate =  defineComponent({
       customFetch(endPoint)
         .then(result =>{
 
-            if (!result.ok)
+            if (result.status == 401)
                 this.appContext.router.navigateTo('/login')
             return result.json()
         })

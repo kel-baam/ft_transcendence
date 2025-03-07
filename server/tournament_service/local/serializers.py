@@ -1,7 +1,7 @@
 from rest_framework             import serializers
 from django.core.exceptions     import ValidationError
 
-from .models            import Player, PlayerTournament, Tournament, Notification
+from online.models            import Player, PlayerTournament, Tournament, Notification
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,6 +21,9 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
         
         if status == 'accepted' and not nickname:
             raise ValidationError({'nickname': 'Nickname cannot be empty.'})
+
+        if ' ' in nickname :
+            raise ValidationError({'nickname': 'Nickname cannot have spaces.'})
         
         return data
 
@@ -37,6 +40,8 @@ class TournamentSerializer(serializers.ModelSerializer):
         name = data.get('name')
         if not name:
             raise ValidationError({'name': 'Tournament name cannot be empty.'})
+        if ' ' in name:
+            raise ValidationError({'name': 'Tournament name cannot have spaces.'})
         type = data.get('type')
         if not type:
             raise ValidationError({'type': 'You must select a type.'})

@@ -16,6 +16,7 @@ import { AvailableTournaments } from '../../../components/tournament/AvailableTo
 import { showErrorNotification} from '../../utils/errorNotification.js';
 import { customFetch } from '../../../package/fetch.js';
 import { ComingSoon } from '../../../components/errorPages/coming_soon.js';
+import { sidebarRight } from '../../../components/sidebar-right.js';
 
 let socket = null;
 
@@ -26,6 +27,8 @@ export const OnlineTournament = defineComponent({
                 joinedTournaments   : [],
                 availableTournaments: [],
             },
+            isloading : true,
+
             isBlur             : false,
             id                 : null,
             notificationActive : false,
@@ -36,12 +39,12 @@ export const OnlineTournament = defineComponent({
     },
 
     onMounted() {
+
         this.initWebSocket();
     },
 
     onUnmounted() {
         if (socket) {
-            console.log('WebSocket connection closed');
             socket.close();
         }
     },
@@ -51,21 +54,17 @@ export const OnlineTournament = defineComponent({
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/tournament/online/`);
 
             socket.onopen = () => {
-                console.log('WebSocket connection established');
-
                 socket.send(JSON.stringify({ action: 'get_joined_tournaments' }));
                 socket.send(JSON.stringify({ action: 'get_available_tournaments' }));
             };
             socket.onmessage = async (event) => {
                 const data = JSON.parse(event.data);
 
-                console.log('Parsed WebSocket Data:', data);
-
                 if (data.joined_tournaments) {
-                    this.updateState({ joinedTournaments: data.joined_tournaments });
+                    this.updateState({ joinedTournaments: data.joined_tournaments , isloading:false});
                 }
                 if (data.available_tournaments) {
-                    this.updateState({ availableTournaments: data.available_tournaments });
+                    this.updateState({ availableTournaments: data.available_tournaments, isloading:false });
                 }
             };
 
@@ -111,11 +110,11 @@ export const OnlineTournament = defineComponent({
     },
 
     render() {
-        console.log(this.state.coming_soon)
-        if (this.state.coming_soon)
-        {
+        const {coming_soon, isloading} = this.state
+
+        if (coming_soon)
             return h(ComingSoon, {});
-        }
+
 
         const renderForm = (isBlur) =>
             h('div', { class: 'join-player-form' }, [
@@ -191,7 +190,8 @@ export const OnlineTournament = defineComponent({
                         tournaments : this.state.availableTournaments,
                         on          : {
                             join: (id) => this.updateState({ isBlur: true, id })
-                        }
+                        },
+                        isloading:isloading
                     }),
                     h(JoinedTournaments, {
                         tournaments : this.state.joinedTournaments,
@@ -200,9 +200,12 @@ export const OnlineTournament = defineComponent({
                                 this.updateState({
                                     coming_soon: true,
                                 })
-                        }
+                        },
+                        isloading:isloading
                     }),
                     h(CreateTournament)
+                ]),h('div', { class: 'friends-bar' }, [
+                    h(sidebarRight, {})
                 ]),
                 this.state.isBlur ? renderForm(true) : null,
                 this.state.notif_blur ? renderForm(false) : null

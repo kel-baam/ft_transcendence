@@ -82,7 +82,6 @@ export const SocialCard = defineComponent({
                 ]),
                 h('input', { type: 'text', placeholder: 'Search...', value : `${searchedUser}`,on :{
                   input : (e) => {
-                  console.log("********************> target : ", e.target.value)
                   const value = e.target.value
                     this.updateState({
                       searchedUser: value
@@ -178,14 +177,8 @@ export const SocialCard = defineComponent({
       customFetch(endPoint)
         .then(result =>{
 
-            if (!result.ok)
-            {
-              // if (result.status == 404)
-              //     this.appContext.router.navigateTo('/404')
-                
+            if (result.status == 401)
                 this.appContext.router.navigateTo('/login')
-            }
-
             return result.json()
         })
         .then(res => {
@@ -196,8 +189,7 @@ export const SocialCard = defineComponent({
             });
 
         })
-        .catch(error => {
-        })
+
     },
     
     fetch(endPoint, activateSection)
@@ -206,10 +198,9 @@ export const SocialCard = defineComponent({
       customFetch(endPoint)
         .then(result =>{
 
-            if (!result.ok)
-            {
+            if (result.status ==401)
               this.appContext.router.navigateTo('/login')
-            }
+            
 
             return result.json()
         })
@@ -222,9 +213,7 @@ export const SocialCard = defineComponent({
             });
 
         })
-        // .catch(error => {
-        //     // console.log(">>>>>>>>>>>> error in win  : ", error)
-        // })
+      
     }
 })
 

@@ -24,7 +24,6 @@ export const TwoFactor =  defineComponent({
         }).then(async(result)=>{
             if(!result.ok)
             {
-                
                 if(result.status == 401)
                     this.appContext.router.navigateTo('/login')
                 else{
@@ -37,6 +36,7 @@ export const TwoFactor =  defineComponent({
                 this.appContext.router.navigateTo('/home')
         })
     },
+  
     render()
     {
         return h('div',{id:"global"},[
@@ -47,7 +47,7 @@ export const TwoFactor =  defineComponent({
                         h('form',{className:"twoFactorForm",on:{submit:(event)=> this.handleSubmit(event)}},[
                             h('input',{id:'input',type:"password",name:"code",placeholder:"Enter the 6-digit code"}),
                             h('br',{}),
-                            h('input',{type:"submit",id:"submit",value:"submit"})
+                            h('button',{type:"submit",id:"submitt"},['Verfiy'])
                         ])
                     ])
                 ])

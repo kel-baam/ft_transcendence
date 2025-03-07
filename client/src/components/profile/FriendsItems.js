@@ -6,10 +6,8 @@ import{ defineComponent, h} from '../../package/index.js'
     {
   
       const {isExpanded, key, searchedUser} = this.props
-      // console.log("----------------> seatched user is " , searchedUser)
 
       const data = isExpanded ? this.props.data : this.props.data.slice(0,4)
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>> data : ", data )
       return h('div', {class : 'friends-scope-item',
           style: isExpanded ? { 'row-gap': '0%','grid-auto-rows' : '14.5%'
             ,justifyContent : 'center'} : {}

@@ -1,8 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
-from .models import Tournament, PlayerTournament, Player
-from local.models import User
+from .models import *
 from django.db.models import Q, Count, F
 from .serializers import TournamentSerializer
 from django.conf import settings

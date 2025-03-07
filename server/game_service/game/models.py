@@ -73,7 +73,6 @@ class Player(models.Model):
     def update_score(self, score):
         """Update the player's score based on the match result."""
         self.score += score
-        print("self.score: ", score, self.score)
         self.save()
 
     def update_level(self):
@@ -110,7 +109,7 @@ class Player(models.Model):
                     user=self.user,
                     badge=badge,
                     defaults={'unlock': True}
-                )#here create
+                )
                 if not created and not user_badge.unlock:
                     user_badge.unlock = True
                     user_badge.save()
@@ -180,8 +179,7 @@ class PlayerTournament(models.Model):
     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
     
     nickname        = models.CharField(max_length=50, null=True, blank=True, unique = True)
-    avatar          = models.ImageField(upload_to='player_images/', null=True, blank=True)
-    
+    avatar          = models.ImageField(upload_to='player_images/', null=True, blank=True, default= 'player_images/default.png')    
     invited_at      = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

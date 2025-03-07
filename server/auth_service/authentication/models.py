@@ -179,8 +179,7 @@ class PlayerTournament(models.Model):
     status          = models.CharField(max_length=10, choices=status_choices, default='pending')
     
     nickname        = models.CharField(max_length=50, null=True, blank=True, unique = True)
-    avatar          = models.ImageField(upload_to='player_images/', null=True, blank=True)
-    
+    avatar          = models.ImageField(upload_to='player_images/', null=True, blank=True, default= 'player_images/default.png')    
     invited_at      = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

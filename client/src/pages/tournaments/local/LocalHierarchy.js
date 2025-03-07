@@ -66,11 +66,7 @@ export const LocalHierarchy = defineComponent({
             const tournamentId  = this.appContext.router.params.id;
             socket              = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/?tournamentId=${tournamentId}`);
 
-            console.log("---> : ", tournamentId)
-
             socket.onopen = () => {
-                console.log('WebSocket connection established');
-                
                 socket.send(JSON.stringify({
                     action       : 'local_tournament',
                     tournamentId : tournamentId
@@ -79,8 +75,6 @@ export const LocalHierarchy = defineComponent({
 
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                
-                console.log('WebSocket Data:', data);
                 
                 if (data && data.action == "tournament_not_found")
                 {
@@ -110,8 +104,6 @@ export const LocalHierarchy = defineComponent({
                        redirectTimeout = setTimeout(() => {
                             if (socket.readyState === WebSocket.OPEN) {
                                 this.appContext.router.navigateTo(`/game?id=${data.rounds}&type=local`);
-                            } else {
-                                console.log('WebSocket is closed. Redirection canceled.');
                             }
                         }, 5000); 
                     }
@@ -119,8 +111,6 @@ export const LocalHierarchy = defineComponent({
             };
 
             socket.onclose = () => {
-                console.log('WebSocket connection closed.');
-
                 if (redirectTimeout) {
                     clearTimeout(redirectTimeout);
                 }
@@ -149,13 +139,10 @@ export const LocalHierarchy = defineComponent({
         const {error} = this.state
         
         if (error && error === "match not found")
-        {
-            return h(NotFound, {}, ["404 game not found !!!"])
-        }
+            return h(NotFound, {})
+        
         if (error && error === "unauthorized")
-        {
-            return h(Unauthorized, {}, ["404 game not found !!!"])
-        }
+            return h(Unauthorized,{})
 
         return h('div', {id:'global'}, [h(header, {
             icon_notif: this.state.notificationActive,
