@@ -95,7 +95,7 @@ export const Security = defineComponent(
                                 submit : (event)=>
                                 {
                                     event.preventDefault()
-                                    customFetch(`https://${window.env.IP}:3000/api/user/`, {
+                                    customFetch(`https://${window.env.IP}:3000/api/user`, {
                                     method : 'PUT',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -110,8 +110,9 @@ export const Security = defineComponent(
                                 .then(result =>{
                                     if (result.status == 401)
                                         this.appContext.router.navigateTo('/login')
-                                    if (!result.ok) {
+                                    if (result.status == 400) {
                                         return result.json().then(errs => {
+                                            console.log("---------------------------> errs : ", errs )
                                             document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                             for (const [field, messages] of Object.entries(errs)) {
                                                 const errorElement = document.getElementById(`${field}_error`);
@@ -122,20 +123,20 @@ export const Security = defineComponent(
                                             }
                                         });
                                     }
-                                    return result.json()
-                                })
-                                .then(res =>{
-                                    document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
-                                    fetch(`https://${window.env.IP}:3000/auth/logout/`,{
-                                        method:'POST',
-                                        credentials: 'include',
-                                    }).then(async (res)=>{
-                                        if(res.ok)
-                                        {
-                                            this.appContext.router.navigateTo('/login')
-                                        }
+                                    return result.json().then(res =>{
+                                        document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
+                                        fetch(`https://${window.env.IP}:3000/auth/logout/`,{
+                                            method:'POST',
+                                            credentials: 'include',
+                                        }).then(async (res)=>{
+                                            if(res.ok)
+                                            {
+                                                this.appContext.router.navigateTo('/login')
+                                            }
+                                        })
                                     })
                                 })
+                               
                             }
                             }
                         }, [

@@ -31,7 +31,6 @@ export const Game = defineComponent(
         },
 
         onMounted() {
-
             this.initWebSocket();
             this.EventListener();
         },
@@ -465,7 +464,8 @@ export const Game = defineComponent(
                         h('div',{class:'secondPlayer'},[
                             h('div',{class:'scoreCard'},[ h('h4',{},[`${this.state.player2Score}`])]),
                             h('div',{class:'info'},  [
-                                h('img',{ src: this.state.player2.picture
+                                h('img',{
+                                    src: this.state.player2.picture
                                     ? `https://${window.env.IP}:3000/media${this.state.player2.picture}`
                                     : this.state.player2.avatar
                                     ? `https://${window.env.IP}:3000/media${this.state.player2.avatar}`

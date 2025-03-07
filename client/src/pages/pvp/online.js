@@ -95,6 +95,7 @@ export const OnlinePvp = defineComponent({
     
     render() {
         const {isLoading} = this.state
+
         return h('div', { id: 'global' }, [
             h(header, {
                 icon_notif: this.state.notificationActive,
@@ -117,7 +118,8 @@ export const OnlinePvp = defineComponent({
                     style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
                  }, [
                     h('div', { class: 'user-profile' }, [
-                        h('img', { src: `https://${window.env.IP}:3000/media${this.state.user_data.picture}`, style : {'object-fit': 'cover'} }),
+                        h('img', { src: !isLoading ? `https://${window.env.IP}:3000/media${this.state.user_data.picture}` : './images/people_14024721.png'
+                            , style : {'object-fit': 'cover'} }),
                         h('h3', {}, [this.state.user_data.username])
                     ]),
                     h('div', { class: 'vs' }, [h('img', { src: './images/vs.png' })]),

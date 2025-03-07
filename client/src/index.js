@@ -34,6 +34,7 @@ window.env = {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  console.clear()
   const links = document.querySelectorAll('.scroll-link');
     links.forEach(link => {
       link.addEventListener('click', function(event) {

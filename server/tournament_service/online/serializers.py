@@ -23,13 +23,11 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
             raise ValidationError({'nickname': 'Nickname cannot be empty.'})
         return data
 
-
 class TournamentSerializer(serializers.ModelSerializer):
     participants = PlayerTournamentSerializer(many=True, required=False)
     class Meta:
         model   = Tournament
         fields  = '__all__'
-
 
     def validate(self, data):
         """Override the default validation to handle custom checks"""

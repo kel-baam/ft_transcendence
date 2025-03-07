@@ -19,8 +19,11 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
         status   = data.get('status')
         nickname = data.get('nickname')
         
-        if (status == 'accepted' and not nickname) or ' ' in nickname:
+        if status == 'accepted' and not nickname:
             raise ValidationError({'nickname': 'Nickname cannot be empty.'})
+
+        if ' ' in nickname :
+            raise ValidationError({'nickname': 'Nickname cannot have spaces.'})
         
         return data
 
@@ -35,8 +38,10 @@ class TournamentSerializer(serializers.ModelSerializer):
         """Override the default validation to handle custom checks"""
 
         name = data.get('name')
-        if not name or ' ' in name:
+        if not name:
             raise ValidationError({'name': 'Tournament name cannot be empty.'})
+        if ' ' in name:
+            raise ValidationError({'name': 'Tournament name cannot have spaces.'})
         type = data.get('type')
         if not type:
             raise ValidationError({'type': 'You must select a type.'})

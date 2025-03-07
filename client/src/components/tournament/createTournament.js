@@ -9,6 +9,7 @@ export const CreateTournament = defineComponent({
         return {
             friendsList : [],
             players     : [],
+            searchQuery : ""
         }
     },
 
@@ -33,7 +34,6 @@ export const CreateTournament = defineComponent({
                 
                 if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
-                console.error("Error response:", errorText);
 
                 const firstError = Object.values(errorText)[0];
                 throw new Error(firstError);
@@ -74,7 +74,7 @@ export const CreateTournament = defineComponent({
             if (!response.ok) {
                 const errorText = await response.json();
 
-                if(errorText = 401)
+                if(response.status === 401)
                     this.appContext.router.navigateTo('/login')
 
                 console.error("Error response:", errorText.error);
@@ -84,7 +84,10 @@ export const CreateTournament = defineComponent({
     
             const friendsList = await response.json();
 
-            this.updateState ({ friendsList: friendsList })
+            this.updateState ({
+                friendsList: friendsList,
+                searchQuery: ""
+            })
         } catch (error) {
 
             showErrorNotification(error);
@@ -150,11 +153,11 @@ export const CreateTournament = defineComponent({
                         h('label', {}, ['Add Players:']),
                         h('br'),
                         h('input',  {
-                            type: 'text',
-                            class: 'search-box',
+                            type       : 'text',
+                            class      : 'search-box',
                             placeholder: 'Enter players...',
-                            value: this.state.searchQuery,
-                            on: { input: () => this.friends_list(event) }
+                            value      : `${this.state.searchQuery}`,
+                            on         : { input: () => this.friends_list(event) }
                         }),
                         h('br'),
                         h('div',{}, this.state.friendsList.length > 0 ? 
@@ -166,7 +169,8 @@ export const CreateTournament = defineComponent({
                                                 click: () => {
                                                     this.updateState({
                                                         players     : [...this.state.players, friend],
-                                                        friendsList : []
+                                                        friendsList : [],
+                                                        searchQuery : ""
                                                      });
                                                 }
                                             }                                            

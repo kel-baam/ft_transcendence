@@ -10,8 +10,6 @@ from .serializers import *
 
 class Notification(AsyncWebsocketConsumer):
     async def connect(self):
-        print("--------> WebSocket connection opened")
-
         self.user_id    = None
         self.group_name = None
         for header_name, header_value in self.scope["headers"]:
@@ -125,7 +123,4 @@ class OnlineFriends(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(
             event["friends"],  
         ))
-    async def update_friends(self, event):
-        await self.send(text_data=json.dumps(
-            event["friends"],  
-        ))
+ 

@@ -2,7 +2,6 @@ from django.http import JsonResponse
 from django.conf import settings
 from decouple import config
 from .models import User
-from .decorators import refreshTokenRequired
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 from datetime import datetime

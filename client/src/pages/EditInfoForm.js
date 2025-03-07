@@ -19,10 +19,12 @@ export const EditInfoForm = defineComponent({
 
     async submitForm(event) {
         event.preventDefault();
-        const formData = new FormData(event.target);
-        formData.append('tournament_id', JSON.stringify(this.state.id));
-        formData.append('status', 'accepted');
 
+        const formData = new FormData(event.target);
+
+        formData.append('tournament_id', JSON.stringify(this.state.notification_data.object_id));
+        formData.append('status', 'accepted');
+        
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/`, {
                 method: 'PUT',
@@ -37,9 +39,14 @@ export const EditInfoForm = defineComponent({
             }
 
             const successData = await response.json();
+
             this.updateState({ isBlur: false });
         } catch (error) {
             showErrorNotification(error);
+            
+            this.updateState({
+                isBlur: false,
+            })
         }
     },
 
@@ -64,7 +71,10 @@ export const EditInfoForm = defineComponent({
                 }
             }
             }),h('div', {class:'content'}, 
-            [h(sidebarLeft, {}), h('div', {class:'global-content'},
+            [h(sidebarLeft, {}), h('div', {
+                class:'global-content',
+                style : this.state.isBlur ? { filter : 'blur(4px)',  pointerEvents: 'none'} : {}
+            },
                 [h(
                     'div',
                     { class: 'settings-container' },

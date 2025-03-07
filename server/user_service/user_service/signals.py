@@ -29,12 +29,16 @@ def notify_friends_on_status_change(sender, instance, created, **kwargs):
                 models.Q(sent_request__reciever=instance, sent_request__status="accepted") |
                 models.Q(received_request__sender=instance, received_request__status="accepted")
             ).distinct()
-            async_to_sync (channel_layer.group_send)(
-                "online_users",
-                {
-                    "type": "friend_status_update", 
-                    "friend": UserSerializer(instance, fields=['id', 'picture', 'status']).data
-                }
+            for friend in friends:
+                friends_friend  = User.objects.filter(
+                models.Q(sent_request__reciever=friend, sent_request__status="accepted") |
+                models.Q(received_request__sender=friend, received_request__status="accepted"))
+                async_to_sync(channel_layer.group_send)(
+                    f"friend_{friend.id}", 
+                    {
+                        "type": "friend_status_update",
+                        "friends": UserSerializer(friends_friend ,many=True,  fields=['id', 'picture', 'status']).data
+                    }
             )
 
 @receiver(post_save, sender=Request)

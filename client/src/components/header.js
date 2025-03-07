@@ -25,6 +25,15 @@ export const header = defineComponent({
         this.initWebSocket();
     },
 
+    onUnmounted(){
+        if (socket)
+        {
+            socket.close();
+            socket = null;
+        }
+
+    },
+
     initWebSocket() {
         if (!socket || socket.readyState !== WebSocket.OPEN) {
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/notification/`);

@@ -164,6 +164,9 @@ class TournamentAPIView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
+            if not nickname:
+                return Response({'nickname': 'Nickname cannot be empty.'}, status=status.HTTP_400_BAD_REQUEST)
+
             player_tournament, created = PlayerTournament.objects.get_or_create(
                 tournament_id = tournament_id,
                 player        = player,
@@ -192,7 +195,7 @@ class TournamentAPIView(APIView):
                     'avatar'     : avatar,
                     'status'     : status_value,
                 }
-                
+
                 serializer = PlayerTournamentSerializer(player_tournament, data=player_tournament_data)
                 if serializer.is_valid():
                     serializer.save()

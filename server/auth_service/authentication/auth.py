@@ -12,7 +12,6 @@ from rest_framework import status
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from .models import User
-from .decorators import refreshTokenRequired
 from django.views.decorators.csrf import csrf_exempt
 from .jwt import generateToken,generateAccessToken
 from .oauthUtils import exchange_code_with_token,get_user_info

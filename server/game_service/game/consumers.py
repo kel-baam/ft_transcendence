@@ -36,8 +36,8 @@ ball ={
     'ballX':675,
     'ballY': 325,
     'radius':18,
-    'speedX' :8,
-    'speedY':8,
+    'speedX' :10,
+    'speedY':10,
     'maxScore':4,
 }
 
@@ -433,7 +433,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.ballX       = self.tableWidth / 2
             self.ballY       = random.randint(100, self.tableHeight - 100)
             self.speedXBall *= -1
-            self.speedYBall  = random.choice([7, -7])
+            self.speedYBall  = random.choice([10, -10])
             
     async def announce_winner(self,event):
         await self.send(text_data=json.dumps({
