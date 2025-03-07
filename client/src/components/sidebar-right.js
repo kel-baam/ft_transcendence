@@ -46,7 +46,6 @@ export const sidebarRight = defineComponent(
         {
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/friends-status/`);
             socket.onopen =  () => {
-                console.log("-----------------> WebSocket connected");
             };
         
             socket.onmessage =  (event) =>{

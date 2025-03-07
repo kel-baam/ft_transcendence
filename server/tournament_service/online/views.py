@@ -113,7 +113,6 @@ class TournamentAPIView(APIView):
                         for key, value in serializer.errors.items()}
             else:
                 errors = str(serializer.errors)
-                print("====> : ", errors)
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:

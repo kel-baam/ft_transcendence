@@ -36,7 +36,7 @@ import { customFetch } from '../package/fetch.js'
         .then(result=>
         {
             this.updateState({
-                data : result,
+                data     : result,
                 isloading:false
 
             })

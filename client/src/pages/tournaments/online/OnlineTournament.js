@@ -45,7 +45,6 @@ export const OnlineTournament = defineComponent({
 
     onUnmounted() {
         if (socket) {
-            console.log('WebSocket connection closed');
             socket.close();
         }
     },
@@ -55,15 +54,11 @@ export const OnlineTournament = defineComponent({
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/tournament/online/`);
 
             socket.onopen = () => {
-                console.log('WebSocket connection established');
-
                 socket.send(JSON.stringify({ action: 'get_joined_tournaments' }));
                 socket.send(JSON.stringify({ action: 'get_available_tournaments' }));
             };
             socket.onmessage = async (event) => {
                 const data = JSON.parse(event.data);
-
-                console.log('Parsed WebSocket Data:', data);
 
                 if (data.joined_tournaments) {
                     this.updateState({ joinedTournaments: data.joined_tournaments , isloading:false});
@@ -117,8 +112,6 @@ export const OnlineTournament = defineComponent({
     render() {
         const {coming_soon, isloading} = this.state
 
-
-        console.log(coming_soon)
         if (coming_soon)
             return h(ComingSoon, {});
 

@@ -311,14 +311,13 @@ class UserRankingView(APIView):
             top = request.query_params.get('top', None)
             if top is not None and top.isdigit():
                 limit = int(top)
-                players = list(User.objects.select_related('player').filter(player__rank__gt=0).order_by('player__rank')[:limit]
+                players = list(User.objects.select_related('player').filter(player__score__gt=0).order_by('player__rank')[:limit]
                             .annotate(rank=F('player__rank'), score =F('player__score'), level =F('player__level') ))
             else:
-                players = list(User.objects.select_related('player').filter(player__rank__gt=0).order_by('player__rank').
+                players = list(User.objects.select_related('player').filter(player__score__gt=0).order_by('player__rank').
                             annotate(rank=F('player__rank'), score =F('player__score'), level =F('player__level') ))
                 
             results = UserSerializer(players, many=True, fields={'username', 'picture', 'score', 'rank', 'level'}).data 
-
             return Response(results, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)

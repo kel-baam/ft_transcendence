@@ -55,8 +55,6 @@ export const OnlineHierarchy = defineComponent({
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/?tournamentId=${tournamentId}`);
 
             socket.onopen = () => {
-                console.log('WebSocket connection established');
-
                 socket.send(JSON.stringify({
                     action : 'online_tournament',
                 }));
@@ -65,7 +63,6 @@ export const OnlineHierarchy = defineComponent({
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
 
-                console.log('WebSocket Data:', data);
                 if (data.success)
                 {
                     this.updateState({
@@ -113,7 +110,6 @@ export const OnlineHierarchy = defineComponent({
 
     onUnmounted() {
         if (socket) {
-            console.log('WebSocket connection closed');
             socket.close();
         }
     },

@@ -223,9 +223,7 @@ export const Game = defineComponent(
                 ctx.lineTo(canvas.width / 2, canvas.height);
                 ctx.setLineDash([]);
                 
-                socket.onopen = function(e) {
-                    console.log("WebSocket Game is open now.");
-                };
+                socket.onopen = function(e) {};
 
 
                 socket.onmessage = function(e) {
@@ -245,6 +243,7 @@ export const Game = defineComponent(
                     
                     if(data.action && (data.action == "game_state") )
                     {
+                        
                         this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
                         draw_game(data);
 
@@ -252,8 +251,7 @@ export const Game = defineComponent(
                     }
                     if(data.action && data.action == 'opponent_disconnected')
                     {
-                        console.log(" opponent_disconnected In GAAAAMEEEE", data)
-
+                        this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
                         showErrorNotification(data.message)
                         this.announce_winner(data.state)
 
@@ -321,8 +319,6 @@ export const Game = defineComponent(
                     {
                         this.updateState({error:"match not found"})
 
-                        // this.appContext.router.navigateTo(data.redirect_to);
-
                         if (socket) {
                             socket.close();
                         }
@@ -356,6 +352,11 @@ export const Game = defineComponent(
                     
                     if (data.action && data.action === "quit_match")
                     {
+                        this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
+                        if (socket) {
+                            socket.close();
+                        }
+                        
                         let message = "You Won!" 
 
                         if(type == "local")
@@ -373,6 +374,9 @@ export const Game = defineComponent(
                             this.announce_winner(message);
                         else
                             this.announce_winner('You Lose!');
+
+
+
                         setTimeout(() => {
                             this.appContext.router.navigateTo(data.redirect_to);
                         }, 3000);
@@ -391,21 +395,17 @@ export const Game = defineComponent(
                 }.bind(this);
 
                 socket.onclose = function(e) {
-                    console.log("WebSocket is closed now in onclose.");
                     if (socket) {
                         socket.close();
                     }
                 };
 
-                socket.onerror = function(e) {
-                    console.log("WebSocket error",e);
-                };
+                socket.onerror = function(e) {};
             }
         },
 
         async exit_game() {
             socket.send(JSON.stringify({ action: 'exit_game' }));
-
         },
 
         render()
@@ -422,9 +422,7 @@ export const Game = defineComponent(
             }
             return h('div',{id:'game'},[
                 h('nav',{id:'header'},[
-                    h('a', {
-                        // on :{ click:()=>{ this.appContext.router.navigateTo('/home')} }
-                    }, [
+                    h('a', {}, [
                         h('img', { src: './images/logo.png', class: 'logo' })
                     ]),
                     h('div',{ id:'exitIcon' },

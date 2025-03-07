@@ -113,14 +113,14 @@ class GameConsumer(AsyncWebsocketConsumer):
                             return
 
                         if self.match_id != "undefined":
-
                             match_instance = await self.get_match_instance(self.match_id)
+                            tournament     = await self.get_tournament_from_match(self.match_id)
 
-                            if match_instance is None or (match_instance and match_instance.tournament is None and self.type == 'local'):
+                            if match_instance is None or (match_instance and tournament is None and self.type == 'local'):
                                 await self.send(text_data=json.dumps({"action": "match not found"}))
                                 return
-                        
-                            if match_instance and match_instance.tournament and self.type == 'online':
+                            
+                            if match_instance and tournament and self.type == 'online':
                                 await self.send(text_data=json.dumps({"action": "match not found"}))
                                 return
                             
@@ -133,7 +133,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                                         "redirect_to": self.redirect_to,}))
                                     return
                             
-                            if match_instance.tournament is None:
+                            if tournament is None:
 
                                 self.redirect_to = "/pvp"
 
@@ -174,7 +174,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
                             else:
 
-                                self.redirect_to = f"/tournament/local/local_hierachy/{match_instance.tournament.id}"
+                                self.redirect_to = f"/tournament/local/local_hierachy/{tournament.id}"
                                 
                                 if match_instance.status == "completed":
                                     await self.send(text_data=json.dumps({
@@ -184,7 +184,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     }))
                                     return
                                 
-                                tournament_instance = await self.get_tournament_instance(match_instance.tournament.id)
+                                tournament_instance = await self.get_tournament_instance(tournament.id)
 
                                 if tournament_instance.creator.id != self.user_id :
                                     await self.send(text_data=json.dumps({ "action" : "unauthorized" }))
@@ -256,7 +256,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 except Exception as e:
                     await self.send(text_data=json.dumps({"error": f"Error: {str(e)}"}))
 
-    #i have two cases in disconnect the first is the match status is pending and the other is completed
+    @sync_to_async
+    def get_tournament_from_match(self, match_id):
+        match = Match.objects.get(id=match_id)
+        return match.tournament
 
     async def disconnect(self, close_code):
         
@@ -337,34 +340,44 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }))
                 return 
 
-            winner = "player1"
-
-            if self.type == "online" and self.player != 'player1':
+            if self.player != 'player1':
                 self.player1Score = 8
                 winner = "player1"
-            elif self.type == "online" and self.player != 'player2':
+            elif self.player != 'player2':
                 self.player2Score = 8
                 winner = "player2"
 
             await self.handel_match_result('exited')
 
+            tournament     = await self.get_tournament_from_match(self.match_id)
+
+            if tournament is None:
+                self.redirect_to = "/pvp"
+            else:
+                self.redirect_to = f"/tournament/local/local_hierachy/{tournament.id}"
+
+            self.connected = False
             await self.channel_layer.group_send(
                 self.game_name,
                 {
-                    "type"       : "quit_match",
-                    "redirect_to": self.redirect_to,
-                    "winner"     : winner,
-                    "message"    : "you're exited the match"
+                    "type"        : "quit_match",
+                    "redirect_to" : self.redirect_to,
+                    "winner"      : winner,
+                    'player1Score': self.player1Score,
+                    'player2Score': self.player2Score,
+                    "message"     : "you're exited the match"
                 }
             )
             return
         
     async def quit_match(self, event):
         await self.send(text_data=json.dumps({
-            "action"     : "quit_match",
-            "redirect_to": event["redirect_to"],
-            "winner"     : event["winner"],
-            "message"    : event["message"]
+            "action"      : "quit_match",
+            "redirect_to" : event["redirect_to"],
+            "winner"      : event["winner"],
+            "message"     : event["message"],
+            'player1Score': event.get('player1Score'),
+            'player2Score': event.get('player2Score')
         }))
 
     @sync_to_async
@@ -387,10 +400,10 @@ class GameConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def get_match_instance(self, match_id):
         try:
-            match = Match.objects.get(id=match_id)
-            print("----? ", match)
-            return match
-        except ObjectDoesNotExist:
+            # match = Match.objects.get(id=match_id)
+            # print("----? ", match)
+            return Match.objects.get(id=match_id)
+        except Match.DoesNotExist:
             return None
 
     async def check_winner(self):

@@ -39,7 +39,6 @@ export const OnlinePvp = defineComponent({
             }
 
             const successData = await response.json();
-            console.log("Player added:", successData.message);
         }
         catch (error)
         { showErrorNotification(error); }
@@ -52,14 +51,11 @@ export const OnlinePvp = defineComponent({
             socket = new WebSocket(`wss://${window.env.IP}:3000/ws/matchmaking/`);
     
             socket.onopen = () => {
-                console.log('WebSocket connection established');
                 socket.send(JSON.stringify({ action: 'find_opponent' }));
             };
     
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                
-                console.log('WebSocket Data:', data);
     
                 if (data.action === "match_not_found")
                 {
@@ -72,7 +68,6 @@ export const OnlinePvp = defineComponent({
                 } 
                 else if (data.action === "match_found")
                 {
-                    console.log("----------------------------------")
                     this.appContext.router.navigateTo(`/game?id=${data.id}&type=online`);
                 }
                 else if (data.action === "opponent_disconnected")

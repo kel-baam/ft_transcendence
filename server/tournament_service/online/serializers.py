@@ -1,7 +1,7 @@
 from rest_framework             import serializers
 from django.core.exceptions     import ValidationError
 
-from .models            import Player, PlayerTournament, Tournament, Notification
+from .models                    import *
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +19,7 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
         status   = data.get('status')
         nickname = data.get('nickname')
 
-        if (status == 'accepted' and not nickname) or ' ' in nickname:
+        if status == 'accepted' and not nickname:
             raise ValidationError({'nickname': 'Nickname cannot be empty.'})
         return data
 
@@ -30,11 +30,12 @@ class TournamentSerializer(serializers.ModelSerializer):
         model   = Tournament
         fields  = '__all__'
 
+
     def validate(self, data):
         """Override the default validation to handle custom checks"""
 
         name = data.get('name')
-        if not name or ' ' in name:
+        if not name:
             raise ValidationError({'name': 'Tournament name cannot be empty.'})
         type = data.get('type')
         if not type:
@@ -46,4 +47,3 @@ class NotificationSerializers(serializers.ModelSerializer):
     class Meta:
         model   = Notification
         fields  = '__all__'
-        

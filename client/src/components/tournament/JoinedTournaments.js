@@ -30,20 +30,16 @@ export const JoinedTournaments = defineComponent({
             }
 
             const successData = await response.json();
-            
-            console.log("start Tournament:", successData.message);
 
             this.emit("start_the_tournament", id)
         }
         catch (error)
         {
             showErrorNotification(error);
-            console.log(error);
         }
     },
 
     async delete_tournament(id) {
-        console.log("id ----> ", id);
     
         try {
             const response = await customFetch(`https://${window.env.IP}:3000/api/tournament/online/tournaments/?tournamentId=${id}`, {
@@ -71,8 +67,6 @@ export const JoinedTournaments = defineComponent({
     
                 return;
             }
-    
-            console.log('Tournament deleted successfully!');
         } catch (error) {
             console.error('Error while deleting tournament:', error);
         }
@@ -80,8 +74,6 @@ export const JoinedTournaments = defineComponent({
     
     render() {
         const {isloading} = this.props
-
-        console.log("------------------------> isloading here : ", isloading)
         
         return h('div', { class: 'joinedTournament' }, [
             h('div', { class: 'title' }, [h('h1', {}, ['Joined Tournaments'])]),
