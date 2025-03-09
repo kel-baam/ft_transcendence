@@ -316,7 +316,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 except jwt.DecodeError:
                     await self.send(text_data=json.dumps({"error": "Token decoding error"}))
                 except Exception as e:
-                    print("------------------------------> here the error : ", str(e))
                     await self.send(text_data=json.dumps({"error": f"Error: {str(e)}"}))
 
     @sync_to_async
@@ -325,7 +324,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         return match.tournament
 
     async def disconnect(self, close_code):
-        print("in disconnect game", self.user_id)
         try:
             self.connected = False
 

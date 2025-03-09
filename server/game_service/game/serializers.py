@@ -49,7 +49,6 @@ class PlayerTournamentSerializer(serializers.ModelSerializer):
     def validate(self, data):
         """Override the default validation to handle custom checks"""
 
-        print("<<<<<<<<<<<< ", data)
         status = data.get('status')
 
         nickname = data.get('nickname')
@@ -70,7 +69,6 @@ class TournamentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Override the default validation to handle custom checks"""
-        print(">>>>>> ", data)
 
         name = data.get('name')
         if not name:
@@ -94,9 +92,7 @@ class MatchSerializer(serializers.ModelSerializer):
 
     def validate_room_name(self, value):
         """Ensure the room_name is unique only for active matches (pending)."""
-        print("Validating room_name:", value)  # Debug print to check if the method is reached
         if Match.objects.filter(room_name=value, status='pending').exists():
-            print("Room name is already in use for an active match.")
             raise serializers.ValidationError("Room name is already in use for an active match.")
         return value
     

@@ -112,7 +112,6 @@ export const Security = defineComponent(
                                         this.appContext.router.navigateTo('/login')
                                     if (result.status == 400) {
                                         return result.json().then(errs => {
-                                            console.log("---------------------------> errs : ", errs )
                                             document.querySelectorAll(".error").forEach((el) => (el.textContent = ""));
                                             for (const [field, messages] of Object.entries(errs)) {
                                                 const errorElement = document.getElementById(`${field}_error`);

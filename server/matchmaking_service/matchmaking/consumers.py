@@ -80,7 +80,6 @@ class Matchmaking(AsyncWebsocketConsumer):
         return "Tournament found and authorized"
 
     async def disconnect(self, close_code):
-        print("in disconnect matchmaking", self.user_id)
         try:
             if Matchmaking.waiting_player and Matchmaking.waiting_player['user_id'] == self.user_id:
                 Matchmaking.waiting_player = None

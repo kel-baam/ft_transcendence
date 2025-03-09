@@ -3,6 +3,7 @@ import { header } from '../../components/header.js'
 import { sidebarLeft } from '../../components/sidebar-left.js'
 import { sidebarRight } from '../../components/sidebar-right.js'
 import { showErrorNotification } from '../utils/errorNotification.js'
+import { customFetch } from '../../package/fetch.js'
 
 let socket = null;
 export const OnlinePvp = defineComponent({

@@ -3,6 +3,8 @@ import { header } from '../components/header.js'
 import { sidebarLeft } from '../components/sidebar-left.js'
 import { listBlockedFriends } from '../components/settings/listBlockedFriends.js'
 import { sidebarRight } from '../components/sidebar-right.js'
+import { showErrorNotification } from './utils/errorNotification.js'
+import { customFetch } from '../package/fetch.js'
 
 export const BlockedFriendsList = defineComponent({
     state()

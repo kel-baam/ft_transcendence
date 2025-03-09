@@ -73,6 +73,13 @@ html {
     /* border: 1px solid rgb(245, 7, 7); */
 }
 
+.online-tournament .tournaments p{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 22px;
+    color: #79766e;
+}
+
 .online-tournament .tournaments .available
 {
     display: grid;

@@ -4,6 +4,7 @@ import { showErrorNotification } from '../package/utils.js'
 
 import { showSuccessNotification } from '../package/utils.js'
 import { NotFound } from '../components/errorPages/404.js'
+
 export const ResetPassword = defineComponent({
     state(){
         return {
