@@ -34,6 +34,7 @@ export const Game = defineComponent(
             this.initWebSocket();
             this.EventListener();
         },
+
         keyDownHandler(e)
         {
             let keyPressed;
@@ -61,6 +62,7 @@ export const Game = defineComponent(
                     } 
                 }
         },
+
         keyUpHandler(e)
         {
             let keyPressed;
@@ -230,14 +232,12 @@ export const Game = defineComponent(
                     
                     if(data.action && data.action == "init_game")
                     {
-                        console.log("==============>socket=>",data)
                         if(data.player)
                             this.updateState({player:data.player,player1Score:data.player1Score,player2Score:data.player2Score, 
                             player1: data.player1, player2:data.player2})
                         else
                             this.updateState({player1Score:data.player1Score,player2Score:data.player2Score, 
                             player1: data.player1, player2:data.player2})
-                        draw_game(data);
                     }
 
                     
@@ -247,7 +247,7 @@ export const Game = defineComponent(
                         this.updateState({player1Score:data.player1Score,player2Score:data.player2Score})
                         draw_game(data);
 
-                        socket.send(JSON.stringify({ update: 'update_data', data: data}));
+                        // socket.send(JSON.stringify({ update: 'update_data', data: data}));
                     }
                     if(data.action && data.action == 'opponent_disconnected')
                     {
@@ -305,7 +305,7 @@ export const Game = defineComponent(
                             socket.close();
                         }
                     }
-
+                    
                     if (data.action && data.action === 'tournament finished')
                     {
                         showErrorNotification(data.message)

@@ -7,7 +7,7 @@ from django.db.models                   import Q
 from .models                            import Player, User, Match, Tournament, PlayerTournament
 from .serializers                       import *
 from .exceptions                        import CustomAPIException
-
+import uuid
 import json
 import asyncio
 import jwt
@@ -80,6 +80,7 @@ class Matchmaking(AsyncWebsocketConsumer):
         return "Tournament found and authorized"
 
     async def disconnect(self, close_code):
+        print("in disconnect matchmaking", self.user_id)
         try:
             if Matchmaking.waiting_player and Matchmaking.waiting_player['user_id'] == self.user_id:
                 Matchmaking.waiting_player = None
@@ -95,7 +96,7 @@ class Matchmaking(AsyncWebsocketConsumer):
                     self.room_name,
                     self.channel_name
                 )
-
+            
             if self.matched_player:
                 await self.channel_layer.group_discard(
                     self.room_name,
@@ -145,7 +146,14 @@ class Matchmaking(AsyncWebsocketConsumer):
             user     = await self.get_user(self.user_id)
 
             self.room_name = self.generate_room_name(self.user_id, self.matched_player["user_id"])
-            match          = await self.create_match(self.user_id, self.matched_player["user_id"], self.room_name)
+
+            match = await self.get_match_data(self.room_name)
+
+            if match is None:
+                match = await self.create_match(self.user_id, self.matched_player["user_id"], self.room_name)
+            else:
+                unique_id      = uuid.uuid4().hex[:6]
+                self.room_name = f"{self.room_name}_{unique_id}"
 
             await self.channel_layer.group_add(self.room_name, self.channel_name)
             await self.channel_layer.group_add(self.room_name, self.matched_player["websocket"].channel_name)
@@ -161,6 +169,16 @@ class Matchmaking(AsyncWebsocketConsumer):
                 }
             )
 
+    @sync_to_async
+    def get_match_data(self, room_name):
+        match = Match.objects.filter(
+            room_name  = room_name,
+            status__in = ["pending", "started"]
+        ).first()
+
+        return MatchSerializer(match).data if match else None
+        
+    
     async def broadcast_pvp(self, event):
         self.is_redirected = True
         if self.user_id == event["user_1"]["id"]:

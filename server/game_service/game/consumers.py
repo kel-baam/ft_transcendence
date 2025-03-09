@@ -4,6 +4,7 @@ import random
 import uuid
 import re
 import jwt
+from autobahn.websocket.protocol import Disconnected
 
 from django.db.models           import Q
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -14,9 +15,12 @@ from asgiref.sync               import sync_to_async
 
 from .models                    import *
 from .serializers               import *
-
+from django.db                  import transaction
 from django.core.exceptions     import ObjectDoesNotExist
+from django.core.cache import cache
 
+
+rooms = {}
 
 paddels ={
    'paddle1Y': 650 / 2 - 125 / 2,
@@ -41,13 +45,10 @@ ball ={
     'maxScore':8,
 }
 
-
 class GameConsumer(AsyncWebsocketConsumer):
  
-    # start_play = 0
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Instance-level variables (instead of class-level)
         self.paddle1Y = paddels['paddle1Y']
         self.paddle2Y = paddels['paddle2Y']
         self.paddle1X = paddels['paddle1X']
@@ -62,7 +63,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.tableWidth = table['width']
         self.tableHeight = table['height']
         self.maxScore = ball['maxScore']
-        self.game_name = 'game_1'
+        self.game_name = 'initialization'
         self.radius = ball['radius']
         self.player = None
         self.user_id = None
@@ -142,7 +143,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                             if tournament is None:
 
                                 self.redirect_to = "/pvp"
-
                                 if match_instance.status == "exited":
                                     await self.send(text_data=json.dumps({
                                         "action"      : "match_exited",
@@ -154,7 +154,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                                         "message"     : "You're exited this match."
                                     }))
                                     return
-
                                 if match_instance.status == "completed":
                                     await self.send(text_data=json.dumps({
                                         "action"     : "match_ends",
@@ -164,13 +163,32 @@ class GameConsumer(AsyncWebsocketConsumer):
                                     return
 
                                 self.game_name     = match_instance.room_name
-                                self.channel_layer = get_channel_layer()
 
+                              
+                                self.channel_layer = get_channel_layer()
                                 await self.channel_layer.group_add(
                                     self.game_name,
                                     self.channel_name
                                 )
+                             
+                                if self.game_name not in rooms:
+                                    rooms[self.game_name] = {
+                                        'len' : 0,
+                                        'ballX': self.ballX,
+                                        'ballY':self.ballY,
+                                        'speedXBall':self.speedXBall,
+                                        'speedYBall':self.speedYBall,
+                                        'paddle2Y':self.paddle2Y,
+                                        'paddle1Y':self.paddle1Y,
+                                        'player1Score':self.player1Score,
+                                        'player2Score':self.player2Score,
+                                        'paddleSpeed':self.paddleSpeed,
+                                        'done':False
 
+                                }
+                                rooms[self.game_name]['len'] +=1
+                                    
+                                
                                 if self.player1.id == self.user_id:
                                     self.player = "player1"
                                 elif self.player2.id == self.user_id:
@@ -181,7 +199,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                             else:
 
                                 self.redirect_to = f"/tournament/local/local_hierachy/{tournament.id}"
-                                
                                 if match_instance.status == "completed":
                                     await self.send(text_data=json.dumps({
                                         "action"     : "match_ends",
@@ -215,12 +232,32 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 
                                 self.game_name     = match_instance.room_name
                                 self.channel_layer = get_channel_layer()
-
+                                
+                                
                                 await self.channel_layer.group_add(
                                     self.game_name,
                                     self.channel_name
                                 )
 
+
+                                if self.game_name not in rooms:
+                                    rooms[self.game_name] = {
+                                        'len' : 0,
+                                        'ballX': self.ballX,
+                                        'ballY':self.ballY,
+                                        'speedXBall':self.speedXBall,
+                                        'speedYBall':self.speedYBall,
+                                        'paddle2Y':self.paddle2Y,
+                                        'paddle1Y':self.paddle1Y,
+                                        'player1Score':self.player1Score,
+                                        'player2Score':self.player2Score,
+                                        'paddleSpeed':self.paddleSpeed,
+                                        'done':False
+
+
+                                }
+                                rooms[self.game_name]['len'] +=1
+                                                                
                                 player1_tournament = await self.get_player_tournament(tournament_instance, match_instance.player1_nickname)
                                 player2_tournament = await self.get_player_tournament(tournament_instance, match_instance.player2_nickname)
 
@@ -242,6 +279,22 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 self.game_name,
                                 self.channel_name
                             )
+                            if self.game_name not in rooms:
+                                rooms[self.game_name] = {
+                                    'len' : 0,
+                                    'ballX': self.ballX,
+                                    'ballY':self.ballY,
+                                    'speedXBall':self.speedXBall,
+                                    'speedYBall':self.speedYBall,
+                                    'paddle2Y':self.paddle2Y,
+                                    'paddle1Y':self.paddle1Y,
+                                    'player1Score':self.player1Score,
+                                    'player2Score':self.player2Score,
+                                    'paddleSpeed':self.paddleSpeed,
+                                    'done':False
+                            }
+                                
+                            rooms[self.game_name]['len'] +=1
                             self.player = "player1"
 
                         await self.send_initial_state(self.type)
@@ -251,8 +304,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 match_data = { 'status': "started" }
                                 match      = await self.get_match(self.match_id)
                                 match      = await self.update_match(match, match_data)
-
+                        if not cache.get(f"game_running:{self.game_name}"):
+                            cache.set(f"game_running:{self.game_name}", True)
+                            # Start the game loop only if the game is not running
                             self.game_task = asyncio.create_task(self.game_loop())
+                            # self.game_task = asyncio.create_task(self.game_loop())
                     else:
                         await self.send(text_data=json.dumps({"error": "user doesn't exist"}))
                 except jwt.ExpiredSignatureError:
@@ -260,6 +316,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 except jwt.DecodeError:
                     await self.send(text_data=json.dumps({"error": "Token decoding error"}))
                 except Exception as e:
+                    print("------------------------------> here the error : ", str(e))
                     await self.send(text_data=json.dumps({"error": f"Error: {str(e)}"}))
 
     @sync_to_async
@@ -268,7 +325,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         return match.tournament
 
     async def disconnect(self, close_code):
-        
+        print("in disconnect game", self.user_id)
         try:
             self.connected = False
 
@@ -282,9 +339,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 
                 if match and match.status != "completed" and match.status != "exited":
                     if self.type == "online" and self.player != 'player1':
-                        self.player1Score = 8
+                        rooms[self.game_name]['player1Score'] = 8
                     elif self.type == "online" and self.player != 'player2':
-                        self.player2Score = 8
+                        rooms[self.game_name]['player2Score'] = 8
                     await self.handel_match_result('exited')
 
                     user = await self.get_username(self.user_id)
@@ -295,16 +352,25 @@ class GameConsumer(AsyncWebsocketConsumer):
                                 'state'      : 'You Won!',
                                 "type"       : "opponent_disconnected",
                                 'redirect_to': self.redirect_to,
-                                'player1Score': self.player1Score,
-                                'player2Score': self.player2Score,
+                                'player1Score': rooms[self.game_name]['player1Score'],
+                                'player2Score': rooms[self.game_name]['player2Score'],
                                 "message"    : f"Your opponent {user.username} has disconnected.",
                             }
                         )
+            if self.game_name != 'initialization':
+                await self.channel_layer.group_discard(
+                    self.game_name,
+                    self.channel_name
+                )
+                rooms[self.game_name]['len'] -=1
+                if(rooms[self.game_name]['len'] == 0):
+                    rooms.pop(self.game_name, None)
 
-            await self.channel_layer.group_discard(
-                self.game_name,
-                self.channel_name
-            )
+                # remaining_players = await self.channel_layer.group_members(self.game_name)
+                # if not remaining_players:
+                cache.set(f"game_running:{self.game_name}", False)
+                self.game_task.cancel()
+
             await self.close()
 
         except Exception as e:
@@ -331,8 +397,6 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data     = json.loads(text_data)
 
-        if 'update' in data:
-            await self.update_data(data)
         if 'move' in data and 'player' in data and data['player'] == 'player1':
             await self.move_leftPaddle(data['move'])
         if 'move' in data and 'player' in data and data['player'] == 'player2':
@@ -347,10 +411,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 return 
 
             if self.player != 'player1':
-                self.player1Score = 8
+                rooms[self.game_name]['player1Score'] = 8
                 winner = "player1"
             elif self.player != 'player2':
-                self.player2Score = 8
+                rooms[self.game_name]['player2Score'] = 8
                 winner = "player2"
             await self.handel_match_result('exited')
 
@@ -368,8 +432,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "type"        : "quit_match",
                     "redirect_to" : self.redirect_to,
                     "winner"      : winner,
-                    'player1Score': self.player1Score,
-                    'player2Score': self.player2Score,
+                    'player1Score': rooms[self.game_name]['player1Score'],
+                    'player2Score': rooms[self.game_name]['player2Score'],
                     "message"     : "you're exited the match"
                 }
             )
@@ -407,50 +471,57 @@ class GameConsumer(AsyncWebsocketConsumer):
         return Match.objects.filter(id=match_id).first()
 
     async def check_winner(self):
-        if(self.player1Score == self.maxScore or  self.player2Score == self.maxScore):
+        if(rooms[self.game_name]['player1Score'] == self.maxScore or  rooms[self.game_name]['player2Score'] == self.maxScore):
             self.connected  = False
             self.start_game = False
 
-            if self.type != "local" and self.player == "player1":
-                await self.handel_match_result('completed')
-
-            if (self.player1Score > self.player2Score):
+            if (rooms[self.game_name]['player1Score'] > rooms[self.game_name]['player2Score']):
                 winner = 'player1'
             else:
                 winner = 'player2'
+            
+            if self.type != "local" and rooms[self.game_name]['done'] == False :
+                rooms[self.game_name]['done'] = True
+                await self.handel_match_result('completed')
+
             await self.channel_layer.group_send(
                 self.game_name,
                 {
                     'type'        : 'announce_winner',
                     'action'      : 'game_over',
                     'redirect_to' : self.redirect_to,
-                    'player1Score': self.player1Score,
-                    'player2Score': self.player2Score,
+                    'player1Score': rooms[self.game_name]['player1Score'],
+                    'player2Score': rooms[self.game_name]['player2Score'],
                     'Winner'      : winner,
                 })
 
         else:
-            self.ballX       = self.tableWidth / 2
-            self.ballY       = random.randint(100, self.tableHeight - 100)
-            self.speedXBall *= -1
-            self.speedYBall  = random.choice([8, -8])
-            
+            rooms[self.game_name]['ballX']    = self.tableWidth / 2
+            rooms[self.game_name]['ballY']    = random.randint(100, self.tableHeight - 100)
+            rooms[self.game_name]['speedXBall'] *= -1
+            rooms[self.game_name]['speedYBall'] = random.choice([8, -8])
+
     async def announce_winner(self,event):
-        await self.send(text_data=json.dumps({
-            'action'      : event.get('action'),
-            'Winner'      : event.get('Winner'),
-            'player1Score': event.get('player1Score'),
-            'player2Score': event.get('player2Score'),
-            'redirect_to' : event.get('redirect_to'),
-        }))
+        try:
+            await self.send(text_data=json.dumps({
+                'action'      : event.get('action'),
+                'Winner'      : event.get('Winner'),
+                'player1Score': event.get('player1Score'),
+                'player2Score': event.get('player2Score'),
+                'redirect_to' : event.get('redirect_to'),
+            }))
+        except Disconnected:
+            pass
+
 
     async def handel_match_result(self, status):
         try:
             match_data = {
-                'player1_score': self.player1Score,
-                'player2_score': self.player2Score,
+                'player1_score': rooms[self.game_name]['player1Score'],
+                'player2_score': rooms[self.game_name]['player2Score'],
                 'status'       : status
             }
+
             match = await self.get_match_instance(self.match_id)
             match = await self.update_match(match, match_data)
 
@@ -463,7 +534,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                     loser  = match.get('player1')
 
                 await self.update_player_scores(winner, loser, match.get('player1_score'), match.get('player2_score'))
-
             if match.get('tournament') is not None:
 
                 tournament_id = match.get('tournament')
@@ -507,12 +577,14 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def update_match(self, match, match_data):
-        serializer = MatchSerializer(match, data=match_data, partial=True)
-        if serializer.is_valid():
-            match = serializer.save()
-            return MatchSerializer(match).data
-        else:
-            raise ValidationError(serializer.errors)
+
+        if match.player1_score == 0 and match.player2_score == 0:
+            serializer = MatchSerializer(match, data=match_data, partial=True)
+            if serializer.is_valid():
+                match = serializer.save()
+                return MatchSerializer(match).data
+            else:
+                raise ValidationError(serializer.errors)
 
     @sync_to_async
     def update_player_scores(self, winner, loser, player1_score, player2_score):
@@ -540,111 +612,101 @@ class GameConsumer(AsyncWebsocketConsumer):
     
     def ball_paddle_collison(self):
 
-        leftY_center = self.paddle1Y + self.paddleHeight / 2
-        rightY_center = self.paddle2Y + self.paddleHeight / 2
+        leftY_center =  rooms[self.game_name]['paddle1Y'] + self.paddleHeight / 2
+        rightY_center = rooms[self.game_name]['paddle2Y'] + self.paddleHeight / 2
+        
+        left_dy = abs(rooms[self.game_name]['ballY'] - leftY_center)
+        right_dy = abs(rooms[self.game_name]['ballY'] - rightY_center)
 
-        left_dy = abs(self.ballY - leftY_center)
-        right_dy = abs(self.ballY - rightY_center)
-
-        if self.ballX - self.radius <= self.paddle1X + self.paddleWidth:
+        if  rooms[self.game_name]['ballX'] - self.radius <= self.paddle1X + self.paddleWidth:
             if left_dy <= self.radius + self.paddleHeight / 2:
-                self.speedXBall *= -1
-                self.ballX = self.paddle1X + self.paddleWidth + self.radius
+                rooms[self.game_name]['speedXBall'] *= -1
+                rooms[self.game_name]['ballX'] = self.paddle1X + self.paddleWidth + self.radius
 
-        if self.ballX + self.radius >= self.tableWidth - self.paddleWidth:
+        if  rooms[self.game_name]['ballX'] + self.radius >= self.tableWidth - self.paddleWidth:
             if right_dy <= self.radius + self.paddleHeight / 2:
-                self.speedXBall *= -1
-                self.ballX = self.tableWidth - self.paddleWidth - self.radius
+                rooms[self.game_name]['speedXBall'] *= -1
+                rooms[self.game_name]['ballX'] = self.tableWidth - self.paddleWidth - self.radius
     
 
     async def update_ball(self):
-        self.ballX += self.speedXBall
-        self.ballY += self.speedYBall
+       
+        rooms[self.game_name]['ballX'] +=  rooms[self.game_name]['speedXBall']
+        rooms[self.game_name]['ballY'] += rooms[self.game_name]['speedYBall']
 
-        if(self.ballY - self.radius <= 0 or self.ballY + self.radius >= self.tableHeight):
-            self.speedYBall *=-1
-            
+        if(rooms[self.game_name]['ballY'] - self.radius <= 0 or rooms[self.game_name]['ballY'] + self.radius >= self.tableHeight):
+            rooms[self.game_name]['speedYBall'] *=-1
+
         self.ball_paddle_collison()
-
-        if(self.ballX >= self.tableWidth):
-                self.player1Score +=1
+        if(rooms[self.game_name]['ballX'] >= self.tableWidth):
+                if(rooms[self.game_name]['player1Score'] != 8):
+                    rooms[self.game_name]['player1Score'] +=1
                 await self.check_winner()
                 return
 
-        if(self.ballX <= 0):
-                self.player2Score +=1
+        if(rooms[self.game_name]['ballX'] <= 0):
+                if(rooms[self.game_name]['player2Score'] != 8):
+                    rooms[self.game_name]['player2Score'] +=1
                 await self.check_winner()
                 return
 
     async def game_loop(self):
-        while self.connected:
-            await self.update_ball()
-            await self.broadcast_game_state()
-            await asyncio.sleep(0.016)
-
+        try:
+            while self.connected:
+                await self.update_ball()
+                await self.broadcast_game_state()
+                await asyncio.sleep(0.016)
+        except asyncio.CancelledError as e:
+            pass
 
     async def paddleCollison(self):
-        if(self.paddle1Y <= 0):
-            self.paddle1Y = 0
-        if(self.paddle1Y + self.paddleHeight >= self.tableHeight):
-            self.paddle1Y = self.tableHeight - self.paddleHeight
-        if(self.paddle2Y <= 0):
-            self.paddle2Y = 0
-        if(self.paddle2Y + self.paddleHeight>= self.tableHeight):
-            self.paddle2Y = self.tableHeight - self.paddleHeight
+        if(rooms[self.game_name]['paddle1Y'] <= 0):
+            rooms[self.game_name]['paddle1Y'] = 0
+        if(rooms[self.game_name]['paddle1Y'] + self.paddleHeight >= self.tableHeight):
+            rooms[self.game_name]['paddle1Y'] = self.tableHeight - self.paddleHeight
+        if(rooms[self.game_name]['paddle2Y'] <= 0):
+            rooms[self.game_name]['paddle2Y'] = 0
+        if(rooms[self.game_name]['paddle2Y'] + self.paddleHeight>= self.tableHeight):
+            rooms[self.game_name]['paddle2Y'] = self.tableHeight - self.paddleHeight
         
     async def move_leftPaddle(self,move):
         if(move == 'up'):
-            self.paddle1Y -= self.paddleSpeed
+           rooms[self.game_name]['paddle1Y'] -= self.paddleSpeed
         if(move == 'down'):
-            self.paddle1Y += self.paddleSpeed
+           rooms[self.game_name]['paddle1Y'] += self.paddleSpeed
 
         await self.paddleCollison()
         await self.broadcast_game_state()
 
     async def move_rightPaddle(self,move):
         if(move == 'up'):
-            self.paddle2Y -= self.paddleSpeed
+           rooms[self.game_name]['paddle2Y']-= self.paddleSpeed
         if(move == 'down'):
-            self.paddle2Y += self.paddleSpeed
+            rooms[self.game_name]['paddle2Y'] += self.paddleSpeed
 
         await self.paddleCollison()
         await self.broadcast_game_state()
 
-    async def update_data(self,data):
-
-        self.paddle1Y = data['data']['paddle1Y']
-        self.paddle2Y = data['data']['paddle2Y']
-        self.ballX = data['data']['ballX']
-        self.ballY = data['data']['ballY']
-        self.speedXBall =  data['data']['speedXBall']
-        self.speedYBall = data['data']['speedYBall']
-
-        if data['data']['player1Score'] > self.player1Score :
-            self.player1Score = data['data']['player1Score']
-
-        if data['data']['player2Score'] >  self.player2Score:
-            self.player2Score = data['data']['player2Score']
 
     async def broadcast_game_state(self):
-
-        await self.channel_layer.group_send(
-            self.game_name,
-            {
-                'type' :'game_state',
-                'action':'game_state',
-                'paddle1Y' : self.paddle1Y,
-                'paddle2Y': self.paddle2Y,
-                'paddleHeight': self.paddleHeight,
-                'paddleWidth': self.paddleWidth,
-                'ballX': self.ballX,
-                'ballY': self.ballY,
-                'radius': self.radius,
-                'speedXBall':self.speedXBall,
-                'speedYBall':self.speedYBall,
-                'player1Score':self.player1Score,
-                'player2Score':self.player2Score,
-            })
+        if self.connected:
+            await self.channel_layer.group_send(
+                self.game_name,
+                {
+                    'type' :'game_state',
+                    'action':'game_state',
+                    'paddle1Y' : rooms[self.game_name]['paddle1Y'],
+                    'paddle2Y': rooms[self.game_name]['paddle2Y'],
+                    'paddleHeight': self.paddleHeight,
+                    'paddleWidth': self.paddleWidth,
+                    'ballX': rooms[self.game_name]['ballX'],
+                    'ballY': rooms[self.game_name]['ballY'],
+                    'radius': self.radius,
+                    'speedXBall':rooms[self.game_name]['speedXBall'],
+                    'speedYBall':rooms[self.game_name]['speedYBall'],
+                    'player1Score':rooms[self.game_name]['player1Score'],
+                    'player2Score':rooms[self.game_name]['player2Score'],
+                })
 
     async def game_state(self, event):
         try:
@@ -664,25 +726,25 @@ class GameConsumer(AsyncWebsocketConsumer):
                     'player2Score':event.get('player2Score'),
                 }))
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            print(f"Unexpected error: {e}",self.player,"||",rooms[self.game_name]['player1Score'],"|||",rooms[self.game_name]['player2Score'],"||",self.connected)
 
     async def send_initial_state(self, type):
         if type == 'online':
             await self.send(text_data=json.dumps({
                 'action':'init_game',
                 'paddle1Y': self.paddle1Y,
-                'paddle2Y': self.paddle2Y,
+                'paddle2Y': rooms[self.game_name]['paddle2Y'],
                 'paddleHeight': self.paddleHeight,
                 'paddleWidth': self.paddleWidth,
                 'paddleSpeed': self.paddleSpeed,
-                'ballX': self.ballX,
-                'ballY': self.ballY,
+                'ballX': rooms[self.game_name]['ballX'],
+                'ballY':rooms[self.game_name]['ballY'],
                 'radius': self.radius,
                 'player' : self.player,
-                'speedXBall':self.speedXBall,
-                'speedYBall':self.speedYBall,
-                'player1Score':self.player1Score,
-                'player2Score':self.player2Score,
+                'speedXBall':rooms[self.game_name]['speedXBall'],
+                'speedYBall':rooms[self.game_name]['speedYBall'],
+                'player1Score':rooms[self.game_name]['player1Score'],
+                'player2Score':rooms[self.game_name]['player2Score'],
                 'userId':self.user_id,
                 'player1' : UserSerializer(self.player1, fields={'id', 'username', 'picture'}).data,
                 'player2' : UserSerializer(self.player2, fields={'id', 'username', 'picture'}).data,
@@ -690,19 +752,19 @@ class GameConsumer(AsyncWebsocketConsumer):
         elif type == 'local':
             await self.send(text_data=json.dumps({
                 'action':'init_game',
-                'paddle1Y': self.paddle1Y,
-                'paddle2Y': self.paddle2Y,
+                'paddle1Y': rooms[self.game_name]['paddle1Y'],
+                'paddle2Y': rooms[self.game_name]['paddle2Y'],
                 'paddleHeight': self.paddleHeight,
                 'paddleWidth': self.paddleWidth,
                 'paddleSpeed': self.paddleSpeed,
-                'ballX': self.ballX,
-                'ballY': self.ballY,
+                'ballX': rooms[self.game_name]['ballX'],
+                'ballY': rooms[self.game_name]['ballY'],
                 'radius': self.radius,
                 'player' : self.player,
-                'player1Score':self.player1Score,
-                'player2Score':self.player2Score,
-                'speedXBall':self.speedXBall,
-                'speedYBall':self.speedYBall,
+                'player1Score':rooms[self.game_name]['player1Score'],
+                'player2Score':rooms[self.game_name]['player2Score'],
+                'speedXBall':rooms[self.game_name]['speedXBall'],
+                'speedYBall':rooms[self.game_name]['speedYBall'],
                 'userId':self.user_id,
                 'player1' : {'nickname':'Host'},
                 'player2' : {'nickname':'Guest'},
@@ -710,21 +772,38 @@ class GameConsumer(AsyncWebsocketConsumer):
         elif type == 'local_tournament':
             await self.send(text_data=json.dumps({
                 'action':'init_game',
-                'paddle1Y': self.paddle1Y,
-                'paddle2Y': self.paddle2Y,
+                'paddle1Y': rooms[self.game_name]['paddle1Y'],
+                'paddle2Y': rooms[self.game_name]['paddle2Y'],
                 'paddleHeight': self.paddleHeight,
                 'paddleWidth': self.paddleWidth,
                 'paddleSpeed': self.paddleSpeed,
-                'ballX': self.ballX,
-                'ballY': self.ballY,
+                'ballX': rooms[self.game_name]['ballX'],
+                'ballY': rooms[self.game_name]['ballY'],
                 'radius': self.radius,
                 'player' : self.player,
-                'player1Score':self.player1Score,
-                'player2Score':self.player2Score,
-                'speedXBall':self.speedXBall,
-                'speedYBall':self.speedYBall,
+                'player1Score':rooms[self.game_name]['player1Score'],
+                'player2Score':rooms[self.game_name]['player2Score'],
+                'speedXBall':rooms[self.game_name]['speedXBall'],
+                'speedYBall':rooms[self.game_name]['speedYBall'],
                 'userId':self.user_id,
                 'player1' : PlayerTournamentSerializer(self.player1, fields={'nickname', 'avatar'}).data,
                 'player2' : PlayerTournamentSerializer(self.player2, fields={'nickname', 'avatar'}).data,
             }))
     
+
+
+
+    #    if(rooms[self.game_name]['ballX'] > 675 and self.player == "player2"):
+    #         rooms[self.game_name]['ballX'] +=  rooms[self.game_name]['speedXBall']
+    #         rooms[self.game_name]['ballY'] += rooms[self.game_name]['speedYBall']
+    #     else:
+    #         rooms[self.game_name]['ballX'] +=  rooms[self.game_name]['speedXBall']
+    #         rooms[self.game_name]['ballY'] += rooms[self.game_name]['speedYBall']
+    #     async def game_loop(self):
+    #     try:
+    #         while self.connected:
+    #             await self.update_ball()
+    #             await self.broadcast_game_state()
+    #             await asyncio.sleep(0.016)
+    #     except asyncio.CancelledError:
+    #         pass
