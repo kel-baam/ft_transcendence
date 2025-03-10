@@ -66,7 +66,10 @@ export const Login = defineComponent({
                         e.preventDefault()
                         this.appContext.router.navigateTo('/landing')
                     } },[
-                        h('i',{class:'fa-solid fa-house icon'})
+                        h('i',{class:'fa-solid fa-house icon',href:'',onclick:(e)=>{
+                            e.preventDefault()
+                            this.appContext.router.navigateTo('/landing')
+                        }})
                     ])
                 ]),
                 h('div',{class:'down'},[

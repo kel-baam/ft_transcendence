@@ -24,7 +24,7 @@ rooms = {}
 
 paddels ={
    'paddle1Y': 650 / 2 - 125 / 2,
-   'paddle1X': 0,
+   'paddle1X': 20,
    'paddle2Y': 650 / 2 - 125 / 2,
    'paddleWidth': 15,
    'paddleHeight': 125,
@@ -39,7 +39,7 @@ table ={
 ball ={
     'ballX':675,
     'ballY': 325,
-    'radius':18,
+    'radius':13,
     'speedX' :8,
     'speedY':8,
     'maxScore':8,
@@ -621,10 +621,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 rooms[self.game_name]['speedXBall'] *= -1
                 rooms[self.game_name]['ballX'] = self.paddle1X + self.paddleWidth + self.radius
 
-        if  rooms[self.game_name]['ballX'] + self.radius >= self.tableWidth - self.paddleWidth:
+        if  rooms[self.game_name]['ballX'] + self.radius >= self.tableWidth - self.paddleWidth - 20:
             if right_dy <= self.radius + self.paddleHeight / 2:
                 rooms[self.game_name]['speedXBall'] *= -1
-                rooms[self.game_name]['ballX'] = self.tableWidth - self.paddleWidth - self.radius
+                rooms[self.game_name]['ballX'] = self.tableWidth - 20  - self.paddleWidth - self.radius
     
 
     async def update_ball(self):
@@ -635,18 +635,19 @@ class GameConsumer(AsyncWebsocketConsumer):
         if(rooms[self.game_name]['ballY'] - self.radius <= 0 or rooms[self.game_name]['ballY'] + self.radius >= self.tableHeight):
             rooms[self.game_name]['speedYBall'] *=-1
 
-        self.ball_paddle_collison()
-        if(rooms[self.game_name]['ballX'] >= self.tableWidth):
+        if(rooms[self.game_name]['ballX'] > self.tableWidth - 20):
                 if(rooms[self.game_name]['player1Score'] != 8):
                     rooms[self.game_name]['player1Score'] +=1
                 await self.check_winner()
                 return
 
-        if(rooms[self.game_name]['ballX'] <= 0):
+        if(rooms[self.game_name]['ballX'] <= 20):
                 if(rooms[self.game_name]['player2Score'] != 8):
                     rooms[self.game_name]['player2Score'] +=1
                 await self.check_winner()
                 return
+        
+        self.ball_paddle_collison()
 
     async def game_loop(self):
         try:

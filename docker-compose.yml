@@ -40,6 +40,8 @@ services:
     build: ./server/auth_service
     container_name: auth-service
     image: auth-service
+    # ports:
+    #   - "8000:8000"
     expose:
       - 8000
     networks:

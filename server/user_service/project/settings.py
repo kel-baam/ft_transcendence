@@ -209,3 +209,11 @@ CACHES = {
     }
 }
 
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'OPTIONS',
+    # Add other methods as needed
+]
+
+CORS_ALLOW_HEADERS = ["*"]

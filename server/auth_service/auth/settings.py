@@ -35,7 +35,7 @@ DB_HOST= os.getenv('DB_HOST', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -199,21 +199,11 @@ SIMPLE_JWT = {
 
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
-
-CSRF_TRUSTED_ORIGINS = [
-    'http://10.14.3.1:3000',
-    'http://127.0.0.1:3000',
-
-    "http://10.14.3.1:8000",
-    "ws://10.14.3.1:8000",
-    "http://10.14.3.1:8000",
-    "http://10.14.3.1:3000",
-    "http://10.14.3.1:8000",
-
-
-]
-CSRF_COOKIE_NAME ='koki'
+# CSRF_TRUSTED_ORIGINS = [
+# ]
+# CSRF_COOKIE_NAME ='koki'
 
 ASGI_APPLICATION = "auth.asgi.application"
 
@@ -269,5 +259,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'OPTIONS',
+    # Add other methods as needed
+]
 
-
+CORS_ALLOW_HEADERS = ["*"]

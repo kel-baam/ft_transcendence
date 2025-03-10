@@ -52,6 +52,12 @@ class TournamentAPIView(APIView):
             invited_players     = request.data.get('invited-players', [])
             selected_players    = json.loads(invited_players) if isinstance(invited_players, str) else invited_players
 
+            player_ids = [player['id'] for player in selected_players]
+            if len(player_ids) != len(set(player_ids)):
+                if tournament:
+                    tournament.delete()
+                return Response({"error": "duplicated user"}, status=status.HTTP_400_BAD_REQUEST)
+
             if invited_players:
                 for player in selected_players:
                     player_instance = Player.objects.get(user_id=player['id'])

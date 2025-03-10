@@ -180,12 +180,12 @@ export const Game = defineComponent(
             let ball;
             const leftPaddle = (y,paddleWidth,paddleHeight)=>{
                 ctx.fillStyle = "#CF4551";
-                ctx.fillRect(0, y, paddleWidth, paddleHeight); 
+                ctx.fillRect(20, y, paddleWidth, paddleHeight); 
             }
 
             const rightPaddle =(y,paddleWidth,paddleHeight)=>{
                 ctx.fillStyle = "#1667E0";
-                ctx.fillRect(canvas.width - paddleWidth, y, paddleWidth, paddleHeight);
+                ctx.fillRect(canvas.width - paddleWidth - 20, y, paddleWidth, paddleHeight);
             }
          
             const draw_game = (data)=>{
@@ -447,7 +447,7 @@ export const Game = defineComponent(
                                 ? `https://${window.env.IP}:3000/media${this.state.player1.picture}`
                                 : this.state.player1.avatar
                                 ? `https://${window.env.IP}:3000/media${this.state.player1.avatar}`
-                                : './images/playervs-removebg-preview.png',
+                                : './images/people_14024721.png',
                                 class:'playerPicture', style : {
                                     'object-fit': 'cover'
                                 }}),
@@ -470,7 +470,7 @@ export const Game = defineComponent(
                                     ? `https://${window.env.IP}:3000/media${this.state.player2.picture}`
                                     : this.state.player2.avatar
                                     ? `https://${window.env.IP}:3000/media${this.state.player2.avatar}`
-                                    : './images/playervs-removebg-preview.png',
+                                    : './images/people_14024721.png',
                                     class:'playerPicture', style : {
                                     'object-fit': 'cover'
                                 }}),

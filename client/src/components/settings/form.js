@@ -57,8 +57,6 @@ export const Form = defineComponent({
                         submit : (event)=>
                         {
                             event.preventDefault()
-                         
-                           
                             customFetch(`https://${window.env.IP}:3000/api/user`, {
                                 method : 'PUT',
                                 body : formData
@@ -94,9 +92,7 @@ export const Form = defineComponent({
                                 
                     
                             })
-                            .catch(error => {
-                                    
-                            })
+                            
                         }
                     }
                 },
@@ -158,10 +154,10 @@ export const Form = defineComponent({
                                             h('input', { type: 'text', id: 'username', name: 'username', value: `${data.username}` ,
                                                 disabled: true,
                                                 style: {
-                                                    backgroundColor: '#d3d3d3',  // light grey background
-                                                    color: '#888',                // grey text
-                                                    cursor: 'not-allowed',         // show 'forbidden' cursor
-                                                    border: '1px solid #ccc'       // optional: lighter border
+                                                    backgroundColor: '#d3d3d3',  
+                                                    color: '#888',                
+                                                    cursor: 'not-allowed',         
+                                                    border: '1px solid #ccc'    
                                                 },
                                                 on : {
                                                     change : (event)=>  formData.set(event.target.name, event.target.value)
@@ -182,10 +178,10 @@ export const Form = defineComponent({
                                             h('input', { type: 'text', id: 'email', name: 'email', value: `${data.email}` ,
                                                 disabled: true,
                                                 style: {
-                                                    backgroundColor: '#d3d3d3',  // light grey background
-                                                    color: '#888',                // grey text
-                                                    cursor: 'not-allowed',         // show 'forbidden' cursor
-                                                    border: '1px solid #ccc'       // optional: lighter border
+                                                    backgroundColor: '#d3d3d3',  
+                                                    color: '#888',               
+                                                    cursor: 'not-allowed',        
+                                                    border: '1px solid #ccc' 
                                                 },
                                                 on : {
                                                     change : (event)=>  formData.set(event.target.name, event.target.value)
@@ -218,11 +214,15 @@ export const Form = defineComponent({
                                             h('select',
                                                 { name: 'nationality', id: 'nationality', value : `${data.nationality}` ,
                                                 on : {
-                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
+                                                    change : (event)=> 
+                                                        {
+                                                            formData.set(event.target.name, event.target.value)
+                                                        } 
+                                                            
                                                 }     
                                             },
                                                 nationalities.map((nat) =>
-                                                    h('option', { value: nat }, [nat]),
+                                                    h('option', { value: nat, selected : data.nationality === nat}, [nat]),
                                             )
                                             ),
                                             h('br'),
@@ -231,12 +231,14 @@ export const Form = defineComponent({
                                             h('select',
                                                 { name: 'gender', id: 'gender', value:`${data.gender}` ,
                                                 on : {
-                                                    change : (event)=>  formData.set(event.target.name, event.target.value)
+                                                    change : (event)=> { 
+                                                        formData.set(event.target.name, event.target.value)
+                                                    }
                                                 } 
                                             },
                                             [
-                                                h('option', { value: 'Female', 'data-translate' : 'Female'}, ['Female']),
-                                                h('option', { value: 'Male' , 'data-translate' : 'Male'}, ['Male'])
+                                                h('option', { value: 'Female', 'data-translate' : 'Female', selected : data.gender === 'Female'}, ['Female']),
+                                                h('option', { value: 'Male' , 'data-translate' : 'Male',selected : data.gender === 'Male'}, ['Male'])
                                             ]
                                             ),
                                             h('br')

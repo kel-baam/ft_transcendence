@@ -126,10 +126,15 @@ def set_tokens_in_login(request,email,response):
         
 # ----------------------------------------------------------------------------------------google login and register-----------------------------------
 def google_login(request):
-        query_type =  request.GET.get('type')
-        redirect_url = os.getenv('GOOGLE_FULL_URI')
-        full_path = f"{redirect_url}&state={query_type}"
-        return redirect(full_path) 
+        try:
+                domain = os.getenv('DOMAIN')
+                query_type =  request.GET.get('type')
+                redirect_url = os.getenv('GOOGLE_FULL_URI')
+                full_path = f"{redirect_url}&state={query_type}"
+                return redirect(full_path) 
+        except Exception as e:
+                return redirect(f"{domain}/#/login")
+        
 
 
 def storeGoogleData(data):
@@ -333,6 +338,8 @@ def  registerForm(request):
                         settings.EMAIL_HOST_USER,
                         [email],
                         )
+                        # response["Access-Control-Allow-Origin"] = "*" 
+
                         return Response({"message":"email send successfully"},status=status.HTTP_200_OK)                
                 return Response(response.json(),status=response.status_code)
         except Exception as e:
