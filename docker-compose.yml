@@ -5,8 +5,6 @@ services:
     image: db-service
     env_file:
     - .env
-    # volumes:
-    #   - dataBase:/var/lib/postgresql/13/main
     ports:
       - 5432:5432
     networks:
@@ -24,8 +22,6 @@ services:
     build: ./client
     container_name: client-service
     image: client-service
-    # volumes:
-    #   - client_volume:/usr/share/nginx/html
     ports:
       - "3000:443"
     env_file:
@@ -40,8 +36,6 @@ services:
     build: ./server/auth_service
     container_name: auth-service
     image: auth-service
-    # ports:
-    #   - "8000:8000"
     expose:
       - 8000
     networks:
@@ -50,8 +44,6 @@ services:
       - db
     env_file:
       - .env
-    # volumes:
-    #   - auth_volume:/usr/src/app
   
   user-service:
     build: ./server/user_service
@@ -65,8 +57,6 @@ services:
       - app_network
     depends_on:
       - db
-    # volumes:
-    #   - user_volume:/app
 
   tournament-service:
     build: ./server/tournament_service
@@ -81,8 +71,6 @@ services:
     depends_on:
       - db
       - redis
-    # volumes:
-    #   - tournament_volume:/usr/src/app
     
   matchmaking-service:
     build: ./server/matchmaking_service
@@ -97,8 +85,6 @@ services:
     depends_on:
       - db
       - redis
-    # volumes:
-    #   - matchmaking_volume:/usr/src/app
 
   game-service:
     build: ./server/game_service
@@ -113,74 +99,8 @@ services:
       - redis
     env_file:
       - .env
-    # volumes:
-    #   - game_volume:/usr/src/app
   
-  # pgadmin:
-  #   image: dpage/pgadmin4:latest
-  #   container_name: pgadmin
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: admin
-  #   ports:
-  #     - "8081:80"
-  #   depends_on:
-  #     - db
-  #   networks:
-  #     - app_network
-  #   # volumes:
-  #   #   - pgadmin_data:/var/lib/pgadmin
-  #   restart: always
-
-# volumes:
-#   dataBase:
-#     driver: local
-#     driver_opts:
-#       type: none
-#       device: ~/data/db/
-#       o: bind
-
-#   game_volume:
-#     driver: local
-#     driver_opts:
-#         type: none
-#         device: ./server/game_service
-#         o: bind
-    
-#   auth_volume:
-#     driver: local
-#     driver_opts:
-#         type: none
-#         device: ./server/auth_service
-#         o: bind
-
-#   user_volume:
-#     driver: local
-#     driver_opts:
-#         type: none
-#         device: ./server/user_service
-#         o: bind
-
-#   client_volume:
-#     driver: local
-#     driver_opts:
-#         type: none
-#         device: ./client
-#         o: bind
-#   tournament_volume:
-#     driver: local
-#     driver_opts:
-#         type: none
-#         device: ./server/tournament_service
-#         o: bind
-
-#   matchmaking_volume:
-#     driver: local
-#     driver_opts:
-#         type: none
-#         device: ./server/matchmaking_service
-#         o: bind
-
+  
 networks:
   app_network:
     driver: bridge

@@ -1,5 +1,4 @@
 import {RouterOutlet,h,createApp,defineComponent,HashRouter} from './package/index.js'
-// import { Profile } from './components/profile.js'
 import { Login } from './pages/login.js'
 import { LandingPage } from './pages/landingPage.js'
 import { TwoFactor } from './components/login/twoFactor.js';
@@ -34,7 +33,7 @@ window.env = {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // console.clear()
+  console.clear()
   const links = document.querySelectorAll('.scroll-link');
     links.forEach(link => {
       link.addEventListener('click', function(event) {
