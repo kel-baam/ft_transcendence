@@ -1,0 +1,106 @@
+services:
+  db :
+    build: ./db
+    container_name: db-service
+    image: db-service
+    env_file:
+    - .env
+    ports:
+      - 5432:5432
+    networks:
+      - app_network
+  
+  redis:
+    image: redis:alpine
+    container_name: redis-service
+    ports:
+      - "6380:6379"
+    networks:
+      - app_network
+      
+  client-service:
+    build: ./client
+    container_name: client-service
+    image: client-service
+    ports:
+      - "3000:443"
+    env_file:
+      - .env
+    depends_on:
+      - auth-service
+      - db
+    networks:
+      - app_network
+
+  auth-service:
+    build: ./server/auth_service
+    container_name: auth-service
+    image: auth-service
+    expose:
+      - 8000
+    networks:
+      - app_network
+    depends_on:
+      - db
+    env_file:
+      - .env
+  
+  user-service:
+    build: ./server/user_service
+    container_name: user-service
+    image: user-service
+    env_file:
+      - .env
+    expose:
+      - 8001
+    networks:
+      - app_network
+    depends_on:
+      - db
+
+  tournament-service:
+    build: ./server/tournament_service
+    image: tournament-service
+    container_name: tournament-service
+    env_file:
+      - .env
+    expose:
+      - 8002
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - redis
+    
+  matchmaking-service:
+    build: ./server/matchmaking_service
+    container_name: matchmaking-service
+    image: matchmaking-service
+    env_file:
+      - .env
+    expose:
+      - 8003
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - redis
+
+  game-service:
+    build: ./server/game_service
+    container_name: game-service
+    image: game-service
+    expose:
+      - 8004
+    networks:
+      - app_network
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+  
+  
+networks:
+  app_network:
+    driver: bridge

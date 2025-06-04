@@ -1,0 +1,15 @@
+django-cors-headers
+python-decouple
+qrcode[pil]
+qrcode[pil]
+requests 
+pyotp
+django-otp 
+djangorestframework-simplejwt
+channels
+psycopg2
+daphne
+channels_redis
+redis
+django-redis
+

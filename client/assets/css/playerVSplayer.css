@@ -1,0 +1,73 @@
+
+/* --------------------game-Content------------------ */
+html {
+    scroll-behavior: smooth;
+}
+.game-content{
+    /* padding: 8px; */
+    background-color: rgba(217, 217, 217, 0.05);
+    border-radius: 56px;
+    height: 100%;
+    display: grid;
+    /* width: 80%; */
+    grid-template-columns: 40% 20% 40%;
+    /* row-gap: 0.2em; */
+}
+
+.game-content .user-profile{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.game-content .invited{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.game-content .user-profile img,
+.game-content .invited img{
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    box-shadow: 2px 4px 4px rgba(54, 19, 19, 0.29);
+
+}
+
+.game-content .user-profile h3,
+.game-content .invited h3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: 50px;
+    font-family: myFont;
+    font-size: 20px;
+    color: #989797;
+    letter-spacing: 5px;
+    margin: 0;
+    text-align: center;
+    box-sizing: border-box;
+
+    /* border: 1px solid rgb(255, 1, 1);e */
+}
+
+.game-content .vs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+}
+
+.game-content .vs img{
+    width: 170px;
+    height: 170px;
+}

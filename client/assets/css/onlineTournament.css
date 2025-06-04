@@ -1,0 +1,444 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+html {
+    scroll-behavior: smooth;
+}
+.online-tournament{
+    padding: 8px;
+    background-color: rgba(217, 217, 217, 0.05);
+    border-radius: 56px;
+    display: grid;
+    grid-template-columns: 35% 35% 30%;
+    height: 97%;
+    overflow: hidden;
+    /* border: 1px solid rgb(56, 1, 255); */
+    /* filter: blur(3px); */
+}
+
+
+
+.online-tournament .availableTournament,
+.online-tournament .joinedTournament
+{
+    display: grid;
+    grid-template-rows: 18% 80%;
+    position: relative;
+    height: 98%;
+    width: 95%;
+    overflow: hidden;
+
+    /* border: 1px solid rgb(203, 218, 1); */
+}
+
+.online-tournament .availableTournament .title,
+.online-tournament .joinedTournament .title
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .availableTournament .title h1,
+.online-tournament .joinedTournament .title h1
+{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 35px;
+    color: #FFEEBF;
+    position: absolute;
+    top: 7%;
+
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .tournaments
+{
+    display: grid;
+    grid-auto-rows: 12.5%;
+    /* row-gap: 0.03em; */
+    align-items: center;
+    justify-content: center;
+    height: 630px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    width: 106%;
+    scrollbar-width: 10px;
+    
+    /* border: 1px solid rgb(245, 7, 7); */
+}
+
+.online-tournament .tournaments p{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 22px;
+    color: #79766e;
+}
+
+.online-tournament .tournaments .available
+{
+    display: grid;
+    grid-template-columns: 20% 70% 10%;
+    justify-content: center;
+    align-items: center;
+    background-color: #CBCBCB;
+    border-radius: 25px;
+    width: 390px;
+    height: 67px;
+    position: relative;
+    right: 15px;
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .tournaments .available img{
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    position: absolute;
+    left: 20px;
+}
+
+.online-tournament .tournaments .available a{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 20px;
+    color: #0446A4;
+    text-decoration: none;
+    position: absolute;
+    left: 20%;
+    cursor: pointer;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.online-tournament .tournaments .available i{
+    position: absolute;
+    left: 88%;
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+/* ------------------------------ */
+
+.online-tournament .createTournament
+{
+    display: grid;
+    grid-template-rows: 20% 80%;
+    /* position: relative; */
+    height: 100%;
+    width: 95%;
+    overflow: hidden;
+    /* position: relative; */
+    /* border: 1px solid rgb(255, 1, 1); */
+}
+
+.online-tournament .createTournament .title
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+
+.online-tournament .createTournament .title h1
+{
+    font-family: myFont;
+    letter-spacing: 2px;
+    font-size: 35px;
+    color: #FFEEBF;
+
+    /* border: 1px solid rgb(1, 225, 255); */
+}
+
+.online-tournament .createTournament form{
+    display: grid;
+    grid-template-rows: 20% 60% 20%;
+    justify-content: center;
+    position: relative;
+    /* border: 1px solid rgb(1, 225, 255); */
+
+}
+
+.online-tournament .createTournament form .image .creator_avatar
+{
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    position: absolute;
+    left: 40%;
+    top: -5%;
+}
+
+.online-tournament .createTournament form .image .edit_icon input{
+
+    display: none;
+    pointer-events: none;
+}
+
+.online-tournament .createTournament form .image .edit_icon i{
+    position: absolute;
+    left: 55%;
+    top: 7.5%;
+    /* display: none; */
+}
+
+
+.online-tournament .createTournament form .createInput
+{
+    position: absolute;
+    left: 2%;
+    top: -30px;
+
+    
+    /* border: 1px solid rgb(1, 225, 255); */
+
+}
+
+.online-tournament .createTournament form .createInput label{
+    letter-spacing: 2px;
+    font-family: myFont;
+    font-size: 15px;
+    color: #FFFFFF;
+    transition: 0.3s;
+    pointer-events: none;
+    line-height: 2em;
+}
+
+.online-tournament .createTournament form .createInput input{
+    letter-spacing: 2px;
+    font-family: myFont;
+    width: 284px;
+    height: 52px;
+    background-color: #CBCBCB;
+    font-size: 15px;
+    color: #56748fbe;
+    border-radius: 10px;
+    letter-spacing: 3px;
+    padding: 15px;
+    margin: 2px;
+    border: none;
+    cursor: text;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+
+.online-tournament .createTournament form .game-visibility-options{
+    position: absolute;
+    top: 75%;
+    left: 20%;
+    display: flex;
+    gap: 10px;
+
+    /* border: 1px solid rgb(1, 255, 242); */
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option input[type="radio"] {
+    display: none;
+    pointer-events: none;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option {
+    
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 21px;
+    background-color: #CBCBCB;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+    /* border: 1px solid rgb(1, 255, 242); */
+
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option input[type="radio"] + span{
+    padding: 15px 40px;
+    font-family: myFont;
+    letter-spacing: 2px;
+    color: #0446A4;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option input[type="radio"]:checked + span {
+    color: #FFEEBF;
+    background-color: #0446A4;
+    font-family: myFont;
+    letter-spacing: 2px;
+    border-radius: 20px;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option:hover {
+    background-color: #CBCBCB;
+}
+
+.online-tournament .createTournament form .game-visibility-options .radio-option span {
+    border-radius: 20px;
+    transition: color 0.3s;
+    font-family: myFont;
+}
+
+
+.online-tournament .createTournament form button{
+    display: inline-block;
+    width: 130px;
+    height: 60px;
+    font-family: myFont;
+    color: #D9DBBC;
+    font-size: 24px;
+    background: #D44444;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 4px 4px rgba(212, 68, 68, 0.29);
+    text-shadow: 0px 4px 4px rgba(232, 235, 68, 0.3);
+    transition-duration: 0.4s;
+    border: none;
+    position: absolute;
+    left: 35%;
+    top: 86%;
+}
+
+.online-tournament .createTournament form button:hover,
+.online-tournament .createTournament form button:focus,
+.online-tournament .createTournament form button:active{
+    transform: scale(1.1);
+}
+
+/* --------------------------------------------------------------- */
+
+
+.online-tournament .createTournament form .createInput {
+    position: relative; /* Add relative positioning to the parent container */
+}
+
+.online-tournament .createTournament form .createInput .add-friends .list-of-friends {
+    position: absolute; /* Keep absolute positioning */
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    max-height: 200px;
+    background-color: #CBCBCB;
+    border-radius: 10px;
+    display: grid;
+    grid-auto-rows: 14%;
+    margin-top: -15px;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+
+    /* border: 1px solid rgb(255, 1, 1); */
+
+}
+
+.online-tournament .createTournament form .createInput .add-friends .list-of-friends li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-overflow: ellipsis;
+    font-family: myFont;
+    /* font-size: 15px; */
+    color: #3a5e91;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.online-tournament .createTournament form .createInput .add-friends .list-of-friends li span{
+
+    letter-spacing: 2px;
+    font-family: myFont;
+    /* color: #FFFFFF; */
+    /* transition: 0.3s;
+    pointer-events: none; */
+    line-height: 1.5em;
+    /* font-size: 10px; */
+}
+
+.online-tournament .createTournament form .createInput .add-friends .list-of-friends li:hover {
+    background-color: #858484;
+    border-radius: 10px;
+    color: white;
+}
+
+.online-tournament .createTournament form .createInput .add-friends .list-of-friends li.selected {
+    background-color: #0446A4;
+    color: white;
+    border-radius: 10px;
+}
+
+.online-tournament .createTournament form .createInput .selected-players-container
+{
+    display: flex;      
+    flex-wrap: nowrap;     
+    gap: 2px;             
+    overflow-x: auto;     
+    max-width: 400px;
+    box-sizing: border-box;
+    /* align-items: first baseline; */
+    /* border: 1px solid rgb(1, 60, 255); */
+
+}
+
+.online-tournament .createTournament form .createInput .player-card {
+
+    height: 30px;
+    width: 95px;
+    border-radius: 10px;
+    background-color: #CBCBCB;
+    /* margin: 3px; */
+    padding: 5px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: top;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* border: 1px solid rgb(255, 1, 1); */
+
+}
+
+.online-tournament .createTournament form .createInput .player-card h3 {
+    margin: 0;
+    font-size: 14px;
+    font-family: myFont;
+    letter-spacing: 2px;
+    color: #0446A4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 80%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.online-tournament .createTournament form .createInput .player-card i{
+    color: #858484;
+    position: absolute;
+    right: 5px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+
+.online-tournament .createTournament form .createInput .selected-header{
+    letter-spacing: 2px;
+    font-family: myFont;
+    font-size: 15px;
+    color: #FFFFFF;
+    transition: 0.3s;
+    pointer-events: none;
+    line-height: 2em;
+}
+
+/* ------------------------------------------------------------- */

@@ -1,0 +1,23 @@
+Django<5.0,>=4.2
+djangorestframework
+channels
+daphne
+psycopg2
+django-cors-headers
+requests 
+Pillow
+daphne
+# olefile
+# libmagic
+# python-magic
+olefile
+libmagic
+python-magic
+djangorestframework-simplejwt
+channels_redis
+psycopg2-binary
+asgiref >= 3.6.0
+faker
+watchfiles
+validate-email-address==1.0.0
+dnspython

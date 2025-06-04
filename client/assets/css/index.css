@@ -1,0 +1,414 @@
+@import url("chooseLO.css");
+/* @import url("form.css"); */
+@import url("hierarchy.css");
+@import url("home.css");
+@import url("landingPage.css");
+@import url("leaderboard.css");
+@import url("local-tournament-form.css");
+@import url("localTournament.css");
+@import url("loginPage.css");
+@import url("onlineTournament.css");
+@import url("playerVSplayer.css");
+@import url("profile.css");
+@import url("register.css");
+@import url("settings.css");
+@import url("tournament.css");
+@import url("twoFactor.css");
+@import url("waitPlayerJoin.css");
+@import url("resetPassword.css");
+@import url("game.css");
+@import url("pvpLocalOnline.css");
+@import url("join_player_form.css");
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+@font-face {
+    font-family: myFont;
+    src: url(../fonts/Season\ Prime.otf);
+}
+
+@font-face {
+    font-family: hFont;
+    src: url(../fonts/Playground.ttf);
+}
+
+#global{
+
+    background: #161C40;
+    /* width: 100vw; */
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 8% 92%;
+    position: relative;
+    /* border: 1px solid red; */
+}
+
+.container{
+    /* display: none; */
+    padding: 6px 25px;
+    /* border: 1px solid yellow; */
+}
+
+.container nav{
+    display: flex;
+    align-items: center;
+}
+
+/* --------logo-------------- */
+
+.container nav .logo{
+    width: 80px;
+    height: 50px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+    padding-left: 2px;
+    /* border: 1px solid green; */
+}
+
+.container nav .logo:hover{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+.container nav .logo.clicked{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+/* ------------search------------ */
+
+.container nav .search{
+    width: 340px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 120px;
+    cursor: pointer;
+    border-radius: 27px;
+    background: #135B8B;
+    padding: 16px;
+    box-shadow: 0 2px 2px rgba(52, 81, 143, 33);
+    transition: box-shadow 0.5s;
+    filter: blur(0.5px);
+}
+
+.container nav .search:focus-within{
+    box-shadow: 0 0 2px #5293CB;
+}
+
+.container nav .search input{
+    font-size: 16px;
+    font-family: myFont;
+    color: #ffffff;
+    margin-left: 14px;
+    outline: none;
+    border: none;
+    background: transparent;
+    width: 300px;
+}
+
+.container nav .search input::placeholder{
+    color: #5293CB;
+    font-size: 14px;
+}
+
+/* --------notif-setting-logout------------ */
+
+.container nav .left-side{
+    width: 100%;
+    height: 49px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    /* align-content: space-evenly; */
+    gap: 1.2em;
+    /* border: 1px solid yellow; */
+}
+
+#global .content{
+    /* display: none; */
+    height: auto;
+    display: grid;
+    grid-template-columns: 7% 86% 7%;
+    /* column-gap: 1%; */
+    /* border: 1px solid green; */
+}
+
+#global .content .side-bar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+    /* border: 1px solid rgb(0, 255, 238); */
+}
+
+#global .content .friends-bar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+/* -----------Icons------------------ */
+#language-selector
+{
+    font-family: myFont;
+    background :  none ;
+    border :  none ;
+    outline:  none ;
+    color: #5293CB ;
+}
+
+#language-selector option
+{
+    background: transparent; 
+    color: inherit; 
+    border: none;
+    font-family: inherit;
+}
+.icon{
+    color: #5293CB;
+    /* cursor: pointer; */
+    font-size: 24px;
+    /* text-decoration: none; */
+    transition: color 0.4s ease, filter 0.4s ease;
+}
+
+.active-icon {
+    color: #F45250 !important;
+}
+
+/* .icon:hover{
+    color: #F45250;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    filter: blur(0.5px);
+    transition: 0.5s;
+}  */
+
+/* .icon.clicked{
+    color: #F45250;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+    filter: blur(0.75px);
+} */
+
+/* .icon.active{
+    color: #F45250;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    transition: 0.5s;
+    filter: blur(0.75px);
+} */
+
+.icon_notif{
+    color: #F45250;
+    cursor: pointer;
+    font-size: 24px;
+    transition: color 0.4s ease, filter 0.4s ease;
+}
+
+
+/* --------------global-content--------------- */
+
+
+#global{
+    padding-bottom: 20px;
+    /* border: 1px solid rgb(234, 1, 255); */
+}
+
+.notification-content{
+    width: 300px;
+    overflow-y: auto;
+    /* padding: 10px; */
+    background-color: #161C40;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+    position: fixed; /* Position it fixed on the screen */
+    top: 6%; /* Align it to the top */
+    right: 5%;
+    /* padding: 10px; */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.notification-content .title h1{
+    color: #555;
+    font-family: myFont;
+    font-size: 20px;
+    padding: 10px;
+    border-bottom: 2px solid #55555554;
+    width:300px
+
+}
+
+.notification-content .notifications-container {
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+.notification-content .notifications-container p{
+    margin: 0 0 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ffffff;
+    font-family: myFont;
+}
+
+  
+.notification-content .notification {
+    padding: 6px;
+    border-bottom: 2px solid #55555554;
+  }
+  
+.notification-content .notifications-container .notification:last-child {
+    border-bottom: none; /* Remove the line for the last notification */
+  }
+
+.notification-content .notification a {
+    color: #00c1ff;
+    text-decoration: none;
+    margin-right: 10px;
+    cursor: pointer;
+    font-family: myFont;
+
+}
+  
+.notification-content .notification a.decline {
+    color: #ff4d4d;
+    font-family: myFont;
+    cursor: pointer;
+
+}
+  
+.notification-content .disabled {
+    color: gray;
+    pointer-events: none;
+}
+
+.notification-content .notification p {
+    margin: 0 0 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ffffff;
+    font-family: myFont;
+}
+
+.notification-content .notification p strong{
+
+font-family: myFont;
+}
+
+.notification-content .notifications-container::-webkit-scrollbar {
+    display: none;
+  }
+
+/******************** online friends ******************/
+.friends-right-sidebar {
+    height: 29%;
+    /* border: 2px solid #e90e0e; */
+
+    display: grid;
+    grid-auto-rows: 12.5%;
+
+    box-sizing: border-box;
+    overflow-y: overlay;
+    scroll-behavior: smooth;
+}
+
+/* Friends List */
+#friends-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Friend Item */
+.friend {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+/* Avatar */
+.friend-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    border: 2px solid #ffffff33; 
+}
+
+/* Status Indicator */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 5px;
+    right: -2px;
+    border: 2px solid #1c2340; 
+}
+
+/* Online and Offline Colors */
+.onlineFriend {
+    background-color: green;
+}
+
+.offlineFriend {
+    background-color: red;
+}
+/**************suggestions *************/
+
+.suggestions {
+    position: absolute;
+    left:0;
+    top: 40px;
+    width: 100%;
+    background-color: #1A2553;
+    border-radius: 10px;
+    display: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    max-height: 150px;
+    overflow-y: auto;
+    /* overflow: hidden; */
+    /* overflow: visible !important; */
+    z-index: 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 10px;
+    /* cursor: pointer; */
+    display: flex;
+    align-items: center;
+    color: white;
+    font-family: myFont;
+    letter-spacing: 1px;
+    z-index: 2000;
+    /* z-index: 10; */
+
+
+}
+
+.suggestion-item img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.suggestion-item:hover {
+    background-color: #2D3E77;
+}
+

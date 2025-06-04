@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Lemon&display=swap');
+
+
+
+/* ---------------------leader-board------------------------------ */
+
+.leaderboard-title{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+    margin-top: 20px;
+}
+
+.leaderboard-title h1
+{
+    font-size: 40px;
+    color: #FFEEBF;
+    font-weight: 300px ;
+    font-family: 'Lemon',serif;
+}
+.pics-rank{
+    position: relative;
+    top: -70px;
+}
+
+/* -----size for crown-- */
+.pics-rank .first-place .crown-pic
+{
+    width: 100px;
+    height: auto;
+}
+/* -----size for second and third place----- */
+
+.pics-rank .second-place .second-symbol ,
+.pics-rank .third-place .third-symbol{
+    width: 50px;
+    height: auto;
+}
+
+.second-third-place{
+    margin-top: -45px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.pics-rank .first-place,
+.pics-rank .second-place,
+.pics-rank .third-place
+{
+    display: flex;
+    flex-direction: column;
+    justify-content:  center;
+    align-items: center;
+    position: relative;
+}
+
+.pics-rank .first-place{
+    top: -250px;
+}
+
+/* -----size for players images------ */
+
+.first-place .first-pic,
+.second-place .second-pic,
+.third-place .third-pic
+{
+    width: 80px;
+    /* height: auto; */
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.unknown
+{
+    width: 80px;
+     height: 80px;
+     border-radius: 50%;
+     object-fit: cover;
+}
+
+.pics-rank .second-place{
+    position: relative;
+    left: -140px;
+    top: -280px;
+}
+
+.pics-rank .third-place
+{
+    text-align: center;
+    position: relative;
+    left: 140px;
+    top: -280px;  
+}
+
+.pics-rank h4{
+    color: #4889C1;
+    font-family: myFont;
+    font-size: 16px;
+    padding-top: 7px;
+
+}
+
+/* ----------rank space------- */
+
+
+.rank-info{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    /* height: 300px; */
+    position: relative;
+    top: -460px;
+    /* border: 1px solid yellow; */
+
+}
+
+.space{
+    width: 900px;
+    height: 45px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-content:space-evenly;
+    background-color: #FFEEBF;
+    
+    /* border: 1px solid red; */
+}
+
+.first-row{
+    border-radius: 10px 10px 0 0;
+    width: 900px;
+    background-color: #D0D2D9;
+    
+}
+.space p{
+    font-family: myFont;
+    font-size: 16px;
+    color: #4889C1;
+}
+.space div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rank-info .info
+{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 900px;
+    height: fit-content;
+    max-height: 370px;
+    background-color: #D0D2D9;
+    background-color: #FFEEBF;
+    border-radius:0 0 10px 10px ;
+}
+
+/* ------badge level------- */
+
+.space img{
+    width: 40px;
+    height: auto;
+}
+/* ---custom scrool bar-- */
+
+::-webkit-scrollbar{
+    width: 12px ;
+}
+.rank-info .info::-webkit-scrollbar-track{
+    background-color: #FFEEBF;
+}
+::-webkit-scrollbar-thumb{
+    background: #F45250;
+    border-radius: 10px;
+}
+
+
+
+.home-content .empty {
+    height: 700px;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    align-items: center;
+}
+
+.home-content .empty .leaderboard-title h1
+{
+    /* border: 1px solid red; */
+
+    font-size: 40px;
+    color: #FFEEBF;
+    font-weight: 300px ;
+    font-family: 'Lemon',serif;
+}
+
+
+.home-content .empty .trophy-pic{
+    margin-top: 100px;
+    /* padding: 50px; */
+    width: 300px;
+    /* border: 1px solid red; */
+
+    object-fit: contain;
+    /* height: auto; */
+}
+
+
+
+.home-content .empty h1{
+    /* margin-top: 100px; */
+    font-size: 27px;
+    letter-spacing: 2px;
+    font-family: myFont;    
+
+}
