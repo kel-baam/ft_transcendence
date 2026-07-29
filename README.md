@@ -2,7 +2,45 @@
 
 `ft_transcendence` is the final project of the Common Core at 1337/42 school. It’s a full-stack web application built from scratch, combining backend, frontend, and DevOps knowledge into one final product.
 
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/aaec9b5b-b0b4-4afb-a1d1-8725160ba5b5" width="400"/><br/>
+      <sub><b>Matching players</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/39924a77-cc59-4a81-ad34-130e39c46418" width="400"/><br/>
+      <sub><b>Create Account</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/f7cd4e9c-19e8-4c88-aa12-2aa5143267b4" width="400"/><br/>
+      <sub><b>Tournament</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/324afa09-7861-4ce6-88ea-230a2b2e3850" width="400"/><br/>
+      <sub><b>Join a Tournament</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/fcd082d4-e95f-4d8a-bbfd-6a98ad5f2958" width="400"/><br/>
+      <sub><b>Notifications</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/e5a8b251-3d5b-4def-af39-f6ab1f5954ad" width="400"/><br/>
+      <sub><b>Gameplay</b></sub>
+    </td>
+  </tr>
+</table>
+
+
 ## 🌟 Project Highlights
+
 
 ✅ **User-Friendly Design**  
 Crafted an intuitive interface using Figma, ensuring a seamless user experience.
